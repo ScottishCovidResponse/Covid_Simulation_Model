@@ -1,3 +1,7 @@
+/*
+ * Code for managing the Communal Places where People objects mix
+ */
+
 package development_v1;
 import java.util.*;
 
@@ -5,20 +9,20 @@ public class CommunalPlace {
 
 protected int startTime;
 protected int endTime;
-public int cindex;
+public int cindex; 
 protected Vector vPeople;
 protected int startDay;
 protected int endDay;
-protected double transProb;
+protected double transProb; 
 
 	public CommunalPlace(int cindex) {
 		this.vPeople = new Vector();
-		this.startTime = 8;
-		this.endTime = 17;
-		this.startDay = 1;
-		this.endDay = 5;
-		this.cindex = cindex;
-		this.transProb = 0.5;
+		this.startTime = 8; // The hour of the day that the Communal Place starts
+		this.endTime = 17; // The hour of the day that it ends
+		this.startDay = 1; // Days of the week that it is active - start
+		this.endDay = 5; // Days of the week that it is active - end
+		this.cindex = cindex; // This sets the index for each Communal Place to avoid searching
+		this.transProb = 0.5; // Pretty important parameter. This defines the transmission rate within this Communal Place
 		
 	}
 	public void setIndex(int indexVal) {
@@ -27,6 +31,8 @@ protected double transProb;
 	public int getIndex() {
 		return this.cindex;
 	}
+	
+	// Check whether a Person might visit at that hour of the day
 	public boolean checkVisit(Person cPers, int time, int day) {
 		boolean cIn = false; 
 		if(this.startTime == time) {
@@ -35,13 +41,8 @@ protected double transProb;
 		}
 		return cIn;
 	}
-	
-	public Vector returnPeople(int time, int day) {
-		Vector cReturn = new Vector();
-		
-		
-		return cReturn;
-	}
+
+	// Cyctek through the People objects in the Place and test their infection status etc
 	public Vector cyclePlace(int time, int day) {
 		
 		Vector cReturn = new Vector();
@@ -62,12 +63,12 @@ protected double transProb;
 				}
 				if(status == "Dead") {
 					this.vPeople.removeElementAt(i);
-					System.out.println("Work Dead");
+					System.out.println("Work Dead");  // Printing key metrics of infection to check that the model is working
 					i--;
 				}
 				if(status == "Recovered") {
 					cPers.recovered = true;
-					System.out.println("Recovered");
+					System.out.println("Recovered");  // Printing key metrics of infection to check that the model is working
 				}
 			}
 			if(time == this.endTime & status != "Dead") {

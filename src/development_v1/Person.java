@@ -55,6 +55,7 @@ public boolean infect() {
 	return inf;
 }
 
+//Don't mess with this method
 public boolean getInfectionStatus() {
 	return !(this.cVirus == null);
 }
