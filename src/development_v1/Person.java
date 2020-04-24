@@ -1,3 +1,7 @@
+/*
+ * Base code for running Person objects. There are a number of sub classes, but most methods are here 
+ */
+
 package development_v1;
 
 public class Person {
