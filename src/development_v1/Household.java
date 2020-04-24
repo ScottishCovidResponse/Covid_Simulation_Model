@@ -1,3 +1,10 @@
+/*
+ * Paul Bessell
+ * This initilaises each Household as a Vector of People.
+ * It has a method for cycling throuhg the Household to challenge wiht infection (when relevant)
+ */
+
+
 package development_v1;
 
 import java.util.*;

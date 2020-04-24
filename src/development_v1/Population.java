@@ -1,3 +1,9 @@
+/*
+ * Paul Bessell
+ * This is the principal driver class that initialises and manages a population of People  
+ */
+
+
 package development_v1;
 import java.util.*;
 import org.apache.commons.math3.distribution.*;
@@ -32,7 +38,7 @@ public Population(int populationSize, int nHousehold) {
 	if(this.nHousehold > this.populationSize) System.out.println("More households than population");
 
 	this.population = new Household[this.nHousehold];
-	this.pInfants = 0.08;
+	this.pInfants = 0.08; // Another fudge this defines the probability of a Person being an infant, adult etc
 	this.pChildren = 0.2;
 	this.pAdults = 0.5;
 	this.pPensioners = 1-this.pInfants-this.pChildren-this.pAdults;
@@ -42,11 +48,11 @@ public Population(int populationSize, int nHousehold) {
 	this.nAdults = 0;
 	this.nPensioners = 0;
 	this.aPopulation = new Person[this.populationSize];
-	this.pAdultOnly = 0.3;
+	this.pAdultOnly = 0.3; // Currently a fudge - these values define the probability of a household being an adult only, adult and child household etc
 	this.pPensionerOnly = 0.1;
 	this.pPensionerAdult = 0.1;
 	this.pAdultChildren = 0.5;
-	this.infantIndex = new boolean[this.populationSize];
+	this.infantIndex = new boolean[this.populationSize]; // These are indexes to assign membership to different groups
 	this.childIndex = new boolean[this.populationSize];
 	this.adultIndex = new boolean[this.populationSize];
 	this.pensionerIndex = new boolean[this.populationSize];
@@ -74,6 +80,7 @@ private Person createPensioner() {
 	return nPensioner;
 }
 
+// Creates the populaiton of People based on the probabilities of age groups above
 private void createPopulation() {
 	for(int i = 0; i < this.populationSize; i++) {
 		double rand = Math.random();
@@ -101,6 +108,7 @@ private void createPopulation() {
 	
 }
 
+// Creates households based on probability of different household types
 private void createHouseholds() {
 	for(int i = 0; i < this.nHousehold; i++) {
 		double rand = Math.random();
@@ -119,13 +127,14 @@ private void createHouseholds() {
 	}	
 }
 
+// This bit of code really isn't necessary
 private Household createHousehold(int ntype) {
 	Household cHouse = new Household(ntype);
 	return cHouse;
 }
 
 
-// This is very slow and long  winded - for populating households && It doesn't quite work as I would wish
+// This is very slow and long  winded - for populating households based on the population age groups && It doesn't quite work as I would wish
 public void populateHouseholds() {
 	this.createHouseholds();
 	this.createPopulation();
@@ -229,7 +238,7 @@ public void populateHouseholds() {
 }
 
 
-
+// Used for diagnosing problems wiht the algorithm for creating households
 public void summarisePop() {
 	int total = 0;
 	for(int i = 0; i < this.nHousehold; i++) {
@@ -238,6 +247,8 @@ public void summarisePop() {
 	}
 }
 
+
+// This creates the Communal places of different types where people mix
 public void createMixing() {
 	int nHospitals = this.populationSize / 10000;
 	int nSchools = this.populationSize / 2500;
@@ -315,11 +326,13 @@ public void allocatePeople() {
 this.assignNeighbours();
 }
 
+// For selecting a CommunalPlace at random to assign a People to
 private CommunalPlace getRandom() {
     int rnd = new Random().nextInt(this.cPlaces.length);
     return this.cPlaces[rnd];
 }
 
+// This method assigns a random number of neighbours to each Household  
 private void assignNeighbours() {
 	for(int i = 0; i < this.nHousehold; i++) {
 		Household cHouse = this.population[i];
@@ -335,6 +348,7 @@ private void assignNeighbours() {
 	}
 }
 
+// Force infections into a defined number of people
 public void seedVirus(int nInfections) {
 	for(int i = 1; i <= nInfections; i++) {
 		int nInt = new Random().nextInt(this.nHousehold);
@@ -344,6 +358,7 @@ public void seedVirus(int nInfections) {
 	}
 }
 
+// Step through nDays in 1 hour time steps
 public void timeStep(int nDays) {
 	for(int i = 0; i < nDays; i++) {
 		for(int k = 0; k < 24; k++) {
@@ -353,6 +368,7 @@ public void timeStep(int nDays) {
 	}
 }
 
+// Step through the households to identify individual movements to CommunalPlaces
 private void cycleHouseholds(int day, int hour) {
 	for(int i = 0; i < this.population.length; i ++) {
 		Vector vHouse = this.population[i].cycleHouse();
@@ -361,6 +377,7 @@ private void cycleHouseholds(int day, int hour) {
 	}
 }
 
+// For each household processes any movements to Communal Places that are relevant
 private void cycleMovements(Vector vHouse, int day, int hour) {
 	for(int i = 0; i < vHouse.size(); i++) {
 		Person nPers = (Person) vHouse.elementAt(i); 
