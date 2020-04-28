@@ -258,8 +258,8 @@ public void summarisePop() {
 public void createMixing() {
 	int nHospitals = this.populationSize / 10000;
 	int nSchools = this.populationSize / 2000;
-	int nShops = this.populationSize / 500;
-	int nOffices = this.populationSize / 100;
+	int nShops = this.populationSize / 2500;
+	int nOffices = this.populationSize / 250;
 	int nConstructionSites = this.populationSize / 2500;
 	int nNurseries = this.populationSize / 2000;
 	int nEstablishments = nHospitals + nSchools + nShops + nOffices + nConstructionSites + nNurseries;

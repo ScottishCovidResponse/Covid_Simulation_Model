@@ -4,6 +4,6 @@ public class Hospital extends CommunalPlace{
 
 	public Hospital(int cindex) {
 		super(cindex);
-		super.transProb = 0.005;
+		this.transProb = super.transProb * (15 / (7500 / 10));
 	}
 }
