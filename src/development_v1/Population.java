@@ -260,7 +260,7 @@ public void createMixing() {
 	int nSchools = this.populationSize / 2000;
 	int nShops = this.populationSize / 2500;
 	int nOffices = this.populationSize / 250;
-	int nConstructionSites = this.populationSize / 2500;
+	int nConstructionSites = this.populationSize / 1000;
 	int nNurseries = this.populationSize / 2000;
 	int nEstablishments = nHospitals + nSchools + nShops + nOffices + nConstructionSites + nNurseries;
 	System.out.println(nEstablishments);
