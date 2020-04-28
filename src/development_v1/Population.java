@@ -257,11 +257,11 @@ public void summarisePop() {
 // This creates the Communal places of different types where people mix
 public void createMixing() {
 	int nHospitals = this.populationSize / 10000;
-	int nSchools = this.populationSize / 2500;
-	int nShops = this.populationSize / 1000;
-	int nOffices = this.populationSize / 1000;
-	int nConstructionSites = this.populationSize / 5000;
-	int nNurseries = this.populationSize / 2500;
+	int nSchools = this.populationSize / 2000;
+	int nShops = this.populationSize / 500;
+	int nOffices = this.populationSize / 100;
+	int nConstructionSites = this.populationSize / 2500;
+	int nNurseries = this.populationSize / 2000;
 	int nEstablishments = nHospitals + nSchools + nShops + nOffices + nConstructionSites + nNurseries;
 	System.out.println(nEstablishments);
 	
@@ -342,7 +342,7 @@ private CommunalPlace getRandom() {
 private void assignNeighbours() {
 	for(int i = 0; i < this.nHousehold; i++) {
 		Household cHouse = this.population[i];
-		int nneighbours = new PoissonDistribution(3).sample();
+		int nneighbours = new PoissonDistribution(3).sample(); // Sample a number of neighbours based on mean of three neighbours
 		int[] neighbourArray = new int[nneighbours];
 		//System.out.println(nneighbours);
 		for(int k = 0; k < nneighbours; k++) {
@@ -353,6 +353,8 @@ private void assignNeighbours() {
 		cHouse.setNeighbourList(neighbourArray);
 	}
 }
+
+
 
 // Force infections into a defined number of people
 public void seedVirus(int nInfections) {
@@ -409,7 +411,8 @@ private void cycleHouseholds(int day, int hour) {
 		Vector vHouse = this.population[i].cycleHouse();
 	//	if(vHouse.size() > 20 || i ==1||i==2) System.out.println("Size = " + vHouse.size() + " Iteration = "+ i);
 		this.cycleMovements(vHouse, day, hour);
-
+		this.retrunNeighbours(this.population[i]);
+		this.cycleNieghbours(this.population[i]);		
 	}
 }
 
@@ -437,6 +440,30 @@ private void cyclePlaces(int day, int hour) {
 		//	System.out.println("HIndex = " + cPers.getHIndex());
 		}
 	}
+}
+
+private void cycleNieghbours(Household cHouse) {
+	int visitIndex = -1; // Set a default for this here.
+
+//	for(int i = 0; i < this.nHousehold; i++) {
+//		Household cHouse = this.population[i];
+		if(cHouse.nNieghbours() > 0 && cHouse.getHouseholdSize() > 0) {
+			visitIndex = -1;
+			for(int k = 0; k < cHouse.nNieghbours(); k++) {
+				if(Math.random() < 1/7/24) visitIndex = k; // This sets the probability of a neighbour visit as once per week
+			}
+		}
+		if(visitIndex > (-1)) 	this.population[cHouse.getNeighbourIndex(visitIndex)].welcomeNeighbours(cHouse);
+
+//	}
+}
+
+private void retrunNeighbours(Household cHouse) {
+	 Vector vReturn = cHouse.sendNeighboursHome();
+	 for(int i = 0; i < vReturn.size(); i++) {
+		 Person nPers = (Person) vReturn.elementAt(i);
+		 this.population[nPers.getHIndex()].addPerson(nPers);
+	 }
 }
 
 }

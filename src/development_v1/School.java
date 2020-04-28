@@ -5,5 +5,6 @@ public class School extends CommunalPlace{
 		super(cindex);
 		int startTime = 9;
 		int endTime = 15;
+		super.transProb = 0.01;
 	}
 }

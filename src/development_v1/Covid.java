@@ -89,7 +89,7 @@ public class Covid {
 				this.dead = true;
 				this.infected = false;
 				status = "Dead";
-				System.out.println("DEAD " + (this.ccase instanceof Pensioner));
+			//	System.out.println("DEAD " + (this.ccase instanceof Pensioner));
 			}
 			if(rVal >= this.mortalityRate / 24) {
 				status = "Phase 2";

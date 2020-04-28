@@ -7,7 +7,7 @@ import java.util.*;
 public class RunModel {
 
 	public void runTest() {
-		Population p = new Population(10000, 3000);
+		Population p = new Population(100000, 30000);
 		p.populateHouseholds();
 		p.summarisePop();
 		p.createMixing();

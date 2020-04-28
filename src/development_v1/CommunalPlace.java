@@ -57,6 +57,7 @@ protected double transProb;
 						if(k!=i) {
 							Person nPers = (Person) this.vPeople.elementAt(k);
 							if(!nPers.getInfectionStatus()) {
+								//System.out.println("Trans prob = "+this.transProb);
 								nPers.infChallenge(this.transProb);
 							}
 						}
