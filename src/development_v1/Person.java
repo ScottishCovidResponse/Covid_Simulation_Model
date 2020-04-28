@@ -22,7 +22,7 @@ public boolean recovered;
 public Person() {
 	this.allocated = false;
 	this.transmissionProb = 0.5;
-
+	this.mIndex = -1;
 	
 }
 public void setAllocation() {
@@ -81,7 +81,7 @@ public String cStatus() {
 		if(this.cVirus.phase1) cStatus = "Phase 1";
 		if(this.cVirus.phase2) cStatus = "Phase 2";
 		if(this.cVirus.dead) cStatus = "Dead";
-		if(this.cVirus.recovered) cStatus = "Recovered";
+		if(this.cVirus.recovered && !this.cVirus.dead) cStatus = "Recovered";
 	}
 	return cStatus;			
 }

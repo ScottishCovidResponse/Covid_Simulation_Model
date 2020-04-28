@@ -394,10 +394,11 @@ private void processCases(int day) {
 			if(cPers.cStatus() == "Asymptomatic") asymptomatic ++;
 			if(cPers.cStatus() == "Phase 1") phase1 ++;
 			if(cPers.cStatus() == "Phase 2") phase2 ++;
-			if(cPers.cStatus() == "Dead") dead ++;
+			// if(cPers.cStatus() == "Dead") 
 			if(cPers.cStatus() == "Recovered") recovered ++;
 
 		}
+		dead = dead + cHouse.getDeaths();
 	}
 	System.out.println("Day = " + day + " Healthy = "+ healthy + " Latent = "+ exposed + " Asymptomatic = "+ asymptomatic + " Phase 1 = "+ phase1+ " Phase 2 = " + phase2 + " Dead = "+ dead + " Recovered = "+ recovered);
 }
@@ -416,13 +417,15 @@ private void cycleHouseholds(int day, int hour) {
 private void cycleMovements(Vector vHouse, int day, int hour) {
 	for(int i = 0; i < vHouse.size(); i++) {
 		Person nPers = (Person) vHouse.elementAt(i); 
-		boolean visit = this.cPlaces[nPers.getMIndex()].checkVisit(nPers, hour, day);
-		if(visit) {
-			vHouse.removeElementAt(i);
-			i--;
+		if(nPers.getMIndex() >= 0) {
+			boolean visit = this.cPlaces[nPers.getMIndex()].checkVisit(nPers, hour, day);
+			if(visit) {
+				vHouse.removeElementAt(i);
+				i--;
 		//	System.out.println("Visit");
+				}
+			}
 		}
-	}
 }
 
 private void cyclePlaces(int day, int hour) {

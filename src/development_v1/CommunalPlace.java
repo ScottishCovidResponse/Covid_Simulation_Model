@@ -38,6 +38,7 @@ protected double transProb;
 		if(this.startTime == time) {
 			cIn = true;
 			this.vPeople.addElement(cPers);
+			if(cPers instanceof Pensioner & (this instanceof Hospital)) System.out.println("Pensioner HERE " + cPers.getMIndex());
 		}
 		return cIn;
 	}

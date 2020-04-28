@@ -11,12 +11,14 @@ import java.util.*;
 public class Household {
 private String type;
 int nType;
-Vector vPeople;
+private Vector vPeople;
+private Vector vDeaths;
 private int[] neighbourList;
 	public Household(int nType) {
 		this.nType = nType;	
 		this.setType();
 		this.vPeople = new Vector();
+		this.vDeaths = new Vector();
 	}
 	public void setType() {
 		if(this.nType == 1)	this.type = "Adult only";
@@ -73,6 +75,7 @@ private int[] neighbourList;
 				}
 				if(status == "Dead") {
 					this.vPeople.removeElementAt(i);
+					this.vDeaths.addElement(cPers);
 				//	System.out.println("House Dead");
 					i--;
 				}
@@ -83,6 +86,10 @@ private int[] neighbourList;
 			}
 		}
 		return this.vPeople;
+	}
+	
+	public int getDeaths() {
+		return this.vDeaths.size();
 	}
 	
 }
