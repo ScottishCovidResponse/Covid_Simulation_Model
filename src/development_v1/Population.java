@@ -417,7 +417,7 @@ private void cycleHouseholds(int day, int hour) {
 private void cycleMovements(Vector vHouse, int day, int hour) {
 	for(int i = 0; i < vHouse.size(); i++) {
 		Person nPers = (Person) vHouse.elementAt(i); 
-		if(nPers.getMIndex() >= 0) {
+		if(nPers.getMIndex() >= 0 && !nPers.getQuarantine()) {
 			boolean visit = this.cPlaces[nPers.getMIndex()].checkVisit(nPers, hour, day);
 			if(visit) {
 				vHouse.removeElementAt(i);
