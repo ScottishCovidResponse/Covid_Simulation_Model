@@ -54,6 +54,7 @@ private int[] neighbourList;
 	}
 	
 	public Vector cycleHouse() {
+		if(this.vPeople.size() > 20) System.out.println("VPeople size = " + this.vPeople.size());
 		for(int i = 0; i < this.vPeople.size(); i++) {
 			Person cPers = (Person) this.vPeople.elementAt(i);
 			if(cPers.getInfectionStatus() & !cPers.recovered) {
@@ -61,6 +62,7 @@ private int[] neighbourList;
 				if(status == "Asymptomatic" || status == "Phase 1" || status == "Phase 2") {
 					for(int k = 0; k < this.vPeople.size(); k++) {
 						if(k!=i) {
+					//	System.out.println("House size = " + k);
 							Person nPers = (Person) this.vPeople.elementAt(k);
 							if(!nPers.getInfectionStatus()) {
 								nPers.infChallenge(1);
@@ -70,12 +72,12 @@ private int[] neighbourList;
 				}
 				if(status == "Dead") {
 					this.vPeople.removeElementAt(i);
-					System.out.println("House Dead");
+				//	System.out.println("House Dead");
 					i--;
 				}
 				if(status == "Recovered") {
 					cPers.recovered = true;
-					System.out.println("House Recovered");
+				//	System.out.println("House Recovered");
 				}
 			}
 		}

@@ -63,12 +63,12 @@ protected double transProb;
 				}
 				if(status == "Dead") {
 					this.vPeople.removeElementAt(i);
-					System.out.println("Work Dead");  // Printing key metrics of infection to check that the model is working
+				//	System.out.println("Work Dead");  // Printing key metrics of infection to check that the model is working
 					i--;
 				}
 				if(status == "Recovered") {
 					cPers.recovered = true;
-					System.out.println("Recovered");  // Printing key metrics of infection to check that the model is working
+				//	System.out.println("Recovered");  // Printing key metrics of infection to check that the model is working
 				}
 			}
 			if(time == this.endTime & status != "Dead") {

@@ -29,7 +29,7 @@ public void setAllocation() {
 	this.allocated = true;
 }
 
-public void setIndex(int mIndex) {
+public void setMIndex(int mIndex) {
 	this.mIndex = mIndex;
 }
 
@@ -37,11 +37,11 @@ public void setHIndex(int hIndex) {
 	this.hIndex = hIndex;
 }
 
-public int getIndex() {
+public int getMIndex() {
 	return this.mIndex;
 }
 
-public int getHindex() {
+public int getHIndex() {
 	return this.hIndex;
 }
 
@@ -71,4 +71,18 @@ public void infChallenge(double challengeProb) {
 //		System.out.println("HERE");
 	}
 }
+
+public String cStatus() {
+	String cStatus = "Healthy";
+	if(!this.getInfectionStatus()) cStatus = "Healthy";
+	else if(this.cVirus.latent) cStatus = "Latent";
+	else if(this.cVirus.asymptomatic) cStatus = "Asymptomatic";
+	else if(this.cVirus.phase1) cStatus = "Phase 1";
+	else if(this.cVirus.phase2) cStatus = "Phase 2";
+	else if(this.cVirus.dead) cStatus = "Dead";
+	else if(this.cVirus.recovered) cStatus = "Recovered";
+	
+	return cStatus;			
+}
+
 }

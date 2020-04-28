@@ -19,12 +19,12 @@ public class Covid {
 	private double mortalityRate;
 	private int infCounter;
 	
-	private boolean latent;
-	private boolean asymptomatic;
-	private boolean phase1;
-	private boolean phase2;
-	private boolean recovered;
-	private boolean dead;
+	public boolean latent;
+	public boolean asymptomatic;
+	public boolean phase1;
+	public boolean phase2;
+	public boolean recovered;
+	public boolean dead;
 	private boolean infected;
 
 	
@@ -71,7 +71,7 @@ public class Covid {
 			this.asymptomatic = true;
 			status = "Asymptomatic";
 			this.infected = true;
-		//	System.out.println("Asymptomatic");
+		//	System.out.println("Asymptomatic " + this.latentPeriod + " Inf counter = " + this.infCounter);
 
 		}
 		else if((this.latentPeriod + this.asymptomaticPeriod + this.p1) * 24 > this.infCounter) {
@@ -87,7 +87,7 @@ public class Covid {
 				this.dead = true;
 				this.infected = false;
 				status = "Dead";
-				System.out.println("DEAD");
+			//	System.out.println("DEAD");
 			}
 			if(rVal >= this.mortalityRate / 24) {
 				status = "Phase 2";
@@ -100,7 +100,7 @@ public class Covid {
 			this.infected = false;
 
 			status = "Recovered";
-			System.out.println("RECOVERED = IC" + this.infCounter);
+	//		System.out.println("RECOVERED = IC" + this.infCounter);
 
 		}
 		return status;

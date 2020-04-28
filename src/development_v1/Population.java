@@ -80,7 +80,7 @@ private Person createPensioner() {
 	return nPensioner;
 }
 
-// Creates the populaiton of People based on the probabilities of age groups above
+// Creates the population of People based on the probabilities of age groups above
 private void createPopulation() {
 	for(int i = 0; i < this.populationSize; i++) {
 		double rand = Math.random();
@@ -145,26 +145,26 @@ public void populateHouseholds() {
 			if(cType == 1) {
 				if(!this.allocationIndex[k] & this.adultIndex[k]) {
 					this.allocationIndex[k] = true;
-					aPopulation[k].setIndex(i);
+					aPopulation[k].setHIndex(i);
 					this.population[i].addPerson(aPopulation[k]);
 				}
 			}
 			if(cType == 2) {
 				if(!this.allocationIndex[k] & this.pensionerIndex[k]) {
 					this.allocationIndex[k] = true;
-					aPopulation[k].setIndex(i);
+					aPopulation[k].setHIndex(i);
 					this.population[i].addPerson(aPopulation[k]);
 				}
 			}
 			if(cType == 3) {
 				if(!this.allocationIndex[k] & this.adultIndex[k]) {
 					this.allocationIndex[k] = true;
-					aPopulation[k].setIndex(i);
+					aPopulation[k].setHIndex(i);
 					this.population[i].addPerson(aPopulation[k]);
 					for(int l = 0; l < this.populationSize; l++) {
 						if(!this.allocationIndex[l] & this.pensionerIndex[l]) {
 						this.allocationIndex[l] = true;
-						aPopulation[k].setIndex(i);
+						aPopulation[k].setHIndex(i);
 						this.population[i].addPerson(aPopulation[l]);
 						l = this.populationSize + 1;
 						}
@@ -174,12 +174,12 @@ public void populateHouseholds() {
 			if(cType == 4) {
 				if(!this.allocationIndex[k] & this.adultIndex[k]) {
 					this.allocationIndex[k] = true;
-					aPopulation[k].setIndex(i);
+					aPopulation[k].setHIndex(i);
 					this.population[i].addPerson(aPopulation[k]);
 					for(int l = 0; l < this.populationSize; l++) {
 						if(!this.allocationIndex[l] & this.childIndex[l]) {
 						this.allocationIndex[l] = true;
-						aPopulation[k].setIndex(i);
+						aPopulation[k].setHIndex(i);
 						this.population[i].addPerson(aPopulation[l]);
 						l = this.populationSize + 1;
 						}
@@ -201,6 +201,8 @@ public void populateHouseholds() {
 						if(population[k].getnType() == 4) {
 							if(rand < 1/ new Double(this.nHousehold)) {
 								this.allocationIndex[i] = true;
+								aPopulation[i].setHIndex(k);
+
 								this.population[k].addPerson(this.aPopulation[i]);
 								k = this.populationSize + 1;
 							}
@@ -213,6 +215,8 @@ public void populateHouseholds() {
 						if(population[k].getnType() != 2) {
 							if(rand < 1/ new Double(this.nHousehold)) {
 								this.allocationIndex[i] = true;
+								aPopulation[i].setHIndex(k);
+
 								this.population[k].addPerson(this.aPopulation[i]);
 								k = this.populationSize + 1;
 							}
@@ -225,6 +229,8 @@ public void populateHouseholds() {
 						if(population[k].getnType() == 2 || population[k].getnType() == 3) {
 							if(rand < 1/ new Double(this.nHousehold)) {
 								this.allocationIndex[i] = true;
+								aPopulation[i].setHIndex(k);
+
 								this.population[k].addPerson(this.aPopulation[i]);
 								k = this.populationSize + 1;
 							}
@@ -282,42 +288,42 @@ public void allocatePeople() {
 				
 				CommunalPlace property = this.getRandom();
 				while(!(property instanceof Nursery)) property = this.getRandom();
-				cPerson.mIndex = property.getIndex();
+				cPerson.setMIndex(property.getIndex());
 				
 			}
 			if(cPerson.school) {
 				
 				CommunalPlace property = this.getRandom();
 				while(!(property instanceof School)) property = this.getRandom();
-				cPerson.mIndex = property.getIndex();
+				cPerson.setMIndex(property.getIndex());
 				
 			}
 			if(cPerson.shopWorker) {
 				
 				CommunalPlace property = this.getRandom();
 				while(!(property instanceof Shop)) property = this.getRandom();
-				cPerson.mIndex = property.getIndex();
+				cPerson.setMIndex(property.getIndex());
 				
 			}
 			if(cPerson.constructionWorker) {
 				
 				CommunalPlace property = this.getRandom();
 				while(!(property instanceof ConstructionSite)) property = this.getRandom();
-				cPerson.mIndex = property.getIndex();
+				cPerson.setMIndex(property.getIndex());
 				
 			}
 			if(cPerson.officeWorker) {
 				
 				CommunalPlace property = this.getRandom();
 				while(!(property instanceof Office)) property = this.getRandom();
-				cPerson.mIndex = property.getIndex();
+				cPerson.setMIndex(property.getIndex());
 				
 			}
 			if(cPerson.hospitalWorker) {
 				
 				CommunalPlace property = this.getRandom();
 				while(!(property instanceof Hospital)) property = this.getRandom();
-				cPerson.mIndex = property.getIndex();
+				cPerson.setMIndex(property.getIndex());
 				
 			}
 
@@ -366,13 +372,41 @@ public void timeStep(int nDays) {
 			this.cycleHouseholds(i, k);
 			this.cyclePlaces(i, k);
 		}
+		this.processCases(i);
 	}
+}
+
+private void processCases(int day) {
+	int healthy = 0;
+	int exposed = 0;
+	int asymptomatic = 0;
+	int phase1 = 0;
+	int phase2 = 0;
+	int dead = 0;
+	int recovered = 0;
+	
+	for(int i = 0; i < this.population.length; i++){
+		Household cHouse = this.population[i];
+		for(int k = 0; k < cHouse.getHouseholdSize(); k++) {
+			Person cPers = cHouse.getPerson(k);
+			if(cPers.cStatus() == "Healthy") healthy ++;
+			if(cPers.cStatus() == "Latent") exposed ++;
+			if(cPers.cStatus() == "Asymptomatic") asymptomatic ++;
+			if(cPers.cStatus() == "Phase 1") phase1 ++;
+			if(cPers.cStatus() == "Phase 2") phase2 ++;
+			if(cPers.cStatus() == "Dead") dead ++;
+			if(cPers.cStatus() == "Recovered") recovered ++;
+
+		}
+	}
+	System.out.println("Day = " + day + " Healthy = "+ healthy + " Latent = "+ exposed + " Asymptomatic = "+ asymptomatic + " Phase 1 = "+ phase1+ " Phase 2 = " + phase2 + " Dead = "+ dead + " Recovered = "+ recovered);
 }
 
 // Step through the households to identify individual movements to CommunalPlaces
 private void cycleHouseholds(int day, int hour) {
 	for(int i = 0; i < this.population.length; i ++) {
 		Vector vHouse = this.population[i].cycleHouse();
+		if(vHouse.size() > 20 || i ==1||i==2) System.out.println("Size = " + vHouse.size() + " Iteration = "+ i);
 		this.cycleMovements(vHouse, day, hour);
 
 	}
@@ -382,7 +416,7 @@ private void cycleHouseholds(int day, int hour) {
 private void cycleMovements(Vector vHouse, int day, int hour) {
 	for(int i = 0; i < vHouse.size(); i++) {
 		Person nPers = (Person) vHouse.elementAt(i); 
-		boolean visit = this.cPlaces[nPers.getIndex()].checkVisit(nPers, hour, day);
+		boolean visit = this.cPlaces[nPers.getMIndex()].checkVisit(nPers, hour, day);
 		if(visit) {
 			vHouse.removeElementAt(i);
 			i--;
@@ -396,8 +430,8 @@ private void cyclePlaces(int day, int hour) {
 		Vector retPeople = cPlaces[i].cyclePlace(hour, day);
 		for(int k = 0; k < retPeople.size(); k++) {
 			Person cPers = (Person) retPeople.elementAt(k);
-			population[cPers.hIndex].addPerson(cPers);
-			
+			population[cPers.getHIndex()].addPerson(cPers);
+		//	System.out.println("HIndex = " + cPers.getHIndex());
 		}
 	}
 }
