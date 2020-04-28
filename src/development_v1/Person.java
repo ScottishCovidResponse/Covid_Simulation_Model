@@ -75,13 +75,14 @@ public void infChallenge(double challengeProb) {
 public String cStatus() {
 	String cStatus = "Healthy";
 	if(!this.getInfectionStatus()) cStatus = "Healthy";
-	else if(this.cVirus.latent) cStatus = "Latent";
-	else if(this.cVirus.asymptomatic) cStatus = "Asymptomatic";
-	else if(this.cVirus.phase1) cStatus = "Phase 1";
-	else if(this.cVirus.phase2) cStatus = "Phase 2";
-	else if(this.cVirus.dead) cStatus = "Dead";
-	else if(this.cVirus.recovered) cStatus = "Recovered";
-	
+	if(this.getInfectionStatus()) {
+		if(this.cVirus.latent) cStatus = "Latent";
+		if(this.cVirus.asymptomatic) cStatus = "Asymptomatic";
+		if(this.cVirus.phase1) cStatus = "Phase 1";
+		if(this.cVirus.phase2) cStatus = "Phase 2";
+		if(this.cVirus.dead) cStatus = "Dead";
+		if(this.cVirus.recovered) cStatus = "Recovered";
+	}
 	return cStatus;			
 }
 

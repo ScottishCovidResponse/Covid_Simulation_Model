@@ -54,12 +54,13 @@ private int[] neighbourList;
 	}
 	
 	public Vector cycleHouse() {
-		if(this.vPeople.size() > 20) System.out.println("VPeople size = " + this.vPeople.size());
+	//	if(this.vPeople.size() > 20) System.out.println("VPeople size = " + this.vPeople.size());
 		for(int i = 0; i < this.vPeople.size(); i++) {
 			Person cPers = (Person) this.vPeople.elementAt(i);
-			if(cPers.getInfectionStatus() & !cPers.recovered) {
+			if(cPers.getInfectionStatus() && !cPers.recovered) {
 				String status = cPers.stepInfection();
-				if(status == "Asymptomatic" || status == "Phase 1" || status == "Phase 2") {
+				if(cPers.cStatus() == "Asymptomatic" || cPers.cStatus() == "Phase 1" || cPers.cStatus() == "Phase 2") {
+				//System.out.println(status + "   " + cPers.cStatus());
 					for(int k = 0; k < this.vPeople.size(); k++) {
 						if(k!=i) {
 					//	System.out.println("House size = " + k);

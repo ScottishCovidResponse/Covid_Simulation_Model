@@ -406,7 +406,7 @@ private void processCases(int day) {
 private void cycleHouseholds(int day, int hour) {
 	for(int i = 0; i < this.population.length; i ++) {
 		Vector vHouse = this.population[i].cycleHouse();
-		if(vHouse.size() > 20 || i ==1||i==2) System.out.println("Size = " + vHouse.size() + " Iteration = "+ i);
+	//	if(vHouse.size() > 20 || i ==1||i==2) System.out.println("Size = " + vHouse.size() + " Iteration = "+ i);
 		this.cycleMovements(vHouse, day, hour);
 
 	}

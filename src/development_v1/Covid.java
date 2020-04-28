@@ -71,6 +71,7 @@ public class Covid {
 			this.asymptomatic = true;
 			status = "Asymptomatic";
 			this.infected = true;
+			
 		//	System.out.println("Asymptomatic " + this.latentPeriod + " Inf counter = " + this.infCounter);
 
 		}
@@ -78,6 +79,7 @@ public class Covid {
 			this.phase1 = true;
 			this.infected = true;
 			status = "Phase 1";
+			
 		}
 		else if((this.latentPeriod + this.asymptomaticPeriod + this.p1 + this.p2) * 24 > this.infCounter) {
 			this.phase2 = true;
