@@ -70,7 +70,7 @@ private Vector vVisitors;
 	private Vector combVectors() {
 		Vector cVector = new Vector();
 		for(int i = 0; i < this.vPeople.size(); i ++) cVector.addElement((Person) this.vPeople.elementAt(i));
-		for(int i = 0; i < this.vVisitors.size(); i ++) cVector.addElement((Person) this.vPeople.elementAt(i));
+		for(int i = 0; i < this.vVisitors.size(); i ++) cVector.addElement((Person) this.vVisitors.elementAt(i));
 		
 		return cVector;
 	}
@@ -90,6 +90,7 @@ private Vector vVisitors;
 							Person nPers = (Person) hVector.elementAt(k);
 							if(!nPers.getInfectionStatus()) {
 								nPers.infChallenge(1);
+							//	if(this.vVisitors.size() > 0) System.out.println(this.toString() +  " H index ="+ nPers.getHIndex());
 							}
 						}
 					}
@@ -130,8 +131,11 @@ private Vector vVisitors;
 	
 	public void welcomeNeighbours(Household visitHouse) {
 		Vector visitVector = visitHouse.neighbourVisit();
+		if(visitVector != null) {
 		for(int i = 0; i < visitVector.size(); i++) {
+		//	System.out.println("Vector size = "+ visitVector.size() + " i = "+ i);
 			this.vVisitors.addElement((Person) visitVector.elementAt(i));
+		}
 		}
 	}
 	

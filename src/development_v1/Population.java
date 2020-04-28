@@ -451,7 +451,13 @@ private void cycleNieghbours(Household cHouse) {
 		if(cHouse.nNieghbours() > 0 && cHouse.getHouseholdSize() > 0) {
 			visitIndex = -1;
 			for(int k = 0; k < cHouse.nNieghbours(); k++) {
-				if(Math.random() < 1/7/24) visitIndex = k; // This sets the probability of a neighbour visit as once per week
+			//	System.out.println("HERE = " + k);
+
+				if(Math.random() < (1.0/7.0/24.0)) {
+					visitIndex = k; // This sets the probability of a neighbour visit as once per week
+				//	System.out.println("HERE = " + k);
+
+				}
 			}
 		}
 		if(visitIndex > (-1)) 	this.population[cHouse.getNeighbourIndex(visitIndex)].welcomeNeighbours(cHouse);
