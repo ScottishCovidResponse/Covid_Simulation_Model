@@ -35,7 +35,7 @@ protected double transProb;
 	// Check whether a Person might visit at that hour of the day
 	public boolean checkVisit(Person cPers, int time, int day) {
 		boolean cIn = false; 
-		if(this.startTime == time) {
+		if(this.startTime == time && day >= this.startDay && day <= this.endDay) {
 			cIn = true;
 			this.vPeople.addElement(cPers);
 			if(cPers instanceof Pensioner & (this instanceof Hospital)) System.out.println("Pensioner HERE " + cPers.getMIndex());

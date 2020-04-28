@@ -370,9 +370,10 @@ public void seedVirus(int nInfections) {
 public void timeStep(int nDays) {
 	for(int i = 0; i < nDays; i++) {
 		System.out.println("Day = "+ i);
+		int dWeek = (i+1) % 7;
 		for(int k = 0; k < 24; k++) {
-			this.cycleHouseholds(i, k);
-			this.cyclePlaces(i, k);
+			this.cycleHouseholds(dWeek, k);
+			this.cyclePlaces(dWeek, k);
 		}
 		this.processCases(i);
 	}
