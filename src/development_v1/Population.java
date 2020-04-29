@@ -397,8 +397,9 @@ private void processCases(int day) {
 	
 	for(int i = 0; i < this.population.length; i++){
 		Household cHouse = this.population[i];
-		for(int k = 0; k < cHouse.getHouseholdSize(); k++) {
-			Person cPers = cHouse.getPerson(k);
+		Vector vHouse = this.population[i].combVectors();
+		for(int k = 0; k < vHouse.size(); k++) {
+			Person cPers = (Person) vHouse.elementAt(k);
 			if(cPers.cStatus() == "Healthy") healthy ++;
 			if(cPers.cStatus() == "Latent") exposed ++;
 			if(cPers.cStatus() == "Asymptomatic") asymptomatic ++;

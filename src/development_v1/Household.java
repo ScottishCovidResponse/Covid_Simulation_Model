@@ -67,7 +67,7 @@ private Vector vVisitors;
 	}
 	
 // Combine the household and neighbours vectors for Covid transmission
-	private Vector combVectors() {
+	public Vector combVectors() {
 		Vector cVector = new Vector();
 		for(int i = 0; i < this.vPeople.size(); i ++) cVector.addElement((Person) this.vPeople.elementAt(i));
 		for(int i = 0; i < this.vVisitors.size(); i ++) cVector.addElement((Person) this.vVisitors.elementAt(i));
@@ -95,13 +95,14 @@ private Vector vVisitors;
 						}
 					}
 				}
-				if(status == "Dead") {
+				if(cPers.cStatus() == "Dead") {
 					hVector.removeElementAt(i);
 					this.vDeaths.addElement(cPers);
+					this.vPeople.removeElement(cPers);
 				//	System.out.println("House Dead");
 					i--;
 				}
-				if(status == "Recovered") {
+				if(cPers.cStatus() == "Recovered") {
 					cPers.recovered = true;
 				//	System.out.println("House Recovered");
 				}
@@ -145,8 +146,15 @@ private Vector vVisitors;
 		for(int i = 0; i < this.vVisitors.size(); i++) {
 			if(Math.random() < 0.5) { // Assumes a 50% probability that people will go home each hour
 				Person nPers = (Person) this.vVisitors.elementAt(i);
+				if(nPers.cStatus() == "Dead") {
+					this.vVisitors.removeElementAt(i);
+					i--;
+				}
+				else {
 				vGoHome.addElement(nPers);
 				this.vVisitors.removeElementAt(i);
+				i--;
+				}
 			}
 		} 		
 		return vGoHome;
