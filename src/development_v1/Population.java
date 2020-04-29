@@ -393,7 +393,8 @@ public void seedVirus(int nInfections) {
 }
 
 // Step through nDays in 1 hour time steps
-public void timeStep(int nDays) {
+public Vector timeStep(int nDays) {
+	Vector outV = new Vector();
 	for(int i = 0; i < nDays; i++) {
 		System.out.println("Day = "+ i);
 		int dWeek = (i+1) % 7;
@@ -407,8 +408,9 @@ public void timeStep(int nDays) {
 			this.shoppingTrip(dWeek, k);
 			if(!this.rLockdown) this.restaurantTrip(dWeek, k);
 		}
-		this.processCases(i);
+		outV.addElement(this.processCases(i));
 	}
+	return outV;
 }
 
 public void setLockdown(int start, int end) {
@@ -435,7 +437,7 @@ private void socialDistancing(double sVal) {
 	}
 }
 
-private void processCases(int day) {
+private String processCases(int day) {
 	int healthy = 0;
 	int exposed = 0;
 	int asymptomatic = 0;
@@ -461,6 +463,9 @@ private void processCases(int day) {
 		dead = dead + cHouse.getDeaths();
 	}
 	System.out.println("Day = " + day + " Healthy = "+ healthy + " Latent = "+ exposed + " Asymptomatic = "+ asymptomatic + " Phase 1 = "+ phase1+ " Phase 2 = " + phase2 + " Dead = "+ dead + " Recovered = "+ recovered);
+	String outS = day + ","+ healthy + ","+ exposed + ","+ asymptomatic + ","+ phase1+ "," + phase2 + ","+ dead + ","+ recovered;
+	return outS;
+
 }
 
 // Step through the households to identify individual movements to CommunalPlaces
