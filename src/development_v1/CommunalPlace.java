@@ -14,6 +14,9 @@ protected Vector vPeople;
 protected int startDay;
 protected int endDay;
 protected double transProb; 
+protected boolean keyPremises;
+protected double keyProb;
+private double sDistance; // A social distancing coefficient;
 
 	public CommunalPlace(int cindex) {
 		this.vPeople = new Vector();
@@ -22,7 +25,10 @@ protected double transProb;
 		this.startDay = 1; // Days of the week that it is active - start
 		this.endDay = 5; // Days of the week that it is active - end
 		this.cindex = cindex; // This sets the index for each Communal Place to avoid searching
-		this.transProb = 0.5; // Pretty important parameter. This defines the transmission rate within this Communal Place
+		this.transProb = 0.45; // Pretty important parameter. This defines the transmission rate within this Communal Place
+		this.keyProb = 1.0;
+		this.sDistance = 1.0;
+		if(Math.random() < this.keyProb) this.keyPremises = true;
 		
 	}
 	public void setIndex(int indexVal) {
@@ -33,9 +39,9 @@ protected double transProb;
 	}
 	
 	// Check whether a Person might visit at that hour of the day
-	public boolean checkVisit(Person cPers, int time, int day) {
+	public boolean checkVisit(Person cPers, int time, int day, boolean clockdown) {
 		boolean cIn = false; 
-		if(this.startTime == time && day >= this.startDay && day <= this.endDay) {
+		if(this.startTime == time && day >= this.startDay && day <= this.endDay && (this.keyPremises || !clockdown)) {
 			cIn = true;
 			this.vPeople.addElement(cPers);
 			if(cPers instanceof Pensioner & (this instanceof Hospital)) System.out.println("Pensioner HERE " + cPers.getMIndex());
@@ -58,7 +64,8 @@ protected double transProb;
 							Person nPers = (Person) this.vPeople.elementAt(k);
 							if(!nPers.getInfectionStatus()) {
 								//System.out.println("Trans prob = "+this.transProb);
-								nPers.infChallenge(this.transProb);
+								nPers.infChallenge(this.transProb * this.sDistance);
+							//	if(this instanceof Shop) System.out.println(this.toString() + "   " + nPers.shopWorker + " " + this.transProb);
 							}
 						}
 					}
@@ -80,6 +87,10 @@ protected double transProb;
 			}
 		}
 		return cReturn;
+	}
+	
+	public void adjustSDist(double sVal) {
+		this.sDistance = sVal;
 	}
 
 }

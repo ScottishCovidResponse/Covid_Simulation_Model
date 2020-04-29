@@ -32,6 +32,11 @@ private boolean[] pensionerIndex;
 private boolean[] allocationIndex;
 private CommunalPlace[] cPlaces;
 private int[] shopIndexes;
+private int[] restaurantIndexes;
+private boolean lockdown; 
+private boolean rLockdown;
+private int lockdownStart;
+private int lockdownEnd;
 
 public Population(int populationSize, int nHousehold) {
 	this.populationSize = populationSize;
@@ -58,6 +63,8 @@ public Population(int populationSize, int nHousehold) {
 	this.adultIndex = new boolean[this.populationSize];
 	this.pensionerIndex = new boolean[this.populationSize];
 	this.allocationIndex = new boolean[this.populationSize];
+	this.lockdownStart = (-1);
+	this.lockdownEnd = (-1);
 			
 }
 
@@ -259,12 +266,15 @@ public void summarisePop() {
 public void createMixing() {
 	int nHospitals = this.populationSize / 10000;
 	int nSchools = this.populationSize / 2000;
-	int nShops = this.populationSize / 2500;
+	int nShops = this.populationSize / 500;
 	int nOffices = this.populationSize / 250;
 	int nConstructionSites = this.populationSize / 1000;
 	int nNurseries = this.populationSize / 2000;
-	int nEstablishments = nHospitals + nSchools + nShops + nOffices + nConstructionSites + nNurseries;
+	int nRestaurants = this.populationSize / 1000;
+	int nEstablishments = nHospitals + nSchools + nShops + nOffices + nConstructionSites + nNurseries + nRestaurants;
 	this.shopIndexes = new int[nShops];
+	this.restaurantIndexes = new int[nRestaurants];
+
 	System.out.println(nEstablishments);
 	
 	CommunalPlace places[] = new CommunalPlace[nEstablishments];
@@ -279,6 +289,10 @@ public void createMixing() {
 		else if(i < nHospitals + nSchools + nShops + nOffices) places[i] = new Office(i);
 		else if(i < nHospitals + nSchools + nShops + nOffices + nConstructionSites) places[i] = new ConstructionSite(i);
 		else if(i < nHospitals + nSchools + nShops + nOffices + nConstructionSites + nNurseries) places[i] = new Nursery(i);
+		else if(i < nHospitals + nSchools + nShops + nOffices + nConstructionSites + nNurseries + nRestaurants) {
+			places[i] = new Restaurant(i);
+			this.restaurantIndexes[i - nHospitals - nSchools - nShops - nOffices - nConstructionSites - nNurseries] = i;
+		}
 
 	}
 	this.cPlaces = places;
@@ -331,6 +345,13 @@ public void allocatePeople() {
 				cPerson.setMIndex(property.getIndex());
 				
 			}
+			if(cPerson.restaurant) {
+				
+				CommunalPlace property = this.getRandom();
+				while(!(property instanceof Restaurant)) property = this.getRandom();
+				cPerson.setMIndex(property.getIndex());
+				
+			}
 
 		}
 	}
@@ -376,13 +397,41 @@ public void timeStep(int nDays) {
 	for(int i = 0; i < nDays; i++) {
 		System.out.println("Day = "+ i);
 		int dWeek = (i+1) % 7;
+		this.implementLockdown(i);
+		System.out.println("Lockdown = " + this.lockdown);
 		for(int k = 0; k < 24; k++) {
 			this.cycleHouseholds(dWeek, k);
 			this.cyclePlaces(dWeek, k);
 			this.returnShoppers(k);
+			this.returnRestaurant(k);
 			this.shoppingTrip(dWeek, k);
+			if(!this.rLockdown) this.restaurantTrip(dWeek, k);
 		}
 		this.processCases(i);
+	}
+}
+
+public void setLockdown(int start, int end) {
+	if(start >= 0) {
+		this.lockdownStart = start;
+	}
+	if(end >= 0) this.lockdownEnd = end;
+}
+
+private void implementLockdown(int day) {
+	if(day == this.lockdownStart) {
+		this.lockdown = true;
+		this.rLockdown = true;
+	}
+	if(day == this.lockdownEnd) {
+		this.lockdown = false;
+		this.socialDistancing(0.9);
+	}
+}
+
+private void socialDistancing(double sVal) {
+	for(int i = 0; i < this.cPlaces.length; i++) {
+		cPlaces[i].adjustSDist(sVal);
 	}
 }
 
@@ -421,7 +470,7 @@ private void cycleHouseholds(int day, int hour) {
 	//	if(vHouse.size() > 20 || i ==1||i==2) System.out.println("Size = " + vHouse.size() + " Iteration = "+ i);
 		this.cycleMovements(vHouse, day, hour);
 		this.retrunNeighbours(this.population[i]);
-		this.cycleNieghbours(this.population[i]);		
+		if(!this.lockdown) this.cycleNieghbours(this.population[i]);		
 	}
 }
 
@@ -430,7 +479,7 @@ private void cycleMovements(Vector vHouse, int day, int hour) {
 	for(int i = 0; i < vHouse.size(); i++) {
 		Person nPers = (Person) vHouse.elementAt(i); 
 		if(nPers.getMIndex() >= 0 && !nPers.getQuarantine()) {
-			boolean visit = this.cPlaces[nPers.getMIndex()].checkVisit(nPers, hour, day);
+			boolean visit = this.cPlaces[nPers.getMIndex()].checkVisit(nPers, hour, day, this.lockdown);
 			if(visit) {
 				vHouse.removeElementAt(i);
 				i--;
@@ -484,6 +533,7 @@ private void shoppingTrip(int day, int hour) {
 	int closingTime = 17;
 	double visitFrequency = 3.0 / 7.0; // BAsed on three visits per week to shops
 	double visitProb = visitFrequency / 8.0;
+	if(this.lockdown) visitProb = visitProb * 0.5;
 	Vector vNext = null;
 	
 	if(hour >= openingTime && hour < closingTime) {
@@ -512,4 +562,38 @@ private void returnShoppers(int hour) {
 	}
 }
 
+private void restaurantTrip(int day, int hour) {
+	int openingTime = 10;
+	int closingTime = 22;
+	int startDay = 3;
+	int endDay = 7;
+	double visitFrequency = 2.0 / 7.0; // BAsed on three visits per week to shops
+	double visitProb = visitFrequency / 12.0;
+	Vector vNext = null;
+	
+	if(hour >= openingTime && hour < closingTime && startDay >= day && endDay <= day) {
+		for(int i = 0; i < this.population.length; i++) {
+			if(Math.random() < visitProb) {
+				vNext = this.population[i].shoppingTrip(); // This method is fine for our purposes here
+			}
+			if(vNext != null) {
+				int shopSample = new Random().nextInt(this.restaurantIndexes.length);
+				((Restaurant)this.cPlaces[this.restaurantIndexes[shopSample]]).shoppingTrip(vNext);
+			}
+			vNext = null;
+		}
+	}
+}
+
+private void returnRestaurant(int hour) {
+	for(int i = 0; i < this.shopIndexes.length; i++) {
+		Vector vCurr = ((Shop)this.cPlaces[this.shopIndexes[i]]).sendHome(hour);
+		if(vCurr != null) {
+			for(int k = 0; k < vCurr.size(); k++) {
+				Person nPers = (Person) vCurr.elementAt(k);
+				this.population[nPers.getHIndex()].addPerson(nPers);
+			}
+		}
+	}
+}
 }

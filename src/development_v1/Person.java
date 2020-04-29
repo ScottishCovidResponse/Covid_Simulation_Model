@@ -13,6 +13,7 @@ public boolean hospitalWorker;
 public boolean officeWorker;
 public boolean constructionWorker;
 public boolean teacher;
+public boolean restaurant;
 public int mIndex;
 public int hIndex;
 private Covid cVirus;
@@ -24,7 +25,7 @@ private double quarantineVal;
 
 public Person() {
 	this.allocated = false;
-	this.transmissionProb = 0.5;
+	this.transmissionProb = 0.45;
 	this.mIndex = -1;
 	this.quarantineProb = 0.9;
 	this.quarantineVal = Math.random();

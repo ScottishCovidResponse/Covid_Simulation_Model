@@ -14,7 +14,8 @@ public class RunModel {
 		p.createMixing();
 		p.allocatePeople();
 		p.seedVirus(10);
-		p.timeStep(200);
+		p.setLockdown(40, 100);
+		p.timeStep(300);
 	}
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
