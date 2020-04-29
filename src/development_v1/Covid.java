@@ -36,7 +36,7 @@ public class Covid {
 		this.meanP2 = 10;
 		
 		this.ccase = ccase;
-		this.mortalityRate = 0.02;
+		this.mortalityRate = 0.01;
 		
 		this.infCounter = 0;
 		this.setPeriods();

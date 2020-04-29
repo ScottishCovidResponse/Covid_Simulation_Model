@@ -151,5 +151,20 @@ private Vector vVisitors;
 		} 		
 		return vGoHome;
 	}
+
+	// Get a vector of people to go to the shops.
+	public Vector shoppingTrip() {
+		Vector vShop = new Vector();
+		
+		for(int i = 0; i < this.vPeople.size(); i++) {
+			Person cPers = (Person) this.vPeople.elementAt(i);
+			if(!cPers.getQuarantine()) {
+				vShop.addElement(cPers);
+				this.vPeople.removeElementAt(i);
+				i--;
+			}
+		}
+		return vShop;
+	}
 	
 }

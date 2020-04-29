@@ -31,6 +31,7 @@ private boolean[] adultIndex;
 private boolean[] pensionerIndex;
 private boolean[] allocationIndex;
 private CommunalPlace[] cPlaces;
+private int[] shopIndexes;
 
 public Population(int populationSize, int nHousehold) {
 	this.populationSize = populationSize;
@@ -263,6 +264,7 @@ public void createMixing() {
 	int nConstructionSites = this.populationSize / 1000;
 	int nNurseries = this.populationSize / 2000;
 	int nEstablishments = nHospitals + nSchools + nShops + nOffices + nConstructionSites + nNurseries;
+	this.shopIndexes = new int[nShops];
 	System.out.println(nEstablishments);
 	
 	CommunalPlace places[] = new CommunalPlace[nEstablishments];
@@ -270,7 +272,10 @@ public void createMixing() {
 	for(int i = 0; i < nEstablishments; i++) {
 		if(i < nHospitals) places[i] = new Hospital(i);
 		else if(i < nHospitals + nSchools) places[i] = new School(i);
-		else if(i < nHospitals + nSchools + nShops) places[i] = new Shop(i);
+		else if(i < nHospitals + nSchools + nShops) { // Allocate shops and their indexes
+			places[i] = new Shop(i);
+			this.shopIndexes[i - nHospitals - nSchools] = i;
+		}
 		else if(i < nHospitals + nSchools + nShops + nOffices) places[i] = new Office(i);
 		else if(i < nHospitals + nSchools + nShops + nOffices + nConstructionSites) places[i] = new ConstructionSite(i);
 		else if(i < nHospitals + nSchools + nShops + nOffices + nConstructionSites + nNurseries) places[i] = new Nursery(i);
@@ -374,6 +379,8 @@ public void timeStep(int nDays) {
 		for(int k = 0; k < 24; k++) {
 			this.cycleHouseholds(dWeek, k);
 			this.cyclePlaces(dWeek, k);
+			this.returnShoppers(k);
+			this.shoppingTrip(dWeek, k);
 		}
 		this.processCases(i);
 	}
@@ -456,12 +463,10 @@ private void cycleNieghbours(Household cHouse) {
 				if(Math.random() < (1.0/7.0/24.0)) {
 					visitIndex = k; // This sets the probability of a neighbour visit as once per week
 				//	System.out.println("HERE = " + k);
-
 				}
 			}
 		}
 		if(visitIndex > (-1)) 	this.population[cHouse.getNeighbourIndex(visitIndex)].welcomeNeighbours(cHouse);
-
 //	}
 }
 
@@ -471,6 +476,39 @@ private void retrunNeighbours(Household cHouse) {
 		 Person nPers = (Person) vReturn.elementAt(i);
 		 this.population[nPers.getHIndex()].addPerson(nPers);
 	 }
+}
+
+private void shoppingTrip(int day, int hour) {
+	int openingTime = 9;
+	int closingTime = 17;
+	double visitFrequency = 3.0 / 7.0; // BAsed on three visits per week to shops
+	double visitProb = visitFrequency / 8.0;
+	Vector vNext = null;
+	
+	if(hour >= openingTime && hour < closingTime) {
+		for(int i = 0; i < this.population.length; i++) {
+			if(Math.random() < visitProb) {
+				vNext = this.population[i].shoppingTrip();
+			}
+			if(vNext != null) {
+				int shopSample = new Random().nextInt(this.shopIndexes.length);
+				((Shop)this.cPlaces[this.shopIndexes[shopSample]]).shoppingTrip(vNext);
+			}
+			vNext = null;
+		}
+	}
+}
+
+private void returnShoppers(int hour) {
+	for(int i = 0; i < this.shopIndexes.length; i++) {
+		Vector vCurr = ((Shop)this.cPlaces[this.shopIndexes[i]]).sendHome(hour);
+		if(vCurr != null) {
+			for(int k = 0; k < vCurr.size(); k++) {
+				Person nPers = (Person) vCurr.elementAt(k);
+				this.population[nPers.getHIndex()].addPerson(nPers);
+			}
+		}
+	}
 }
 
 }
