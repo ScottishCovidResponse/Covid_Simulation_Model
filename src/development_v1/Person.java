@@ -13,23 +13,28 @@ public boolean hospitalWorker;
 public boolean officeWorker;
 public boolean constructionWorker;
 public boolean teacher;
+public boolean restaurant;
 public int mIndex;
 public int hIndex;
 private Covid cVirus;
 private double transmissionProb;
 public boolean recovered;
+private boolean quarantine;
+private double quarantineProb; // Needs more thought. The probability that the person will go into quarantine
+private double quarantineVal;
 
 public Person() {
 	this.allocated = false;
-	this.transmissionProb = 0.5;
-
-	
+	this.transmissionProb = 0.45;
+	this.mIndex = -1;
+	this.quarantineProb = 0.9;
+	this.quarantineVal = Math.random();
 }
 public void setAllocation() {
 	this.allocated = true;
 }
 
-public void setIndex(int mIndex) {
+public void setMIndex(int mIndex) {
 	this.mIndex = mIndex;
 }
 
@@ -37,12 +42,16 @@ public void setHIndex(int hIndex) {
 	this.hIndex = hIndex;
 }
 
-public int getIndex() {
+public int getMIndex() {
 	return this.mIndex;
 }
 
-public int getHindex() {
+public int getHIndex() {
 	return this.hIndex;
+}
+
+public boolean getQuarantine() {
+	return this.quarantine;
 }
 
 public boolean infect() {
@@ -71,4 +80,28 @@ public void infChallenge(double challengeProb) {
 //		System.out.println("HERE");
 	}
 }
+
+public String cStatus() {
+	String cStatus = "Healthy";
+	if(!this.getInfectionStatus()) cStatus = "Healthy";
+	if(this.getInfectionStatus()) {
+		if(this.cVirus.latent) cStatus = "Latent";
+		if(this.cVirus.asymptomatic) cStatus = "Asymptomatic";
+		if(this.cVirus.phase1) {
+			cStatus = "Phase 1";
+			this.quarantine = this.quarantineProb > this.quarantineVal;
+		}
+		if(this.cVirus.phase2) {
+			cStatus = "Phase 2";
+			this.quarantine = true;
+		}
+		if(this.cVirus.dead) cStatus = "Dead";
+		if(this.cVirus.recovered && !this.cVirus.dead) {
+			cStatus = "Recovered";
+			this.quarantine = false;
+		}
+	}
+	return cStatus;			
+}
+
 }

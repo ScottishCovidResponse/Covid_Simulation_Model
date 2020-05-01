@@ -19,12 +19,12 @@ public class Covid {
 	private double mortalityRate;
 	private int infCounter;
 	
-	private boolean latent;
-	private boolean asymptomatic;
-	private boolean phase1;
-	private boolean phase2;
-	private boolean recovered;
-	private boolean dead;
+	public boolean latent;
+	public boolean asymptomatic;
+	public boolean phase1;
+	public boolean phase2;
+	public boolean recovered;
+	public boolean dead;
 	private boolean infected;
 
 	
@@ -36,7 +36,7 @@ public class Covid {
 		this.meanP2 = 10;
 		
 		this.ccase = ccase;
-		this.mortalityRate = 0.02;
+		this.mortalityRate = 0.01;
 		
 		this.infCounter = 0;
 		this.setPeriods();
@@ -71,13 +71,15 @@ public class Covid {
 			this.asymptomatic = true;
 			status = "Asymptomatic";
 			this.infected = true;
-		//	System.out.println("Asymptomatic");
+			
+		//	System.out.println("Asymptomatic " + this.latentPeriod + " Inf counter = " + this.infCounter);
 
 		}
 		else if((this.latentPeriod + this.asymptomaticPeriod + this.p1) * 24 > this.infCounter) {
 			this.phase1 = true;
 			this.infected = true;
 			status = "Phase 1";
+			
 		}
 		else if((this.latentPeriod + this.asymptomaticPeriod + this.p1 + this.p2) * 24 > this.infCounter) {
 			this.phase2 = true;
@@ -87,7 +89,7 @@ public class Covid {
 				this.dead = true;
 				this.infected = false;
 				status = "Dead";
-				System.out.println("DEAD");
+			//	System.out.println("DEAD " + (this.ccase instanceof Pensioner));
 			}
 			if(rVal >= this.mortalityRate / 24) {
 				status = "Phase 2";
@@ -100,7 +102,7 @@ public class Covid {
 			this.infected = false;
 
 			status = "Recovered";
-			System.out.println("RECOVERED = IC" + this.infCounter);
+	//		System.out.println("RECOVERED = IC" + this.infCounter);
 
 		}
 		return status;
