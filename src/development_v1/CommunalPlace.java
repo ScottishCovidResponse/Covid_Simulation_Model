@@ -28,8 +28,12 @@ private double sDistance; // A social distancing coefficient;
 		this.transProb = 0.45; // Pretty important parameter. This defines the transmission rate within this Communal Place
 		this.keyProb = 1.0;
 		this.sDistance = 1.0;
-		if(Math.random() < this.keyProb) this.keyPremises = true;
+		if(Math.random() > this.keyProb) this.keyPremises = true;
 		
+	}
+	
+	public void overrideKeyPremises(boolean overR) {
+		this.keyPremises = overR;
 	}
 	public void setIndex(int indexVal) {
 		this.cindex = indexVal; 
@@ -54,6 +58,7 @@ private double sDistance; // A social distancing coefficient;
 		
 		Vector cReturn = new Vector();
 		String status = "";
+//	if(this instanceof School)	System.out.println(this.toString() + " Capacity = " + this.vPeople.size() + " " + this.keyPremises + this.transProb);
 		for(int i = 0; i < this.vPeople.size(); i++) {
 			Person cPers = (Person) this.vPeople.elementAt(i);
 			if(cPers.getInfectionStatus() & !cPers.recovered) {

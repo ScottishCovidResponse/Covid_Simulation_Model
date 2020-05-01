@@ -5,7 +5,7 @@ public class Office extends CommunalPlace{
 		super(cindex);
 		this.transProb = super.transProb * (10 / (10000 / 400));
 		this.keyProb = 0.5;
-		if(Math.random() > this.keyProb) this.keyPremises = false;
+		if(Math.random() > this.keyProb) this.keyPremises = true;
 	//	System.out.println(this.keyPremises);
 	}
 

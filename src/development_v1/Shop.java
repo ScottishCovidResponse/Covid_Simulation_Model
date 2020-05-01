@@ -8,7 +8,7 @@ public class Shop extends CommunalPlace{
 		this.startDay = 1;
 		this.endDay = 7;
 		this.keyProb = 0.5;
-		if(Math.random() > this.keyProb) this.keyPremises = false;
+		if(Math.random() > this.keyProb) this.keyPremises = true;
 
 	}
 	

@@ -27,7 +27,7 @@ public class ReadWrite {
 	}
 	
 	public void writemodel(int iter, String outS) throws Exception {
-		this.bw.write(iter + ","+ outS);
+		this.bw.write(iter + ","+ outS + newline);
 		this.bw.flush();
 	}
 

@@ -37,6 +37,8 @@ private boolean lockdown;
 private boolean rLockdown;
 private int lockdownStart;
 private int lockdownEnd;
+private double socialDist;
+private boolean schoolL;
 
 public Population(int populationSize, int nHousehold) {
 	this.populationSize = populationSize;
@@ -65,7 +67,8 @@ public Population(int populationSize, int nHousehold) {
 	this.allocationIndex = new boolean[this.populationSize];
 	this.lockdownStart = (-1);
 	this.lockdownEnd = (-1);
-			
+	this.socialDist = 1.0;
+	this.schoolL = false;		
 }
 
 private Person createInfant() {
@@ -386,9 +389,10 @@ private void assignNeighbours() {
 public void seedVirus(int nInfections) {
 	for(int i = 1; i <= nInfections; i++) {
 		int nInt = new Random().nextInt(this.nHousehold);
-		if(this.population[i].getHouseholdSize() > 0) {
-			if(!population[i].seedInfection()) i--;
-		}		
+		if(this.population[nInt].getHouseholdSize() > 0) {
+			if(!population[nInt].seedInfection()) i--;
+		}
+		if(this.population[nInt].getHouseholdSize() == 0) i--;
 	}
 }
 
@@ -413,27 +417,42 @@ public Vector timeStep(int nDays) {
 	return outV;
 }
 
-public void setLockdown(int start, int end) {
+public void setLockdown(int start, int end, double socialDist) {
 	if(start >= 0) {
 		this.lockdownStart = start;
 	}
 	if(end >= 0) this.lockdownEnd = end;
+	this.socialDist = socialDist;
+}
+
+// This is a really cack handed way of implementing the school lockdown. IT needs improving
+// TODO Sort this out 
+public void setSchoolLockdown(int start, int end, double socialDist) {
+	if(start >= 0) {
+		this.lockdownStart = start;
+	}
+	if(end >= 0) this.lockdownEnd = end;
+	this.socialDist = socialDist;
+	this.schoolL = true;
 }
 
 private void implementLockdown(int day) {
 	if(day == this.lockdownStart) {
 		this.lockdown = true;
 		this.rLockdown = true;
+		this.socialDistancing();
 	}
 	if(day == this.lockdownEnd) {
-		this.lockdown = false;
-		this.socialDistancing(0.9);
+		System.out.println("HERE");
+		if(!this.schoolL) this.lockdown = false;
+	//	if(!this.schoolL) this.socialDistancing();
+		if(this.schoolL) this.schoolExemption();
 	}
 }
 
-private void socialDistancing(double sVal) {
+private void socialDistancing() {
 	for(int i = 0; i < this.cPlaces.length; i++) {
-		cPlaces[i].adjustSDist(sVal);
+		cPlaces[i].adjustSDist(this.socialDist);
 	}
 }
 
@@ -492,6 +511,15 @@ private void cycleMovements(Vector vHouse, int day, int hour) {
 				}
 			}
 		}
+}
+
+private void schoolExemption() {
+	for(int i = 0; i < this.cPlaces.length; i++) {
+		if(this.cPlaces[i] instanceof School || this.cPlaces[i] instanceof Nursery) {
+			this.cPlaces[i].overrideKeyPremises(true);
+			System.out.println("HERE");
+		}
+	}
 }
 
 private void cyclePlaces(int day, int hour) {
