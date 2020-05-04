@@ -81,6 +81,7 @@ public void infChallenge(double challengeProb) {
 	}
 }
 
+// This method is pretty important, it returns the Covid infection status
 public String cStatus() {
 	String cStatus = "Healthy";
 	if(!this.getInfectionStatus()) cStatus = "Healthy";

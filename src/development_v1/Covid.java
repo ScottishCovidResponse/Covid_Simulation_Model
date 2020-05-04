@@ -42,7 +42,8 @@ public class Covid {
 		this.setPeriods();
 
 	}
-	
+
+	// For each infection define the duration of the infection periods
 	private void setPeriods() {
 		this.latentPeriod = new PoissonDistribution(this.meanLatentPeriod).sample();
 		this.asymptomaticPeriod = new PoissonDistribution(this.meanAsymptomaticPeriod).sample();
@@ -58,6 +59,7 @@ public class Covid {
 		return this.infected;
 	}
 	
+	// Cycle through the infection for that timestep
 	public String stepInfection() {
 		this.infCounter ++;
 	//	System.out.println("Inf counter"  + this.infCounter + " Latent period = " + this.latentPeriod);

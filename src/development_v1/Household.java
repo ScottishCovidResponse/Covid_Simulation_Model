@@ -16,6 +16,7 @@ private Vector vDeaths;
 private int[] neighbourList;
 private Vector vVisitors;
 
+// Create household defined by who lives there
 	public Household(int nType) {
 		this.nType = nType;	
 		this.setType();
@@ -23,6 +24,8 @@ private Vector vVisitors;
 		this.vDeaths = new Vector();
 		this.vVisitors = new Vector();
 	}
+	
+// Turn the number to a String to make it easier on the eye
 	public void setType() {
 		if(this.nType == 1)	this.type = "Adult only";
 		if(this.nType == 2)	this.type = "Pensioner only";
@@ -74,7 +77,8 @@ private Vector vVisitors;
 		
 		return cVector;
 	}
-	
+
+	// Go through the household at each time step and see what they get up to
 	public Vector cycleHouse() {
 	//	if(this.vPeople.size() > 20) System.out.println("VPeople size = " + this.vPeople.size());
 		Vector hVector = this.combVectors();
@@ -115,6 +119,7 @@ private Vector vVisitors;
 		return this.vDeaths.size();
 	}
 	
+	// When neighbours visit, stick everybody in a single vector ans see wat they get up to
 	private Vector neighbourVisit() {
 		Vector visitPeople = new Vector();
 		
@@ -130,6 +135,7 @@ private Vector vVisitors;
 		return visitPeople;
 	}
 	
+	// Neighbours go into a Vector of their own - we don't copy the vector whole because thie way multiple neighbour visits can happen concurrently
 	public void welcomeNeighbours(Household visitHouse) {
 		Vector visitVector = visitHouse.neighbourVisit();
 		if(visitVector != null) {

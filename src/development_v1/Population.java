@@ -46,7 +46,7 @@ public Population(int populationSize, int nHousehold) {
 	if(this.nHousehold > this.populationSize) System.out.println("More households than population");
 
 	this.population = new Household[this.nHousehold];
-	this.pInfants = 0.08; // Another fudge this defines the probability of a Person being an infant, adult etc
+	this.pInfants = 0.08; // Another fudge. This defines the probability of a Person being an infant, adult etc, should be replaced by populaiton parameters
 	this.pChildren = 0.2;
 	this.pAdults = 0.5;
 	this.pPensioners = 1-this.pInfants-this.pChildren-this.pAdults;
@@ -60,7 +60,7 @@ public Population(int populationSize, int nHousehold) {
 	this.pPensionerOnly = 0.1;
 	this.pPensionerAdult = 0.1;
 	this.pAdultChildren = 0.5;
-	this.infantIndex = new boolean[this.populationSize]; // These are indexes to assign membership to different groups
+	this.infantIndex = new boolean[this.populationSize]; // These are indexes to assign membership to different groups - speeds up searching later
 	this.childIndex = new boolean[this.populationSize];
 	this.adultIndex = new boolean[this.populationSize];
 	this.pensionerIndex = new boolean[this.populationSize];
@@ -301,7 +301,7 @@ public void createMixing() {
 	this.cPlaces = places;
 }
 
-// Allocates people to communal spaces
+// Allocates people to communal places - work environments
 public void allocatePeople() {
 	for(int i = 0; i < this.nHousehold; i++) {
 		for(int j = 0; j < this.population[i].getHouseholdSize(); j++) {
@@ -417,6 +417,7 @@ public Vector timeStep(int nDays) {
 	return outV;
 }
 
+// Basically a method to set the instance variables. Could also do this through an overloaded constructor, but I rather prefer this way of doing things
 public void setLockdown(int start, int end, double socialDist) {
 	if(start >= 0) {
 		this.lockdownStart = start;
@@ -436,6 +437,7 @@ public void setSchoolLockdown(int start, int end, double socialDist) {
 	this.schoolL = true;
 }
 
+// Tests on each daily time step whether to do anything wiht the  lockdown
 private void implementLockdown(int day) {
 	if(day == this.lockdownStart) {
 		this.lockdown = true;
@@ -450,12 +452,14 @@ private void implementLockdown(int day) {
 	}
 }
 
+// Sets the social distancing to parameters wihtin the CommunalPlaces
 private void socialDistancing() {
 	for(int i = 0; i < this.cPlaces.length; i++) {
 		cPlaces[i].adjustSDist(this.socialDist);
 	}
 }
 
+// This method generates output at the end of each day
 private String processCases(int day) {
 	int healthy = 0;
 	int exposed = 0;
@@ -513,6 +517,7 @@ private void cycleMovements(Vector vHouse, int day, int hour) {
 		}
 }
 
+// This sets the schools exempt from lockdown if that is triggered. Somewhat fudged at present by setting the schools to be KeyPremises - not entirely what thta was intended for, but it works
 private void schoolExemption() {
 	for(int i = 0; i < this.cPlaces.length; i++) {
 		if(this.cPlaces[i] instanceof School || this.cPlaces[i] instanceof Nursery) {
@@ -522,6 +527,7 @@ private void schoolExemption() {
 	}
 }
 
+// People returning ome at the end of the day
 private void cyclePlaces(int day, int hour) {
 	for(int i = 0; i < this.cPlaces.length; i++) {
 		Vector retPeople = cPlaces[i].cyclePlace(hour, day);
@@ -533,6 +539,7 @@ private void cyclePlaces(int day, int hour) {
 	}
 }
 
+// Go through neighbours and see if they visit anybody
 private void cycleNieghbours(Household cHouse) {
 	int visitIndex = -1; // Set a default for this here.
 
@@ -553,6 +560,7 @@ private void cycleNieghbours(Household cHouse) {
 //	}
 }
 
+// Neighbours returning home
 private void retrunNeighbours(Household cHouse) {
 	 Vector vReturn = cHouse.sendNeighboursHome();
 	 for(int i = 0; i < vReturn.size(); i++) {
@@ -561,6 +569,7 @@ private void retrunNeighbours(Household cHouse) {
 	 }
 }
 
+// People go shopping
 private void shoppingTrip(int day, int hour) {
 	int openingTime = 9;
 	int closingTime = 17;
@@ -583,6 +592,7 @@ private void shoppingTrip(int day, int hour) {
 	}
 }
 
+// People return from shopping
 private void returnShoppers(int hour) {
 	for(int i = 0; i < this.shopIndexes.length; i++) {
 		Vector vCurr = ((Shop)this.cPlaces[this.shopIndexes[i]]).sendHome(hour);
@@ -595,6 +605,7 @@ private void returnShoppers(int hour) {
 	}
 }
 
+// People go out for dinner
 private void restaurantTrip(int day, int hour) {
 	int openingTime = 10;
 	int closingTime = 22;
@@ -618,6 +629,7 @@ private void restaurantTrip(int day, int hour) {
 	}
 }
 
+// People return from dinner
 private void returnRestaurant(int hour) {
 	for(int i = 0; i < this.shopIndexes.length; i++) {
 		Vector vCurr = ((Shop)this.cPlaces[this.shopIndexes[i]]).sendHome(hour);

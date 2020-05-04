@@ -20,7 +20,7 @@ public class RunModel {
 		p.timeStep(300);
 	}
 	
-	public void runBaseline() throws Exception { // Run and output the baseline scenarios
+	public void runBaseline() throws Exception { // Run and output the baseline scenarios - with no lockdown
 		//p.setLockdown(40, 100);
 		ReadWrite rw = new ReadWrite("ModelOutputs//Baseline20200429//BaselineOut.csv");
 		rw.openWritemodel();
@@ -39,7 +39,7 @@ public class RunModel {
 		
 	}
 
-	public void runLockdown() throws Exception { // Run and output the baseline scenarios
+	public void runLockdown() throws Exception { // Run and output the scenarios with simple stop-start lockdown
 		ReadWrite rw = new ReadWrite("ModelOutputs//Lockdown20200429//Lockdown_35_77_0.8.csv");
 		rw.openWritemodel();
 		int nIter = 100;
@@ -74,7 +74,7 @@ public class RunModel {
 
 	}
 
-	public void runSchoolLockdown() throws Exception { // Run and output the baseline scenarios
+	public void runSchoolLockdown() throws Exception { // Run and output scenarios with continued lockdown and schools reopening
 		ReadWrite rw = new ReadWrite("ModelOutputs//Lockdown20200429//Lockdown_35_77_0.8_School.csv");
 		rw.openWritemodel();
 		int nIter = 100;
