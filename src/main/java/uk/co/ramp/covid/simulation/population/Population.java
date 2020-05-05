@@ -7,12 +7,17 @@
 package uk.co.ramp.covid.simulation.population;
 
 import org.apache.commons.math3.distribution.PoissonDistribution;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import uk.co.ramp.covid.simulation.place.*;
 
 import java.util.Random;
 import java.util.Vector;
 
 public class Population {
+
+    private static final Logger LOGGER = LogManager.getLogger(Population.class);
+
     public int nInfants;
     public int nChildren;
     public int nAdults;
@@ -55,6 +60,9 @@ public class Population {
         this.pAdults = 0.5;
         this.pPensioners = 1 - this.pInfants - this.pChildren - this.pAdults;
         System.out.println("Population proportions pensioners = " + this.pPensioners + "Adults = " + this.pAdults + "Children = " + this.pChildren + "Infants = " + this.pInfants);
+
+        LOGGER.info("Population proportions pensioners = {} Adults = {} Children = {} Infants = {}", pPensioners, pAdults, pChildren, pInfants);
+
         this.nInfants = 0;
         this.nChildren = 0;
         this.nAdults = 0;

@@ -6,6 +6,8 @@
 // Testing some changes again
 package uk.co.ramp.covid.simulation;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import uk.co.ramp.covid.simulation.io.ReadWrite;
 import uk.co.ramp.covid.simulation.population.Population;
 
@@ -13,9 +15,12 @@ import java.util.Vector;
 
 public class RunModel {
 
+    private static final Logger LOGGER = LogManager.getLogger(RunModel.class);
+
     public static void main(String[] args) throws Exception {
         // TODO Auto-generated method stub
-        System.out.println("test");
+
+        LOGGER.info("test");
         RunModel mModel = new RunModel();
 //mModel.runTest();
         mModel.runBaseline();

@@ -15,6 +15,11 @@ A number of classes have been imported from the Contact Tracing Model. Some of t
 * ** SeirRecord **: A POJO for storing people in different SEIR categories
 
 
+## Logging
+I have added the configuration for Log4J in the resources folder. All System.out lines should be replaced with logging. 
+See RunModel.java line 24 and Populations line 64 for examples. 
+
+
 ## Running Pre-requisites
 ### Java SDK
 Please ensure you have a Java SDK installed. I recommend Java 11 as it is the current LTS version.
