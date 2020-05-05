@@ -6,13 +6,13 @@
 
 A number of classes have been imported from the Contact Tracing Model. Some of these are here for an example, so are not anything special:
 
-* ** ContactReader: ** A class to import data from a CSV file
-* ** Output: ** A CSV writer that outputs records from a map to a CSV file
-* ** RandomSingleton: ** stores random number generators in a map
-* ** VirusStatus: ** An enum for the current virus status.
+* **ContactReader:** A class to import data from a CSV file
+* **Output:** A CSV writer that outputs records from a map to a CSV file
+* **RandomSingleton:** stores random number generators in a map
+* **VirusStatus:** An enum for the current virus status.
 
-* ** ContactRecord: ** A POJO that stores data from the CSV in Java
-* ** SeirRecord: ** A POJO for storing people in different SEIR categories
+* **ContactRecord:** A POJO that stores data from the CSV in Java
+* **SeirRecord:** A POJO for storing people in different SEIR categories
 
 
 ## Logging
