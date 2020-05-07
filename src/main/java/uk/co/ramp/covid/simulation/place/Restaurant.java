@@ -5,9 +5,9 @@ import uk.co.ramp.covid.simulation.population.Person;
 import java.util.Vector;
 
 public class Restaurant extends CommunalPlace {
-    public Restaurant(int cindex) {
-        super(cindex);
-        this.transProb = super.transProb * 5 / (5000 / 1000);
+    public Restaurant(int cIndex) {
+        super(cIndex);
+        this.transProb = super.transProb * 5d / (5000d / 1000d);
         this.startDay = 1;
         this.endDay = 7;
         this.startTime = 10;

@@ -99,11 +99,9 @@ public class Household {
                     //System.out.println(status + "   " + cPers.cStatus());
                     for (int k = 0; k < hVector.size(); k++) {
                         if (k != i) {
-                            //	System.out.println("House size = " + k);
                             Person nPers = (Person) hVector.elementAt(k);
                             if (!nPers.getInfectionStatus()) {
-                                nPers.infChallenge(1);
-                                //	if(this.vVisitors.size() > 0) System.out.println(this.toString() +  " H index ="+ nPers.getHIndex());
+                                nPers.infChallenge(1d);
                             }
                         }
                     }
@@ -112,12 +110,10 @@ public class Household {
                     hVector.removeElementAt(i);
                     this.vDeaths.addElement(cPers);
                     this.vPeople.removeElement(cPers);
-                    //	System.out.println("House Dead");
                     i--;
                 }
                 if (cPers.cStatus() == CStatus.RECOVERED) {
                     cPers.recovered = true;
-                    //	System.out.println("House Recovered");
                 }
             }
         }
@@ -149,7 +145,6 @@ public class Household {
         Vector visitVector = visitHouse.neighbourVisit();
         if (visitVector != null) {
             for (int i = 0; i < visitVector.size(); i++) {
-                //	System.out.println("Vector size = "+ visitVector.size() + " i = "+ i);
                 this.vVisitors.addElement((Person) visitVector.elementAt(i));
             }
         }
