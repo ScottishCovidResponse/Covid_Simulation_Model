@@ -4,6 +4,7 @@
 
 package uk.co.ramp.covid.simulation.place;
 
+import uk.co.ramp.covid.simulation.population.CStatus;
 import uk.co.ramp.covid.simulation.population.Pensioner;
 import uk.co.ramp.covid.simulation.population.Person;
 
@@ -64,13 +65,13 @@ public class CommunalPlace {
     public Vector cyclePlace(int time, int day) {
 
         Vector cReturn = new Vector();
-        String status = "";
+        CStatus status = null;
 //	if(this instanceof School)	System.out.println(this.toString() + " Capacity = " + this.vPeople.size() + " " + this.keyPremises + this.transProb);
         for (int i = 0; i < this.vPeople.size(); i++) {
             Person cPers = (Person) this.vPeople.elementAt(i);
             if (cPers.getInfectionStatus() & !cPers.recovered) {
                 status = cPers.stepInfection();
-                if (cPers.cStatus() == "Asymptomatic" || cPers.cStatus() == "Phase 1" || cPers.cStatus() == "Phase 2") {
+                if (cPers.cStatus() == CStatus.ASYMPTOMATIC || cPers.cStatus() == CStatus.PHASE1 || cPers.cStatus() == CStatus.PHASE2) {
                     for (int k = 0; k < this.vPeople.size(); k++) {
                         if (k != i) {
                             Person nPers = (Person) this.vPeople.elementAt(k);
@@ -82,17 +83,17 @@ public class CommunalPlace {
                         }
                     }
                 }
-                if (cPers.cStatus() == "Dead") {
+                if (cPers.cStatus() == CStatus.DEAD) {
                     this.vPeople.removeElementAt(i);
                     //	System.out.println("Work Dead");  // Printing key metrics of infection to check that the model is working
                     i--;
                 }
-                if (cPers.cStatus() == "Recovered") {
+                if (cPers.cStatus() == CStatus.RECOVERED) {
                     cPers.recovered = true;
                     //	System.out.println("Recovered");  // Printing key metrics of infection to check that the model is working
                 }
             }
-            if (time == this.endTime & status != "Dead") {
+            if (time == this.endTime & status != CStatus.DEAD) {
                 cReturn.addElement(cPers);
                 this.vPeople.removeElementAt(i);
                 i--;

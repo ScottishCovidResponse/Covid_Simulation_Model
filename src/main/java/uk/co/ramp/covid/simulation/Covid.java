@@ -61,25 +61,20 @@ public class Covid {
     }
 
     // Cycle through the infection for that timestep
-    public String stepInfection() {
+    public CStatus stepInfection() {
         this.infCounter++;
-        //	System.out.println("Inf counter"  + this.infCounter + " Latent period = " + this.latentPeriod);
-        String status = "Latent";
+        CStatus status = CStatus.LATENT;
         if ((this.latentPeriod * 24) > this.infCounter) {
             this.latent = true;
             this.infected = true;
-            //	System.out.println("Latent");
         } else if (((this.latentPeriod + this.asymptomaticPeriod) * 24) > this.infCounter) {
             this.asymptomatic = true;
-            status = "Asymptomatic";
+            status = CStatus.ASYMPTOMATIC;
             this.infected = true;
-
-            //	System.out.println("Asymptomatic " + this.latentPeriod + " Inf counter = " + this.infCounter);
-
         } else if ((this.latentPeriod + this.asymptomaticPeriod + this.p1) * 24 > this.infCounter) {
             this.phase1 = true;
             this.infected = true;
-            status = "Phase 1";
+            status = CStatus.PHASE1;
 
         } else if ((this.latentPeriod + this.asymptomaticPeriod + this.p1 + this.p2) * 24 > this.infCounter) {
             this.phase2 = true;
@@ -88,21 +83,17 @@ public class Covid {
             if (rVal < this.mortalityRate / 24) {
                 this.dead = true;
                 this.infected = false;
-                status = "Dead";
-                //	System.out.println("DEAD " + (this.ccase instanceof Pensioner));
+                status = CStatus.DEAD;
             }
             if (rVal >= this.mortalityRate / 24) {
-                status = "Phase 2";
+                status = CStatus.PHASE2;
                 this.infected = true;
-                //	System.out.println("Phase 2");
             }
         } else if ((this.latentPeriod + this.asymptomaticPeriod + this.p1 + this.p2) * 24 <= this.infCounter) {
             this.recovered = true;
             this.infected = false;
 
-            status = "Recovered";
-            //		System.out.println("RECOVERED = IC" + this.infCounter);
-
+            status = CStatus.RECOVERED;
         }
         return status;
 

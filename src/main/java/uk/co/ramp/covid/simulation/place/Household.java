@@ -7,6 +7,7 @@
 
 package uk.co.ramp.covid.simulation.place;
 
+import uk.co.ramp.covid.simulation.population.CStatus;
 import uk.co.ramp.covid.simulation.population.Person;
 
 import java.util.Random;
@@ -93,8 +94,8 @@ public class Household {
         for (int i = 0; i < hVector.size(); i++) {
             Person cPers = (Person) hVector.elementAt(i);
             if (cPers.getInfectionStatus() && !cPers.recovered) {
-                String status = cPers.stepInfection();
-                if (cPers.cStatus() == "Asymptomatic" || cPers.cStatus() == "Phase 1" || cPers.cStatus() == "Phase 2") {
+                CStatus status = cPers.stepInfection();
+                if (cPers.cStatus() == CStatus.ASYMPTOMATIC || cPers.cStatus() == CStatus.PHASE1 || cPers.cStatus() == CStatus.PHASE2) {
                     //System.out.println(status + "   " + cPers.cStatus());
                     for (int k = 0; k < hVector.size(); k++) {
                         if (k != i) {
@@ -107,14 +108,14 @@ public class Household {
                         }
                     }
                 }
-                if (cPers.cStatus() == "Dead") {
+                if (cPers.cStatus() == CStatus.DEAD) {
                     hVector.removeElementAt(i);
                     this.vDeaths.addElement(cPers);
                     this.vPeople.removeElement(cPers);
                     //	System.out.println("House Dead");
                     i--;
                 }
-                if (cPers.cStatus() == "Recovered") {
+                if (cPers.cStatus() == CStatus.RECOVERED) {
                     cPers.recovered = true;
                     //	System.out.println("House Recovered");
                 }
@@ -160,7 +161,7 @@ public class Household {
         for (int i = 0; i < this.vVisitors.size(); i++) {
             if (Math.random() < 0.5) { // Assumes a 50% probability that people will go home each hour
                 Person nPers = (Person) this.vVisitors.elementAt(i);
-                if (nPers.cStatus() == "Dead") {
+                if (nPers.cStatus() == CStatus.DEAD) {
                     this.vVisitors.removeElementAt(i);
                     i--;
                 } else {

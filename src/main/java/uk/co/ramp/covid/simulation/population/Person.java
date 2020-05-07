@@ -72,8 +72,8 @@ public class Person {
         return !(this.cVirus == null);
     }
 
-    public String stepInfection() {
-        String vStatus = this.cVirus.stepInfection();
+    public CStatus stepInfection() {
+        CStatus vStatus = this.cVirus.stepInfection();
         return vStatus;
     }
 
@@ -85,23 +85,23 @@ public class Person {
     }
 
     // This method is pretty important, it returns the Covid infection status
-    public String cStatus() {
-        String cStatus = "Healthy";
-        if (!this.getInfectionStatus()) cStatus = "Healthy";
+    public CStatus cStatus() {
+        CStatus cStatus = CStatus.HEALTHY;
+        if (!this.getInfectionStatus()) cStatus = CStatus.HEALTHY;
         if (this.getInfectionStatus()) {
-            if (this.cVirus.latent) cStatus = "Latent";
-            if (this.cVirus.asymptomatic) cStatus = "Asymptomatic";
+            if (this.cVirus.latent) cStatus = CStatus.LATENT;
+            if (this.cVirus.asymptomatic) cStatus = CStatus.ASYMPTOMATIC;
             if (this.cVirus.phase1) {
-                cStatus = "Phase 1";
+                cStatus = CStatus.PHASE1;
                 this.quarantine = this.quarantineProb > this.quarantineVal;
             }
             if (this.cVirus.phase2) {
-                cStatus = "Phase 2";
+                cStatus = CStatus.PHASE2;
                 this.quarantine = true;
             }
-            if (this.cVirus.dead) cStatus = "Dead";
+            if (this.cVirus.dead) cStatus = CStatus.DEAD;
             if (this.cVirus.recovered && !this.cVirus.dead) {
-                cStatus = "Recovered";
+                cStatus = CStatus.RECOVERED;
                 this.quarantine = false;
             }
         }

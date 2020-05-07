@@ -480,13 +480,12 @@ public class Population {
             Vector vHouse = this.population[i].combVectors();
             for (int k = 0; k < vHouse.size(); k++) {
                 Person cPers = (Person) vHouse.elementAt(k);
-                if (cPers.cStatus() == "Healthy") healthy++;
-                if (cPers.cStatus() == "Latent") exposed++;
-                if (cPers.cStatus() == "Asymptomatic") asymptomatic++;
-                if (cPers.cStatus() == "Phase 1") phase1++;
-                if (cPers.cStatus() == "Phase 2") phase2++;
-                // if(cPers.cStatus() == "Dead")
-                if (cPers.cStatus() == "Recovered") recovered++;
+                if (cPers.cStatus() == CStatus.HEALTHY) healthy++;
+                if (cPers.cStatus() == CStatus.LATENT) exposed++;
+                if (cPers.cStatus() == CStatus.ASYMPTOMATIC) asymptomatic++;
+                if (cPers.cStatus() == CStatus.PHASE1) phase1++;
+                if (cPers.cStatus() == CStatus.PHASE2) phase2++;
+                if (cPers.cStatus() == CStatus.RECOVERED) recovered++;
 
             }
             dead = dead + cHouse.getDeaths();
