@@ -188,4 +188,7 @@ public class Household {
         return vShop;
     }
 
+    public Vector getInhabitants() {
+        return vPeople;
+    }
 }

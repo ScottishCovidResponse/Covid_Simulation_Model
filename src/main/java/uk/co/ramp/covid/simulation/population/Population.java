@@ -11,8 +11,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import uk.co.ramp.covid.simulation.place.*;
 
-import java.util.Random;
-import java.util.Vector;
+import java.util.*;
 
 public class Population {
 
@@ -34,11 +33,11 @@ public class Population {
     private double pPensionerAdult;
     private double pAdultChildren;
     private Person[] aPopulation;
-    private boolean[] infantIndex;
-    private boolean[] childIndex;
-    private boolean[] adultIndex;
-    private boolean[] pensionerIndex;
-    private boolean[] allocationIndex;
+    private BitSet infantIndex;
+    private BitSet childIndex;
+    private BitSet adultIndex;
+    private BitSet pensionerIndex;
+    private BitSet allocationIndex;
     private CommunalPlace[] cPlaces;
     private int[] shopIndexes;
     private int[] restaurantIndexes;
@@ -72,11 +71,11 @@ public class Population {
         this.pPensionerOnly = 0.1;
         this.pPensionerAdult = 0.1;
         this.pAdultChildren = 0.5;
-        this.infantIndex = new boolean[this.populationSize]; // These are indexes to assign membership to different groups - speeds up searching later
-        this.childIndex = new boolean[this.populationSize];
-        this.adultIndex = new boolean[this.populationSize];
-        this.pensionerIndex = new boolean[this.populationSize];
-        this.allocationIndex = new boolean[this.populationSize];
+        this.infantIndex = new BitSet(populationSize); // These are indexes to assign membership to different groups - speeds up searching later
+        this.childIndex = new BitSet(populationSize);
+        this.adultIndex = new BitSet(populationSize);
+        this.pensionerIndex = new BitSet(populationSize);
+        this.allocationIndex = new BitSet(populationSize);
         this.lockdownStart = (-1);
         this.lockdownEnd = (-1);
         this.socialDist = 1.0;
@@ -109,19 +108,19 @@ public class Population {
             double rand = Math.random();
             if (rand < this.pInfants) {
                 this.aPopulation[i] = this.createInfant();
-                this.infantIndex[i] = true;
+                infantIndex.set(i);
                 this.nInfants++;
             } else if (rand - this.pInfants < this.pChildren) {
                 this.aPopulation[i] = this.createChild();
-                this.childIndex[i] = true;
+                childIndex.set(i);
                 this.nChildren++;
             } else if (rand - this.pInfants - this.pChildren < this.pAdults) {
                 this.aPopulation[i] = this.createAdult();
-                this.adultIndex[i] = true;
+                adultIndex.set(i);
                 this.nAdults++;
             } else {
                 this.aPopulation[i] = this.createPensioner();
-                this.pensionerIndex[i] = true;
+                pensionerIndex.set(i);
                 this.nPensioners++;
             }
         }
@@ -150,116 +149,110 @@ public class Population {
         return cHouse;
     }
 
-
-    // This is very slow and long  winded - for populating households based on the population age groups && It doesn't quite work as I would wish
-    public void populateHouseholds() {
-        this.createHouseholds();
-        this.createPopulation();
-
-        for (int i = 0; i < this.nHousehold; i++) {
-            int cType = this.population[i].getnType();
-            for (int k = 0; k < this.populationSize; k++) {
-                if (cType == 1) {
-                    if (!this.allocationIndex[k] & this.adultIndex[k]) {
-                        this.allocationIndex[k] = true;
-                        aPopulation[k].setHIndex(i);
-                        this.population[i].addPerson(aPopulation[k]);
-                    }
-                }
-                if (cType == 2) {
-                    if (!this.allocationIndex[k] & this.pensionerIndex[k]) {
-                        this.allocationIndex[k] = true;
-                        aPopulation[k].setHIndex(i);
-                        this.population[i].addPerson(aPopulation[k]);
-                    }
-                }
-                if (cType == 3) {
-                    if (!this.allocationIndex[k] & this.adultIndex[k]) {
-                        this.allocationIndex[k] = true;
-                        aPopulation[k].setHIndex(i);
-                        this.population[i].addPerson(aPopulation[k]);
-                        for (int l = 0; l < this.populationSize; l++) {
-                            if (!this.allocationIndex[l] & this.pensionerIndex[l]) {
-                                this.allocationIndex[l] = true;
-                                aPopulation[k].setHIndex(i);
-                                this.population[i].addPerson(aPopulation[l]);
-                                l = this.populationSize + 1;
-                            }
-                        }
-                    }
-                }
-                if (cType == 4) {
-                    if (!this.allocationIndex[k] & this.adultIndex[k]) {
-                        this.allocationIndex[k] = true;
-                        aPopulation[k].setHIndex(i);
-                        this.population[i].addPerson(aPopulation[k]);
-                        for (int l = 0; l < this.populationSize; l++) {
-                            if (!this.allocationIndex[l] & this.childIndex[l]) {
-                                this.allocationIndex[l] = true;
-                                aPopulation[k].setHIndex(i);
-                                this.population[i].addPerson(aPopulation[l]);
-                                l = this.populationSize + 1;
-                            }
-                        }
-
-                    }
-                }
-
-                k = this.populationSize + 1;
+    // Checks we have enough people of the right types to perform a household allocation
+    private boolean householdAllocationPossible() {
+        int adult = 0; int pensioner = 0; int adultPensioner = 0; int adultChild = 0;
+        for (Household h : population) {
+            switch(h.getnType()) {
+                case 1:
+                    adult++;
+                    break;
+                case 2:
+                    pensioner++;
+                    break;
+                case 3:
+                    adultPensioner++;
+                    break;
+                case 4:
+                    adultChild++;
+                    break;
             }
         }
-        // Reallocate remaining population
-        for (int i = 0; i < this.populationSize; i++) {
-            if (!this.allocationIndex[i]) {
-                while (!this.allocationIndex[i]) {
-                    if (this.infantIndex[i] || this.childIndex[i]) {
-                        for (int k = 0; k < this.nHousehold; k++) {
-                            double rand = Math.random();
-                            if (population[k].getnType() == 4) {
-                                if (rand < 1 / new Double(this.nHousehold)) {
-                                    this.allocationIndex[i] = true;
-                                    aPopulation[i].setHIndex(k);
+        return adultIndex.cardinality() <= adult + adultPensioner + adultChild
+                || pensionerIndex.cardinality() <= adultPensioner + pensioner
+                || childIndex.cardinality() <= adultChild
+                || infantIndex.cardinality() <= adultChild;
+    }
 
-                                    this.population[k].addPerson(this.aPopulation[i]);
-                                    k = this.populationSize + 1;
-                                }
-                            }
+    // Cycles over all bits of remainingPeople and ensures they are allocated to a household in a greedy fashion
+    private void greedyAllocate(BitSet remainingPeople, Set<Integer> types) {
+        int i = 0; // Pointer into remaining
+        for (int h = 0; h < population.length; h++) {
+            int htype = population[h].getnType();
+            if (types.contains(htype)) {
+                i = remainingPeople.nextSetBit(i);
+                if (i < 0) {
+                    break;
+                }
+                remainingPeople.clear(i);
+
+                aPopulation[i].setHIndex(h);
+                population[h].addPerson(aPopulation[i]);
+            }
+        }
+    }
+
+    private void probAllocate(BitSet remainingPeople, Set<Integer> types, Map<Integer, Double> probabilities) {
+        int i = 0; // Pointer into remaining
+        while (!remainingPeople.isEmpty()) {
+            for (int h = 0; h < population.length; h++) {
+                int htype = population[h].getnType();
+                if (types.contains(htype)) {
+                    double rand = Math.random();
+                    double prob_to_add = probabilities.getOrDefault(population[h].getHouseholdSize(), 1.0);
+                    if (rand < prob_to_add) {
+                        i = remainingPeople.nextSetBit(i);
+                        if (i < 0) {
+                            break;
                         }
+                        aPopulation[i].setHIndex(h);
+                        population[h].addPerson(aPopulation[i]);
+                        remainingPeople.clear(i);
                     }
-                    if (this.adultIndex[i]) {
-                        for (int k = 0; k < this.nHousehold; k++) {
-                            double rand = Math.random();
-                            if (population[k].getnType() != 2) {
-                                if (rand < 1 / new Double(this.nHousehold)) {
-                                    this.allocationIndex[i] = true;
-                                    aPopulation[i].setHIndex(k);
-
-                                    this.population[k].addPerson(this.aPopulation[i]);
-                                    k = this.populationSize + 1;
-                                }
-                            }
-                        }
-                    }
-                    if (this.pensionerIndex[i]) {
-                        for (int k = 0; k < this.nHousehold; k++) {
-                            double rand = Math.random();
-                            if (population[k].getnType() == 2 || population[k].getnType() == 3) {
-                                if (rand < 1 / new Double(this.nHousehold)) {
-                                    this.allocationIndex[i] = true;
-                                    aPopulation[i].setHIndex(k);
-
-                                    this.population[k].addPerson(this.aPopulation[i]);
-                                    k = this.populationSize + 1;
-                                }
-                            }
-                        }
-                    }
-
                 }
             }
         }
     }
 
+    // We populate houseHolds greedily.
+    public void populateHouseholds() {
+        this.createHouseholds();
+        this.createPopulation();
+
+        assert householdAllocationPossible() : "Population distribution cannot populate household distribution";
+
+        // Note: these destructively update the indices
+        // Ensures miminal constraints are met
+        greedyAllocate(adultIndex, new HashSet<>(Arrays.asList(1, 3, 4)));
+        greedyAllocate(pensionerIndex, new HashSet<>(Arrays.asList(2, 3)));
+
+        // For OR constraints, e.g. child or infant, we union the bitsets during the greedy algorithm
+        // For the probabilistic allocations below, they can have different probabilities.
+        BitSet childOrInfant = new BitSet(populationSize);
+        childOrInfant.or(childIndex);
+        childOrInfant.or(infantIndex);
+
+        greedyAllocate(childOrInfant, new HashSet<>(Arrays.asList(4)));
+
+        // set intersections to allow children/infants to be treated independetly again
+        childIndex.and(childOrInfant);
+        infantIndex.and(childOrInfant);
+        
+        // Allocate with probabilities based on household size
+        // e.g. 1:0.8 implies a 80% chance of adding a new member to a 1 member household
+        // TODO: Allow probabilities ot be assigned from a file
+        Map<Integer, Double> allocationProbabilities = new HashMap<Integer, Double>();
+        allocationProbabilities.put(1, 0.8);
+        allocationProbabilities.put(2, 0.5);
+        allocationProbabilities.put(3, 0.3);
+        allocationProbabilities.put(4, 0.2);
+        allocationProbabilities.put(5, 0.1);
+
+        probAllocate(adultIndex, new HashSet<Integer>(Arrays.asList(1, 3, 4)), allocationProbabilities);
+        probAllocate(pensionerIndex, new HashSet<Integer>(Arrays.asList(2, 3)), allocationProbabilities);
+        probAllocate(childIndex, new HashSet<Integer>(Arrays.asList(4)), allocationProbabilities);
+        probAllocate(infantIndex, new HashSet<Integer>(Arrays.asList(4)), allocationProbabilities);
+    }
 
     // Used for diagnosing problems wiht the algorithm for creating households
     public void summarisePop() {
@@ -646,5 +639,16 @@ public class Population {
                 }
             }
         }
+    }
+
+    public Household[] getPopulation() {
+        return population;
+    }
+
+    public boolean fullyAllocated() {
+       return adultIndex.isEmpty()
+               && pensionerIndex.isEmpty()
+               && childIndex.isEmpty()
+               && infantIndex.isEmpty();
     }
 }
