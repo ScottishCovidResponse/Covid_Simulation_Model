@@ -12,7 +12,6 @@ import uk.co.ramp.covid.simulation.io.ReadWrite;
 import uk.co.ramp.covid.simulation.population.Population;
 
 import java.util.ArrayList;
-import java.util.Vector;
 
 public class RunModel {
 

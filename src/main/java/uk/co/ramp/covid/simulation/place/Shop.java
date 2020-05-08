@@ -2,7 +2,7 @@ package uk.co.ramp.covid.simulation.place;
 
 import uk.co.ramp.covid.simulation.population.Person;
 
-import java.util.Vector;
+import java.util.ArrayList;
 
 public class Shop extends CommunalPlace {
     public Shop(int cindex) {
@@ -15,18 +15,18 @@ public class Shop extends CommunalPlace {
 
     }
 
-    public void shoppingTrip(Vector vHouse) {
+    public void shoppingTrip(ArrayList<Person> vHouse) {
         for (int i = 0; i < vHouse.size(); i++) {
-            this.listPeople.add((Person) vHouse.elementAt(i));
+            this.listPeople.add(vHouse.get(i));
         }
     }
 
-    public Vector sendHome(int hour) {
-        Vector vReturn = new Vector();
+    public ArrayList<Person> sendHome(int hour) {
+        ArrayList<Person> vReturn = new ArrayList<>();
         for (int i = 0; i < this.listPeople.size(); i++) {
             Person nPers = this.listPeople.get(i);
             if (!nPers.shopWorker && Math.random() < 0.5 || hour < super.endTime) {// Assumes a median lenght of shopping trip of 2 hours
-                vReturn.addElement(nPers);
+                vReturn.add(nPers);
                 this.listPeople.remove(i);
                 i--;
             }

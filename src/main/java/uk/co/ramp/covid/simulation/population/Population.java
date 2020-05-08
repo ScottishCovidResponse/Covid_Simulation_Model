@@ -13,7 +13,6 @@ import uk.co.ramp.covid.simulation.place.*;
 
 import java.util.ArrayList;
 import java.util.Random;
-import java.util.Vector;
 
 public class Population {
 
@@ -478,9 +477,9 @@ public class Population {
 
         for (int i = 0; i < this.population.length; i++) {
             Household cHouse = this.population[i];
-            Vector vHouse = this.population[i].combVectors();
+            ArrayList<Person> vHouse = this.population[i].combVectors();
             for (int k = 0; k < vHouse.size(); k++) {
-                Person cPers = (Person) vHouse.elementAt(k);
+                Person cPers = vHouse.get(k);
                 if (cPers.cStatus() == CStatus.HEALTHY) healthy++;
                 if (cPers.cStatus() == CStatus.LATENT) exposed++;
                 if (cPers.cStatus() == CStatus.ASYMPTOMATIC) asymptomatic++;
@@ -568,9 +567,9 @@ public class Population {
 
     // Neighbours returning home
     private void retrunNeighbours(Household cHouse) {
-        Vector vReturn = cHouse.sendNeighboursHome();
+        ArrayList<Person> vReturn = cHouse.sendNeighboursHome();
         for (int i = 0; i < vReturn.size(); i++) {
-            Person nPers = (Person) vReturn.elementAt(i);
+            Person nPers = vReturn.get(i);
             this.population[nPers.getHIndex()].addPerson(nPers);
         }
     }
@@ -582,7 +581,7 @@ public class Population {
         double visitFrequency = 3.0 / 7.0; // BAsed on three visits per week to shops
         double visitProb = visitFrequency / 8.0;
         if (this.lockdown) visitProb = visitProb * 0.5;
-        Vector vNext = null;
+        ArrayList<Person> vNext = null;
 
         if (hour >= openingTime && hour < closingTime) {
             for (int i = 0; i < this.population.length; i++) {
@@ -601,10 +600,10 @@ public class Population {
     // People return from shopping
     private void returnShoppers(int hour) {
         for (int i = 0; i < this.shopIndexes.length; i++) {
-            Vector vCurr = ((Shop) this.cPlaces[this.shopIndexes[i]]).sendHome(hour);
+            ArrayList<Person> vCurr = ((Shop) this.cPlaces[this.shopIndexes[i]]).sendHome(hour);
             if (vCurr != null) {
                 for (int k = 0; k < vCurr.size(); k++) {
-                    Person nPers = (Person) vCurr.elementAt(k);
+                    Person nPers = vCurr.get(k);
                     this.population[nPers.getHIndex()].addPerson(nPers);
                 }
             }
@@ -619,7 +618,7 @@ public class Population {
         int endDay = 7;
         double visitFrequency = 2.0 / 7.0; // BAsed on three visits per week to shops
         double visitProb = visitFrequency / 12.0;
-        Vector vNext = null;
+        ArrayList<Person> vNext = null;
 
         if (hour >= openingTime && hour < closingTime && startDay >= day && endDay <= day) {
             for (int i = 0; i < this.population.length; i++) {
@@ -638,10 +637,10 @@ public class Population {
     // People return from dinner
     private void returnRestaurant(int hour) {
         for (int i = 0; i < this.shopIndexes.length; i++) {
-            Vector vCurr = ((Shop) this.cPlaces[this.shopIndexes[i]]).sendHome(hour);
+            ArrayList<Person> vCurr = ((Shop) this.cPlaces[this.shopIndexes[i]]).sendHome(hour);
             if (vCurr != null) {
                 for (int k = 0; k < vCurr.size(); k++) {
-                    Person nPers = (Person) vCurr.elementAt(k);
+                    Person nPers = vCurr.get(k);
                     this.population[nPers.getHIndex()].addPerson(nPers);
                 }
             }

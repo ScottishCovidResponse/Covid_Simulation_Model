@@ -12,7 +12,6 @@ import uk.co.ramp.covid.simulation.population.Person;
 
 import java.util.ArrayList;
 import java.util.Random;
-import java.util.Vector;
 
 public class Household {
     int nType;
@@ -80,10 +79,10 @@ public class Household {
     }
 
     // Combine the household and neighbours vectors for Covid transmission
-    public Vector combVectors() {
-        Vector cVector = new Vector();
-        for (int i = 0; i < this.vPeople.size(); i++) cVector.addElement(this.vPeople.get(i));
-        for (int i = 0; i < this.vVisitors.size(); i++) cVector.addElement(this.vVisitors.get(i));
+    public ArrayList<Person> combVectors() {
+        ArrayList<Person> cVector = new ArrayList<>();
+        for (int i = 0; i < this.vPeople.size(); i++) cVector.add(this.vPeople.get(i));
+        for (int i = 0; i < this.vVisitors.size(); i++) cVector.add(this.vVisitors.get(i));
 
         return cVector;
     }
@@ -91,9 +90,9 @@ public class Household {
     // Go through the household at each time step and see what they get up to
     public ArrayList<Person> cycleHouse() {
         //	if(this.vPeople.size() > 20) System.out.println("VPeople size = " + this.vPeople.size());
-        Vector hVector = this.combVectors();
+        ArrayList<Person> hVector = this.combVectors();
         for (int i = 0; i < hVector.size(); i++) {
-            Person cPers = (Person) hVector.elementAt(i);
+            Person cPers = (Person) hVector.get(i);
             if (cPers.getInfectionStatus() && !cPers.recovered) {
                 CStatus status = cPers.stepInfection();
                 if (cPers.cStatus() == CStatus.ASYMPTOMATIC || cPers.cStatus() == CStatus.PHASE1 || cPers.cStatus() == CStatus.PHASE2) {
@@ -101,7 +100,7 @@ public class Household {
                     for (int k = 0; k < hVector.size(); k++) {
                         if (k != i) {
                             //	System.out.println("House size = " + k);
-                            Person nPers = (Person) hVector.elementAt(k);
+                            Person nPers = (Person) hVector.get(k);
                             if (!nPers.getInfectionStatus()) {
                                 nPers.infChallenge(1);
                                 //	if(this.vVisitors.size() > 0) System.out.println(this.toString() +  " H index ="+ nPers.getHIndex());
@@ -110,7 +109,7 @@ public class Household {
                     }
                 }
                 if (cPers.cStatus() == CStatus.DEAD) {
-                    hVector.removeElementAt(i);
+                    hVector.remove(i);
                     this.vDeaths.add(cPers);
                     this.vPeople.remove(cPers);
                     //	System.out.println("House Dead");
@@ -130,13 +129,13 @@ public class Household {
     }
 
     // When neighbours visit, stick everybody in a single vector ans see wat they get up to
-    private Vector neighbourVisit() {
-        Vector visitPeople = new Vector();
+    private ArrayList<Person> neighbourVisit() {
+        ArrayList<Person> visitPeople = new ArrayList<>();
 
         for (int i = 0; i < this.vPeople.size(); i++) {
             Person cPers = this.vPeople.get(i);
             if (!cPers.getQuarantine()) {
-                visitPeople.addElement(cPers);
+                visitPeople.add(cPers);
                 this.vPeople.remove(i);
                 i--;
             }
@@ -147,26 +146,26 @@ public class Household {
 
     // Neighbours go into a Vector of their own - we don't copy the vector whole because thie way multiple neighbour visits can happen concurrently
     public void welcomeNeighbours(Household visitHouse) {
-        Vector visitVector = visitHouse.neighbourVisit();
+        ArrayList<Person> visitVector = visitHouse.neighbourVisit();
         if (visitVector != null) {
             for (int i = 0; i < visitVector.size(); i++) {
                 //	System.out.println("Vector size = "+ visitVector.size() + " i = "+ i);
-                this.vVisitors.add((Person) visitVector.elementAt(i));
+                this.vVisitors.add(visitVector.get(i));
             }
         }
     }
 
-    public Vector sendNeighboursHome() {
-        Vector vGoHome = new Vector();
+    public ArrayList<Person> sendNeighboursHome() {
+        ArrayList<Person> vGoHome = new ArrayList<>();
 
         for (int i = 0; i < this.vVisitors.size(); i++) {
             if (Math.random() < 0.5) { // Assumes a 50% probability that people will go home each hour
-                Person nPers = (Person) this.vVisitors.get(i);
+                Person nPers = this.vVisitors.get(i);
                 if (nPers.cStatus() == CStatus.DEAD) {
                     this.vVisitors.remove(i);
                     i--;
                 } else {
-                    vGoHome.addElement(nPers);
+                    vGoHome.add(nPers);
                     this.vVisitors.remove(i);
                     i--;
                 }
@@ -176,13 +175,13 @@ public class Household {
     }
 
     // Get a vector of people to go to the shops.
-    public Vector shoppingTrip() {
-        Vector vShop = new Vector();
+    public ArrayList<Person> shoppingTrip() {
+        ArrayList<Person> vShop = new ArrayList<>();
 
         for (int i = 0; i < this.vPeople.size(); i++) {
             Person cPers = this.vPeople.get(i);
             if (!cPers.getQuarantine()) {
-                vShop.addElement(cPers);
+                vShop.add(cPers);
                 this.vPeople.remove(i);
                 i--;
             }

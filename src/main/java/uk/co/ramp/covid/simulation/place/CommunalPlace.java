@@ -9,7 +9,6 @@ import uk.co.ramp.covid.simulation.population.Pensioner;
 import uk.co.ramp.covid.simulation.population.Person;
 
 import java.util.ArrayList;
-import java.util.Vector;
 
 public class CommunalPlace {
 
