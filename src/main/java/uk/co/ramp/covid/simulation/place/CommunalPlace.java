@@ -55,7 +55,7 @@ public class CommunalPlace {
         if (this.startTime == time && day >= this.startDay && day <= this.endDay && (this.keyPremises || !clockdown)) {
             cIn = true;
             this.vPeople.addElement(cPers);
-            if (cPers instanceof Pensioner & (this instanceof Hospital))
+            if (cPers instanceof Pensioner && (this instanceof Hospital))
                 System.out.println("Pensioner HERE " + cPers.getMIndex());
         }
         return cIn;
@@ -69,7 +69,7 @@ public class CommunalPlace {
 //	if(this instanceof School)	System.out.println(this.toString() + " Capacity = " + this.vPeople.size() + " " + this.keyPremises + this.transProb);
         for (int i = 0; i < this.vPeople.size(); i++) {
             Person cPers = (Person) this.vPeople.elementAt(i);
-            if (cPers.getInfectionStatus() & !cPers.recovered) {
+            if (cPers.getInfectionStatus() && !cPers.recovered) {
                 status = cPers.stepInfection();
                 if (cPers.cStatus() == CStatus.ASYMPTOMATIC || cPers.cStatus() == CStatus.PHASE1 || cPers.cStatus() == CStatus.PHASE2) {
                     for (int k = 0; k < this.vPeople.size(); k++) {
@@ -93,7 +93,7 @@ public class CommunalPlace {
                     //	System.out.println("Recovered");  // Printing key metrics of infection to check that the model is working
                 }
             }
-            if (time == this.endTime & status != CStatus.DEAD) {
+            if (time == this.endTime && status != CStatus.DEAD) {
                 cReturn.addElement(cPers);
                 this.vPeople.removeElementAt(i);
                 i--;

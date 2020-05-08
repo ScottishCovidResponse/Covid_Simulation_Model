@@ -160,26 +160,26 @@ public class Population {
             int cType = this.population[i].getnType();
             for (int k = 0; k < this.populationSize; k++) {
                 if (cType == 1) {
-                    if (!this.allocationIndex[k] & this.adultIndex[k]) {
+                    if (!this.allocationIndex[k] && this.adultIndex[k]) {
                         this.allocationIndex[k] = true;
                         aPopulation[k].setHIndex(i);
                         this.population[i].addPerson(aPopulation[k]);
                     }
                 }
                 if (cType == 2) {
-                    if (!this.allocationIndex[k] & this.pensionerIndex[k]) {
+                    if (!this.allocationIndex[k] && this.pensionerIndex[k]) {
                         this.allocationIndex[k] = true;
                         aPopulation[k].setHIndex(i);
                         this.population[i].addPerson(aPopulation[k]);
                     }
                 }
                 if (cType == 3) {
-                    if (!this.allocationIndex[k] & this.adultIndex[k]) {
+                    if (!this.allocationIndex[k] && this.adultIndex[k]) {
                         this.allocationIndex[k] = true;
                         aPopulation[k].setHIndex(i);
                         this.population[i].addPerson(aPopulation[k]);
                         for (int l = 0; l < this.populationSize; l++) {
-                            if (!this.allocationIndex[l] & this.pensionerIndex[l]) {
+                            if (!this.allocationIndex[l] && this.pensionerIndex[l]) {
                                 this.allocationIndex[l] = true;
                                 aPopulation[k].setHIndex(i);
                                 this.population[i].addPerson(aPopulation[l]);
@@ -189,12 +189,12 @@ public class Population {
                     }
                 }
                 if (cType == 4) {
-                    if (!this.allocationIndex[k] & this.adultIndex[k]) {
+                    if (!this.allocationIndex[k] && this.adultIndex[k]) {
                         this.allocationIndex[k] = true;
                         aPopulation[k].setHIndex(i);
                         this.population[i].addPerson(aPopulation[k]);
                         for (int l = 0; l < this.populationSize; l++) {
-                            if (!this.allocationIndex[l] & this.childIndex[l]) {
+                            if (!this.allocationIndex[l] && this.childIndex[l]) {
                                 this.allocationIndex[l] = true;
                                 aPopulation[k].setHIndex(i);
                                 this.population[i].addPerson(aPopulation[l]);
