@@ -18,17 +18,17 @@ public class Household {
     int nType;
     private String type;
     private ArrayList<Person> vPeople;
-    private Vector vDeaths;
+    private ArrayList<Person> vDeaths;
     private int[] neighbourList;
-    private Vector vVisitors;
+    private ArrayList<Person> vVisitors;
 
     // Create household defined by who lives there
     public Household(int nType) {
         this.nType = nType;
         this.setType();
         this.vPeople = new ArrayList<>();
-        this.vDeaths = new Vector();
-        this.vVisitors = new Vector();
+        this.vDeaths = new ArrayList<>();
+        this.vVisitors = new ArrayList<>();
     }
 
     // Turn the number to a String to make it easier on the eye
@@ -83,7 +83,7 @@ public class Household {
     public Vector combVectors() {
         Vector cVector = new Vector();
         for (int i = 0; i < this.vPeople.size(); i++) cVector.addElement(this.vPeople.get(i));
-        for (int i = 0; i < this.vVisitors.size(); i++) cVector.addElement((Person) this.vVisitors.elementAt(i));
+        for (int i = 0; i < this.vVisitors.size(); i++) cVector.addElement(this.vVisitors.get(i));
 
         return cVector;
     }
@@ -111,7 +111,7 @@ public class Household {
                 }
                 if (cPers.cStatus() == CStatus.DEAD) {
                     hVector.removeElementAt(i);
-                    this.vDeaths.addElement(cPers);
+                    this.vDeaths.add(cPers);
                     this.vPeople.remove(cPers);
                     //	System.out.println("House Dead");
                     i--;
@@ -151,7 +151,7 @@ public class Household {
         if (visitVector != null) {
             for (int i = 0; i < visitVector.size(); i++) {
                 //	System.out.println("Vector size = "+ visitVector.size() + " i = "+ i);
-                this.vVisitors.addElement((Person) visitVector.elementAt(i));
+                this.vVisitors.add((Person) visitVector.elementAt(i));
             }
         }
     }
@@ -161,13 +161,13 @@ public class Household {
 
         for (int i = 0; i < this.vVisitors.size(); i++) {
             if (Math.random() < 0.5) { // Assumes a 50% probability that people will go home each hour
-                Person nPers = (Person) this.vVisitors.elementAt(i);
+                Person nPers = (Person) this.vVisitors.get(i);
                 if (nPers.cStatus() == CStatus.DEAD) {
-                    this.vVisitors.removeElementAt(i);
+                    this.vVisitors.remove(i);
                     i--;
                 } else {
                     vGoHome.addElement(nPers);
-                    this.vVisitors.removeElementAt(i);
+                    this.vVisitors.remove(i);
                     i--;
                 }
             }
