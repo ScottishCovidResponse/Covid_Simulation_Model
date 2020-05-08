@@ -63,9 +63,9 @@ public class CommunalPlace {
     }
 
     // Cyctek through the People objects in the Place and test their infection status etc
-    public Vector cyclePlace(int time, int day) {
+    public ArrayList<Person> cyclePlace(int time, int day) {
 
-        Vector cReturn = new Vector();
+        ArrayList<Person> cReturn = new  ArrayList<>();
         CStatus status = null;
 //	if(this instanceof School)	System.out.println(this.toString() + " Capacity = " + this.vPeople.size() + " " + this.keyPremises + this.transProb);
         for (int i = 0; i < this.listPeople.size(); i++) {
@@ -95,7 +95,7 @@ public class CommunalPlace {
                 }
             }
             if (time == this.endTime && status != CStatus.DEAD) {
-                cReturn.addElement(cPers);
+                cReturn.add(cPers);
                 this.listPeople.remove(i);
                 i--;
             }

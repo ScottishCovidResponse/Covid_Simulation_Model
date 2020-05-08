@@ -536,9 +536,9 @@ public class Population {
     // People returning ome at the end of the day
     private void cyclePlaces(int day, int hour) {
         for (int i = 0; i < this.cPlaces.length; i++) {
-            Vector retPeople = cPlaces[i].cyclePlace(hour, day);
+            ArrayList<Person> retPeople = cPlaces[i].cyclePlace(hour, day);
             for (int k = 0; k < retPeople.size(); k++) {
-                Person cPers = (Person) retPeople.elementAt(k);
+                Person cPers = retPeople.get(k);
                 population[cPers.getHIndex()].addPerson(cPers);
                 //	System.out.println("HIndex = " + cPers.getHIndex());
             }
