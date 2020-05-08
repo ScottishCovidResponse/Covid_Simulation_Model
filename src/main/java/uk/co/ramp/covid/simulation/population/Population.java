@@ -160,26 +160,26 @@ public class Population {
             int cType = this.population[i].getnType();
             for (int k = 0; k < this.populationSize; k++) {
                 if (cType == 1) {
-                    if (!this.allocationIndex[k] && this.adultIndex[k]) {
+                    if (!this.allocationIndex[k] & this.adultIndex[k]) {
                         this.allocationIndex[k] = true;
                         aPopulation[k].setHIndex(i);
                         this.population[i].addPerson(aPopulation[k]);
                     }
                 }
                 if (cType == 2) {
-                    if (!this.allocationIndex[k] && this.pensionerIndex[k]) {
+                    if (!this.allocationIndex[k] & this.pensionerIndex[k]) {
                         this.allocationIndex[k] = true;
                         aPopulation[k].setHIndex(i);
                         this.population[i].addPerson(aPopulation[k]);
                     }
                 }
                 if (cType == 3) {
-                    if (!this.allocationIndex[k] && this.adultIndex[k]) {
+                    if (!this.allocationIndex[k] & this.adultIndex[k]) {
                         this.allocationIndex[k] = true;
                         aPopulation[k].setHIndex(i);
                         this.population[i].addPerson(aPopulation[k]);
                         for (int l = 0; l < this.populationSize; l++) {
-                            if (!this.allocationIndex[l] && this.pensionerIndex[l]) {
+                            if (!this.allocationIndex[l] & this.pensionerIndex[l]) {
                                 this.allocationIndex[l] = true;
                                 aPopulation[k].setHIndex(i);
                                 this.population[i].addPerson(aPopulation[l]);
@@ -189,12 +189,12 @@ public class Population {
                     }
                 }
                 if (cType == 4) {
-                    if (!this.allocationIndex[k] && this.adultIndex[k]) {
+                    if (!this.allocationIndex[k] & this.adultIndex[k]) {
                         this.allocationIndex[k] = true;
                         aPopulation[k].setHIndex(i);
                         this.population[i].addPerson(aPopulation[k]);
                         for (int l = 0; l < this.populationSize; l++) {
-                            if (!this.allocationIndex[l] && this.childIndex[l]) {
+                            if (!this.allocationIndex[l] & this.childIndex[l]) {
                                 this.allocationIndex[l] = true;
                                 aPopulation[k].setHIndex(i);
                                 this.population[i].addPerson(aPopulation[l]);
@@ -216,7 +216,7 @@ public class Population {
                         for (int k = 0; k < this.nHousehold; k++) {
                             double rand = Math.random();
                             if (population[k].getnType() == 4) {
-                                if (rand < 1 / (double) this.nHousehold) {
+                                if (rand < 1 / new Double(this.nHousehold)) {
                                     this.allocationIndex[i] = true;
                                     aPopulation[i].setHIndex(k);
 
@@ -230,7 +230,7 @@ public class Population {
                         for (int k = 0; k < this.nHousehold; k++) {
                             double rand = Math.random();
                             if (population[k].getnType() != 2) {
-                                if (rand < 1 / (double) this.nHousehold) {
+                                if (rand < 1 / new Double(this.nHousehold)) {
                                     this.allocationIndex[i] = true;
                                     aPopulation[i].setHIndex(k);
 
@@ -244,7 +244,7 @@ public class Population {
                         for (int k = 0; k < this.nHousehold; k++) {
                             double rand = Math.random();
                             if (population[k].getnType() == 2 || population[k].getnType() == 3) {
-                                if (rand < 1 / (double) this.nHousehold) {
+                                if (rand < 1 / new Double(this.nHousehold)) {
                                     this.allocationIndex[i] = true;
                                     aPopulation[i].setHIndex(k);
 
@@ -261,11 +261,11 @@ public class Population {
     }
 
 
-    // Used for diagnosing problems with the algorithm for creating households
+    // Used for diagnosing problems wiht the algorithm for creating households
     public void summarisePop() {
         int total = 0;
         for (int i = 0; i < this.nHousehold; i++) {
-            total += this.population[i].getHouseholdSize();
+            total = total + this.population[i].getHouseholdSize();
             //	System.out.println(total);
         }
     }
@@ -287,6 +287,7 @@ public class Population {
         System.out.println(nEstablishments);
 
         CommunalPlace places[] = new CommunalPlace[nEstablishments];
+        int counter = 0;
         for (int i = 0; i < nEstablishments; i++) {
             if (i < nHospitals) places[i] = new Hospital(i);
             else if (i < nHospitals + nSchools) places[i] = new School(i);
@@ -487,7 +488,7 @@ public class Population {
                 if (cPers.cStatus() == CStatus.RECOVERED) recovered++;
 
             }
-            dead += cHouse.getDeaths();
+            dead = dead + cHouse.getDeaths();
         }
         System.out.println("Day = " + day + " Healthy = " + healthy + " Latent = " + exposed + " Asymptomatic = " + asymptomatic + " Phase 1 = " + phase1 + " Phase 2 = " + phase2 + " Dead = " + dead + " Recovered = " + recovered);
         String outS = day + "," + healthy + "," + exposed + "," + asymptomatic + "," + phase1 + "," + phase2 + "," + dead + "," + recovered;

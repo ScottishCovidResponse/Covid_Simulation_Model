@@ -50,9 +50,9 @@ public class Covid {
         this.asymptomaticPeriod = new PoissonDistribution(this.meanAsymptomaticPeriod).sample();
         this.p1 = new PoissonDistribution(this.meanP1).sample();
         this.p2 = new PoissonDistribution(this.meanP2).sample();
-        if ((this.ccase instanceof Infant || this.ccase instanceof Child) && Math.random() > 0.02) this.p2 = 0;
-        if ((this.ccase instanceof Adult) && Math.random() > 0.15) this.p2 = 0;
-        if ((this.ccase instanceof Pensioner) && Math.random() > 0.8) this.p2 = 0;
+        if ((this.ccase instanceof Infant || this.ccase instanceof Child) & Math.random() > 0.02) this.p2 = 0;
+        if ((this.ccase instanceof Adult) & Math.random() > 0.15) this.p2 = 0;
+        if ((this.ccase instanceof Pensioner) & Math.random() > 0.8) this.p2 = 0;
 
     }
 

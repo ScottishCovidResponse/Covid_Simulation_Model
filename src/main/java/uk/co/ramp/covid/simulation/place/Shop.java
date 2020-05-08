@@ -5,9 +5,9 @@ import uk.co.ramp.covid.simulation.population.Person;
 import java.util.Vector;
 
 public class Shop extends CommunalPlace {
-    public Shop(int cIndex) {
-        super(cIndex);
-        this.transProb = super.transProb * 5d / (5000d / 200d);
+    public Shop(int cindex) {
+        super(cindex);
+        this.transProb = super.transProb * 5 / (5000 / 200);
         this.startDay = 1;
         this.endDay = 7;
         this.keyProb = 0.5;
@@ -17,7 +17,7 @@ public class Shop extends CommunalPlace {
 
     public void shoppingTrip(Vector vHouse) {
         for (int i = 0; i < vHouse.size(); i++) {
-            this.vPeople.addElement(vHouse.elementAt(i));
+            this.vPeople.addElement((Person) vHouse.elementAt(i));
         }
     }
 

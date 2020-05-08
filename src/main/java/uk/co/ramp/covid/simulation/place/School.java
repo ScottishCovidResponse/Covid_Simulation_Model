@@ -1,10 +1,11 @@
 package uk.co.ramp.covid.simulation.place;
 
 public class School extends CommunalPlace {
-    public School(int cIndex) {
-        super(cIndex);
-        this.startTime = 9;
-        this.endTime = 15;
-        this.transProb = super.transProb * 30d / (34000d / 50d); // These transmission probabilities are long winded, but they do make sense
+    public School(int cindex) {
+        super(cindex);
+        int startTime = 9;
+        int endTime = 15;
+        this.transProb = super.transProb * 30 / (34000 / 50); // These transmission probabilities are long winded, but they do make sense
+        //	this.keyPremises = false;
     }
 }
