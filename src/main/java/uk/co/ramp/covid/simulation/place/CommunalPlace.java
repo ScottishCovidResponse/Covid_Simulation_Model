@@ -61,12 +61,11 @@ public class CommunalPlace {
         return cIn;
     }
 
-    // Cyctek through the People objects in the Place and test their infection status etc
+    // Cycle through the People objects in the Place and test their infection status etc
     public ArrayList<Person> cyclePlace(int time, int day) {
 
         ArrayList<Person> cReturn = new  ArrayList<>();
         CStatus status = null;
-//	if(this instanceof School)	System.out.println(this.toString() + " Capacity = " + this.vPeople.size() + " " + this.keyPremises + this.transProb);
         for (int i = 0; i < this.listPeople.size(); i++) {
             Person cPers = this.listPeople.get(i);
             if (cPers.getInfectionStatus() && !cPers.recovered) {
@@ -76,21 +75,17 @@ public class CommunalPlace {
                         if (k != i) {
                             Person nPers = this.listPeople.get(k);
                             if (!nPers.getInfectionStatus()) {
-                                //System.out.println("Trans prob = "+this.transProb);
                                 nPers.infChallenge(this.transProb * this.sDistance);
-                                //	if(this instanceof Shop) System.out.println(this.toString() + "   " + nPers.shopWorker + " " + this.transProb);
                             }
                         }
                     }
                 }
                 if (cPers.cStatus() == CStatus.DEAD) {
                     this.listPeople.remove(i);
-                    //	System.out.println("Work Dead");  // Printing key metrics of infection to check that the model is working
                     i--;
                 }
                 if (cPers.cStatus() == CStatus.RECOVERED) {
                     cPers.recovered = true;
-                    //	System.out.println("Recovered");  // Printing key metrics of infection to check that the model is working
                 }
             }
             if (time == this.endTime && status != CStatus.DEAD) {

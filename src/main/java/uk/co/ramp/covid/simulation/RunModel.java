@@ -54,7 +54,7 @@ public class RunModel {
             p.seedVirus(10);
 
             ArrayList<String> vNext = p.timeStep(365);
-            for (int k = 0; k < vNext.size(); k++) rw.writemodel(i, vNext.get(k));
+            for (String s : vNext) rw.writemodel(i, s);
         }
 
     }
@@ -73,7 +73,7 @@ public class RunModel {
             p.setLockdown(35, 77, 0.8);
 
             ArrayList<String> vNext = p.timeStep(365);
-            for (int k = 0; k < vNext.size(); k++) rw.writemodel(i, vNext.get(k));
+            for (String s : vNext) rw.writemodel(i, s);
         }
 
         rw = new ReadWrite("ModelOutputs//Lockdown20200429//Lockdown_35_77_0.5.csv");
@@ -89,7 +89,7 @@ public class RunModel {
             p.setLockdown(35, 77, 0.5);
 
             ArrayList<String> vNext = p.timeStep(365);
-            for (int k = 0; k < vNext.size(); k++) rw.writemodel(i, vNext.get(k));
+            for (String s : vNext) rw.writemodel(i, s);
         }
 
     }
@@ -108,7 +108,7 @@ public class RunModel {
             p.setSchoolLockdown(35, 77, 0.8);
 
             ArrayList<String> vNext = p.timeStep(365);
-            for (int k = 0; k < vNext.size(); k++) rw.writemodel(i, vNext.get(k));
+            for (String s : vNext) rw.writemodel(i, s);
         }
     }
 

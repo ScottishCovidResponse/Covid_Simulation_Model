@@ -16,10 +16,10 @@ import java.util.Random;
 public class Household {
     int nType;
     private String type;
-    private ArrayList<Person> vPeople;
-    private ArrayList<Person> vDeaths;
+    private final ArrayList<Person> vPeople;
+    private final ArrayList<Person> vDeaths;
     private int[] neighbourList;
-    private ArrayList<Person> vVisitors;
+    private final ArrayList<Person> vVisitors;
 
     // Create household defined by who lives there
     public Household(int nType) {
@@ -43,7 +43,7 @@ public class Household {
         return this.neighbourList[nNeighbour];
     }
 
-    public int nNieghbours() {
+    public int nNeighbours() {
         return this.neighbourList.length;
     }
 
@@ -60,9 +60,7 @@ public class Household {
     }
 
     public int getHouseholdSize() {
-        //	if(vPeople.size() == 0) System.out.println(this.type);
         return this.vPeople.size();
-
     }
 
     public Person getPerson(int pos) {
@@ -78,32 +76,27 @@ public class Household {
         return cPers.infect();
     }
 
-    // Combine the household and neighbours vectors for Covid transmission
+    // Combine the household and neighbours Lists for Covid transmission
     public ArrayList<Person> combVectors() {
-        ArrayList<Person> cVector = new ArrayList<>();
-        for (int i = 0; i < this.vPeople.size(); i++) cVector.add(this.vPeople.get(i));
-        for (int i = 0; i < this.vVisitors.size(); i++) cVector.add(this.vVisitors.get(i));
-
-        return cVector;
+        var cList1 = new ArrayList<>(this.vPeople);
+        var cList2 = new ArrayList<>(this.vVisitors);
+        cList1.addAll(cList2);
+        return cList1;
     }
 
     // Go through the household at each time step and see what they get up to
     public ArrayList<Person> cycleHouse() {
-        //	if(this.vPeople.size() > 20) System.out.println("VPeople size = " + this.vPeople.size());
         ArrayList<Person> hVector = this.combVectors();
         for (int i = 0; i < hVector.size(); i++) {
-            Person cPers = (Person) hVector.get(i);
+            Person cPers = hVector.get(i);
             if (cPers.getInfectionStatus() && !cPers.recovered) {
-                CStatus status = cPers.stepInfection();
+                cPers.stepInfection();
                 if (cPers.cStatus() == CStatus.ASYMPTOMATIC || cPers.cStatus() == CStatus.PHASE1 || cPers.cStatus() == CStatus.PHASE2) {
-                    //System.out.println(status + "   " + cPers.cStatus());
                     for (int k = 0; k < hVector.size(); k++) {
                         if (k != i) {
-                            //	System.out.println("House size = " + k);
-                            Person nPers = (Person) hVector.get(k);
+                            Person nPers = hVector.get(k);
                             if (!nPers.getInfectionStatus()) {
                                 nPers.infChallenge(1);
-                                //	if(this.vVisitors.size() > 0) System.out.println(this.toString() +  " H index ="+ nPers.getHIndex());
                             }
                         }
                     }
@@ -112,7 +105,6 @@ public class Household {
                     hVector.remove(i);
                     this.vDeaths.add(cPers);
                     this.vPeople.remove(cPers);
-                    //	System.out.println("House Dead");
                     i--;
                 }
                 if (cPers.cStatus() == CStatus.RECOVERED) {
@@ -144,14 +136,11 @@ public class Household {
         return visitPeople;
     }
 
-    // Neighbours go into a Vector of their own - we don't copy the vector whole because thie way multiple neighbour visits can happen concurrently
+    // Neighbours go into a List of their own - we don't copy the list whole because the way multiple neighbour visits can happen concurrently
     public void welcomeNeighbours(Household visitHouse) {
         ArrayList<Person> visitVector = visitHouse.neighbourVisit();
         if (visitVector != null) {
-            for (int i = 0; i < visitVector.size(); i++) {
-                //	System.out.println("Vector size = "+ visitVector.size() + " i = "+ i);
-                this.vVisitors.add(visitVector.get(i));
-            }
+            this.vVisitors.addAll(visitVector);
         }
     }
 

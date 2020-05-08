@@ -14,21 +14,19 @@ public class Covid {
     public boolean phase2;
     public boolean recovered;
     public boolean dead;
-    private int meanLatentPeriod;
-    private int meanAsymptomaticPeriod;
-    private int meanP1;
-    private int meanP2;
+    private final int meanLatentPeriod;
+    private final int meanAsymptomaticPeriod;
+    private final int meanP1;
+    private final int meanP2;
     private double transmissionProb;
     private int latentPeriod;
     private double asymptomaticPeriod;
     private double p1;
     private double p2;
-    private double mortalityRate;
+    private final double mortalityRate;
     private int infCounter;
     private boolean infected;
-
-
-    private Person ccase;
+    private final Person ccase;
 
     public Covid(Person ccase) {
         this.meanLatentPeriod = 7;

@@ -20,10 +20,10 @@ public class Person {
     public boolean recovered;
     private boolean allocated;
     private Covid cVirus;
-    private double transmissionProb;
+    private final double transmissionProb;
     private boolean quarantine;
-    private double quarantineProb; // Needs more thought. The probability that the person will go into quarantine
-    private double quarantineVal;
+    private final double quarantineProb; // Needs more thought. The probability that the person will go into quarantine
+    private final double quarantineVal;
 
     public Person() {
         this.allocated = false;
@@ -73,14 +73,12 @@ public class Person {
     }
 
     public CStatus stepInfection() {
-        CStatus vStatus = this.cVirus.stepInfection();
-        return vStatus;
+        return this.cVirus.stepInfection();
     }
 
     public void infChallenge(double challengeProb) {
         if (Math.random() < this.transmissionProb / 24 * challengeProb) {
             this.cVirus = new Covid(this);
-//		System.out.println("HERE");
         }
     }
 
