@@ -11,6 +11,7 @@ import org.apache.logging.log4j.Logger;
 import uk.co.ramp.covid.simulation.io.ReadWrite;
 import uk.co.ramp.covid.simulation.population.Population;
 
+import java.util.ArrayList;
 import java.util.Vector;
 
 public class RunModel {
@@ -53,8 +54,8 @@ public class RunModel {
             p.allocatePeople();
             p.seedVirus(10);
 
-            Vector vNext = p.timeStep(365);
-            for (int k = 0; k < vNext.size(); k++) rw.writemodel(i, (String) vNext.elementAt(k));
+            ArrayList<String> vNext = p.timeStep(365);
+            for (int k = 0; k < vNext.size(); k++) rw.writemodel(i, vNext.get(k));
         }
 
     }
@@ -72,8 +73,8 @@ public class RunModel {
             p.seedVirus(10);
             p.setLockdown(35, 77, 0.8);
 
-            Vector vNext = p.timeStep(365);
-            for (int k = 0; k < vNext.size(); k++) rw.writemodel(i, (String) vNext.elementAt(k));
+            ArrayList<String> vNext = p.timeStep(365);
+            for (int k = 0; k < vNext.size(); k++) rw.writemodel(i, vNext.get(k));
         }
 
         rw = new ReadWrite("ModelOutputs//Lockdown20200429//Lockdown_35_77_0.5.csv");
@@ -88,8 +89,8 @@ public class RunModel {
             p.seedVirus(10);
             p.setLockdown(35, 77, 0.5);
 
-            Vector vNext = p.timeStep(365);
-            for (int k = 0; k < vNext.size(); k++) rw.writemodel(i, (String) vNext.elementAt(k));
+            ArrayList<String> vNext = p.timeStep(365);
+            for (int k = 0; k < vNext.size(); k++) rw.writemodel(i, vNext.get(k));
         }
 
     }
@@ -107,8 +108,8 @@ public class RunModel {
             p.seedVirus(10);
             p.setSchoolLockdown(35, 77, 0.8);
 
-            Vector vNext = p.timeStep(365);
-            for (int k = 0; k < vNext.size(); k++) rw.writemodel(i, (String) vNext.elementAt(k));
+            ArrayList<String> vNext = p.timeStep(365);
+            for (int k = 0; k < vNext.size(); k++) rw.writemodel(i, vNext.get(k));
         }
     }
 

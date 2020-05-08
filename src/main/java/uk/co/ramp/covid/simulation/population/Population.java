@@ -11,6 +11,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import uk.co.ramp.covid.simulation.place.*;
 
+import java.util.ArrayList;
 import java.util.Random;
 import java.util.Vector;
 
@@ -403,8 +404,8 @@ public class Population {
     }
 
     // Step through nDays in 1 hour time steps
-    public Vector timeStep(int nDays) {
-        Vector outV = new Vector();
+    public ArrayList<String> timeStep(int nDays) {
+        ArrayList<String> outV = new ArrayList<>();
         for (int i = 0; i < nDays; i++) {
             System.out.println("Day = " + i);
             int dWeek = (i + 1) % 7;
@@ -418,7 +419,7 @@ public class Population {
                 this.shoppingTrip(dWeek, k);
                 if (!this.rLockdown) this.restaurantTrip(dWeek, k);
             }
-            outV.addElement(this.processCases(i));
+            outV.add(this.processCases(i));
         }
         return outV;
     }
