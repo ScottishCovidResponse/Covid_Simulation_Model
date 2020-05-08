@@ -1,4 +1,4 @@
-# Contact-Tracing-Model
+# Covid_Simulation_Model
 
 ## Background
 
