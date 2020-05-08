@@ -16,7 +16,7 @@ public class CommunalPlace {
     public int cindex;
     protected int startTime;
     protected int endTime;
-    protected ArrayList<Person> vPeople;
+    protected ArrayList<Person> listPeople;
     protected int startDay;
     protected int endDay;
     protected double transProb;
@@ -25,7 +25,7 @@ public class CommunalPlace {
     private double sDistance; // A social distancing coefficient;
 
     public CommunalPlace(int cindex) {
-        this.vPeople = new ArrayList<>();
+        this.listPeople = new ArrayList<>();
         this.startTime = 8; // The hour of the day that the Communal Place starts
         this.endTime = 17; // The hour of the day that it ends
         this.startDay = 1; // Days of the week that it is active - start
@@ -55,7 +55,7 @@ public class CommunalPlace {
         boolean cIn = false;
         if (this.startTime == time && day >= this.startDay && day <= this.endDay && (this.keyPremises || !clockdown)) {
             cIn = true;
-            this.vPeople.add(cPers);
+            this.listPeople.add(cPers);
             if (cPers instanceof Pensioner && (this instanceof Hospital))
                 System.out.println("Pensioner HERE " + cPers.getMIndex());
         }
@@ -68,14 +68,14 @@ public class CommunalPlace {
         Vector cReturn = new Vector();
         CStatus status = null;
 //	if(this instanceof School)	System.out.println(this.toString() + " Capacity = " + this.vPeople.size() + " " + this.keyPremises + this.transProb);
-        for (int i = 0; i < this.vPeople.size(); i++) {
-            Person cPers = this.vPeople.get(i);
+        for (int i = 0; i < this.listPeople.size(); i++) {
+            Person cPers = this.listPeople.get(i);
             if (cPers.getInfectionStatus() && !cPers.recovered) {
                 status = cPers.stepInfection();
                 if (cPers.cStatus() == CStatus.ASYMPTOMATIC || cPers.cStatus() == CStatus.PHASE1 || cPers.cStatus() == CStatus.PHASE2) {
-                    for (int k = 0; k < this.vPeople.size(); k++) {
+                    for (int k = 0; k < this.listPeople.size(); k++) {
                         if (k != i) {
-                            Person nPers = this.vPeople.get(k);
+                            Person nPers = this.listPeople.get(k);
                             if (!nPers.getInfectionStatus()) {
                                 //System.out.println("Trans prob = "+this.transProb);
                                 nPers.infChallenge(this.transProb * this.sDistance);
@@ -85,7 +85,7 @@ public class CommunalPlace {
                     }
                 }
                 if (cPers.cStatus() == CStatus.DEAD) {
-                    this.vPeople.remove(i);
+                    this.listPeople.remove(i);
                     //	System.out.println("Work Dead");  // Printing key metrics of infection to check that the model is working
                     i--;
                 }
@@ -96,7 +96,7 @@ public class CommunalPlace {
             }
             if (time == this.endTime && status != CStatus.DEAD) {
                 cReturn.addElement(cPers);
-                this.vPeople.remove(i);
+                this.listPeople.remove(i);
                 i--;
             }
         }

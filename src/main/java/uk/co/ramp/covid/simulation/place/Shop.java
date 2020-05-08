@@ -17,17 +17,17 @@ public class Shop extends CommunalPlace {
 
     public void shoppingTrip(Vector vHouse) {
         for (int i = 0; i < vHouse.size(); i++) {
-            this.vPeople.add((Person) vHouse.elementAt(i));
+            this.listPeople.add((Person) vHouse.elementAt(i));
         }
     }
 
     public Vector sendHome(int hour) {
         Vector vReturn = new Vector();
-        for (int i = 0; i < this.vPeople.size(); i++) {
-            Person nPers = this.vPeople.get(i);
+        for (int i = 0; i < this.listPeople.size(); i++) {
+            Person nPers = this.listPeople.get(i);
             if (!nPers.shopWorker && Math.random() < 0.5 || hour < super.endTime) {// Assumes a median lenght of shopping trip of 2 hours
                 vReturn.addElement(nPers);
-                this.vPeople.remove(i);
+                this.listPeople.remove(i);
                 i--;
             }
         }

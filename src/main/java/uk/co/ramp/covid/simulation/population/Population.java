@@ -500,7 +500,7 @@ public class Population {
     // Step through the households to identify individual movements to CommunalPlaces
     private void cycleHouseholds(int day, int hour) {
         for (int i = 0; i < this.population.length; i++) {
-            Vector vHouse = this.population[i].cycleHouse();
+            ArrayList<Person> vHouse = this.population[i].cycleHouse();
             //	if(vHouse.size() > 20 || i ==1||i==2) System.out.println("Size = " + vHouse.size() + " Iteration = "+ i);
             this.cycleMovements(vHouse, day, hour);
             this.retrunNeighbours(this.population[i]);
@@ -509,13 +509,13 @@ public class Population {
     }
 
     // For each household processes any movements to Communal Places that are relevant
-    private void cycleMovements(Vector vHouse, int day, int hour) {
+    private void cycleMovements(ArrayList<Person> vHouse, int day, int hour) {
         for (int i = 0; i < vHouse.size(); i++) {
-            Person nPers = (Person) vHouse.elementAt(i);
+            Person nPers = vHouse.get(i);
             if (nPers.getMIndex() >= 0 && !nPers.getQuarantine()) {
                 boolean visit = this.cPlaces[nPers.getMIndex()].checkVisit(nPers, hour, day, this.lockdown);
                 if (visit) {
-                    vHouse.removeElementAt(i);
+                    vHouse.remove(i);
                     i--;
                     //	System.out.println("Visit");
                 }
