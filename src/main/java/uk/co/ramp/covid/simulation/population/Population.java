@@ -141,21 +141,24 @@ public class Population {
         for (int i = 0; i < this.nHousehold; i++) {
             int cType = this.population[i].getnType();
             for (int k = 0; k < this.populationSize; k++) {
-                if (cType == 1) {
+                switch(cType) {
+                    case 1:
                     if (!this.allocationIndex[k] && this.adultIndex[k]) {
                         this.allocationIndex[k] = true;
                         aPopulation[k].setHIndex(i);
                         this.population[i].addPerson(aPopulation[k]);
                     }
-                }
-                if (cType == 2) {
+                    break;
+
+                    case 2:
                     if (!this.allocationIndex[k] && this.pensionerIndex[k]) {
                         this.allocationIndex[k] = true;
                         aPopulation[k].setHIndex(i);
                         this.population[i].addPerson(aPopulation[k]);
                     }
-                }
-                if (cType == 3) {
+                    break;
+
+                    case 3:
                     if (!this.allocationIndex[k] && this.adultIndex[k]) {
                         this.allocationIndex[k] = true;
                         aPopulation[k].setHIndex(i);
@@ -169,8 +172,9 @@ public class Population {
                             }
                         }
                     }
-                }
-                if (cType == 4) {
+                    break;
+
+                    case 4:
                     if (!this.allocationIndex[k] && this.adultIndex[k]) {
                         this.allocationIndex[k] = true;
                         aPopulation[k].setHIndex(i);
@@ -185,6 +189,10 @@ public class Population {
                         }
 
                     }
+                    break;
+
+                    default:
+                        LOGGER.warn("Invalid value for cType ");
                 }
 
                 k = this.populationSize + 1;
@@ -455,12 +463,15 @@ public class Population {
         for (Household cHouse : this.population) {
             ArrayList<Person> vHouse = cHouse.combVectors();
             for (Person cPers : vHouse) {
-                if (cPers.cStatus() == CStatus.HEALTHY) healthy++;
-                if (cPers.cStatus() == CStatus.LATENT) exposed++;
-                if (cPers.cStatus() == CStatus.ASYMPTOMATIC) asymptomatic++;
-                if (cPers.cStatus() == CStatus.PHASE1) phase1++;
-                if (cPers.cStatus() == CStatus.PHASE2) phase2++;
-                if (cPers.cStatus() == CStatus.RECOVERED) recovered++;
+                switch (cPers.cStatus()) {
+                    case HEALTHY -> healthy++;
+                    case LATENT -> exposed++;
+                    case ASYMPTOMATIC -> asymptomatic++;
+                    case PHASE1 -> phase1++;
+                    case PHASE2 -> phase2++;
+                    case RECOVERED -> recovered++;
+                    default -> LOGGER.info("Invalid Status");
+                }
             }
             dead += cHouse.getDeaths();
         }
@@ -473,8 +484,8 @@ public class Population {
         for (Household household : this.population) {
             ArrayList<Person> vHouse = household.cycleHouse();
             this.cycleMovements(vHouse, day, hour);
-            this.retrunNeighbours(household);
-            if (!this.lockdown) this.cycleNieghbours(household);
+            this.returnNeighbours(household);
+            if (!this.lockdown) this.cycleNeighbours(household);
         }
     }
 
@@ -514,7 +525,7 @@ public class Population {
     }
 
     // Go through neighbours and see if they visit anybody
-    private void cycleNieghbours(Household cHouse) {
+    private void cycleNeighbours(Household cHouse) {
         int visitIndex = -1; // Set a default for this here.
 
         if (cHouse.nNeighbours() > 0 && cHouse.getHouseholdSize() > 0) {
@@ -532,7 +543,7 @@ public class Population {
     }
 
     // Neighbours returning home
-    private void retrunNeighbours(Household cHouse) {
+    private void returnNeighbours(Household cHouse) {
         ArrayList<Person> vReturn = cHouse.sendNeighboursHome();
         for (Person nPers : vReturn) {
             this.population[nPers.getHIndex()].addPerson(nPers);

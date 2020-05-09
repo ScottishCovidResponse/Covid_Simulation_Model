@@ -32,11 +32,24 @@ public class Household {
 
     // Turn the number to a String to make it easier on the eye
     public void setType() {
-        if (this.nType == 1) this.type = "Adult only";
-        if (this.nType == 2) this.type = "Pensioner only";
-        if (this.nType == 3) this.type = "Adult & pensioner";
-        if (this.nType == 4) this.type = "Adult & children";
 
+        switch (this.nType) {
+            case 1:
+                this.type = "Adult only";
+                break;
+            case 2:
+                this.type = "Pensioner only";
+                break;
+            case 3:
+                this.type = "Adult & pensioner";
+                break;
+            case 4:
+                this.type = "Adult & children";
+                break;
+            default:
+                this.type = "Invalid Type";
+                break;
+        }
     }
 
     public int getNeighbourIndex(int nNeighbour) {
