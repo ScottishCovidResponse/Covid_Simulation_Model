@@ -52,14 +52,13 @@ public class Population {
     public Population(int populationSize, int nHousehold) {
         this.populationSize = populationSize;
         this.nHousehold = nHousehold;
-        if (this.nHousehold > this.populationSize) System.out.println("More households than population");
+        if (this.nHousehold > this.populationSize) LOGGER.warn("More households than population");
 
         this.population = new Household[this.nHousehold];
         this.pInfants = 0.08; // Another fudge. This defines the probability of a Person being an infant, adult etc, should be replaced by populaiton parameters
         this.pChildren = 0.2;
         this.pAdults = 0.5;
         this.pPensioners = 1 - this.pInfants - this.pChildren - this.pAdults;
-        System.out.println("Population proportions pensioners = " + this.pPensioners + "Adults = " + this.pAdults + "Children = " + this.pChildren + "Infants = " + this.pInfants);
 
         LOGGER.info("Population proportions pensioners = {} Adults = {} Children = {} Infants = {}", pPensioners, pAdults, pChildren, pInfants);
 
@@ -278,7 +277,7 @@ public class Population {
         this.shopIndexes = new int[nShops];
         this.restaurantIndexes = new int[nRestaurants];
 
-        System.out.println(nEstablishments);
+        LOGGER.info("Total number of establishments = {}", nEstablishments);
 
         CommunalPlace[] places = new CommunalPlace[nEstablishments];
         for (int i = 0; i < nEstablishments; i++) {
@@ -373,7 +372,6 @@ public class Population {
             Household cHouse = this.population[i];
             int nneighbours = new PoissonDistribution(3).sample(); // Sample a number of neighbours based on mean of three neighbours
             int[] neighbourArray = new int[nneighbours];
-            //System.out.println(nneighbours);
             for (int k = 0; k < nneighbours; k++) {
                 int nInt = new Random().nextInt(this.nHousehold);
                 if (nInt == i) k--;
@@ -399,10 +397,10 @@ public class Population {
     public ArrayList<String> timeStep(int nDays) {
         ArrayList<String> outV = new ArrayList<>();
         for (int i = 0; i < nDays; i++) {
-            System.out.println("Day = " + i);
+            LOGGER.info("Day = {}", i);
             int dWeek = (i + 1) % 7;
             this.implementLockdown(i);
-            System.out.println("Lockdown = " + this.lockdown);
+            LOGGER.info("Lockdown = {}", this.lockdown);
             for (int k = 0; k < 24; k++) {
                 this.cycleHouseholds(dWeek, k);
                 this.cyclePlaces(dWeek, k);
@@ -444,7 +442,6 @@ public class Population {
             this.socialDistancing();
         }
         if (day == this.lockdownEnd) {
-            System.out.println("HERE");
             if (!this.schoolL) this.lockdown = false;
             if (this.schoolL) this.schoolExemption();
         }
@@ -479,7 +476,7 @@ public class Population {
             }
             dead += cHouse.getDeaths();
         }
-        System.out.println("Day = " + day + " Healthy = " + healthy + " Latent = " + exposed + " Asymptomatic = " + asymptomatic + " Phase 1 = " + phase1 + " Phase 2 = " + phase2 + " Dead = " + dead + " Recovered = " + recovered);
+        LOGGER.info("Healthy = {} Latent = {} Asymptomatic = {} Phase 1 = {} Phase 2 = {} Dead = {} Recovered = {}", healthy, exposed, asymptomatic,phase1, phase2, dead, recovered);
         return day + "," + healthy + "," + exposed + "," + asymptomatic + "," + phase1 + "," + phase2 + "," + dead + "," + recovered;
     }
 
@@ -514,7 +511,6 @@ public class Population {
         for (CommunalPlace cPlace : this.cPlaces) {
             if (cPlace instanceof School || cPlace instanceof Nursery) {
                 cPlace.overrideKeyPremises(true);
-                System.out.println("HERE");
             }
         }
     }

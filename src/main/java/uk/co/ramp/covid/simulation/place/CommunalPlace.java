@@ -4,6 +4,9 @@
 
 package uk.co.ramp.covid.simulation.place;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import uk.co.ramp.covid.simulation.RunModel;
 import uk.co.ramp.covid.simulation.population.CStatus;
 import uk.co.ramp.covid.simulation.population.Pensioner;
 import uk.co.ramp.covid.simulation.population.Person;
@@ -11,6 +14,8 @@ import uk.co.ramp.covid.simulation.population.Person;
 import java.util.ArrayList;
 
 public class CommunalPlace {
+
+    private static final Logger LOGGER = LogManager.getLogger(CommunalPlace.class);
 
     public int cindex;
     protected int startTime;
@@ -56,7 +61,7 @@ public class CommunalPlace {
             cIn = true;
             this.listPeople.add(cPers);
             if (cPers instanceof Pensioner && (this instanceof Hospital))
-                System.out.println("Pensioner HERE " + cPers.getMIndex());
+                LOGGER.info("Pensioner HERE " + cPers.getMIndex());
         }
         return cIn;
     }

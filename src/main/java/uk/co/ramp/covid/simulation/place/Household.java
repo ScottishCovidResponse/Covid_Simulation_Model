@@ -109,7 +109,6 @@ public class Household {
                 }
                 if (cPers.cStatus() == CStatus.RECOVERED) {
                     cPers.recovered = true;
-                    //	System.out.println("House Recovered");
                 }
             }
         }

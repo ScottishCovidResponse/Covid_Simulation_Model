@@ -20,7 +20,6 @@ public class RunModel {
     public static void main(String[] args) throws Exception {
         // TODO Auto-generated method stub
 
-        LOGGER.info("test");
         RunModel mModel = new RunModel();
 //mModel.runTest();
         mModel.runBaseline();
@@ -29,7 +28,7 @@ public class RunModel {
     }
 
     public void runTest() {
-        System.out.println((1.0 / 7.0) / 24.0);
+        LOGGER.info((1.0 / 7.0) / 24.0);
         Population p = new Population(10000, 3000);
         p.populateHouseholds();
         p.summarisePop();
@@ -41,7 +40,6 @@ public class RunModel {
     }
 
     public void runBaseline() throws Exception { // Run and output the baseline scenarios - with no lockdown
-        //p.setLockdown(40, 100);
         ReadWrite rw = new ReadWrite("ModelOutputs//Baseline20200429//BaselineOut.csv");
         rw.openWritemodel();
         int nIter = 100;
