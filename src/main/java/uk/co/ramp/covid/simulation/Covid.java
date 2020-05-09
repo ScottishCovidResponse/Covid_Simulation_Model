@@ -8,17 +8,16 @@ import org.apache.commons.math3.distribution.PoissonDistribution;
 import uk.co.ramp.covid.simulation.population.*;
 
 public class Covid {
-    public boolean latent;
-    public boolean asymptomatic;
-    public boolean phase1;
-    public boolean phase2;
-    public boolean recovered;
-    public boolean dead;
+    private boolean latent;
+    private boolean asymptomatic;
+    private boolean phase1;
+    private boolean phase2;
+    private boolean recovered;
+    private boolean dead;
     private final int meanLatentPeriod;
     private final int meanAsymptomaticPeriod;
     private final int meanP1;
     private final int meanP2;
-    private double transmissionProb;
     private int latentPeriod;
     private double asymptomaticPeriod;
     private double p1;
@@ -42,6 +41,30 @@ public class Covid {
 
     }
 
+    public boolean isLatent() {
+        return latent;
+    }
+
+    public boolean isAsymptomatic() {
+        return asymptomatic;
+    }
+
+    public boolean isPhase1() {
+        return phase1;
+    }
+
+    public boolean isPhase2() {
+        return phase2;
+    }
+
+    public boolean isRecovered() {
+        return recovered;
+    }
+
+    public boolean isDead() {
+        return dead;
+    }
+
     // For each infection define the duration of the infection periods
     private void setPeriods() {
         this.latentPeriod = new PoissonDistribution(this.meanLatentPeriod).sample();
@@ -52,10 +75,6 @@ public class Covid {
         if ((this.ccase instanceof Adult) && Math.random() > 0.15) this.p2 = 0;
         if ((this.ccase instanceof Pensioner) && Math.random() > 0.8) this.p2 = 0;
 
-    }
-
-    public boolean getInfectious() {
-        return this.infected;
     }
 
     // Cycle through the infection for that timestep
