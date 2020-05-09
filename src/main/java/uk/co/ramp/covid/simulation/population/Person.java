@@ -7,17 +7,17 @@ package uk.co.ramp.covid.simulation.population;
 import uk.co.ramp.covid.simulation.Covid;
 
 public class Person {
-    public boolean nursery;
-    public boolean school;
-    public boolean shopWorker;
-    public boolean hospitalWorker;
-    public boolean officeWorker;
-    public boolean constructionWorker;
-    public boolean teacher;
-    public boolean restaurant;
-    public int mIndex;
-    public int hIndex;
-    public boolean recovered;
+    private boolean nursery;
+    private boolean school;
+    private boolean shopWorker;
+    private boolean hospitalWorker;
+    private boolean officeWorker;
+    private boolean constructionWorker;
+    private boolean teacher;
+    private boolean restaurant;
+    private int mIndex;
+    private int hIndex;
+    private boolean recovered;
     private boolean allocated;
     private Covid cVirus;
     private final double transmissionProb;
@@ -33,8 +33,76 @@ public class Person {
         this.quarantineVal = Math.random();
     }
 
-    public void setAllocation() {
-        this.allocated = true;
+    public boolean isNursery() {
+        return nursery;
+    }
+
+    public void setNursery(boolean nursery) {
+        this.nursery = nursery;
+    }
+
+    public boolean isSchool() {
+        return school;
+    }
+
+    public void setSchool(boolean school) {
+        this.school = school;
+    }
+
+    public boolean isShopWorker() {
+        return shopWorker;
+    }
+
+    public void setShopWorker(boolean shopWorker) {
+        this.shopWorker = shopWorker;
+    }
+
+    public boolean isHospitalWorker() {
+        return hospitalWorker;
+    }
+
+    public void setHospitalWorker(boolean hospitalWorker) {
+        this.hospitalWorker = hospitalWorker;
+    }
+
+    public boolean isOfficeWorker() {
+        return officeWorker;
+    }
+
+    public void setOfficeWorker(boolean officeWorker) {
+        this.officeWorker = officeWorker;
+    }
+
+    public boolean isConstructionWorker() {
+        return constructionWorker;
+    }
+
+    public void setConstructionWorker(boolean constructionWorker) {
+        this.constructionWorker = constructionWorker;
+    }
+
+    public boolean isTeacher() {
+        return teacher;
+    }
+
+    public void setTeacher(boolean teacher) {
+        this.teacher = teacher;
+    }
+
+    public boolean isRestaurant() {
+        return restaurant;
+    }
+
+    public void setRestaurant(boolean restaurant) {
+        this.restaurant = restaurant;
+    }
+
+    public boolean isRecovered() {
+        return recovered;
+    }
+
+    public void setRecovered(boolean recovered) {
+        this.recovered = recovered;
     }
 
     public int getMIndex() {

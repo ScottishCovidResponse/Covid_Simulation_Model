@@ -6,7 +6,6 @@ package uk.co.ramp.covid.simulation.place;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import uk.co.ramp.covid.simulation.RunModel;
 import uk.co.ramp.covid.simulation.population.CStatus;
 import uk.co.ramp.covid.simulation.population.Pensioner;
 import uk.co.ramp.covid.simulation.population.Person;
@@ -17,7 +16,7 @@ public class CommunalPlace {
 
     private static final Logger LOGGER = LogManager.getLogger(CommunalPlace.class);
 
-    public int cindex;
+    private int cIndex;
     protected int startTime;
     protected int endTime;
     protected ArrayList<Person> listPeople;
@@ -28,13 +27,13 @@ public class CommunalPlace {
     protected double keyProb;
     private double sDistance; // A social distancing coefficient;
 
-    public CommunalPlace(int cindex) {
+    public CommunalPlace(int cIndex) {
         this.listPeople = new ArrayList<>();
         this.startTime = 8; // The hour of the day that the Communal Place starts
         this.endTime = 17; // The hour of the day that it ends
         this.startDay = 1; // Days of the week that it is active - start
         this.endDay = 5; // Days of the week that it is active - end
-        this.cindex = cindex; // This sets the index for each Communal Place to avoid searching
+        this.cIndex = cIndex; // This sets the index for each Communal Place to avoid searching
         this.transProb = 0.45; // Pretty important parameter. This defines the transmission rate within this Communal Place
         this.keyProb = 1.0;
         this.sDistance = 1.0;
@@ -47,11 +46,11 @@ public class CommunalPlace {
     }
 
     public int getIndex() {
-        return this.cindex;
+        return this.cIndex;
     }
 
     public void setIndex(int indexVal) {
-        this.cindex = indexVal;
+        this.cIndex = indexVal;
     }
 
     // Check whether a Person might visit at that hour of the day
@@ -73,7 +72,7 @@ public class CommunalPlace {
         CStatus status = null;
         for (int i = 0; i < this.listPeople.size(); i++) {
             Person cPers = this.listPeople.get(i);
-            if (cPers.getInfectionStatus() && !cPers.recovered) {
+            if (cPers.getInfectionStatus() && !cPers.isRecovered()) {
                 status = cPers.stepInfection();
                 if (cPers.cStatus() == CStatus.ASYMPTOMATIC || cPers.cStatus() == CStatus.PHASE1 || cPers.cStatus() == CStatus.PHASE2) {
                     for (int k = 0; k < this.listPeople.size(); k++) {
@@ -90,7 +89,7 @@ public class CommunalPlace {
                     i--;
                 }
                 if (cPers.cStatus() == CStatus.RECOVERED) {
-                    cPers.recovered = true;
+                    cPers.setRecovered(true);
                 }
             }
             if (time == this.endTime && status != CStatus.DEAD) {

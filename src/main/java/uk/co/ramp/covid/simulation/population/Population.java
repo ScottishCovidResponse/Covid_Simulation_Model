@@ -18,10 +18,6 @@ public class Population {
 
     private static final Logger LOGGER = LogManager.getLogger(Population.class);
 
-    public int nInfants;
-    public int nChildren;
-    public int nAdults;
-    public int nPensioners;
     private final int populationSize;
     private final int nHousehold;
     private final Household[] population;
@@ -62,10 +58,6 @@ public class Population {
 
         LOGGER.info("Population proportions pensioners = {} Adults = {} Children = {} Infants = {}", pPensioners, pAdults, pChildren, pInfants);
 
-        this.nInfants = 0;
-        this.nChildren = 0;
-        this.nAdults = 0;
-        this.nPensioners = 0;
         this.aPopulation = new Person[this.populationSize];
         this.pAdultOnly = 0.3; // Currently a fudge - these values define the probability of a household being an adult only, adult and child household etc
         this.pPensionerOnly = 0.1;
@@ -105,19 +97,15 @@ public class Population {
             if (rand < this.pInfants) {
                 this.aPopulation[i] = this.createInfant();
                 this.infantIndex[i] = true;
-                this.nInfants++;
             } else if (rand - this.pInfants < this.pChildren) {
                 this.aPopulation[i] = this.createChild();
                 this.childIndex[i] = true;
-                this.nChildren++;
             } else if (rand - this.pInfants - this.pChildren < this.pAdults) {
                 this.aPopulation[i] = this.createAdult();
                 this.adultIndex[i] = true;
-                this.nAdults++;
             } else {
                 this.aPopulation[i] = this.createPensioner();
                 this.pensionerIndex[i] = true;
-                this.nPensioners++;
             }
         }
 
@@ -305,49 +293,49 @@ public class Population {
         for (int i = 0; i < this.nHousehold; i++) {
             for (int j = 0; j < this.population[i].getHouseholdSize(); j++) {
                 Person cPerson = this.population[i].getPerson(j);
-                if (cPerson.nursery) {
+                if (cPerson.isNursery()) {
 
                     CommunalPlace property = this.getRandom();
                     while (!(property instanceof Nursery)) property = this.getRandom();
                     cPerson.setMIndex(property.getIndex());
 
                 }
-                if (cPerson.school) {
+                if (cPerson.isSchool()) {
 
                     CommunalPlace property = this.getRandom();
                     while (!(property instanceof School)) property = this.getRandom();
                     cPerson.setMIndex(property.getIndex());
 
                 }
-                if (cPerson.shopWorker) {
+                if (cPerson.isShopWorker()) {
 
                     CommunalPlace property = this.getRandom();
                     while (!(property instanceof Shop)) property = this.getRandom();
                     cPerson.setMIndex(property.getIndex());
 
                 }
-                if (cPerson.constructionWorker) {
+                if (cPerson.isConstructionWorker()) {
 
                     CommunalPlace property = this.getRandom();
                     while (!(property instanceof ConstructionSite)) property = this.getRandom();
                     cPerson.setMIndex(property.getIndex());
 
                 }
-                if (cPerson.officeWorker) {
+                if (cPerson.isOfficeWorker()) {
 
                     CommunalPlace property = this.getRandom();
                     while (!(property instanceof Office)) property = this.getRandom();
                     cPerson.setMIndex(property.getIndex());
 
                 }
-                if (cPerson.hospitalWorker) {
+                if (cPerson.isHospitalWorker()) {
 
                     CommunalPlace property = this.getRandom();
                     while (!(property instanceof Hospital)) property = this.getRandom();
                     cPerson.setMIndex(property.getIndex());
 
                 }
-                if (cPerson.restaurant) {
+                if (cPerson.isRestaurant()) {
 
                     CommunalPlace property = this.getRandom();
                     while (!(property instanceof Restaurant)) property = this.getRandom();

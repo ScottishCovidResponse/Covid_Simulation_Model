@@ -89,7 +89,7 @@ public class Household {
         ArrayList<Person> hVector = this.combVectors();
         for (int i = 0; i < hVector.size(); i++) {
             Person cPers = hVector.get(i);
-            if (cPers.getInfectionStatus() && !cPers.recovered) {
+            if (cPers.getInfectionStatus() && !cPers.isRecovered()) {
                 cPers.stepInfection();
                 if (cPers.cStatus() == CStatus.ASYMPTOMATIC || cPers.cStatus() == CStatus.PHASE1 || cPers.cStatus() == CStatus.PHASE2) {
                     for (int k = 0; k < hVector.size(); k++) {
@@ -108,7 +108,7 @@ public class Household {
                     i--;
                 }
                 if (cPers.cStatus() == CStatus.RECOVERED) {
-                    cPers.recovered = true;
+                    cPers.setRecovered(true);
                 }
             }
         }
