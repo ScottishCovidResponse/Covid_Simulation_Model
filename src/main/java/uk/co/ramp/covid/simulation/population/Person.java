@@ -18,7 +18,6 @@ public class Person {
     private int mIndex;
     private int hIndex;
     private boolean recovered;
-    private boolean allocated;
     private Covid cVirus;
     private final double transmissionProb;
     private boolean quarantine;
@@ -26,7 +25,6 @@ public class Person {
     private final double quarantineVal;
 
     public Person() {
-        this.allocated = false;
         this.transmissionProb = 0.45;
         this.mIndex = -1;
         this.quarantineProb = 0.9;
@@ -153,7 +151,6 @@ public class Person {
     // This method is pretty important, it returns the Covid infection status
     public CStatus cStatus() {
         CStatus cStatus = CStatus.HEALTHY;
-        if (!this.getInfectionStatus()) cStatus = CStatus.HEALTHY;
         if (this.getInfectionStatus()) {
             if (this.cVirus.isLatent()) cStatus = CStatus.LATENT;
             if (this.cVirus.isAsymptomatic()) cStatus = CStatus.ASYMPTOMATIC;

@@ -73,16 +73,16 @@ public class Population {
     private void createHouseholds() {
         // Java doesn't have built-in Pairs, so we need to define our own
         class ProbPair  implements Comparable<ProbPair> {
-            public double prob; public int householdType;
+            public final double prob; public final int householdType;
             public ProbPair(double p, int ntype) {
                 prob = p;
                 householdType = ntype;
             }
             public int compareTo(ProbPair p) { return Double.compare(prob, p.prob); }
-        };
+        }
 
         //  pmap works as an associative list to allow us to easy assign probabilities with any number of household types.
-        List<ProbPair> pmap = new ArrayList();
+        List<ProbPair> pmap = new ArrayList<>();
         pmap.add(new ProbPair(PopulationParameters.get().getpAdultOnly(), 1));
         pmap.add(new ProbPair(PopulationParameters.get().getpPensionerOnly(), 2));
         pmap.add(new ProbPair(PopulationParameters.get().getpPensionerAdult(), 3));
@@ -207,16 +207,16 @@ public class Population {
         infantIndex.and(childOrInfant);
 
         probAllocate(adultIndex,
-                new HashSet<Integer>(Arrays.asList(1, 3, 4, 6)),
+                new HashSet<>(Arrays.asList(1, 3, 4, 6)),
                 PopulationParameters.get().getAdultAllocationPMap());
         probAllocate(pensionerIndex,
-                new HashSet<Integer>(Arrays.asList(2, 3, 5, 6)),
+                new HashSet<>(Arrays.asList(2, 3, 5, 6)),
                 PopulationParameters.get().getPensionerAllocationPMap());
         probAllocate(childIndex,
-                new HashSet<Integer>(Arrays.asList(4, 5, 6)),
+                new HashSet<>(Arrays.asList(4, 5, 6)),
                 PopulationParameters.get().getChildAllocationPMap());
         probAllocate(infantIndex,
-                new HashSet<Integer>(Arrays.asList(4, 5, 6)),
+                new HashSet<>(Arrays.asList(4, 5, 6)),
                 PopulationParameters.get().getInfantAllocationPMap());
     }
 
@@ -368,7 +368,7 @@ public class Population {
             LOGGER.info("Lockdown = {}", this.lockdown);
             for (int k = 0; k < 24; k++) {
                 this.cycleHouseholds(dWeek, k);
-                this.cyclePlaces(dWeek, k);
+                this.cyclePlaces(k);
                 this.returnShoppers(k);
                 this.returnRestaurant(k);
                 this.shoppingTrip(dWeek, k);
@@ -484,9 +484,9 @@ public class Population {
     }
 
     // People returning ome at the end of the day
-    private void cyclePlaces(int day, int hour) {
+    private void cyclePlaces(int hour) {
         for (CommunalPlace cPlace : this.cPlaces) {
-            ArrayList<Person> retPeople = cPlace.cyclePlace(hour, day);
+            ArrayList<Person> retPeople = cPlace.cyclePlace(hour);
             for (Person cPers : retPeople) {
                 population[cPers.getHIndex()].addPerson(cPers);
             }

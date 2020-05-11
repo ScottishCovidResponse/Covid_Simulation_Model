@@ -16,7 +16,6 @@ import java.util.Random;
 
 public class Household {
     int nType;
-    private String type;
     private final ArrayList<Person> vPeople;
     private final ArrayList<Person> vDeaths;
     private int[] neighbourList;
@@ -25,37 +24,9 @@ public class Household {
     // Create household defined by who lives there
     public Household(int nType) {
         this.nType = nType;
-        this.setType();
         this.vPeople = new ArrayList<>();
         this.vDeaths = new ArrayList<>();
         this.vVisitors = new ArrayList<>();
-    }
-
-    // Turn the number to a String to make it easier on the eye
-    public void setType() {
-        switch (this.nType) {
-            case 1:
-                this.type = "Adult only";
-                break;
-            case 2:
-                this.type = "Pensioner only";
-                break;
-            case 3:
-                this.type = "Adult & pensioner";
-                break;
-            case 4:
-                this.type = "Adult & children";
-                break;
-            case 5:
-                this.type = "Pensioner & children";
-                break;
-            case 6:
-                this.type = "Adult & pensioner & children";
-                break;
-            default:
-                this.type = "Invalid Type";
-                break;
-        }
     }
 
     public int getNeighbourIndex(int nNeighbour) {
@@ -64,10 +35,6 @@ public class Household {
 
     public int nNeighbours() {
         return this.neighbourList.length;
-    }
-
-    public String getType() {
-        return this.type;
     }
 
     public int getnType() {
