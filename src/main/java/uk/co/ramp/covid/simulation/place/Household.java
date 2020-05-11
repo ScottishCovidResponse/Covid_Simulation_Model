@@ -11,6 +11,7 @@ import uk.co.ramp.covid.simulation.population.CStatus;
 import uk.co.ramp.covid.simulation.population.Person;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 public class Household {
@@ -32,7 +33,6 @@ public class Household {
 
     // Turn the number to a String to make it easier on the eye
     public void setType() {
-
         switch (this.nType) {
             case 1:
                 this.type = "Adult only";
@@ -45,6 +45,12 @@ public class Household {
                 break;
             case 4:
                 this.type = "Adult & children";
+                break;
+            case 5:
+                this.type = "Pensioner & children";
+                break;
+            case 6:
+                this.type = "Adult & pensioner & children";
                 break;
             default:
                 this.type = "Invalid Type";
@@ -190,4 +196,7 @@ public class Household {
         return vShop;
     }
 
+    public List<Person> getInhabitants() {
+        return vPeople;
+    }
 }
