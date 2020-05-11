@@ -35,7 +35,8 @@ public class Household {
         if (this.nType == 2) this.type = "Pensioner only";
         if (this.nType == 3) this.type = "Adult & pensioner";
         if (this.nType == 4) this.type = "Adult & children";
-
+        if (this.nType == 5) this.type = "Pensioner & children";
+        if (this.nType == 6) this.type = "Adult & pensioner & children";
     }
 
     public int getNeighbourIndex(int nNeighbour) {

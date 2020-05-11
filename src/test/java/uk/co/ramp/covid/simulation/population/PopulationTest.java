@@ -27,7 +27,6 @@ public class PopulationTest {
                 // Adults only
                 case 1: {
                     for (Object i : h.getInhabitants()) {
-                        Person inhabitant = (Person) i;
                         assertTrue("Non Adult in adult only household", i instanceof Adult);
                     }
                     break;
@@ -35,7 +34,6 @@ public class PopulationTest {
                 // Pensioner only
                 case 2: {
                     for (Object i : h.getInhabitants()) {
-                        Person inhabitant = (Person) i;
                         assertTrue("Non Pensioner in pensioner only household", i instanceof Pensioner);
                     }
                     break;
@@ -45,7 +43,6 @@ public class PopulationTest {
                     boolean adultSeen = false;
                     boolean pensionerSeen = false;
                     for (Object i : h.getInhabitants()) {
-                        Person inhabitant = (Person) i;
                         adultSeen = adultSeen || i instanceof Adult;
                         pensionerSeen = adultSeen || i instanceof Pensioner;
                         assertTrue( "Non Pensioner/Adult in pensioner/adult household",
@@ -60,7 +57,6 @@ public class PopulationTest {
                     boolean adultSeen = false;
                     boolean childInfantSeen = false;
                     for (Object i : h.getInhabitants()) {
-                        Person inhabitanadultSeent = (Person) i;
                         adultSeen = adultSeen || i instanceof Adult;
                         childInfantSeen = childInfantSeen || i instanceof Child || i instanceof Infant;
                         assertTrue("Non Adult/Child/Infant in Adult/Child household",
@@ -69,6 +65,39 @@ public class PopulationTest {
                     }
                     assertTrue("No adult in an adult/child household", adultSeen);
                     assertTrue("No child/infant in an adult/child household", childInfantSeen);
+                    break;
+                }
+                //Pensioner + Infant/Child ( Should contain at least one of each)
+                case 5: {
+                    boolean pensionerSeen = false;
+                    boolean childInfantSeen = false;
+                    for (Object i : h.getInhabitants()) {
+                        pensionerSeen = pensionerSeen || i instanceof Pensioner;
+                        childInfantSeen = childInfantSeen || i instanceof Child || i instanceof Infant;
+                        assertTrue("Non Pensioner/Child/Infact in Pensioner/Child household",
+                                i instanceof Pensioner || i instanceof Child || i instanceof Infant);
+
+                    }
+                    assertTrue("No pensioner in an pensioner/child household", pensionerSeen);
+                    assertTrue("No child/infant in an pensioner/child household", childInfantSeen);
+                    break;
+                }
+                //Adult + Pensioner + Infant/Child ( Should contain at least one of each)
+                case 6: {
+                    boolean adultSeen = false;
+                    boolean pensionerSeen = false;
+                    boolean childInfantSeen = false;
+                    for (Object i : h.getInhabitants()) {
+                        adultSeen = adultSeen || i instanceof Adult;
+                        pensionerSeen = pensionerSeen || i instanceof Pensioner;
+                        childInfantSeen = childInfantSeen || i instanceof Child || i instanceof Infant;
+                        assertTrue("Non Adult/Pensioner/Child/Infact in Pensioner/Child household",
+                                i instanceof Adult || i instanceof Pensioner
+                                        || i instanceof Child || i instanceof Infant);
+                    }
+                    assertTrue("No adult in an adult/pensioner/child household", adultSeen);
+                    assertTrue("No pensioner in an adult/pensioner/child household", pensionerSeen);
+                    assertTrue("No child/infant in an adult/pensioner/child household", childInfantSeen);
                     break;
                 }
             }

@@ -82,20 +82,35 @@ public class Population {
 
     // Creates households based on probability of different household types
     private void createHouseholds() {
-        double pAdultOnly = PopulationParameters.get().getpAdultOnly();
-        double pPensionerOnly = PopulationParameters.get().getpPensionerOnly();
-        double pPensionerAdult = PopulationParameters.get().getpPensionerAdult();
+        // Java doesn't have built-in Pairs, so we need to define our own
+        class ProbPair  implements Comparable<ProbPair> {
+            public double prob; public int householdType;
+            public ProbPair(double p, int ntype) {
+                prob = p;
+                householdType = ntype;
+            }
+            public int compareTo(ProbPair p) { return Double.compare(prob, p.prob); }
+        };
+
+        //  pmap works as an associative list to allow us to easy assign probabilities with any number of household types.
+        List<ProbPair> pmap = new ArrayList();
+        pmap.add(new ProbPair(PopulationParameters.get().getpAdultOnly(), 1));
+        pmap.add(new ProbPair(PopulationParameters.get().getpPensionerOnly(), 2));
+        pmap.add(new ProbPair(PopulationParameters.get().getpPensionerAdult(), 3));
+        pmap.add(new ProbPair(PopulationParameters.get().getpAdultChildren(), 4));
+        pmap.add(new ProbPair(PopulationParameters.get().getpPensionerChildren(), 5));
+        pmap.add(new ProbPair(PopulationParameters.get().getpAdultPensionerChildren(), 6));
+
+        Collections.sort(pmap, Collections.reverseOrder());
 
         for (int i = 0; i < this.nHousehold; i++) {
             double rand = Math.random();
-            if (rand < pAdultOnly) {
-                this.population[i] = new Household(1);
-            } else if (rand - pAdultOnly < pPensionerOnly) {
-                this.population[i] = new Household(2);
-            } else if (rand - pAdultOnly - pPensionerOnly < pPensionerAdult) {
-                this.population[i] = new Household(3);
-            } else {
-                this.population[i] = new Household(4);
+            for (ProbPair p : pmap ) {
+                if (rand < p.prob) {
+                    population[i] = new Household(p.householdType);
+                    break;
+                }
+                rand = rand - p.prob;
             }
         }
     }
@@ -104,6 +119,7 @@ public class Population {
     private boolean householdAllocationPossible(BitSet adultIndex, BitSet pensionerIndex,
                                                 BitSet childIndex, BitSet infantIndex) {
         int adult = 0; int pensioner = 0; int adultPensioner = 0; int adultChild = 0;
+        int pensionerChild = 0; int adultPensionerChild = 0;
         for (Household h : population) {
             switch(h.getnType()) {
                 case 1:
@@ -118,12 +134,18 @@ public class Population {
                 case 4:
                     adultChild++;
                     break;
+                case 5:
+                    pensionerChild++;
+                    break;
+                case 6:
+                    adultPensionerChild++;
+                    break;
             }
         }
-        return adultIndex.cardinality() <= adult + adultPensioner + adultChild
-                || pensionerIndex.cardinality() <= adultPensioner + pensioner
-                || childIndex.cardinality() <= adultChild
-                || infantIndex.cardinality() <= adultChild;
+        return adultIndex.cardinality() <= adult + adultPensioner + adultChild + adultPensionerChild
+                || pensionerIndex.cardinality() <= adultPensioner + pensioner + pensionerChild
+                || childIndex.cardinality() <= adultChild + pensionerChild + adultPensionerChild
+                || infantIndex.cardinality() <= adultChild + pensionerChild + adultPensionerChild;
     }
 
     // Cycles over all bits of remainingPeople and ensures they are allocated to a household in a greedy fashion
@@ -181,8 +203,8 @@ public class Population {
                 : "Population distribution cannot populate household distribution";
 
         // Ensures miminal constraints are met
-        greedyAllocate(adultIndex, new HashSet<>(Arrays.asList(1, 3, 4)));
-        greedyAllocate(pensionerIndex, new HashSet<>(Arrays.asList(2, 3)));
+        greedyAllocate(adultIndex, new HashSet<>(Arrays.asList(1, 3, 4, 6)));
+        greedyAllocate(pensionerIndex, new HashSet<>(Arrays.asList(2, 3, 5, 6)));
 
         // For OR constraints, e.g. child or infant, we union the bitsets during the greedy algorithm
         // For the probabilistic allocations below, they can have different probabilities.
@@ -190,23 +212,23 @@ public class Population {
         childOrInfant.or(childIndex);
         childOrInfant.or(infantIndex);
 
-        greedyAllocate(childOrInfant, new HashSet<>(Arrays.asList(4)));
+        greedyAllocate(childOrInfant, new HashSet<>(Arrays.asList(4, 5, 6)));
 
         // set intersections to allow children/infants to be treated independently again
         childIndex.and(childOrInfant);
         infantIndex.and(childOrInfant);
 
         probAllocate(adultIndex,
-                new HashSet<Integer>(Arrays.asList(1, 3, 4)),
+                new HashSet<Integer>(Arrays.asList(1, 3, 4, 6)),
                 PopulationParameters.get().getAdultAllocationPMap());
         probAllocate(pensionerIndex,
-                new HashSet<Integer>(Arrays.asList(2, 3)),
+                new HashSet<Integer>(Arrays.asList(2, 3, 5, 6)),
                 PopulationParameters.get().getPensionerAllocationPMap());
         probAllocate(childIndex,
-                new HashSet<Integer>(Arrays.asList(4)),
+                new HashSet<Integer>(Arrays.asList(4, 5, 6)),
                 PopulationParameters.get().getChildAllocationPMap());
         probAllocate(infantIndex,
-                new HashSet<Integer>(Arrays.asList(4)),
+                new HashSet<Integer>(Arrays.asList(4, 5, 6)),
                 PopulationParameters.get().getInfantAllocationPMap());
     }
 

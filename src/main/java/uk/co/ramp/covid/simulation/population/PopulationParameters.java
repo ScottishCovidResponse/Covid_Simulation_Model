@@ -29,6 +29,8 @@ public class PopulationParameters {
     private double pPensionerOnly;
     private double pPensionerAdult;
     private double pAdultChildren;
+    private double pPensionerChildren;
+    private double pAdultPensionerChildren;
 
     // Household allocation probabilities based on household size and type
     private Map<Integer, Double> adultAllocationPMap;
@@ -48,7 +50,9 @@ public class PopulationParameters {
         pAdultOnly = 0.3;
         pPensionerOnly = 0.1;
         pPensionerAdult = 0.1;
-        pAdultChildren = 0.5;
+        pAdultChildren = 0.3;
+        pPensionerChildren = 0.1;
+        pAdultPensionerChildren = 0.1;
 
         adultAllocationPMap = new HashMap<>();
         adultAllocationPMap.put(1, 0.8);
@@ -116,6 +120,14 @@ public class PopulationParameters {
 
     public double getpAdultChildren() {
         return pAdultChildren;
+    }
+
+    public double getpPensionerChildren() {
+        return pPensionerChildren;
+    }
+
+    public double getpAdultPensionerChildren() {
+        return pAdultPensionerChildren;
     }
 
     public Map<Integer, Double> getAdultAllocationPMap() {
