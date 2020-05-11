@@ -7,23 +7,23 @@ package uk.co.ramp.covid.simulation.population;
 import uk.co.ramp.covid.simulation.Covid;
 
 public class Person {
-    public boolean nursery;
-    public boolean school;
-    public boolean shopWorker;
-    public boolean hospitalWorker;
-    public boolean officeWorker;
-    public boolean constructionWorker;
-    public boolean teacher;
-    public boolean restaurant;
-    public int mIndex;
-    public int hIndex;
-    public boolean recovered;
+    private boolean nursery;
+    private boolean school;
+    private boolean shopWorker;
+    private boolean hospitalWorker;
+    private boolean officeWorker;
+    private boolean constructionWorker;
+    private boolean teacher;
+    private boolean restaurant;
+    private int mIndex;
+    private int hIndex;
+    private boolean recovered;
     private boolean allocated;
     private Covid cVirus;
-    private double transmissionProb;
+    private final double transmissionProb;
     private boolean quarantine;
-    private double quarantineProb; // Needs more thought. The probability that the person will go into quarantine
-    private double quarantineVal;
+    private final double quarantineProb; // Needs more thought. The probability that the person will go into quarantine
+    private final double quarantineVal;
 
     public Person() {
         this.allocated = false;
@@ -33,8 +33,76 @@ public class Person {
         this.quarantineVal = Math.random();
     }
 
-    public void setAllocation() {
-        this.allocated = true;
+    public boolean isNursery() {
+        return nursery;
+    }
+
+    public void setNursery(boolean nursery) {
+        this.nursery = nursery;
+    }
+
+    public boolean isSchool() {
+        return school;
+    }
+
+    public void setSchool(boolean school) {
+        this.school = school;
+    }
+
+    public boolean isShopWorker() {
+        return shopWorker;
+    }
+
+    public void setShopWorker(boolean shopWorker) {
+        this.shopWorker = shopWorker;
+    }
+
+    public boolean isHospitalWorker() {
+        return hospitalWorker;
+    }
+
+    public void setHospitalWorker(boolean hospitalWorker) {
+        this.hospitalWorker = hospitalWorker;
+    }
+
+    public boolean isOfficeWorker() {
+        return officeWorker;
+    }
+
+    public void setOfficeWorker(boolean officeWorker) {
+        this.officeWorker = officeWorker;
+    }
+
+    public boolean isConstructionWorker() {
+        return constructionWorker;
+    }
+
+    public void setConstructionWorker(boolean constructionWorker) {
+        this.constructionWorker = constructionWorker;
+    }
+
+    public boolean isTeacher() {
+        return teacher;
+    }
+
+    public void setTeacher(boolean teacher) {
+        this.teacher = teacher;
+    }
+
+    public boolean isRestaurant() {
+        return restaurant;
+    }
+
+    public void setRestaurant(boolean restaurant) {
+        this.restaurant = restaurant;
+    }
+
+    public boolean isRecovered() {
+        return recovered;
+    }
+
+    public void setRecovered(boolean recovered) {
+        this.recovered = recovered;
     }
 
     public int getMIndex() {
@@ -72,36 +140,34 @@ public class Person {
         return !(this.cVirus == null);
     }
 
-    public String stepInfection() {
-        String vStatus = this.cVirus.stepInfection();
-        return vStatus;
+    public CStatus stepInfection() {
+        return this.cVirus.stepInfection();
     }
 
     public void infChallenge(double challengeProb) {
         if (Math.random() < this.transmissionProb / 24 * challengeProb) {
             this.cVirus = new Covid(this);
-//		System.out.println("HERE");
         }
     }
 
     // This method is pretty important, it returns the Covid infection status
-    public String cStatus() {
-        String cStatus = "Healthy";
-        if (!this.getInfectionStatus()) cStatus = "Healthy";
+    public CStatus cStatus() {
+        CStatus cStatus = CStatus.HEALTHY;
+        if (!this.getInfectionStatus()) cStatus = CStatus.HEALTHY;
         if (this.getInfectionStatus()) {
-            if (this.cVirus.latent) cStatus = "Latent";
-            if (this.cVirus.asymptomatic) cStatus = "Asymptomatic";
-            if (this.cVirus.phase1) {
-                cStatus = "Phase 1";
+            if (this.cVirus.isLatent()) cStatus = CStatus.LATENT;
+            if (this.cVirus.isAsymptomatic()) cStatus = CStatus.ASYMPTOMATIC;
+            if (this.cVirus.isPhase1()) {
+                cStatus = CStatus.PHASE1;
                 this.quarantine = this.quarantineProb > this.quarantineVal;
             }
-            if (this.cVirus.phase2) {
-                cStatus = "Phase 2";
+            if (this.cVirus.isPhase2()) {
+                cStatus = CStatus.PHASE2;
                 this.quarantine = true;
             }
-            if (this.cVirus.dead) cStatus = "Dead";
-            if (this.cVirus.recovered && !this.cVirus.dead) {
-                cStatus = "Recovered";
+            if (this.cVirus.isDead()) cStatus = CStatus.DEAD;
+            if (this.cVirus.isRecovered() && !this.cVirus.isDead()) {
+                cStatus = CStatus.RECOVERED;
                 this.quarantine = false;
             }
         }
