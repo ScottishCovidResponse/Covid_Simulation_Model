@@ -4,17 +4,22 @@
 
 package uk.co.ramp.covid.simulation.place;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import uk.co.ramp.covid.simulation.population.CStatus;
 import uk.co.ramp.covid.simulation.population.Pensioner;
 import uk.co.ramp.covid.simulation.population.Person;
 
-import java.util.Vector;
+import java.util.ArrayList;
 
 public class CommunalPlace {
 
-    public int cindex;
+    private static final Logger LOGGER = LogManager.getLogger(CommunalPlace.class);
+
+    private int cIndex;
     protected int startTime;
     protected int endTime;
-    protected Vector vPeople;
+    protected ArrayList<Person> listPeople;
     protected int startDay;
     protected int endDay;
     protected double transProb;
@@ -22,13 +27,13 @@ public class CommunalPlace {
     protected double keyProb;
     private double sDistance; // A social distancing coefficient;
 
-    public CommunalPlace(int cindex) {
-        this.vPeople = new Vector();
+    public CommunalPlace(int cIndex) {
+        this.listPeople = new ArrayList<>();
         this.startTime = 8; // The hour of the day that the Communal Place starts
         this.endTime = 17; // The hour of the day that it ends
         this.startDay = 1; // Days of the week that it is active - start
         this.endDay = 5; // Days of the week that it is active - end
-        this.cindex = cindex; // This sets the index for each Communal Place to avoid searching
+        this.cIndex = cIndex; // This sets the index for each Communal Place to avoid searching
         this.transProb = 0.45; // Pretty important parameter. This defines the transmission rate within this Communal Place
         this.keyProb = 1.0;
         this.sDistance = 1.0;
@@ -41,11 +46,11 @@ public class CommunalPlace {
     }
 
     public int getIndex() {
-        return this.cindex;
+        return this.cIndex;
     }
 
     public void setIndex(int indexVal) {
-        this.cindex = indexVal;
+        this.cIndex = indexVal;
     }
 
     // Check whether a Person might visit at that hour of the day
@@ -53,48 +58,43 @@ public class CommunalPlace {
         boolean cIn = false;
         if (this.startTime == time && day >= this.startDay && day <= this.endDay && (this.keyPremises || !clockdown)) {
             cIn = true;
-            this.vPeople.addElement(cPers);
-            if (cPers instanceof Pensioner & (this instanceof Hospital))
-                System.out.println("Pensioner HERE " + cPers.getMIndex());
+            this.listPeople.add(cPers);
+            if (cPers instanceof Pensioner && (this instanceof Hospital))
+                LOGGER.info("Pensioner HERE " + cPers.getMIndex());
         }
         return cIn;
     }
 
-    // Cyctek through the People objects in the Place and test their infection status etc
-    public Vector cyclePlace(int time, int day) {
+    // Cycle through the People objects in the Place and test their infection status etc
+    public ArrayList<Person> cyclePlace(int time, int day) {
 
-        Vector cReturn = new Vector();
-        String status = "";
-//	if(this instanceof School)	System.out.println(this.toString() + " Capacity = " + this.vPeople.size() + " " + this.keyPremises + this.transProb);
-        for (int i = 0; i < this.vPeople.size(); i++) {
-            Person cPers = (Person) this.vPeople.elementAt(i);
-            if (cPers.getInfectionStatus() & !cPers.recovered) {
+        ArrayList<Person> cReturn = new  ArrayList<>();
+        CStatus status = null;
+        for (int i = 0; i < this.listPeople.size(); i++) {
+            Person cPers = this.listPeople.get(i);
+            if (cPers.getInfectionStatus() && !cPers.isRecovered()) {
                 status = cPers.stepInfection();
-                if (cPers.cStatus() == "Asymptomatic" || cPers.cStatus() == "Phase 1" || cPers.cStatus() == "Phase 2") {
-                    for (int k = 0; k < this.vPeople.size(); k++) {
+                if (cPers.cStatus() == CStatus.ASYMPTOMATIC || cPers.cStatus() == CStatus.PHASE1 || cPers.cStatus() == CStatus.PHASE2) {
+                    for (int k = 0; k < this.listPeople.size(); k++) {
                         if (k != i) {
-                            Person nPers = (Person) this.vPeople.elementAt(k);
+                            Person nPers = this.listPeople.get(k);
                             if (!nPers.getInfectionStatus()) {
-                                //System.out.println("Trans prob = "+this.transProb);
                                 nPers.infChallenge(this.transProb * this.sDistance);
-                                //	if(this instanceof Shop) System.out.println(this.toString() + "   " + nPers.shopWorker + " " + this.transProb);
                             }
                         }
                     }
                 }
-                if (cPers.cStatus() == "Dead") {
-                    this.vPeople.removeElementAt(i);
-                    //	System.out.println("Work Dead");  // Printing key metrics of infection to check that the model is working
+                if (cPers.cStatus() == CStatus.DEAD) {
+                    this.listPeople.remove(i);
                     i--;
                 }
-                if (cPers.cStatus() == "Recovered") {
-                    cPers.recovered = true;
-                    //	System.out.println("Recovered");  // Printing key metrics of infection to check that the model is working
+                if (cPers.cStatus() == CStatus.RECOVERED) {
+                    cPers.setRecovered(true);
                 }
             }
-            if (time == this.endTime & status != "Dead") {
-                cReturn.addElement(cPers);
-                this.vPeople.removeElementAt(i);
+            if (time == this.endTime && status != CStatus.DEAD) {
+                cReturn.add(cPers);
+                this.listPeople.remove(i);
                 i--;
             }
         }

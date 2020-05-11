@@ -11,7 +11,7 @@ import org.apache.logging.log4j.Logger;
 import uk.co.ramp.covid.simulation.io.ReadWrite;
 import uk.co.ramp.covid.simulation.population.Population;
 
-import java.util.Vector;
+import java.util.ArrayList;
 
 public class RunModel {
 
@@ -20,7 +20,6 @@ public class RunModel {
     public static void main(String[] args) throws Exception {
         // TODO Auto-generated method stub
 
-        LOGGER.info("test");
         RunModel mModel = new RunModel();
 //mModel.runTest();
         mModel.runBaseline();
@@ -29,7 +28,7 @@ public class RunModel {
     }
 
     public void runTest() {
-        System.out.println((1.0 / 7.0) / 24.0);
+        LOGGER.info((1.0 / 7.0) / 24.0);
         Population p = new Population(10000, 3000);
         p.populateHouseholds();
         p.summarisePop();
@@ -41,7 +40,6 @@ public class RunModel {
     }
 
     public void runBaseline() throws Exception { // Run and output the baseline scenarios - with no lockdown
-        //p.setLockdown(40, 100);
         ReadWrite rw = new ReadWrite("ModelOutputs//Baseline20200429//BaselineOut.csv");
         rw.openWritemodel();
         int nIter = 100;
@@ -53,8 +51,8 @@ public class RunModel {
             p.allocatePeople();
             p.seedVirus(10);
 
-            Vector vNext = p.timeStep(365);
-            for (int k = 0; k < vNext.size(); k++) rw.writemodel(i, (String) vNext.elementAt(k));
+            ArrayList<String> vNext = p.timeStep(365);
+            for (String s : vNext) rw.writemodel(i, s);
         }
 
     }
@@ -72,8 +70,8 @@ public class RunModel {
             p.seedVirus(10);
             p.setLockdown(35, 77, 0.8);
 
-            Vector vNext = p.timeStep(365);
-            for (int k = 0; k < vNext.size(); k++) rw.writemodel(i, (String) vNext.elementAt(k));
+            ArrayList<String> vNext = p.timeStep(365);
+            for (String s : vNext) rw.writemodel(i, s);
         }
 
         rw = new ReadWrite("ModelOutputs//Lockdown20200429//Lockdown_35_77_0.5.csv");
@@ -88,8 +86,8 @@ public class RunModel {
             p.seedVirus(10);
             p.setLockdown(35, 77, 0.5);
 
-            Vector vNext = p.timeStep(365);
-            for (int k = 0; k < vNext.size(); k++) rw.writemodel(i, (String) vNext.elementAt(k));
+            ArrayList<String> vNext = p.timeStep(365);
+            for (String s : vNext) rw.writemodel(i, s);
         }
 
     }
@@ -107,8 +105,8 @@ public class RunModel {
             p.seedVirus(10);
             p.setSchoolLockdown(35, 77, 0.8);
 
-            Vector vNext = p.timeStep(365);
-            for (int k = 0; k < vNext.size(); k++) rw.writemodel(i, (String) vNext.elementAt(k));
+            ArrayList<String> vNext = p.timeStep(365);
+            for (String s : vNext) rw.writemodel(i, s);
         }
     }
 

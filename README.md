@@ -1,4 +1,6 @@
-# Contact-Tracing-Model
+# Covid_Simulation_Model
+
+![Java CI with Gradle](https://github.com/ScottishCovidResponse/Covid_Simulation_Model/workflows/Java%20CI%20with%20Gradle/badge.svg)
 
 ## Background
 

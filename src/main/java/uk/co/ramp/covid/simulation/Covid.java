@@ -8,27 +8,24 @@ import org.apache.commons.math3.distribution.PoissonDistribution;
 import uk.co.ramp.covid.simulation.population.*;
 
 public class Covid {
-    public boolean latent;
-    public boolean asymptomatic;
-    public boolean phase1;
-    public boolean phase2;
-    public boolean recovered;
-    public boolean dead;
-    private int meanLatentPeriod;
-    private int meanAsymptomaticPeriod;
-    private int meanP1;
-    private int meanP2;
-    private double transmissionProb;
+    private boolean latent;
+    private boolean asymptomatic;
+    private boolean phase1;
+    private boolean phase2;
+    private boolean recovered;
+    private boolean dead;
+    private final int meanLatentPeriod;
+    private final int meanAsymptomaticPeriod;
+    private final int meanP1;
+    private final int meanP2;
     private int latentPeriod;
     private double asymptomaticPeriod;
     private double p1;
     private double p2;
-    private double mortalityRate;
+    private final double mortalityRate;
     private int infCounter;
     private boolean infected;
-
-
-    private Person ccase;
+    private final Person ccase;
 
     public Covid(Person ccase) {
         this.meanLatentPeriod = 7;
@@ -44,42 +41,57 @@ public class Covid {
 
     }
 
+    public boolean isLatent() {
+        return latent;
+    }
+
+    public boolean isAsymptomatic() {
+        return asymptomatic;
+    }
+
+    public boolean isPhase1() {
+        return phase1;
+    }
+
+    public boolean isPhase2() {
+        return phase2;
+    }
+
+    public boolean isRecovered() {
+        return recovered;
+    }
+
+    public boolean isDead() {
+        return dead;
+    }
+
     // For each infection define the duration of the infection periods
     private void setPeriods() {
         this.latentPeriod = new PoissonDistribution(this.meanLatentPeriod).sample();
         this.asymptomaticPeriod = new PoissonDistribution(this.meanAsymptomaticPeriod).sample();
         this.p1 = new PoissonDistribution(this.meanP1).sample();
         this.p2 = new PoissonDistribution(this.meanP2).sample();
-        if ((this.ccase instanceof Infant || this.ccase instanceof Child) & Math.random() > 0.02) this.p2 = 0;
-        if ((this.ccase instanceof Adult) & Math.random() > 0.15) this.p2 = 0;
-        if ((this.ccase instanceof Pensioner) & Math.random() > 0.8) this.p2 = 0;
+        if ((this.ccase instanceof Infant || this.ccase instanceof Child) && Math.random() > 0.02) this.p2 = 0;
+        if ((this.ccase instanceof Adult) && Math.random() > 0.15) this.p2 = 0;
+        if ((this.ccase instanceof Pensioner) && Math.random() > 0.8) this.p2 = 0;
 
-    }
-
-    public boolean getInfectious() {
-        return this.infected;
     }
 
     // Cycle through the infection for that timestep
-    public String stepInfection() {
+    public CStatus stepInfection() {
         this.infCounter++;
-        //	System.out.println("Inf counter"  + this.infCounter + " Latent period = " + this.latentPeriod);
-        String status = "Latent";
+        CStatus status = CStatus.LATENT;
         if ((this.latentPeriod * 24) > this.infCounter) {
             this.latent = true;
             this.infected = true;
-            //	System.out.println("Latent");
         } else if (((this.latentPeriod + this.asymptomaticPeriod) * 24) > this.infCounter) {
             this.asymptomatic = true;
-            status = "Asymptomatic";
+            status = CStatus.ASYMPTOMATIC;
             this.infected = true;
-
-            //	System.out.println("Asymptomatic " + this.latentPeriod + " Inf counter = " + this.infCounter);
-
         } else if ((this.latentPeriod + this.asymptomaticPeriod + this.p1) * 24 > this.infCounter) {
             this.phase1 = true;
             this.infected = true;
-            status = "Phase 1";
+            status = CStatus.PHASE1;
 
         } else if ((this.latentPeriod + this.asymptomaticPeriod + this.p1 + this.p2) * 24 > this.infCounter) {
             this.phase2 = true;
@@ -88,21 +100,17 @@ public class Covid {
             if (rVal < this.mortalityRate / 24) {
                 this.dead = true;
                 this.infected = false;
-                status = "Dead";
-                //	System.out.println("DEAD " + (this.ccase instanceof Pensioner));
+                status = CStatus.DEAD;
             }
             if (rVal >= this.mortalityRate / 24) {
-                status = "Phase 2";
+                status = CStatus.PHASE2;
                 this.infected = true;
-                //	System.out.println("Phase 2");
             }
         } else if ((this.latentPeriod + this.asymptomaticPeriod + this.p1 + this.p2) * 24 <= this.infCounter) {
             this.recovered = true;
             this.infected = false;
 
-            status = "Recovered";
-            //		System.out.println("RECOVERED = IC" + this.infCounter);
-
+            status = CStatus.RECOVERED;
         }
         return status;
 
