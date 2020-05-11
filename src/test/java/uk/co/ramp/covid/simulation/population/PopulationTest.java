@@ -13,10 +13,7 @@ public class PopulationTest {
         Population p = new Population(populationSize,80);
         p.populateHouseholds();
 
-        // All people should be allocated a home
-        assertTrue("All people allocated to households", p.fullyAllocated());
-
-        // Final population size = initial population size
+        // Final population size = initial population size (all people allocated)
         int pop = 0;
         for (Household h : p.getPopulation()) {
            pop += h.getHouseholdSize();

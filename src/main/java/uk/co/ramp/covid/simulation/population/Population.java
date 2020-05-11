@@ -33,11 +33,7 @@ public class Population {
     private double pPensionerAdult;
     private double pAdultChildren;
     private Person[] aPopulation;
-    private BitSet infantIndex;
-    private BitSet childIndex;
-    private BitSet adultIndex;
-    private BitSet pensionerIndex;
-    private BitSet allocationIndex;
+
     private CommunalPlace[] cPlaces;
     private int[] shopIndexes;
     private int[] restaurantIndexes;
@@ -71,11 +67,6 @@ public class Population {
         this.pPensionerOnly = 0.1;
         this.pPensionerAdult = 0.1;
         this.pAdultChildren = 0.5;
-        this.infantIndex = new BitSet(populationSize); // These are indexes to assign membership to different groups - speeds up searching later
-        this.childIndex = new BitSet(populationSize);
-        this.adultIndex = new BitSet(populationSize);
-        this.pensionerIndex = new BitSet(populationSize);
-        this.allocationIndex = new BitSet(populationSize);
         this.lockdownStart = (-1);
         this.lockdownEnd = (-1);
         this.socialDist = 1.0;
@@ -103,7 +94,8 @@ public class Population {
     }
 
     // Creates the population of People based on the probabilities of age groups above
-    private void createPopulation() {
+    private void createPopulation(BitSet adultIndex, BitSet pensionerIndex,
+                                  BitSet childIndex, BitSet infantIndex) {
         for (int i = 0; i < this.populationSize; i++) {
             double rand = Math.random();
             if (rand < this.pInfants) {
@@ -150,7 +142,8 @@ public class Population {
     }
 
     // Checks we have enough people of the right types to perform a household allocation
-    private boolean householdAllocationPossible() {
+    private boolean householdAllocationPossible(BitSet adultIndex, BitSet pensionerIndex,
+                                                BitSet childIndex, BitSet infantIndex) {
         int adult = 0; int pensioner = 0; int adultPensioner = 0; int adultChild = 0;
         for (Household h : population) {
             switch(h.getnType()) {
@@ -216,12 +209,18 @@ public class Population {
 
     // We populate houseHolds greedily.
     public void populateHouseholds() {
-        this.createHouseholds();
-        this.createPopulation();
+        createHouseholds();
 
-        assert householdAllocationPossible() : "Population distribution cannot populate household distribution";
+        BitSet infantIndex = new BitSet(populationSize);
+        BitSet childIndex = new BitSet(populationSize);
+        BitSet adultIndex = new BitSet(populationSize);
+        BitSet pensionerIndex = new BitSet(populationSize);
 
-        // Note: these destructively update the indices
+        createPopulation(adultIndex, pensionerIndex, childIndex, infantIndex);
+
+        assert householdAllocationPossible(adultIndex, pensionerIndex, childIndex, infantIndex)
+                : "Population distribution cannot populate household distribution";
+
         // Ensures miminal constraints are met
         greedyAllocate(adultIndex, new HashSet<>(Arrays.asList(1, 3, 4)));
         greedyAllocate(pensionerIndex, new HashSet<>(Arrays.asList(2, 3)));
@@ -234,7 +233,7 @@ public class Population {
 
         greedyAllocate(childOrInfant, new HashSet<>(Arrays.asList(4)));
 
-        // set intersections to allow children/infants to be treated independetly again
+        // set intersections to allow children/infants to be treated independently again
         childIndex.and(childOrInfant);
         infantIndex.and(childOrInfant);
         
@@ -643,12 +642,5 @@ public class Population {
 
     public Household[] getPopulation() {
         return population;
-    }
-
-    public boolean fullyAllocated() {
-       return adultIndex.isEmpty()
-               && pensionerIndex.isEmpty()
-               && childIndex.isEmpty()
-               && infantIndex.isEmpty();
     }
 }
