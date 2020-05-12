@@ -1,9 +1,5 @@
 package uk.co.ramp.covid.simulation.population;
 
-
-import com.google.gson.GsonBuilder;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import com.google.gson.Gson;
 
 import java.io.FileReader;
@@ -20,7 +16,6 @@ import java.util.Map;
  * Note: This use of the singleton pattern is not thread safe
  */
 public class PopulationParameters {
-    private static final Logger LOGGER = LogManager.getLogger(Population.class);
     private static PopulationParameters pp = null;
 
     // Proportions of each type of person in the population
@@ -35,7 +30,7 @@ public class PopulationParameters {
             pInfants = 0.08;
             pChildren = 0.2;
             pAdults = 0.5;
-            pPensioners = 1 - pInfants - pChildren - pAdults;
+            pPensioners = 0.22;
         }
 
         @Override
@@ -131,6 +126,7 @@ public class PopulationParameters {
         }
     }
 
+    // Defines the number of types of building per N people
     private class BuildingDistribution {
         public int hospitals;
         public int schools;
@@ -165,16 +161,52 @@ public class PopulationParameters {
         }
     }
 
+    // Probability an Adult works in a particular job
+    private class WorkerAllocation {
+        public double pOffice;
+        public double pShop;
+        public double pHospital;
+        public double pConstruction;
+        public double pTeacher;
+        public double pRestaurant;
+        public double pUnemployed;
+
+        public WorkerAllocation() {
+            pOffice = 0.2;
+            pShop = 0.1;
+            pHospital = 0.1;
+            pConstruction = 0.1;
+            pTeacher = 0.2;
+            pRestaurant = 0.1;
+            pUnemployed = 0.2;
+        }
+
+        @Override
+        public String toString() {
+            return "WorkerAllocation{" +
+                    "pOffice=" + pOffice +
+                    ", pShop=" + pShop +
+                    ", pHospital=" + pHospital +
+                    ", pConstruction=" + pConstruction +
+                    ", pTeacher=" + pTeacher +
+                    ", pRestaurant=" + pRestaurant +
+                    ", pUnemployed=" + pUnemployed +
+                    '}';
+        }
+    }
+
     private final Population population;
     private final Households households;
     private final AdditionalMembersDistributions additionalMembersDistributions;
     private final BuildingDistribution buildingDistribution;
+    private final WorkerAllocation workerAllocation;
 
     private PopulationParameters() {
         population = new Population();
         households = new Households();
         additionalMembersDistributions = new AdditionalMembersDistributions();
         buildingDistribution = new BuildingDistribution();
+        workerAllocation = new WorkerAllocation();
     }
 
     public static PopulationParameters get() {
@@ -209,7 +241,7 @@ public class PopulationParameters {
         return population.pAdults;
     }
 
-    public double getpopulationensioners() {
+    public double getpPensioners() {
         return population.pPensioners;
     }
 
@@ -281,6 +313,34 @@ public class PopulationParameters {
         return buildingDistribution.restaurants;
     }
 
+    public double getpOfficeWorker() {
+        return workerAllocation.pOffice;
+    }
+
+    public double getpShopWorker() {
+        return workerAllocation.pShop;
+    }
+
+    public double getpHospitalWorker() {
+        return workerAllocation.pHospital;
+    }
+
+    public double getpConstructionWorker() {
+        return workerAllocation.pConstruction;
+    }
+
+    public double getpTeacher() {
+        return workerAllocation.pTeacher;
+    }
+
+    public double getpRestaurantWorker() {
+        return workerAllocation.pRestaurant;
+    }
+
+    public double getpUnemployed() {
+        return workerAllocation.pUnemployed;
+    }
+
     @Override
     public String toString() {
         return "PopulationParameters{" + "\n" +
@@ -288,6 +348,7 @@ public class PopulationParameters {
                 households + "\n" +
                 additionalMembersDistributions + "\n" +
                 buildingDistribution + "\n" +
+                workerAllocation + "\n" +
                 '}';
     }
 }

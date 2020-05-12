@@ -45,7 +45,6 @@
             "3":0.3,
             "4":0.2,
             "5":0.1
-
         }
     },
     "buildingDistribution":{
@@ -56,5 +55,14 @@
         "constructionSites":1000,
         "nurseries":2000,
         "restaurants":1000
+    },
+    "workerAllocation":{
+        "pOffice":0.2,
+        "pShop":0.1,
+        "pHospital":0.1,
+        "pConstruction":0.1,
+        "pTeacher":0.2,
+        "pRestaurant":0.1,
+        "pUnemployed":0.2
     }
 }

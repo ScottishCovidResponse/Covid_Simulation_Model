@@ -10,6 +10,7 @@ import org.apache.commons.math3.distribution.PoissonDistribution;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import uk.co.ramp.covid.simulation.place.*;
+import uk.co.ramp.covid.simulation.util.ProbabilityDistribution;
 
 import java.util.*;
 
@@ -71,36 +72,18 @@ public class Population {
 
     // Creates households based on probability of different household types
     private void createHouseholds() {
-        // Java doesn't have built-in Pairs, so we need to define our own
-        class ProbPair  implements Comparable<ProbPair> {
-            public double prob; public int householdType;
-            public ProbPair(double p, int ntype) {
-                prob = p;
-                householdType = ntype;
-            }
-            public int compareTo(ProbPair p) { return Double.compare(prob, p.prob); }
-        };
+        ProbabilityDistribution<Integer> p = new ProbabilityDistribution<Integer>();
+        p.add(PopulationParameters.get().getpAdultOnly(), 1);
+        p.add(PopulationParameters.get().getpPensionerOnly(), 2);
+        p.add(PopulationParameters.get().getpPensionerAdult(), 3);
+        p.add(PopulationParameters.get().getpAdultChildren(), 4);
+        p.add(PopulationParameters.get().getpPensionerChildren(), 5);
+        p.add(PopulationParameters.get().getpAdultPensionerChildren(), 6);
 
-        //  pmap works as an associative list to allow us to easy assign probabilities with any number of household types.
-        List<ProbPair> pmap = new ArrayList();
-        pmap.add(new ProbPair(PopulationParameters.get().getpAdultOnly(), 1));
-        pmap.add(new ProbPair(PopulationParameters.get().getpPensionerOnly(), 2));
-        pmap.add(new ProbPair(PopulationParameters.get().getpPensionerAdult(), 3));
-        pmap.add(new ProbPair(PopulationParameters.get().getpAdultChildren(), 4));
-        pmap.add(new ProbPair(PopulationParameters.get().getpPensionerChildren(), 5));
-        pmap.add(new ProbPair(PopulationParameters.get().getpAdultPensionerChildren(), 6));
-
-        Collections.sort(pmap, Collections.reverseOrder());
 
         for (int i = 0; i < this.nHousehold; i++) {
-            double rand = Math.random();
-            for (ProbPair p : pmap ) {
-                if (rand < p.prob) {
-                    population[i] = new Household(p.householdType);
-                    break;
-                }
-                rand = rand - p.prob;
-            }
+           int ntype = p.sample();
+           population[i] = new Household(ntype);
         }
     }
 
