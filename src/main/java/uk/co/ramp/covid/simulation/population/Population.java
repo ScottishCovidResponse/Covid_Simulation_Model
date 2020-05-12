@@ -433,13 +433,27 @@ public class Population {
             ArrayList<Person> vHouse = cHouse.combVectors();
             for (Person cPers : vHouse) {
                 switch (cPers.cStatus()) {
-                    case HEALTHY -> healthy++;
-                    case LATENT -> exposed++;
-                    case ASYMPTOMATIC -> asymptomatic++;
-                    case PHASE1 -> phase1++;
-                    case PHASE2 -> phase2++;
-                    case RECOVERED -> recovered++;
-                    default -> LOGGER.info("Invalid Status");
+                    case HEALTHY:
+                        healthy++;
+                        break;
+                    case LATENT:
+                        exposed++;
+                        break;
+                    case ASYMPTOMATIC:
+                        asymptomatic++;
+                        break;
+                    case PHASE1:
+                        phase1++;
+                        break;
+                    case PHASE2:
+                        phase2++;
+                        break;
+                    case RECOVERED:
+                        recovered++;
+                        break;
+                    default:
+                        LOGGER.info("Invalid Status");
+                        break;
                 }
             }
             dead += cHouse.getDeaths();
