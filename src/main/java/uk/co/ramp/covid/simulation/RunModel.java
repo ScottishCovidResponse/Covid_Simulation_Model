@@ -6,6 +6,7 @@
 // Testing some changes again
 package uk.co.ramp.covid.simulation;
 
+import com.google.gson.JsonParseException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import uk.co.ramp.covid.simulation.io.ReadWrite;
@@ -21,8 +22,8 @@ public class RunModel {
 
     public static void main(String[] args) throws Exception {
         // TODO: Add additional command line argument parsing
-        if (args.length != 1) {
-            LOGGER.warn("No population parameters file given");
+        if (args.length != 2) {
+            LOGGER.warn("Missing a parameters file");
         } else {
             try {
                 PopulationParameters.readParametersFromFile(args[0]);
@@ -30,9 +31,25 @@ public class RunModel {
                 System.err.println("Chould not read from population parameters file: " + args[0]);
                 System.err.println(e);
             }
+            catch (JsonParseException e) {
+                System.err.println("Chould not parse JSON from population parameters file: " + args[0]);
+                System.err.println(e);
+            }
+
+            try {
+                PopulationParameters.readParametersFromFile(args[1]);
+            } catch (IOException e) {
+                System.err.println("Chould not read from population parameters file: " + args[1]);
+                System.err.println(e);
+            }
+            catch (JsonParseException e) {
+                System.err.println("Chould not parse JSON from population parameters file: " + args[1]);
+                System.err.println(e);
+            }
         }
 
         LOGGER.info(PopulationParameters.get());
+        LOGGER.info(CovidParameters.get());
 
         RunModel mModel = new RunModel();
 //mModel.runTest();

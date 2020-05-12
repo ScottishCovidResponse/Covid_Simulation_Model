@@ -27,9 +27,9 @@ public class Person {
 
     public Person() {
         this.allocated = false;
-        this.transmissionProb = 0.45;
+        this.transmissionProb = PopulationParameters.get().getpTransmission();
         this.mIndex = -1;
-        this.quarantineProb = 0.9;
+        this.quarantineProb = PopulationParameters.get().getpQuarantine();
         this.quarantineVal = Math.random();
     }
 

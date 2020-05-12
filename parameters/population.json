@@ -84,4 +84,8 @@
         "visitFrequency":0.006,
         "expectedNeighbours":3
     }
+    "personProperties":{
+        "pTransmission":0.45,
+        "pQuarantine":0.9
+    }
 }

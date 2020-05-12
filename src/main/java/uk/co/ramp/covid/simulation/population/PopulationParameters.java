@@ -197,6 +197,7 @@ public class PopulationParameters {
     }
 
     private class BuildingProperties {
+        public double pBaseTrans;
         public double pHospitalTrans;
         public double pConstructionSiteTrans;
         public double pNurseryTrans;
@@ -210,6 +211,7 @@ public class PopulationParameters {
         public double pShopKey;
 
         BuildingProperties() {
+            pBaseTrans = 0.45;
             pHospitalTrans = 0.03;
             pConstructionSiteTrans = 0.2;
             pNurseryTrans = 0.044118;
@@ -227,7 +229,8 @@ public class PopulationParameters {
         @Override
         public String toString() {
             return "BuildingProperties{" +
-                    "pHospitalTrans=" + pHospitalTrans +
+                    "pBaseTrans =" + pBaseTrans +
+                    ", pHospitalTrans=" + pHospitalTrans +
                     ", pConstructionSiteTrans=" + pConstructionSiteTrans +
                     ", pNurseryTrans=" + pNurseryTrans +
                     ", pOfficeTrans=" + pOfficeTrans +
@@ -275,6 +278,23 @@ public class PopulationParameters {
         }
     }
 
+    private class PersonProperties {
+        public double pQuarantine;
+        public double pTransmission;
+        PersonProperties() {
+            pQuarantine = 0.9;
+            pTransmission = 0.45;
+        }
+
+        @Override
+        public String toString() {
+            return "PersonProperties{" +
+                    "pQuarantine=" + pQuarantine +
+                    ", pTransmission=" + pTransmission +
+                    '}';
+        }
+    }
+
     private final Population population;
     private final Households households;
     private final AdditionalMembersDistributions additionalMembersDistributions;
@@ -283,6 +303,7 @@ public class PopulationParameters {
     private final BuildingProperties buildingProperties;
     private final InfantAllocation infantAllocation;
     private final NeighbourProperties neighbourProperties;
+    private final PersonProperties personProperties;
 
     private PopulationParameters() {
         population = new Population();
@@ -293,6 +314,7 @@ public class PopulationParameters {
         buildingProperties = new BuildingProperties();
         infantAllocation = new InfantAllocation();
         neighbourProperties = new NeighbourProperties();
+        personProperties = new PersonProperties();
     }
 
     public static PopulationParameters get() {
@@ -428,6 +450,10 @@ public class PopulationParameters {
     }
 
     // Building Properties
+    public double getpBaseTrans() {
+        return buildingProperties.pBaseTrans;
+    }
+
     public double getpHospitalTrans () {
        return buildingProperties.pHospitalTrans;
     }
@@ -485,6 +511,15 @@ public class PopulationParameters {
         return neighbourProperties.expectedNeighbours;
     }
 
+    // Person Properties
+    public double getpQuarantine() {
+        return personProperties.pQuarantine;
+    }
+
+    public double getpTransmission() {
+        return personProperties.pTransmission;
+    }
+
     @Override
     public String toString() {
         return "PopulationParameters{" + "\n" +
@@ -496,6 +531,7 @@ public class PopulationParameters {
                 buildingProperties + "\n" +
                 infantAllocation + "\n" +
                 neighbourProperties + "\n" +
+                personProperties + "\n" +
                 '}';
     }
 }
