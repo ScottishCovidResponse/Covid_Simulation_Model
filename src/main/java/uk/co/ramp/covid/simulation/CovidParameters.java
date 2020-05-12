@@ -24,25 +24,15 @@ public class CovidParameters {
     }
 
     private class DiseaseParameters {
-        public int meanLatentPeriod;
-        public int meanAsymptomaticPeriod;
-        public int meanPhase1DurationMild;
-        public int meanPhase1DurationSevere;
-        public double mortalityRate;
-        public double childProgressionPhase2;
-        public double adultProgressionPhase2;
-        public double pensionerProgressionPhase2;
+        public int meanLatentPeriod = 7;
+        public int meanAsymptomaticPeriod = 1;
+        public int meanPhase1DurationMild = 5;
+        public int meanPhase1DurationSevere = 10;
 
-        DiseaseParameters () {
-            meanLatentPeriod = 7;
-            meanAsymptomaticPeriod = 1;
-            meanPhase1DurationMild = 5;
-            meanPhase1DurationSevere = 10;
-            mortalityRate = 0.01;
-            childProgressionPhase2 = 0.02;
-            adultProgressionPhase2 = 0.15;
-            pensionerProgressionPhase2 = 0.8;
-        }
+        public double mortalityRate = 0.01;
+        public double childProgressionPhase2 = 0.02;
+        public double adultProgressionPhase2 = 0.15;
+        public double pensionerProgressionPhase2 = 0.8;
 
         @Override
         public String toString() {

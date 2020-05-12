@@ -21,18 +21,12 @@ public class PopulationParameters {
 
     // Proportions of each type of person in the population
     private class Population {
-        public double pInfants;
-        public double pChildren;
-        public double pAdults;
-        public double pPensioners;
+        public double pInfants = 0.08;
+        public double pChildren = 0.2;
+        public double pAdults = 0.5;
+        public double pPensioners = 0.22;
 
-        public Population() {
-            // Default parameters
-            pInfants = 0.08;
-            pChildren = 0.2;
-            pAdults = 0.5;
-            pPensioners = 0.22;
-        }
+        public Population() {}
 
         @Override
         public String toString() {
@@ -48,22 +42,12 @@ public class PopulationParameters {
     // Household populations
     // These values define the probability of a household being an adult only, adult and child household etc
     private class Households {
-        public double pAdultOnly;
-        public double pPensionerOnly;
-        public double pPensionerAdult;
-        public double pAdultChildren;
-        public double pPensionerChildren;
-        public double pAdultPensionerChildren;
-
-        public Households() {
-            // Defeault paramerts
-            pAdultOnly = 0.3;
-            pPensionerOnly = 0.1;
-            pPensionerAdult = 0.1;
-            pAdultChildren = 0.3;
-            pPensionerChildren = 0.1;
-            pAdultPensionerChildren = 0.1;
-        }
+        public double pAdultOnly = 0.3;
+        public double pPensionerOnly = 0.1;
+        public double pPensionerAdult = 0.1;
+        public double pAdultChildren = 0.3;
+        public double pPensionerChildren = 0.1;
+        public double pAdultPensionerChildren = 0.1;
 
         @Override
         public String toString() {
@@ -129,24 +113,13 @@ public class PopulationParameters {
 
     // Defines the number of types of building per N people
     private class BuildingDistribution {
-        public int hospitals;
-        public int schools;
-        public int shops;
-        public int offices;
-        public int constructionSites;
-        public int nurseries;
-        public int restaurants;
-
-        public BuildingDistribution() {
-            // Default parameters
-            hospitals = 10000;
-            schools = 2000;
-            shops = 500;
-            offices = 250;
-            constructionSites = 1000;
-            nurseries = 2000;
-            restaurants = 1000;
-        }
+        public int hospitals = 10000;
+        public int schools = 2000;
+        public int shops = 500;
+        public int offices = 250;
+        public int constructionSites = 1000;
+        public int nurseries = 2000;
+        public int restaurants = 1000;
 
         @Override
         public String toString() {
@@ -164,23 +137,13 @@ public class PopulationParameters {
 
     // Probability an Adult works in a particular job
     private class WorkerAllocation {
-        public double pOffice;
-        public double pShop;
-        public double pHospital;
-        public double pConstruction;
-        public double pTeacher;
-        public double pRestaurant;
-        public double pUnemployed;
-
-        public WorkerAllocation() {
-            pOffice = 0.2;
-            pShop = 0.1;
-            pHospital = 0.1;
-            pConstruction = 0.1;
-            pTeacher = 0.2;
-            pRestaurant = 0.1;
-            pUnemployed = 0.2;
-        }
+        public double pOffice = 0.2;
+        public double pShop = 0.1;
+        public double pHospital = 0.1;
+        public double pConstruction = 0.1;
+        public double pTeacher = 0.2;
+        public double pRestaurant = 0.1;
+        public double pUnemployed = 0.2;
 
         @Override
         public String toString() {
@@ -197,34 +160,19 @@ public class PopulationParameters {
     }
 
     private class BuildingProperties {
-        public double pBaseTrans;
-        public double pHospitalTrans;
-        public double pConstructionSiteTrans;
-        public double pNurseryTrans;
-        public double pOfficeTrans;
-        public double pRestaurantTrans;
-        public double pSchoolTrans;
-        public double pShopTrans;
-        public double pHospitalKey;
-        public double pConstructionSiteKey;
-        public double pOfficeKey;
-        public double pShopKey;
+        public double pBaseTrans = 0.45;
+        public double pHospitalTrans = 0.03;
+        public double pConstructionSiteTrans = 0.2;
+        public double pNurseryTrans = 0.044118;
+        public double pOfficeTrans = 0.4;
+        public double pRestaurantTrans = 1;
+        public double pSchoolTrans = 0.044118;
+        public double pShopTrans = 0.2;
 
-        BuildingProperties() {
-            pBaseTrans = 0.45;
-            pHospitalTrans = 0.03;
-            pConstructionSiteTrans = 0.2;
-            pNurseryTrans = 0.044118;
-            pOfficeTrans = 0.4;
-            pRestaurantTrans = 1;
-            pSchoolTrans = 0.044118;
-            pShopTrans = 0.2;
-
-            pHospitalKey = 0;
-            pConstructionSiteKey = 0.5;
-            pOfficeKey = 0.5;
-            pShopKey = 0.5;
-        }
+        public double pHospitalKey = 0;
+        public double pConstructionSiteKey = 0.5;
+        public double pOfficeKey = 0.5;
+        public double pShopKey = 0.5;
 
         @Override
         public String toString() {
@@ -246,11 +194,7 @@ public class PopulationParameters {
     }
 
     private class InfantAllocation {
-        public double pAttendsNursery;
-
-        public InfantAllocation() {
-            pAttendsNursery = 0.5;
-        }
+        public double pAttendsNursery = 0.8;
 
         @Override
         public String toString() {
@@ -261,13 +205,8 @@ public class PopulationParameters {
     }
 
     private class NeighbourProperties {
-        public double neighbourVisitFreq;
-        public int expectedNeighbours;
-
-        public NeighbourProperties() {
-            neighbourVisitFreq = 1.0 / 7.0 / 24.0;
-            expectedNeighbours = 3;
-        }
+        public double neighbourVisitFreq = 1.0 / 7.0 / 24.0;
+        public int expectedNeighbours = 3;
 
         @Override
         public String toString() {
@@ -279,12 +218,8 @@ public class PopulationParameters {
     }
 
     private class PersonProperties {
-        public double pQuarantine;
-        public double pTransmission;
-        PersonProperties() {
-            pQuarantine = 0.9;
-            pTransmission = 0.45;
-        }
+        public double pQuarantine = 0.9;
+        public double pTransmission = 0.45;
 
         @Override
         public String toString() {
@@ -328,6 +263,7 @@ public class PopulationParameters {
         pp = p;
     }
 
+    // Population distribution
     public double getpInfants() {
         return population.pInfants;
     }
@@ -344,6 +280,7 @@ public class PopulationParameters {
         return population.pPensioners;
     }
 
+    // Household allocation parameters
     public double getpAdultOnly() {
         return households.pAdultOnly;
     }
@@ -384,6 +321,7 @@ public class PopulationParameters {
         return additionalMembersDistributions.infantAllocationPMap;
     }
 
+    // Number of buildings of a particular type
     public int getHospitalRatio() {
         return buildingDistribution.hospitals;
     }
@@ -412,6 +350,7 @@ public class PopulationParameters {
         return buildingDistribution.restaurants;
     }
 
+    // Worker job assignment probabilities
     public double getpOfficeWorker() {
         return workerAllocation.pOffice;
     }
