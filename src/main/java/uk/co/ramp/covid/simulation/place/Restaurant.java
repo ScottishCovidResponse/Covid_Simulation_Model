@@ -1,13 +1,14 @@
 package uk.co.ramp.covid.simulation.place;
 
 import uk.co.ramp.covid.simulation.population.Person;
+import uk.co.ramp.covid.simulation.population.PopulationParameters;
 
 import java.util.ArrayList;
 
 public class Restaurant extends CommunalPlace {
     public Restaurant(int cindex) {
         super(cindex);
-        this.transProb = super.transProb * 5d / (5000d / 1000d);
+        this.transProb = PopulationParameters.get().getpRestaurantTrans();
         this.startDay = 1;
         this.endDay = 7;
         this.startTime = 10;

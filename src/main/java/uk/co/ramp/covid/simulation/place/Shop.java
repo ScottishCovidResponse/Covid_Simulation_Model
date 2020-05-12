@@ -1,16 +1,17 @@
 package uk.co.ramp.covid.simulation.place;
 
 import uk.co.ramp.covid.simulation.population.Person;
+import uk.co.ramp.covid.simulation.population.PopulationParameters;
 
 import java.util.ArrayList;
 
 public class Shop extends CommunalPlace {
     public Shop(int cindex) {
         super(cindex);
-        this.transProb = super.transProb * 5d / (5000d / 200d);
+        this.transProb = PopulationParameters.get().getpShopTrans();
         this.startDay = 1;
         this.endDay = 7;
-        this.keyProb = 0.5;
+        this.keyProb = PopulationParameters.get().getpShopKey();
         if (Math.random() > this.keyProb) this.keyPremises = true;
 
     }

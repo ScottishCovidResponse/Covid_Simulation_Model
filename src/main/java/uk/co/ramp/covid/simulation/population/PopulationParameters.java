@@ -195,11 +195,58 @@ public class PopulationParameters {
         }
     }
 
+    private class BuildingProperties {
+        public double pHospitalTrans;
+        public double pConstructionSiteTrans;
+        public double pNurseryTrans;
+        public double pOfficeTrans;
+        public double pRestaurantTrans;
+        public double pSchoolTrans;
+        public double pShopTrans;
+        public double pHospitalKey;
+        public double pConstructionSiteKey;
+        public double pOfficeKey;
+        public double pShopKey;
+
+        BuildingProperties() {
+            pHospitalTrans = 0.03;
+            pConstructionSiteTrans = 0.2;
+            pNurseryTrans = 0.044118;
+            pOfficeTrans = 0.4;
+            pRestaurantTrans = 1;
+            pSchoolTrans = 0.044118;
+            pShopTrans = 0.2;
+
+            pHospitalKey = 0;
+            pConstructionSiteKey = 0.5;
+            pOfficeKey = 0.5;
+            pShopKey = 0.5;
+        }
+
+        @Override
+        public String toString() {
+            return "BuildingProperties{" +
+                    "pHospitalTrans=" + pHospitalTrans +
+                    ", pConstructionSiteTrans=" + pConstructionSiteTrans +
+                    ", pNurseryTrans=" + pNurseryTrans +
+                    ", pOfficeTrans=" + pOfficeTrans +
+                    ", pRestaurantTrans=" + pRestaurantTrans +
+                    ", pSchoolTrans=" + pSchoolTrans +
+                    ", pShopTrans=" + pShopTrans +
+                    ", pHospitalKey=" + pHospitalKey +
+                    ", pConstructionSiteKey=" + pConstructionSiteKey +
+                    ", pOfficeKey=" + pOfficeKey +
+                    ", pShopKey=" + pShopKey +
+                    '}';
+        }
+    }
+
     private final Population population;
     private final Households households;
     private final AdditionalMembersDistributions additionalMembersDistributions;
     private final BuildingDistribution buildingDistribution;
     private final WorkerAllocation workerAllocation;
+    private final BuildingProperties buildingProperties;
 
     private PopulationParameters() {
         population = new Population();
@@ -207,6 +254,7 @@ public class PopulationParameters {
         additionalMembersDistributions = new AdditionalMembersDistributions();
         buildingDistribution = new BuildingDistribution();
         workerAllocation = new WorkerAllocation();
+        buildingProperties = new BuildingProperties();
     }
 
     public static PopulationParameters get() {
@@ -341,6 +389,51 @@ public class PopulationParameters {
         return workerAllocation.pUnemployed;
     }
 
+    // Building Properties
+    public double getpHospitalTrans () {
+       return buildingProperties.pHospitalTrans;
+    }
+
+    public double getpConstructionSiteTrans () {
+       return buildingProperties.pConstructionSiteTrans;
+    }
+
+    public double getpNurseryTrans () {
+       return buildingProperties.pNurseryTrans;
+    }
+
+    public double getpOfficeTrans () {
+       return buildingProperties.pOfficeTrans;
+    }
+
+    public double getpRestaurantTrans () {
+       return buildingProperties.pRestaurantTrans;
+    }
+
+    public double getpSchoolTrans () {
+       return buildingProperties.pSchoolTrans;
+    }
+
+    public double getpShopTrans () {
+       return buildingProperties.pShopTrans;
+    }
+
+    public double getpHospitalKey () {
+            return buildingProperties.pHospitalKey;
+    }
+
+    public double getpConstructionSiteKey () {
+            return buildingProperties.pConstructionSiteKey;
+    }
+
+    public double getpOfficeKey () {
+            return buildingProperties.pOfficeKey;
+    }
+
+    public double getpShopKey () {
+            return buildingProperties.pShopKey;
+    }
+
     @Override
     public String toString() {
         return "PopulationParameters{" + "\n" +
@@ -349,6 +442,7 @@ public class PopulationParameters {
                 additionalMembersDistributions + "\n" +
                 buildingDistribution + "\n" +
                 workerAllocation + "\n" +
+                buildingProperties + "\n" +
                 '}';
     }
 }

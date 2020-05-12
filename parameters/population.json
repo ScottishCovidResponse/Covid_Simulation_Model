@@ -64,5 +64,18 @@
         "pTeacher":0.2,
         "pRestaurant":0.1,
         "pUnemployed":0.2
+    },
+    "buildingPropeties":{
+        "pHospitalTrans":0.03,
+        "pConstructionSiteTrans":0.2,
+        "pNurseryTrans":0.044118,
+        "pOfficeTrans":0.4,
+        "pRestaurantTrans":1,
+        "pSchoolTrans":0.044118,
+        "pShopTrans":0.2,
+        "pHospitalKey":0,
+        "pConstructionSiteKey":0.5,
+        "pOfficeKey":0.5,
+        "pShopKey":0.5
     }
 }
