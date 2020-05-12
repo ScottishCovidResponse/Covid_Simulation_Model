@@ -1,6 +1,5 @@
 package uk.co.ramp.covid.simulation.place;
 
-import junit.framework.TestCase;
 import org.junit.Before;
 import org.junit.Test;
 import uk.co.ramp.covid.simulation.population.Adult;
@@ -38,14 +37,11 @@ public class RestaurantTest {
 
     @Test
     public void testShoppingTrip() {
-
         ArrayList<Person> personList = new ArrayList<>();
         personList.add(new Child());
         restaurant.shoppingTrip(personList);
         int expPeople = 3;
-
         assertEquals("Unexpected number of people in restaurant", expPeople, restaurant.listPeople.size());
-
     }
 
     @Test
@@ -53,7 +49,6 @@ public class RestaurantTest {
         int time = restaurant.endTime - 1;
         ArrayList<Person> personList = restaurant.sendHome(time);
         int expPeople = 2;
-
         assertEquals("Unexpected number of people sent home from restaurant", expPeople, personList.size());
     }
 }

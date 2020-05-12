@@ -1,6 +1,5 @@
 package uk.co.ramp.covid.simulation.place;
 
-import junit.framework.TestCase;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
