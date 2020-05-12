@@ -318,7 +318,8 @@ public class Population {
     private void assignNeighbours() {
         for (int i = 0; i < this.nHousehold; i++) {
             Household cHouse = this.population[i];
-            int nneighbours = new PoissonDistribution(3).sample(); // Sample a number of neighbours based on mean of three neighbours
+            int expectedNeighbours = PopulationParameters.get().getExpectedNeighbours();
+            int nneighbours = new PoissonDistribution(expectedNeighbours).sample();
             int[] neighbourArray = new int[nneighbours];
             for (int k = 0; k < nneighbours; k++) {
                 int nInt = new Random().nextInt(this.nHousehold);
@@ -483,7 +484,7 @@ public class Population {
         if (cHouse.nNeighbours() > 0 && cHouse.getHouseholdSize() > 0) {
             int k = 0;
             while (k < cHouse.nNeighbours()) {
-                if (Math.random() < (1.0 / 7.0 / 24.0)) {
+                if (Math.random() < PopulationParameters.get().getNeighbourVisitFreq()) {
                     visitIndex = k; // This sets the probability of a neighbour visit as once per week
                 }
                 k++;

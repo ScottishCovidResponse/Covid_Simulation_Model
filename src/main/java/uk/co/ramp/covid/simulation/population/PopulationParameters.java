@@ -1,6 +1,7 @@
 package uk.co.ramp.covid.simulation.population;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonParseException;
 
 import java.io.FileReader;
 import java.io.IOException;
@@ -256,6 +257,24 @@ public class PopulationParameters {
         }
     }
 
+    private class NeighbourProperties {
+        public double neighbourVisitFreq;
+        public int expectedNeighbours;
+
+        public NeighbourProperties() {
+            neighbourVisitFreq = 1.0 / 7.0 / 24.0;
+            expectedNeighbours = 3;
+        }
+
+        @Override
+        public String toString() {
+            return "NeighbourProperties{" +
+                    "neighbourVisitFreq=" + neighbourVisitFreq +
+                    ", expectedNeighbours=" + expectedNeighbours +
+                    '}';
+        }
+    }
+
     private final Population population;
     private final Households households;
     private final AdditionalMembersDistributions additionalMembersDistributions;
@@ -263,6 +282,7 @@ public class PopulationParameters {
     private final WorkerAllocation workerAllocation;
     private final BuildingProperties buildingProperties;
     private final InfantAllocation infantAllocation;
+    private final NeighbourProperties neighbourProperties;
 
     private PopulationParameters() {
         population = new Population();
@@ -272,6 +292,7 @@ public class PopulationParameters {
         workerAllocation = new WorkerAllocation();
         buildingProperties = new BuildingProperties();
         infantAllocation = new InfantAllocation();
+        neighbourProperties = new NeighbourProperties();
     }
 
     public static PopulationParameters get() {
@@ -282,7 +303,7 @@ public class PopulationParameters {
     }
 
     /** Read population data from JSON file */
-    public static void readParametersFromFile(String path) throws IOException {
+    public static void readParametersFromFile(String path) throws IOException, JsonParseException {
         Reader file = new FileReader(path);
         Gson gson = new Gson();
         pp = gson.fromJson(file, PopulationParameters.class);
@@ -436,24 +457,32 @@ public class PopulationParameters {
     }
 
     public double getpHospitalKey () {
-            return buildingProperties.pHospitalKey;
+        return buildingProperties.pHospitalKey;
     }
 
     public double getpConstructionSiteKey () {
-            return buildingProperties.pConstructionSiteKey;
+        return buildingProperties.pConstructionSiteKey;
     }
 
     public double getpOfficeKey () {
-            return buildingProperties.pOfficeKey;
+        return buildingProperties.pOfficeKey;
     }
 
     public double getpShopKey () {
-            return buildingProperties.pShopKey;
+        return buildingProperties.pShopKey;
     }
 
     // Infant allocation
     public double getpAttendsNursery() {
-            return infantAllocation.pAttendsNursery;
+        return infantAllocation.pAttendsNursery;
+    }
+
+    // Neighbour properties
+    public double getNeighbourVisitFreq() {
+        return neighbourProperties.neighbourVisitFreq;
+    }
+    public int getExpectedNeighbours() {
+        return neighbourProperties.expectedNeighbours;
     }
 
     @Override
@@ -465,6 +494,8 @@ public class PopulationParameters {
                 buildingDistribution + "\n" +
                 workerAllocation + "\n" +
                 buildingProperties + "\n" +
+                infantAllocation + "\n" +
+                neighbourProperties + "\n" +
                 '}';
     }
 }
