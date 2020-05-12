@@ -16,10 +16,10 @@ import java.util.Random;
 
 public class Household {
     int nType;
-    private final ArrayList<Person> vPeople;
-    private final ArrayList<Person> vDeaths;
-    private int[] neighbourList;
-    private final ArrayList<Person> vVisitors;
+    final ArrayList<Person> vPeople;
+    final ArrayList<Person> vDeaths;
+    int[] neighbourList;
+    final ArrayList<Person> vVisitors;
 
     // Create household defined by who lives there
     public Household(int nType) {
