@@ -9,6 +9,7 @@ package uk.co.ramp.covid.simulation;
 import com.google.gson.JsonParseException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import uk.co.ramp.covid.simulation.io.ParameterReader;
 import uk.co.ramp.covid.simulation.io.ReadWrite;
 import uk.co.ramp.covid.simulation.population.Population;
 import uk.co.ramp.covid.simulation.population.PopulationParameters;
@@ -22,30 +23,22 @@ public class RunModel {
 
     public static void main(String[] args) throws Exception {
         // TODO: Add additional command line argument parsing
-        if (args.length != 2) {
+        if (args.length != 1) {
             LOGGER.warn("Missing a parameters file");
         } else {
             try {
-                PopulationParameters.readParametersFromFile(args[0]);
+                ParameterReader.readParametersFromFile(args[0]);
             } catch (IOException e) {
-                System.err.println("Chould not read from population parameters file: " + args[0]);
+                System.err.println("Chould not read from parameters file: " + args[0]);
                 System.err.println(e);
+                System.exit(1);
             }
             catch (JsonParseException e) {
-                System.err.println("Chould not parse JSON from population parameters file: " + args[0]);
+                System.err.println("Chould not parse JSON from parameters file: " + args[0]);
                 System.err.println(e);
+                System.exit(1);
             }
 
-            try {
-                PopulationParameters.readParametersFromFile(args[1]);
-            } catch (IOException e) {
-                System.err.println("Chould not read from population parameters file: " + args[1]);
-                System.err.println(e);
-            }
-            catch (JsonParseException e) {
-                System.err.println("Chould not parse JSON from population parameters file: " + args[1]);
-                System.err.println(e);
-            }
         }
 
         LOGGER.info(PopulationParameters.get());

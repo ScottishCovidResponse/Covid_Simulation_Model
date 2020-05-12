@@ -324,17 +324,8 @@ public class PopulationParameters {
         return pp;
     }
 
-    /** Read population data from JSON file */
-    public static void readParametersFromFile(String path) throws IOException, JsonParseException {
-        Reader file = new FileReader(path);
-        Gson gson = new Gson();
-        pp = gson.fromJson(file, PopulationParameters.class);
-    }
-
-    public static void printJSON() {
-        Gson gson = new Gson();
-        String j = gson.toJson(PopulationParameters.get());
-        System.out.println(j);
+    public static void setParameters(PopulationParameters p) {
+        pp = p;
     }
 
     public double getpInfants() {

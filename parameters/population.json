@@ -1,4 +1,14 @@
 {
+    "diseaseParameters":{
+            "meanLatentPeriod":7,
+            "meanAsymptomaticPeriod":1,
+            "meanPhase1DurationMild":5,
+            "meanPhase1DurationSevere":10,
+            "mortalityRate":0.01,
+            "childProgressionPhase2":0.02,
+            "adultProgressionPhase2":0.15,
+            "pensionerProgressionPhase2":0.8
+    },
     "population":{
         "pInfants":0.08,
         "pChildren":0.2,
@@ -83,7 +93,7 @@
     "neighbourProperties":{
         "visitFrequency":0.006,
         "expectedNeighbours":3
-    }
+    },
     "personProperties":{
         "pTransmission":0.45,
         "pQuarantine":0.9

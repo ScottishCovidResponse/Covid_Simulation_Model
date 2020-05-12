@@ -66,11 +66,8 @@ public class CovidParameters {
         diseaseParameters = new DiseaseParameters();
     }
 
-    /** Read population data from JSON file */
-    public static void readParametersFromFile(String path) throws IOException, JsonParseException {
-        Reader file = new FileReader(path);
-        Gson gson = new Gson();
-        cparams = gson.fromJson(file, CovidParameters.class);
+    public static void setParameters(CovidParameters p) {
+        cparams = p;
     }
 
     // Getters
