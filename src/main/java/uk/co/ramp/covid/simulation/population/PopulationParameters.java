@@ -241,12 +241,28 @@ public class PopulationParameters {
         }
     }
 
+    private class InfantAllocation {
+        public double pAttendsNursery;
+
+        public InfantAllocation() {
+            pAttendsNursery = 0.5;
+        }
+
+        @Override
+        public String toString() {
+            return "InfantAllocation{" +
+                    "pAttendsNursery=" + pAttendsNursery +
+                    '}';
+        }
+    }
+
     private final Population population;
     private final Households households;
     private final AdditionalMembersDistributions additionalMembersDistributions;
     private final BuildingDistribution buildingDistribution;
     private final WorkerAllocation workerAllocation;
     private final BuildingProperties buildingProperties;
+    private final InfantAllocation infantAllocation;
 
     private PopulationParameters() {
         population = new Population();
@@ -255,6 +271,7 @@ public class PopulationParameters {
         buildingDistribution = new BuildingDistribution();
         workerAllocation = new WorkerAllocation();
         buildingProperties = new BuildingProperties();
+        infantAllocation = new InfantAllocation();
     }
 
     public static PopulationParameters get() {
@@ -432,6 +449,11 @@ public class PopulationParameters {
 
     public double getpShopKey () {
             return buildingProperties.pShopKey;
+    }
+
+    // Infant allocation
+    public double getpAttendsNursery() {
+            return infantAllocation.pAttendsNursery;
     }
 
     @Override

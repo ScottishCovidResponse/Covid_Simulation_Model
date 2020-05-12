@@ -6,6 +6,8 @@ public class Infant extends Person {
     }
 
     private void setNursery() {
-        if (Math.random() < 0.5) super.setNursery(true);
+        if (Math.random() < PopulationParameters.get().getpAttendsNursery()) {
+            super.setNursery(true);
+        }
     }
 }
