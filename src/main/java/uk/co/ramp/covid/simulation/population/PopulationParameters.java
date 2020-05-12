@@ -37,6 +37,16 @@ public class PopulationParameters {
             pAdults = 0.5;
             pPensioners = 1 - pInfants - pChildren - pAdults;
         }
+
+        @Override
+        public String toString() {
+            return "Population{" +
+                    "pInfants=" + pInfants +
+                    ", pChildren=" + pChildren +
+                    ", pAdults=" + pAdults +
+                    ", pPensioners=" + pPensioners +
+                    '}';
+        }
     }
 
     // Household populations
@@ -57,6 +67,18 @@ public class PopulationParameters {
             pAdultChildren = 0.3;
             pPensionerChildren = 0.1;
             pAdultPensionerChildren = 0.1;
+        }
+
+        @Override
+        public String toString() {
+            return "Households{" +
+                    "pAdultOnly=" + pAdultOnly +
+                    ", pPensionerOnly=" + pPensionerOnly +
+                    ", pPensionerAdult=" + pPensionerAdult +
+                    ", pAdultChildren=" + pAdultChildren +
+                    ", pPensionerChildren=" + pPensionerChildren +
+                    ", pAdultPensionerChildren=" + pAdultPensionerChildren +
+                    '}';
         }
     }
 
@@ -97,19 +119,62 @@ public class PopulationParameters {
             infantAllocationPMap.put(4, 0.2);
             infantAllocationPMap.put(5, 0.1);
         }
+
+        @Override
+        public String toString() {
+            return "AdditionalMembersDistributions{" +
+                    "adultAllocationPMap=" + adultAllocationPMap +
+                    ", pensionerAllocationPMap=" + pensionerAllocationPMap +
+                    ", childAllocationPMap=" + childAllocationPMap +
+                    ", infantAllocationPMap=" + infantAllocationPMap +
+                    '}';
+        }
+    }
+
+    private class BuildingDistribution {
+        public int hospitals;
+        public int schools;
+        public int shops;
+        public int offices;
+        public int constructionSites;
+        public int nurseries;
+        public int restaurants;
+
+        public BuildingDistribution() {
+            // Default parameters
+            hospitals = 10000;
+            schools = 2000;
+            shops = 500;
+            offices = 250;
+            constructionSites = 1000;
+            nurseries = 2000;
+            restaurants = 1000;
+        }
+
+        @Override
+        public String toString() {
+            return "BuildingDistribution{" +
+                    "hospitals=" + hospitals +
+                    ", schools=" + schools +
+                    ", shops=" + shops +
+                    ", offices=" + offices +
+                    ", constructionSites=" + constructionSites +
+                    ", nurseries=" + nurseries +
+                    ", restaurants=" + restaurants +
+                    '}';
+        }
     }
 
     private final Population population;
     private final Households households;
     private final AdditionalMembersDistributions additionalMembersDistributions;
+    private final BuildingDistribution buildingDistribution;
 
     private PopulationParameters() {
         population = new Population();
         households = new Households();
         additionalMembersDistributions = new AdditionalMembersDistributions();
-
-        LOGGER.info("Population proportions pensioners = {} Adults = {} Children = {} Infants = {}",
-                population.pPensioners, population.pAdults, population.pChildren, population.pInfants);
+        buildingDistribution = new BuildingDistribution();
     }
 
     public static PopulationParameters get() {
@@ -123,7 +188,7 @@ public class PopulationParameters {
     public static void readParametersFromFile(String path) throws IOException {
         Reader file = new FileReader(path);
         Gson gson = new Gson();
-        gson.fromJson(file, PopulationParameters.class);
+        pp = gson.fromJson(file, PopulationParameters.class);
     }
 
     public static void printJSON() {
@@ -186,5 +251,43 @@ public class PopulationParameters {
 
     public Map<Integer, Double> getInfantAllocationPMap() {
         return additionalMembersDistributions.infantAllocationPMap;
+    }
+
+    public int getHospitalRatio() {
+        return buildingDistribution.hospitals;
+    }
+
+    public int getSchoolsRatio() {
+        return buildingDistribution.schools;
+    }
+
+    public int getShopsRatio() {
+        return buildingDistribution.shops;
+    }
+
+    public int getOfficesRatio() {
+        return buildingDistribution.offices;
+    }
+
+    public int getConstructionSiteRatio() {
+        return buildingDistribution.constructionSites;
+    }
+
+    public int getNurseriesRatio() {
+        return buildingDistribution.nurseries;
+    }
+
+    public int getRestaurantRatio() {
+        return buildingDistribution.restaurants;
+    }
+
+    @Override
+    public String toString() {
+        return "PopulationParameters{" + "\n" +
+                population + "\n" +
+                households + "\n" +
+                additionalMembersDistributions + "\n" +
+                buildingDistribution + "\n" +
+                '}';
     }
 }

@@ -231,13 +231,13 @@ public class Population {
 
     // This creates the Communal places of different types where people mix
     public void createMixing() {
-        int nHospitals = this.populationSize / 10000;
-        int nSchools = this.populationSize / 2000;
-        int nShops = this.populationSize / 500;
-        int nOffices = this.populationSize / 250;
-        int nConstructionSites = this.populationSize / 1000;
-        int nNurseries = this.populationSize / 2000;
-        int nRestaurants = this.populationSize / 1000;
+        int nHospitals = populationSize / PopulationParameters.get().getHospitalRatio();
+        int nSchools = populationSize / PopulationParameters.get().getSchoolsRatio();
+        int nShops = populationSize / PopulationParameters.get().getShopsRatio();
+        int nOffices = populationSize / PopulationParameters.get().getOfficesRatio();
+        int nConstructionSites = populationSize / PopulationParameters.get().getConstructionSiteRatio();
+        int nNurseries = populationSize / PopulationParameters.get().getNurseriesRatio();
+        int nRestaurants = populationSize / PopulationParameters.get().getRestaurantRatio();
         int nEstablishments = nHospitals + nSchools + nShops + nOffices + nConstructionSites + nNurseries + nRestaurants;
         this.shopIndexes = new int[nShops];
         this.restaurantIndexes = new int[nRestaurants];

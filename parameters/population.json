@@ -1,0 +1,60 @@
+{
+    "population":{
+        "pInfants":0.08,
+        "pChildren":0.2,
+        "pAdults":0.5,
+        "pPensioners":0.22
+
+    },
+    "households":{
+        "pAdultOnly":0.3,
+        "pPensionerOnly":0.1,
+        "pPensionerAdult":0.1,
+        "pAdultChildren":0.3,
+        "pPensionerChildren":0.1,
+        "pAdultPensionerChildren":0.1
+    },
+    "additionalMembersDistributions":{
+        "adultAllocationPMap":{
+            "1":0.8,
+            "2":0.5,
+            "3":0.3,
+            "4":0.2,
+            "5":0.1
+
+        },
+        "pensionerAllocationPMap":{
+            "1":0.8,
+            "2":0.5,
+            "3":0.3,
+            "4":0.2,
+            "5":0.1
+
+        },
+        "childAllocationPMap":{
+            "1":0.8,
+            "2":0.5,
+            "3":0.3,
+            "4":0.2,
+            "5":0.1
+
+        },
+        "infantAllocationPMap":{
+            "1":0.8,
+            "2":0.5,
+            "3":0.3,
+            "4":0.2,
+            "5":0.1
+
+        }
+    },
+    "buildingDistribution":{
+        "hospitals":10000,
+        "schools":2000,
+        "shops":500,
+        "offices":250,
+        "constructionSites":1000,
+        "nurseries":2000,
+        "restaurants":1000
+    }
+}
