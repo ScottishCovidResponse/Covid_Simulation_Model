@@ -10,7 +10,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import uk.co.ramp.covid.simulation.io.ReadWrite;
 import uk.co.ramp.covid.simulation.population.Population;
+import uk.co.ramp.covid.simulation.population.PopulationParameters;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class RunModel {
@@ -18,7 +20,17 @@ public class RunModel {
     private static final Logger LOGGER = LogManager.getLogger(RunModel.class);
 
     public static void main(String[] args) throws Exception {
-        // TODO Auto-generated method stub
+        // TODO: Add additional command line argument parsing
+        if (args.length != 1) {
+            LOGGER.warn("No population parameters file given");
+        } else {
+            try {
+                PopulationParameters.readParametersFromFile(args[0]);
+            } catch (IOException e) {
+                System.err.println("Chould not read from population parameters file: " + args[0]);
+                System.err.println(e);
+            }
+        }
 
         RunModel mModel = new RunModel();
 //mModel.runTest();
