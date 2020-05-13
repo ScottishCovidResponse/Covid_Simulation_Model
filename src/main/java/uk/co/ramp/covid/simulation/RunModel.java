@@ -6,11 +6,14 @@
 // Testing some changes again
 package uk.co.ramp.covid.simulation;
 
+import com.google.gson.JsonParseException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import uk.co.ramp.covid.simulation.io.ParameterReader;
 import uk.co.ramp.covid.simulation.io.ReadWrite;
 import uk.co.ramp.covid.simulation.population.Population;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class RunModel {
@@ -18,7 +21,11 @@ public class RunModel {
     private static final Logger LOGGER = LogManager.getLogger(RunModel.class);
 
     public static void main(String[] args) throws Exception {
-        // TODO Auto-generated method stub
+        if (args.length != 1) {
+            LOGGER.warn("Missing a parameters file");
+        } else {
+            readParameters(args[0]);
+        }
 
         RunModel mModel = new RunModel();
 mModel.runTest();
@@ -109,5 +116,20 @@ mModel.runTest();
             for (String s : vNext) rw.writemodel(i, s);
         }
     }
+
+    public static void readParameters(String fpath) {
+        try {
+            ParameterReader.readParametersFromFile(fpath);
+        } catch (IOException e) {
+            System.err.println("Chould not read from parameters file: " + fpath);
+            System.err.println(e);
+            System.exit(1);
+        } catch (JsonParseException e) {
+            System.err.println("Chould not parse JSON from parameters file: " + fpath);
+            System.err.println(e);
+            System.exit(1);
+        }
+    }
+
 
 }

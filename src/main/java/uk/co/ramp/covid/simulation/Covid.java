@@ -27,13 +27,13 @@ public class Covid {
     private final Person ccase;
 
     public Covid(Person ccase) {
-        this.meanLatentPeriod = 7;
-        this.meanAsymptomaticPeriod = 1;
-        this.meanP1 = 5;
-        this.meanP2 = 10;
+        this.meanLatentPeriod = CovidParameters.get().getMeanLatentPeriod();
+        this.meanAsymptomaticPeriod = CovidParameters.get().getMeanAsymptomaticPeriod();
+        this.meanP1 = CovidParameters.get().getMeanPhase1DurationMild();
+        this.meanP2 = CovidParameters.get().getMeanPhase1DurationSevere();
 
         this.ccase = ccase;
-        this.mortalityRate = 0.01;
+        this.mortalityRate = CovidParameters.get().getMortalityRate();
 
         this.infCounter = 0;
         this.setPeriods();
@@ -70,9 +70,18 @@ public class Covid {
         this.asymptomaticPeriod = new PoissonDistribution(this.meanAsymptomaticPeriod).sample();
         this.p1 = new PoissonDistribution(this.meanP1).sample();
         this.p2 = new PoissonDistribution(this.meanP2).sample();
-        if ((this.ccase instanceof Infant || this.ccase instanceof Child) && Math.random() > 0.02) this.p2 = 0;
-        if ((this.ccase instanceof Adult) && Math.random() > 0.15) this.p2 = 0;
-        if ((this.ccase instanceof Pensioner) && Math.random() > 0.8) this.p2 = 0;
+        if ((this.ccase instanceof Infant || this.ccase instanceof Child)
+                && Math.random() > CovidParameters.get().getChildProgressionPhase2()) {
+            this.p2 = 0;
+        }
+        if ((this.ccase instanceof Adult)
+                && Math.random() > CovidParameters.get().getAdultProgressionPhase2()) {
+            this.p2 = 0;
+        }
+        if ((this.ccase instanceof Pensioner)
+                && Math.random() > CovidParameters.get().getPensionerProgressionPhase2()) {
+            this.p2 = 0;
+        }
 
     }
 

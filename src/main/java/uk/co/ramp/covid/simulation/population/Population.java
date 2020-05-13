@@ -10,6 +10,7 @@ import org.apache.commons.math3.distribution.PoissonDistribution;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import uk.co.ramp.covid.simulation.place.*;
+import uk.co.ramp.covid.simulation.util.ProbabilityDistribution;
 
 import java.util.*;
 
@@ -71,36 +72,18 @@ public class Population {
 
     // Creates households based on probability of different household types
     private void createHouseholds() {
-        // Java doesn't have built-in Pairs, so we need to define our own
-        class ProbPair  implements Comparable<ProbPair> {
-            public double prob; public int householdType;
-            public ProbPair(double p, int ntype) {
-                prob = p;
-                householdType = ntype;
-            }
-            public int compareTo(ProbPair p) { return Double.compare(prob, p.prob); }
-        };
+        ProbabilityDistribution<Integer> p = new ProbabilityDistribution<Integer>();
+        p.add(PopulationParameters.get().getpAdultOnly(), 1);
+        p.add(PopulationParameters.get().getpPensionerOnly(), 2);
+        p.add(PopulationParameters.get().getpPensionerAdult(), 3);
+        p.add(PopulationParameters.get().getpAdultChildren(), 4);
+        p.add(PopulationParameters.get().getpPensionerChildren(), 5);
+        p.add(PopulationParameters.get().getpAdultPensionerChildren(), 6);
 
-        //  pmap works as an associative list to allow us to easy assign probabilities with any number of household types.
-        List<ProbPair> pmap = new ArrayList();
-        pmap.add(new ProbPair(PopulationParameters.get().getpAdultOnly(), 1));
-        pmap.add(new ProbPair(PopulationParameters.get().getpPensionerOnly(), 2));
-        pmap.add(new ProbPair(PopulationParameters.get().getpPensionerAdult(), 3));
-        pmap.add(new ProbPair(PopulationParameters.get().getpAdultChildren(), 4));
-        pmap.add(new ProbPair(PopulationParameters.get().getpPensionerChildren(), 5));
-        pmap.add(new ProbPair(PopulationParameters.get().getpAdultPensionerChildren(), 6));
-
-        Collections.sort(pmap, Collections.reverseOrder());
 
         for (int i = 0; i < this.nHousehold; i++) {
-            double rand = Math.random();
-            for (ProbPair p : pmap ) {
-                if (rand < p.prob) {
-                    population[i] = new Household(p.householdType);
-                    break;
-                }
-                rand = rand - p.prob;
-            }
+           int ntype = p.sample();
+           population[i] = new Household(ntype);
         }
     }
 
@@ -231,13 +214,13 @@ public class Population {
 
     // This creates the Communal places of different types where people mix
     public void createMixing() {
-        int nHospitals = this.populationSize / 10000;
-        int nSchools = this.populationSize / 2000;
-        int nShops = this.populationSize / 500;
-        int nOffices = this.populationSize / 250;
-        int nConstructionSites = this.populationSize / 1000;
-        int nNurseries = this.populationSize / 2000;
-        int nRestaurants = this.populationSize / 1000;
+        int nHospitals = populationSize / PopulationParameters.get().getHospitalRatio();
+        int nSchools = populationSize / PopulationParameters.get().getSchoolsRatio();
+        int nShops = populationSize / PopulationParameters.get().getShopsRatio();
+        int nOffices = populationSize / PopulationParameters.get().getOfficesRatio();
+        int nConstructionSites = populationSize / PopulationParameters.get().getConstructionSiteRatio();
+        int nNurseries = populationSize / PopulationParameters.get().getNurseriesRatio();
+        int nRestaurants = populationSize / PopulationParameters.get().getRestaurantRatio();
         int nEstablishments = nHospitals + nSchools + nShops + nOffices + nConstructionSites + nNurseries + nRestaurants;
         this.shopIndexes = new int[nShops];
         this.restaurantIndexes = new int[nRestaurants];
@@ -335,7 +318,8 @@ public class Population {
     private void assignNeighbours() {
         for (int i = 0; i < this.nHousehold; i++) {
             Household cHouse = this.population[i];
-            int nneighbours = new PoissonDistribution(3).sample(); // Sample a number of neighbours based on mean of three neighbours
+            int expectedNeighbours = PopulationParameters.get().getExpectedNeighbours();
+            int nneighbours = new PoissonDistribution(expectedNeighbours).sample();
             int[] neighbourArray = new int[nneighbours];
             for (int k = 0; k < nneighbours; k++) {
                 int nInt = new Random().nextInt(this.nHousehold);
@@ -500,7 +484,7 @@ public class Population {
         if (cHouse.nNeighbours() > 0 && cHouse.getHouseholdSize() > 0) {
             int k = 0;
             while (k < cHouse.nNeighbours()) {
-                if (Math.random() < (1.0 / 7.0 / 24.0)) {
+                if (Math.random() < PopulationParameters.get().getNeighbourVisitFreq()) {
                     visitIndex = k; // This sets the probability of a neighbour visit as once per week
                 }
                 k++;
