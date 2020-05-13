@@ -9,6 +9,7 @@ import org.apache.logging.log4j.Logger;
 import uk.co.ramp.covid.simulation.population.CStatus;
 import uk.co.ramp.covid.simulation.population.Pensioner;
 import uk.co.ramp.covid.simulation.population.Person;
+import uk.co.ramp.covid.simulation.population.PopulationParameters;
 
 import java.util.ArrayList;
 
@@ -34,7 +35,7 @@ public class CommunalPlace {
         this.startDay = 1; // Days of the week that it is active - start
         this.endDay = 5; // Days of the week that it is active - end
         this.cIndex = cIndex; // This sets the index for each Communal Place to avoid searching
-        this.transProb = 0.45; // Pretty important parameter. This defines the transmission rate within this Communal Place
+        this.transProb = PopulationParameters.get().getpBaseTrans(); // Pretty important parameter. This defines the transmission rate within this Communal Place
         this.keyProb = 1.0;
         this.sDistance = 1.0;
         if (Math.random() > this.keyProb) this.keyPremises = true;

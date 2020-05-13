@@ -14,6 +14,10 @@ apply plugin: 'application'
 apply plugin: "org.sonarqube"
 apply plugin: 'jacoco'
 
+java {
+    sourceCompatibility = JavaVersion.VERSION_11
+}
+
 application {
     mainClassName = "uk.co.ramp.covid.simulation.RunModel"
 }
@@ -44,7 +48,7 @@ dependencies {
     implementation 'com.google.guava:guava:28.0-jre'
 
     // Use JUnit test framework
-    testImplementation 'junit:junit:4.12'
+    testImplementation 'junit:junit:4.13'
 }
 
 

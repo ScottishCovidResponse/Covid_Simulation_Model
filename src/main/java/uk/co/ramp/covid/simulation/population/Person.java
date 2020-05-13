@@ -25,9 +25,9 @@ public class Person {
     private final double quarantineVal;
 
     public Person() {
-        this.transmissionProb = 0.45;
+        this.transmissionProb = PopulationParameters.get().getpTransmission();
         this.mIndex = -1;
-        this.quarantineProb = 0.9;
+        this.quarantineProb = PopulationParameters.get().getpQuarantine();
         this.quarantineVal = Math.random();
     }
 
