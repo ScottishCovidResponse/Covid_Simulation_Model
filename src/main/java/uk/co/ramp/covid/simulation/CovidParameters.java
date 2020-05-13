@@ -1,12 +1,8 @@
 package uk.co.ramp.covid.simulation;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonParseException;
-import uk.co.ramp.covid.simulation.population.PopulationParameters;
-
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.Reader;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import java.lang.reflect.Field;
 
 /**
  * PopulationParameters is a singleton class for reading and storing the covid disease parameters
@@ -14,25 +10,24 @@ import java.io.Reader;
  * Note: This use of the singleton pattern is not thread safe
  */
 public class CovidParameters {
+    private static final Logger LOGGER = LogManager.getLogger(CovidParameters.class);
     public static CovidParameters cparams = null;
 
     public static CovidParameters get() {
-        if (cparams == null) {
-            cparams = new CovidParameters();
-        }
+        assert cparams != null : "Parameters have not yet been initialised";
         return cparams;
     }
 
     private static class DiseaseParameters {
-        public int meanLatentPeriod = 7;
-        public int meanAsymptomaticPeriod = 1;
-        public int meanPhase1DurationMild = 5;
-        public int meanPhase1DurationSevere = 10;
+        public Integer meanLatentPeriod = null;
+        public Integer meanAsymptomaticPeriod = null;
+        public Integer meanPhase1DurationMild = null;
+        public Integer meanPhase1DurationSevere = null;
 
-        public double mortalityRate = 0.01;
-        public double childProgressionPhase2 = 0.02;
-        public double adultProgressionPhase2 = 0.15;
-        public double pensionerProgressionPhase2 = 0.8;
+        public Double mortalityRate = null;
+        public Double childProgressionPhase2 = null;
+        public Double adultProgressionPhase2 = null;
+        public Double pensionerProgressionPhase2 = null;
 
         @Override
         public String toString() {
@@ -101,5 +96,33 @@ public class CovidParameters {
         return "CovidParameters{" + "\n" +
                 diseaseParameters + "\n" +
                 '}';
+    }
+
+    public boolean isValid() {
+        ParameterInitialisedChecker checker = new ParameterInitialisedChecker();
+        return checker.isValid(diseaseParameters);
+    }
+
+    public class ParameterInitialisedChecker {
+
+        public boolean isValid (Object o) {
+            try {
+                return fieldsValid(o);
+            } catch (IllegalAccessException e) {
+                LOGGER.warn(e);
+            }
+            return false;
+        }
+
+        private boolean fieldsValid (Object o) throws IllegalAccessException {
+            boolean res = true;
+            for (Field f : o.getClass().getFields()) {
+                if (f.get(o) == null) {
+                    LOGGER.warn("Uninitialised parameter: " + f.getName());
+                    res = false;
+                }
+            }
+            return res;
+        }
     }
 }
