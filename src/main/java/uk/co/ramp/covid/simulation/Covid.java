@@ -24,7 +24,6 @@ public class Covid {
     private double p2;
     private final double mortalityRate;
     private int infCounter;
-    private boolean infected;
     private final Person ccase;
 
     public Covid(Person ccase) {
@@ -92,32 +91,25 @@ public class Covid {
         CStatus status = CStatus.LATENT;
         if ((this.latentPeriod * 24) > this.infCounter) {
             this.latent = true;
-            this.infected = true;
         } else if (((this.latentPeriod + this.asymptomaticPeriod) * 24) > this.infCounter) {
             this.asymptomatic = true;
             status = CStatus.ASYMPTOMATIC;
-            this.infected = true;
         } else if ((this.latentPeriod + this.asymptomaticPeriod + this.p1) * 24 > this.infCounter) {
             this.phase1 = true;
-            this.infected = true;
             status = CStatus.PHASE1;
 
         } else if ((this.latentPeriod + this.asymptomaticPeriod + this.p1 + this.p2) * 24 > this.infCounter) {
             this.phase2 = true;
-            this.infected = true;
             double rVal = Math.random();
             if (rVal < this.mortalityRate / 24) {
                 this.dead = true;
-                this.infected = false;
                 status = CStatus.DEAD;
             }
             if (rVal >= this.mortalityRate / 24) {
                 status = CStatus.PHASE2;
-                this.infected = true;
             }
         } else if ((this.latentPeriod + this.asymptomaticPeriod + this.p1 + this.p2) * 24 <= this.infCounter) {
             this.recovered = true;
-            this.infected = false;
 
             status = CStatus.RECOVERED;
         }
@@ -127,3 +119,4 @@ public class Covid {
 
 
 }
+>>>>>>> edf2ef6f325772d71202fde832afed57f737c94a
