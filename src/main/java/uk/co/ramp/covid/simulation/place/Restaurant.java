@@ -8,12 +8,12 @@ import java.util.ArrayList;
 public class Restaurant extends CommunalPlace {
     public Restaurant(int cindex) {
         super(cindex);
-        this.transProb = PopulationParameters.get().getpRestaurantTrans();
-        this.startDay = 1;
-        this.endDay = 7;
-        this.startTime = 10;
-        this.endTime = 22;
-        this.keyPremises = false;
+        transProb = PopulationParameters.get().getpBaseTrans() * PopulationParameters.get().getpRestaurantTrans();
+        startDay = 1;
+        endDay = 7;
+        startTime = 10;
+        endTime = 22;
+        keyPremises = false;
     }
 
     public void shoppingTrip(ArrayList<Person> vHouse) {

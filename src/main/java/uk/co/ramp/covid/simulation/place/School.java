@@ -7,6 +7,6 @@ public class School extends CommunalPlace {
         super(cindex);
         int startTime = 9;
         int endTime = 15;
-        this.transProb = PopulationParameters.get().getpSchoolTrans();
+        transProb = PopulationParameters.get().getpBaseTrans() * PopulationParameters.get().getpSchoolTrans();
     }
 }

@@ -1,12 +1,14 @@
 package uk.co.ramp.covid.simulation.place;
 
+import uk.co.ramp.covid.simulation.population.PopulationParameters;
+
 public class ConstructionSite extends CommunalPlace {
 
     public ConstructionSite(int cindex) {
         super(cindex);
-        this.transProb = super.transProb * 10d / (5000d / 100d);
-        this.keyProb = 0.5;
-        if (Math.random() > this.keyProb) this.keyPremises = true;
+        transProb = PopulationParameters.get().getpBaseTrans() * PopulationParameters.get().getpConstructionSiteTrans();
+        keyProb = PopulationParameters.get().getpConstructionSiteKey();
+        if (Math.random() > keyProb) keyPremises = true;
 
     }
 }

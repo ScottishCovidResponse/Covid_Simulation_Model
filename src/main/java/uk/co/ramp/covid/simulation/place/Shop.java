@@ -8,11 +8,11 @@ import java.util.ArrayList;
 public class Shop extends CommunalPlace {
     public Shop(int cindex) {
         super(cindex);
-        this.transProb = PopulationParameters.get().getpShopTrans();
-        this.startDay = 1;
-        this.endDay = 7;
-        this.keyProb = PopulationParameters.get().getpShopKey();
-        if (Math.random() > this.keyProb) this.keyPremises = true;
+        transProb = PopulationParameters.get().getpBaseTrans() *  PopulationParameters.get().getpShopTrans();
+        startDay = 1;
+        endDay = 7;
+        keyProb = PopulationParameters.get().getpShopKey();
+        if (Math.random() > keyProb) keyPremises = true;
 
     }
 
