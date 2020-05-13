@@ -1,8 +1,11 @@
 package uk.co.ramp.covid.simulation;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.Assert;
+import uk.co.ramp.covid.simulation.io.ParameterReader;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -43,6 +46,11 @@ public class RunModelTest {
                 sum += values[i];
             return sum;
         }
+    }
+    
+    @Before
+    public void setupParams() throws IOException {
+        ParameterReader.readParametersFromFile("src/test/resources/default_params.json");
     }
 
     @Test
