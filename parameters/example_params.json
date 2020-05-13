@@ -75,6 +75,7 @@
         "pUnemployed":0.2
     },
     "buildingPropeties":{
+        "pBaseTrans":0.45,
         "pHospitalTrans":0.03,
         "pConstructionSiteTrans":0.2,
         "pNurseryTrans":0.044118,
