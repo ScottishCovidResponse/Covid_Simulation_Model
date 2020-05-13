@@ -18,7 +18,6 @@ public class Person {
     private int mIndex;
     private int hIndex;
     private boolean recovered;
-    private boolean allocated;
     private Covid cVirus;
     private final double transmissionProb;
     private boolean quarantine;
@@ -26,7 +25,6 @@ public class Person {
     private final double quarantineVal;
 
     public Person() {
-        this.allocated = false;
         this.transmissionProb = 0.45;
         this.mIndex = -1;
         this.quarantineProb = 0.9;
