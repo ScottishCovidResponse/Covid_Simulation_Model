@@ -21,10 +21,10 @@ public class RunModel {
         // TODO Auto-generated method stub
 
         RunModel mModel = new RunModel();
-//mModel.runTest();
-        mModel.runBaseline();
+mModel.runTest();
+/*        mModel.runBaseline();
         mModel.runLockdown();
-        mModel.runSchoolLockdown();
+        mModel.runSchoolLockdown();*/
     }
 
     public void runTest() {
