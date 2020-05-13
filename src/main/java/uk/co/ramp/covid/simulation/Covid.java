@@ -119,4 +119,3 @@ public class Covid {
 
 
 }
->>>>>>> edf2ef6f325772d71202fde832afed57f737c94a
