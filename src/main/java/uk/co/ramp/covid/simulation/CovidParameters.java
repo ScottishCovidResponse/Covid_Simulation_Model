@@ -59,6 +59,9 @@ public class CovidParameters {
     public static void setParameters(CovidParameters p) {
         cparams = p;
     }
+    public static void clearParameters() {
+        cparams = null;
+    }
 
     // Getters
     public int getMeanLatentPeriod () {

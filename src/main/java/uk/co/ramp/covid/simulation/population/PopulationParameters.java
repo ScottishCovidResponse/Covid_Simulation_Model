@@ -262,6 +262,9 @@ public class PopulationParameters {
     public static void setParameters(PopulationParameters p) {
         pp = p;
     }
+    public static void clearParameters() {
+        pp = null;
+    }
 
     // Population distribution
     public double getpInfants() {

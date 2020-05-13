@@ -3,10 +3,13 @@ Simulation model parameters can be tweaked by creating a
 you only wish to vary a subset of the parameters, then any missing
 parameters are given the specified default value.
 
+The parameters fall into 2 high level categories `disease` or `population`.
+
 An example parameters file is in `example_params.json`
 
-Disease Parameters
-==================
+# Disease
+
+## Disease Parameters
 
 Determines parameters of the (COVID) disease
 
@@ -23,8 +26,8 @@ Determines parameters of the (COVID) disease
 | adultProgressionPhase2     | Daily probability an adult progresses to Phase 2               | Double | 0.15          |
 | pensionerProgressionPhase2 | Daily probability a pensioner progresses to Phase 2            | Double | 0.8           |
 
-Population Parameters
-=====================
+# Population
+## Population Parameters
 
 Determines the distribution of person types in the population. Total of
 all parameters should be 1.
@@ -38,8 +41,7 @@ all parameters should be 1.
 | pAdults        | Probability a person is an adult    | d Double | 0.5           |
 | pPensioners    | Probability a person is a pensioner | Double   | 0.22          |
 
-Person Properties
-=================
+## Person Properties
 
 Determines basic properties of people
 
@@ -50,8 +52,7 @@ Determines basic properties of people
 | pTransmission  | Base transmission rate for a person    | Double | 0.45          |
 | pQuarantine    | Probability a person respects lockdown | Double | 0.9           |
 
-Worker Allocations
-==================
+## Worker Allocations
 
 Determines the probability of an *adult* working in a particular area.
 Distribution should add to 1.
@@ -68,8 +69,7 @@ Distribution should add to 1.
 | pRestaurant    | Probability of working in a restaurant | 0.1    |               |
 | pUnemployed    | Probability of being unemployed        | Double | 0.2           |
 
-Infant Properties
-=================
+## Infant Properties
 
 Determines if an infant should go to nursery or not
 
@@ -79,8 +79,7 @@ Determines if an infant should go to nursery or not
 |-----------------|-----------------------------------------|--------|---------------|
 | pAttendsNursery | Probability an infant goes to a nursery | Double | 0.5           |
 
-Household Parameters
-====================
+## Household Parameters
 
 Determines the distribution of household types, e.g. adult and child
 households. Total of all probabilities should be 1. Note: Child
@@ -97,8 +96,7 @@ households may include either/both children or infants.
 | pPnsionerChildren       | Probability of an pensioner/child household       | Double | 0.1           |
 | pAdultPensionerChildren | Probability of an adult/pensioner/child household | Double | 0.1           |
 
-Household Size Distributions
-============================
+## Household Size Distributions
 
 Determines the probability of adding a person of a particular type to a
 household of a given size. E.g. for adults. 1:0.8, says there is an 80%
@@ -117,8 +115,7 @@ distributions only need to account for household sizes greater than 1.
 | childAllocationPMap     | Probability map for adding additional children to households   | Map (householdSize : probability) | (1:0.8),(2:0.5),(3:0.3),(4:0.2),(5:0.1) |
 | infantAllocationPMap    | Probability map for adding additional infants to households    | Map (householdSize : probability) | (1:0.8),(2:0.5),(3:0.3),(4:0.2),(5:0.1) |
 
-Neighbour Properties
-====================
+## Neighbour Properties
 
 Determines the number and expected visit rate of neighbours
 
@@ -129,8 +126,7 @@ Determines the number and expected visit rate of neighbours
 | visitFrequency     | Probability a neighbour visits in a hour | Double | 0.006         |
 | expectedNeighbours | Expected (Poisson) number of neighbours  | Int    | 3             |
 
-Building Distributions
-======================
+## Building Distributions
 
 Determines the number of buildings, of a particular type, per N people.
 
@@ -146,8 +142,7 @@ Determines the number of buildings, of a particular type, per N people.
 | nurseries         | Nurseries per N people          | Int  | 2000          |
 | restaurants       | Restaurants per N people        | Int  | 1000          |
 
-Building Properties
-===================
+## Building Properties
 
 Determines the transmission properties of particular buildings, and
 whether a particular building must close during a lockdown (i.e. is it

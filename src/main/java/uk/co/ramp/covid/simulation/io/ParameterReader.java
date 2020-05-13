@@ -13,15 +13,17 @@ import java.io.Reader;
  * creates the static parameter classes */
 public class ParameterReader {
 
+    private CovidParameters disease;
+    private PopulationParameters population;
+
     /** Read population data from JSON file */
     public static void readParametersFromFile(String path) throws IOException, JsonParseException {
         Reader file = new FileReader(path);
         Gson gson = new Gson();
 
-        CovidParameters cparams = gson.fromJson(file, CovidParameters.class);
-        PopulationParameters pparams = gson.fromJson(file, PopulationParameters.class);
+        ParameterReader r = gson.fromJson(file, ParameterReader.class);
 
-        CovidParameters.setParameters(cparams);
-        PopulationParameters.setParameters(pparams);
+        CovidParameters.setParameters(r.disease);
+        PopulationParameters.setParameters(r.population);
     }
 }
