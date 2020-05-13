@@ -47,19 +47,23 @@ mModel.runTest();
         p.timeStep(300);
     }
 
+    public ArrayList<String> oneBaselineIter(int populationSize, int nHousehold, int nInfections, int nDays) {
+        Population p = new Population(populationSize, nHousehold);
+        p.populateHouseholds();
+        p.summarisePop();
+        p.createMixing();
+        p.allocatePeople();
+        p.seedVirus(nInfections);
+
+        return p.timeStep(nDays);
+    }
+
     public void runBaseline() throws Exception { // Run and output the baseline scenarios - with no lockdown
         ReadWrite rw = new ReadWrite("ModelOutputs//Baseline20200429//BaselineOut.csv");
         rw.openWritemodel();
         int nIter = 100;
         for (int i = 1; i <= nIter; i++) {
-            Population p = new Population(25000, 7500);
-            p.populateHouseholds();
-            p.summarisePop();
-            p.createMixing();
-            p.allocatePeople();
-            p.seedVirus(10);
-
-            ArrayList<String> vNext = p.timeStep(365);
+            ArrayList<String> vNext = oneBaselineIter(25000, 7500, 10, 365);
             for (String s : vNext) rw.writemodel(i, s);
         }
 
