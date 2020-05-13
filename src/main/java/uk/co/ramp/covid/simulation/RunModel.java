@@ -6,11 +6,14 @@
 // Testing some changes again
 package uk.co.ramp.covid.simulation;
 
+import com.google.gson.JsonParseException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import uk.co.ramp.covid.simulation.io.ParameterReader;
 import uk.co.ramp.covid.simulation.io.ReadWrite;
 import uk.co.ramp.covid.simulation.population.Population;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class RunModel {
