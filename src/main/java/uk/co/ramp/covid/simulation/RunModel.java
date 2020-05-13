@@ -22,23 +22,10 @@ public class RunModel {
     private static final Logger LOGGER = LogManager.getLogger(RunModel.class);
 
     public static void main(String[] args) throws Exception {
-        // TODO: Add additional command line argument parsing
         if (args.length != 1) {
             LOGGER.warn("Missing a parameters file");
         } else {
-            try {
-                ParameterReader.readParametersFromFile(args[0]);
-            } catch (IOException e) {
-                System.err.println("Chould not read from parameters file: " + args[0]);
-                System.err.println(e);
-                System.exit(1);
-            }
-            catch (JsonParseException e) {
-                System.err.println("Chould not parse JSON from parameters file: " + args[0]);
-                System.err.println(e);
-                System.exit(1);
-            }
-
+            readParameters(args[0]);
         }
 
         LOGGER.info(PopulationParameters.get());
@@ -131,6 +118,20 @@ public class RunModel {
 
             ArrayList<String> vNext = p.timeStep(365);
             for (String s : vNext) rw.writemodel(i, s);
+        }
+    }
+
+    public static void readParameters(String fpath) {
+        try {
+            ParameterReader.readParametersFromFile(fpath);
+        } catch (IOException e) {
+            System.err.println("Chould not read from parameters file: " + fpath);
+            System.err.println(e);
+            System.exit(1);
+        } catch (JsonParseException e) {
+            System.err.println("Chould not parse JSON from parameters file: " + fpath);
+            System.err.println(e);
+            System.exit(1);
         }
     }
 
