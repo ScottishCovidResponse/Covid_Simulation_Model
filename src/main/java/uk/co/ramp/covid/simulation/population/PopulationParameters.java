@@ -1,12 +1,5 @@
 package uk.co.ramp.covid.simulation.population;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonParseException;
-
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.Reader;
-import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -20,7 +13,7 @@ public class PopulationParameters {
     private static PopulationParameters pp = null;
 
     // Proportions of each type of person in the population
-    private class Population {
+    private static class Population {
         public double pInfants = 0.08;
         public double pChildren = 0.2;
         public double pAdults = 0.5;
@@ -41,7 +34,7 @@ public class PopulationParameters {
 
     // Household populations
     // These values define the probability of a household being an adult only, adult and child household etc
-    private class Households {
+    private static class Households {
         public double pAdultOnly = 0.3;
         public double pPensionerOnly = 0.1;
         public double pPensionerAdult = 0.1;
@@ -63,7 +56,7 @@ public class PopulationParameters {
     }
 
     // Household allocation probabilities based on household size and type
-    private class AdditionalMembersDistributions {
+    private static class AdditionalMembersDistributions {
         public Map<Integer, Double> adultAllocationPMap;
         public Map<Integer, Double> pensionerAllocationPMap;
         public Map<Integer, Double> childAllocationPMap;
@@ -112,7 +105,7 @@ public class PopulationParameters {
     }
 
     // Defines the number of types of building per N people
-    private class BuildingDistribution {
+    private static class BuildingDistribution {
         public int hospitals = 10000;
         public int schools = 2000;
         public int shops = 500;
@@ -136,7 +129,7 @@ public class PopulationParameters {
     }
 
     // Probability an Adult works in a particular job
-    private class WorkerAllocation {
+    private static class WorkerAllocation {
         public double pOffice = 0.2;
         public double pShop = 0.1;
         public double pHospital = 0.1;
@@ -159,7 +152,7 @@ public class PopulationParameters {
         }
     }
 
-    private class BuildingProperties {
+    private static class BuildingProperties {
         public double pBaseTrans = 0.45;
         public double pHospitalTrans = 0.03;
         public double pConstructionSiteTrans = 0.2;
@@ -193,7 +186,7 @@ public class PopulationParameters {
         }
     }
 
-    private class InfantAllocation {
+    private static class InfantAllocation {
         public double pAttendsNursery = 0.8;
 
         @Override
@@ -204,7 +197,7 @@ public class PopulationParameters {
         }
     }
 
-    private class NeighbourProperties {
+    private static class NeighbourProperties {
         public double neighbourVisitFreq = 1.0 / 7.0 / 24.0;
         public int expectedNeighbours = 3;
 
@@ -217,7 +210,7 @@ public class PopulationParameters {
         }
     }
 
-    private class PersonProperties {
+    private static class PersonProperties {
         public double pQuarantine = 0.9;
         public double pTransmission = 0.45;
 

@@ -23,7 +23,7 @@ public class CovidParameters {
         return cparams;
     }
 
-    private class DiseaseParameters {
+    private static class DiseaseParameters {
         public int meanLatentPeriod = 7;
         public int meanAsymptomaticPeriod = 1;
         public int meanPhase1DurationMild = 5;
