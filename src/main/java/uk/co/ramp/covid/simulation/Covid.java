@@ -14,10 +14,6 @@ public class Covid {
     private boolean phase2;
     private boolean recovered;
     private boolean dead;
-    private final int meanLatentPeriod;
-    private final int meanAsymptomaticPeriod;
-    private final int meanP1;
-    private final int meanP2;
     private int latentPeriod;
     private double asymptomaticPeriod;
     private double p1;
@@ -25,13 +21,28 @@ public class Covid {
     private final double mortalityRate;
     private int infCounter;
     private final Person ccase;
+    
+    private static PoissonDistribution latentPeriodDistribution;
+    private static PoissonDistribution asymptomaticPeriodDistribution;
+    private static PoissonDistribution p1Distribution;
+    private static PoissonDistribution p2Distribution;
 
-    public Covid(Person ccase) {
-        this.meanLatentPeriod = CovidParameters.get().getMeanLatentPeriod();
-        this.meanAsymptomaticPeriod = CovidParameters.get().getMeanAsymptomaticPeriod();
-        this.meanP1 = CovidParameters.get().getMeanPhase1DurationMild();
-        this.meanP2 = CovidParameters.get().getMeanPhase1DurationSevere();
+    private static void getDistributions() {
+        if (latentPeriodDistribution == null || asymptomaticPeriodDistribution == null || p1Distribution == null
+                || p2Distribution == null) {
+            int meanLatentPeriod = CovidParameters.get().getMeanLatentPeriod();
+            int meanAsymptomaticPeriod = CovidParameters.get().getMeanAsymptomaticPeriod();
+            int meanP1 = CovidParameters.get().getMeanPhase1DurationMild();
+            int meanP2 = CovidParameters.get().getMeanPhase1DurationSevere();
 
+            latentPeriodDistribution = new PoissonDistribution(meanLatentPeriod);
+            asymptomaticPeriodDistribution = new PoissonDistribution(meanAsymptomaticPeriod);
+            p1Distribution = new PoissonDistribution(meanP1);
+            p2Distribution = new PoissonDistribution(meanP2);
+        }
+    }
+
+    public Covid(Person ccase) {        
         this.ccase = ccase;
         this.mortalityRate = CovidParameters.get().getMortalityRate();
 
@@ -66,10 +77,12 @@ public class Covid {
 
     // For each infection define the duration of the infection periods
     private void setPeriods() {
-        this.latentPeriod = new PoissonDistribution(this.meanLatentPeriod).sample();
-        this.asymptomaticPeriod = new PoissonDistribution(this.meanAsymptomaticPeriod).sample();
-        this.p1 = new PoissonDistribution(this.meanP1).sample();
-        this.p2 = new PoissonDistribution(this.meanP2).sample();
+        getDistributions();
+
+        this.latentPeriod = latentPeriodDistribution.sample();
+        this.asymptomaticPeriod = asymptomaticPeriodDistribution.sample();
+        this.p1 = p1Distribution.sample();
+        this.p2 = p2Distribution.sample();
         if ((this.ccase instanceof Infant || this.ccase instanceof Child)
                 && Math.random() > CovidParameters.get().getChildProgressionPhase2()) {
             this.p2 = 0;
