@@ -66,7 +66,7 @@ Distribution should add to 1.
 | pHospital      | Probability of working in a hospital   | Double | 0.1           |
 | pConstruction  | Probability of working in construction | Double | 0.1           |
 | pTeacher       | Probability of being a teacher         | Double | 0.2           |
-| pRestaurant    | Probability of working in a restaurant | 0.1    |               |
+| pRestaurant    | Probability of working in a restaurant | Double | 0.1           |
 | pUnemployed    | Probability of being unemployed        | Double | 0.2           |
 
 ## Infant Properties
