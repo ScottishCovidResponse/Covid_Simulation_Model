@@ -18,6 +18,10 @@ java {
     sourceCompatibility = JavaVersion.VERSION_11
 }
 
+run {
+    enableAssertions = true
+}
+
 application {
     mainClassName = "uk.co.ramp.covid.simulation.RunModel"
 }
