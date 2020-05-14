@@ -7,14 +7,16 @@
 package uk.co.ramp.covid.simulation;
 
 import com.google.gson.JsonParseException;
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVPrinter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import uk.co.ramp.covid.simulation.io.ParameterReader;
-import uk.co.ramp.covid.simulation.io.ReadWrite;
 import uk.co.ramp.covid.simulation.population.Population;
 
+import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.List;
 
 public class RunModel {
 
@@ -28,9 +30,9 @@ public class RunModel {
         }
 
         RunModel mModel = new RunModel();
-mModel.runTest();
-/*        mModel.runBaseline();
-        mModel.runLockdown();
+//mModel.runTest();
+       mModel.runBaseline();
+        /*mModel.runLockdown();
         mModel.runSchoolLockdown();*/
     }
 
@@ -46,7 +48,7 @@ mModel.runTest();
         p.timeStep(300);
     }
 
-    public ArrayList<String> oneBaselineIter(int populationSize, int nHousehold, int nInfections, int nDays) {
+    public List<DailyStats> oneBaselineIter(int populationSize, int nHousehold, int nInfections, int nDays) {
         Population p = new Population(populationSize, nHousehold);
         p.populateHouseholds();
         p.summarisePop();
@@ -58,19 +60,15 @@ mModel.runTest();
     }
 
     public void runBaseline() throws Exception { // Run and output the baseline scenarios - with no lockdown
-        ReadWrite rw = new ReadWrite("ModelOutputs//Baseline20200429//BaselineOut.csv");
-        rw.openWritemodel();
-        int nIter = 100;
+        int nIter = 1;
         for (int i = 1; i <= nIter; i++) {
-            ArrayList<String> vNext = oneBaselineIter(25000, 7500, 10, 365);
-            for (String s : vNext) rw.writemodel(i, s);
+            List<DailyStats> stats = oneBaselineIter(250000, 75000, 100, 365);
+            outputCSV("ModelOutputs/Baseline20200429/BaselineOut.csv", i, stats);
         }
 
     }
 
     public void runLockdown() throws Exception { // Run and output the scenarios with simple stop-start lockdown
-        ReadWrite rw = new ReadWrite("ModelOutputs//Lockdown20200429//Lockdown_35_77_0.8.csv");
-        rw.openWritemodel();
         int nIter = 100;
         for (int i = 1; i <= nIter; i++) {
             Population p = new Population(25000, 7500);
@@ -81,12 +79,10 @@ mModel.runTest();
             p.seedVirus(10);
             p.setLockdown(35, 77, 0.8);
 
-            ArrayList<String> vNext = p.timeStep(365);
-            for (String s : vNext) rw.writemodel(i, s);
+            List<DailyStats> stats = p.timeStep(365);
+            outputCSV("ModelOutputs//Lockdown20200429//Lockdown_35_77_0.8.csv", i, stats);
         }
 
-        rw = new ReadWrite("ModelOutputs//Lockdown20200429//Lockdown_35_77_0.5.csv");
-        rw.openWritemodel();
         nIter = 100;
         for (int i = 1; i <= nIter; i++) {
             Population p = new Population(25000, 7500);
@@ -97,15 +93,12 @@ mModel.runTest();
             p.seedVirus(10);
             p.setLockdown(35, 77, 0.5);
 
-            ArrayList<String> vNext = p.timeStep(365);
-            for (String s : vNext) rw.writemodel(i, s);
+            List<DailyStats> stats = p.timeStep(365);
+            outputCSV("ModelOutputs//Lockdown20200429//Lockdown_35_77_0.5.csv", i, stats);
         }
-
     }
 
     public void runSchoolLockdown() throws Exception { // Run and output scenarios with continued lockdown and schools reopening
-        ReadWrite rw = new ReadWrite("ModelOutputs//Lockdown20200429//Lockdown_35_77_0.8_School.csv");
-        rw.openWritemodel();
         int nIter = 100;
         for (int i = 1; i <= nIter; i++) {
             Population p = new Population(25000, 7500);
@@ -116,8 +109,8 @@ mModel.runTest();
             p.seedVirus(10);
             p.setSchoolLockdown(35, 77, 0.8);
 
-            ArrayList<String> vNext = p.timeStep(365);
-            for (String s : vNext) rw.writemodel(i, s);
+            List<DailyStats> stats = p.timeStep(365);
+            outputCSV("ModelOutputs//Lockdown20200429//Lockdown_35_77_0.8_School.csv", i, stats);
         }
     }
 
@@ -135,5 +128,16 @@ mModel.runTest();
         }
     }
 
-
+    public static void outputCSV(String fname, int iter, List<DailyStats> stats) {
+        final String[] headers = {"iter,day,H,L,A,P1,P2,D,R"};
+        try {
+            FileWriter out = new FileWriter(fname);
+            CSVPrinter printer = new CSVPrinter(out, CSVFormat.DEFAULT.withHeader(headers));
+            for (DailyStats s : stats) {
+                s.appendCSV(printer, iter);
+            }
+        } catch (IOException e) {
+            LOGGER.error(e);
+        }
+    }
 }

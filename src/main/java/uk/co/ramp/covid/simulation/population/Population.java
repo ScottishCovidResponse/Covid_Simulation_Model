@@ -9,6 +9,7 @@ package uk.co.ramp.covid.simulation.population;
 import org.apache.commons.math3.distribution.PoissonDistribution;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import uk.co.ramp.covid.simulation.DailyStats;
 import uk.co.ramp.covid.simulation.place.*;
 import uk.co.ramp.covid.simulation.util.ProbabilityDistribution;
 
@@ -343,10 +344,9 @@ public class Population {
     }
 
     // Step through nDays in 1 hour time steps
-    public ArrayList<String> timeStep(int nDays) {
-        ArrayList<String> outV = new ArrayList<>();
+    public List<DailyStats> timeStep(int nDays) {
+        List<DailyStats> stats = new ArrayList<>(nDays);
         for (int i = 0; i < nDays; i++) {
-            LOGGER.info("Day = {}", i);
             int dWeek = (i + 1) % 7;
             this.implementLockdown(i);
             LOGGER.info("Lockdown = {}", this.lockdown);
@@ -358,9 +358,9 @@ public class Population {
                 this.shoppingTrip(dWeek, k);
                 if (!this.rLockdown) this.restaurantTrip(dWeek, k);
             }
-            outV.add(this.processCases(i));
+            stats.add(this.processCases(i));
         }
-        return outV;
+        return stats;
     }
 
     // Basically a method to set the instance variables. Could also do this through an overloaded constructor, but I rather prefer this way of doing things
@@ -404,32 +404,20 @@ public class Population {
     }
 
     // This method generates output at the end of each day
-    private String processCases(int day) {
-        int healthy = 0;
-        int exposed = 0;
-        int asymptomatic = 0;
-        int phase1 = 0;
-        int phase2 = 0;
-        int dead = 0;
-        int recovered = 0;
+    private DailyStats processCases(int day) {
+        DailyStats stats = new DailyStats(day);
 
-        for (Household cHouse : this.population) {
-            ArrayList<Person> vHouse = cHouse.combVectors();
-            for (Person cPers : vHouse) {
-                switch (cPers.cStatus()) {
-                    case HEALTHY: healthy++; break;
-                    case LATENT: exposed++; break;
-                    case ASYMPTOMATIC: asymptomatic++; break;
-                    case PHASE1: phase1++; break;
-                    case PHASE2: phase2++; break;
-                    case RECOVERED: recovered++; break;
-                    default: LOGGER.info("Invalid Status"); break;
-                }
+        for (Household cHouse : population) {
+            for (Person p : cHouse.getInhabitants()) {
+                stats.processPerson(p);
             }
-            dead += cHouse.getDeaths();
+            for (Person p: cHouse.getVisitors()) {
+               stats.processPerson(p);
+            }
+            stats.incrementDeaths(cHouse.getDeaths());
         }
-        LOGGER.info("Healthy = {} Latent = {} Asymptomatic = {} Phase 1 = {} Phase 2 = {} Dead = {} Recovered = {}", healthy, exposed, asymptomatic,phase1, phase2, dead, recovered);
-        return day + "," + healthy + "," + exposed + "," + asymptomatic + "," + phase1 + "," + phase2 + "," + dead + "," + recovered;
+        stats.log();
+        return stats;
     }
 
     // Step through the households to identify individual movements to CommunalPlaces
