@@ -67,7 +67,7 @@ public class CommunalPlace {
     }
 
     // Cycle through the People objects in the Place and test their infection status etc
-    public ArrayList<Person> cyclePlace(int time, int day) {
+    public ArrayList<Person> cyclePlace(int time) {
 
         ArrayList<Person> cReturn = new  ArrayList<>();
         CStatus status = null;

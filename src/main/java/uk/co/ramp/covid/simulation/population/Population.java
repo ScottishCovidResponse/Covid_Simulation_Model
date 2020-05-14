@@ -72,6 +72,7 @@ public class Population {
 
     // Creates households based on probability of different household types
     private void createHouseholds() {
+
         ProbabilityDistribution<Integer> p = new ProbabilityDistribution<Integer>();
         p.add(PopulationParameters.get().getpAdultOnly(), 1);
         p.add(PopulationParameters.get().getpPensionerOnly(), 2);
@@ -79,7 +80,6 @@ public class Population {
         p.add(PopulationParameters.get().getpAdultChildren(), 4);
         p.add(PopulationParameters.get().getpPensionerChildren(), 5);
         p.add(PopulationParameters.get().getpAdultPensionerChildren(), 6);
-
 
         for (int i = 0; i < this.nHousehold; i++) {
            int ntype = p.sample();
@@ -190,16 +190,16 @@ public class Population {
         infantIndex.and(childOrInfant);
 
         probAllocate(adultIndex,
-                new HashSet<Integer>(Arrays.asList(1, 3, 4, 6)),
+                new HashSet<>(Arrays.asList(1, 3, 4, 6)),
                 PopulationParameters.get().getAdultAllocationPMap());
         probAllocate(pensionerIndex,
-                new HashSet<Integer>(Arrays.asList(2, 3, 5, 6)),
+                new HashSet<>(Arrays.asList(2, 3, 5, 6)),
                 PopulationParameters.get().getPensionerAllocationPMap());
         probAllocate(childIndex,
-                new HashSet<Integer>(Arrays.asList(4, 5, 6)),
+                new HashSet<>(Arrays.asList(4, 5, 6)),
                 PopulationParameters.get().getChildAllocationPMap());
         probAllocate(infantIndex,
-                new HashSet<Integer>(Arrays.asList(4, 5, 6)),
+                new HashSet<>(Arrays.asList(4, 5, 6)),
                 PopulationParameters.get().getInfantAllocationPMap());
     }
 
@@ -352,7 +352,7 @@ public class Population {
             LOGGER.info("Lockdown = {}", this.lockdown);
             for (int k = 0; k < 24; k++) {
                 this.cycleHouseholds(dWeek, k);
-                this.cyclePlaces(dWeek, k);
+                this.cyclePlaces(k);
                 this.returnShoppers(k);
                 this.returnRestaurant(k);
                 this.shoppingTrip(dWeek, k);
@@ -468,9 +468,9 @@ public class Population {
     }
 
     // People returning ome at the end of the day
-    private void cyclePlaces(int day, int hour) {
+    private void cyclePlaces(int hour) {
         for (CommunalPlace cPlace : this.cPlaces) {
-            ArrayList<Person> retPeople = cPlace.cyclePlace(hour, day);
+            ArrayList<Person> retPeople = cPlace.cyclePlace(hour);
             for (Person cPers : retPeople) {
                 population[cPers.getHIndex()].addPerson(cPers);
             }
