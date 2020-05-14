@@ -10,19 +10,20 @@ import com.google.gson.JsonParseException;
 import org.apache.commons.math3.random.RandomDataGenerator;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import uk.co.ramp.covid.simulation.imported.utils.RandomSingleton;
 import uk.co.ramp.covid.simulation.io.ParameterReader;
 import uk.co.ramp.covid.simulation.io.ReadWrite;
 import uk.co.ramp.covid.simulation.population.Population;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 public class RunModel {
 
     private static final Logger LOGGER = LogManager.getLogger(RunModel.class);
-    private static RandomDataGenerator rng;
+    private static final Map<Integer, RandomDataGenerator> map = new HashMap<>();
     private static int sid;
 
     public RunModel() {
@@ -140,7 +141,12 @@ mModel.runTest();
     }
 
     public static RandomDataGenerator getRng() {
-        return RandomSingleton.getInstance(sid);
+        map.computeIfAbsent(sid, f -> {
+            RandomDataGenerator rnd = new RandomDataGenerator();
+            rnd.reSeed(sid);
+            return rnd;
+        });
+        return map.get(sid);
     }
 
     public static void readParameters(String fpath) {

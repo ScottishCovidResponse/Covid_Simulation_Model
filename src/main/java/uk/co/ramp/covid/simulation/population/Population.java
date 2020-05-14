@@ -6,7 +6,6 @@
 
 package uk.co.ramp.covid.simulation.population;
 
-import org.apache.commons.math3.distribution.PoissonDistribution;
 import org.apache.commons.math3.random.RandomDataGenerator;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
