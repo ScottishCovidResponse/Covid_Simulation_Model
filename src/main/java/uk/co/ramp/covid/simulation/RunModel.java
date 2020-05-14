@@ -23,24 +23,19 @@ public class RunModel {
     private static final Logger LOGGER = LogManager.getLogger(RunModel.class);
 
     public static void main(String[] args) throws Exception {
-        if (args.length != 1) {
+        if (args.length != 2) {
             LOGGER.warn("Missing a parameters file");
+            System.exit(-1);
         } else {
             readParameters(args[0]);
+            Model m  = Model.readModelFromFile(args[1]);
+            if (!m.isValid()) {
+                LOGGER.warn("Could not read model parameters");
+                System.exit(-1);
+            } else {
+                m.run();
+            }
         }
-
-        // Example model run
-        Model m = new Model()
-                .setIters(1)
-                .setnDays(365)
-                .setPopulationSize(10000)
-                .setnHouseholds(3000)
-                .setnInfections(10)
-                .setOutputFile("ModelOutputs/Baseline20200429/BaselineOut.csv");
-                //.setLockdown(40,80,0.9);
-                //.setSchoolLockdown(40,80,0.9);
-
-        m.run();
     }
 
 
