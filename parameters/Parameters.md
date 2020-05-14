@@ -1,7 +1,5 @@
 Simulation model parameters can be tweaked by creating a
-`parameters.json` file with the parameters specified below. In the case
-you only wish to vary a subset of the parameters, then any missing
-parameters are given the specified default value.
+`parameters.json` file with the parameters specified below.
 
 The parameters fall into 2 high level categories `disease` or `population`.
 
