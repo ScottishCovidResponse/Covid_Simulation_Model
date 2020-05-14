@@ -7,6 +7,7 @@
 
 package uk.co.ramp.covid.simulation.place;
 
+import uk.co.ramp.covid.simulation.DailyStats;
 import uk.co.ramp.covid.simulation.population.CStatus;
 import uk.co.ramp.covid.simulation.population.Person;
 
@@ -104,7 +105,7 @@ public class Household {
     }
 
     // Go through the household at each time step and see what they get up to
-    public ArrayList<Person> cycleHouse() {
+    public ArrayList<Person> cycleHouse(DailyStats stats) {
         ArrayList<Person> hVector = this.combVectors();
         for (int i = 0; i < hVector.size(); i++) {
             Person cPers = hVector.get(i);
@@ -115,7 +116,10 @@ public class Household {
                         if (k != i) {
                             Person nPers = hVector.get(k);
                             if (!nPers.getInfectionStatus()) {
-                                nPers.infChallenge(1);
+                                boolean infected = nPers.infChallenge(1);
+                                if (infected) {
+                                    stats.infectedHome();
+                                }
                             }
                         }
                     }

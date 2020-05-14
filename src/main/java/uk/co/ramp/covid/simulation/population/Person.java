@@ -142,10 +142,12 @@ public class Person {
         return this.cVirus.stepInfection();
     }
 
-    public void infChallenge(double challengeProb) {
+    public boolean infChallenge(double challengeProb) {
         if (Math.random() < this.transmissionProb / 24 * challengeProb) {
             this.cVirus = new Covid(this);
+            return true;
         }
+        return false;
     }
 
     // This method is pretty important, it returns the Covid infection status

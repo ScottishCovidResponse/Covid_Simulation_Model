@@ -6,6 +6,7 @@ package uk.co.ramp.covid.simulation.place;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import uk.co.ramp.covid.simulation.DailyStats;
 import uk.co.ramp.covid.simulation.population.CStatus;
 import uk.co.ramp.covid.simulation.population.Pensioner;
 import uk.co.ramp.covid.simulation.population.Person;
@@ -67,7 +68,7 @@ public class CommunalPlace {
     }
 
     // Cycle through the People objects in the Place and test their infection status etc
-    public ArrayList<Person> cyclePlace(int time, int day) {
+    public ArrayList<Person> cyclePlace(int time, int day, DailyStats stats) {
 
         ArrayList<Person> cReturn = new  ArrayList<>();
         CStatus status = null;
@@ -80,7 +81,10 @@ public class CommunalPlace {
                         if (k != i) {
                             Person nPers = this.listPeople.get(k);
                             if (!nPers.getInfectionStatus()) {
-                                nPers.infChallenge(this.transProb * this.sDistance);
+                                boolean infected = nPers.infChallenge(this.transProb * this.sDistance);
+                                if (infected) {
+                                    stats.infectedPlace(this);
+                                }
                             }
                         }
                     }
