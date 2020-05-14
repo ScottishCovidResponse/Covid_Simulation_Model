@@ -33,6 +33,7 @@ public class Model {
     private int nInfections;
     private int nDays;
     private int nIters;
+    private int rngSeed;
     private String outputFile;
     private Lockdown lockDown = null;
     private Lockdown schoolLockDown = null;
@@ -62,6 +63,11 @@ public class Model {
 
     public Model setIters(int iters) {
         this.nIters = iters;
+        return this;
+    }
+
+    public Model setRNGSeed(int seed) {
+        this.rngSeed = seed;
         return this;
     }
 
