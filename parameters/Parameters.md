@@ -18,7 +18,7 @@ Determines parameters of the (COVID) disease
 | meanLatentPeriod           | Expected (Poisson) disease latent period                       | Int    |
 | meanAsymptomaticPeriod     | Expected (Poisson) disease asymptomatic period                 | Int    |
 | meanPhase1DurationMild     | Expected (Poisson) disease phase 1 duration (mild symptoms)    | Int    |
-| meanPhase1DurationSeverse  | Expected (Poisson) disease phase 1 duration (severse symptoms) | Int    |
+| meanPhase1DurationSeverse  | Expected (Poisson) disease phase 1 duration (severe symptoms)  | Int    |
 | mortalityRate              | Daily probability of death (Phase 2)                           | Double |
 | childProgressionPhase2     | Daily probability a child progresses to Phase 2                | Double |
 | adultProgressionPhase2     | Daily probability an adult progresses to Phase 2               | Double |
