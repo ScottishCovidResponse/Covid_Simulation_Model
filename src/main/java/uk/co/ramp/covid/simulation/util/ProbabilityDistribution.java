@@ -1,5 +1,7 @@
 package uk.co.ramp.covid.simulation.util;
 
+import org.apache.commons.math3.random.RandomDataGenerator;
+import uk.co.ramp.covid.simulation.RunModel;
 import uk.co.ramp.covid.simulation.place.Household;
 import uk.co.ramp.covid.simulation.population.PopulationParameters;
 
@@ -28,10 +30,12 @@ public class ProbabilityDistribution<T> {
     private List<ProbPair> pmap;
     private double totalProb;
     private final double EPSILON = 0.0000001;
+    private final RandomDataGenerator rng;
 
     public ProbabilityDistribution() {
         pmap = new ArrayList();
         totalProb = 0.0;
+        this.rng = RunModel.getRng();
     }
 
     /**
@@ -50,7 +54,7 @@ public class ProbabilityDistribution<T> {
         assert totalProb > 1 - EPSILON || totalProb < 1 + EPSILON
                 : "Trying to sample from a distribution that does not have a total probability of 1";
 
-        double rand = Math.random();
+        double rand = rng.nextUniform(0, 1);
         for (ProbPair p : pmap) {
             if (rand <= p.prob) {
                 return p.val;

@@ -3,6 +3,7 @@ package uk.co.ramp.covid.simulation.place;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import uk.co.ramp.covid.simulation.RunModel;
 import uk.co.ramp.covid.simulation.population.Person;
 
 import static org.junit.Assert.assertEquals;
@@ -16,6 +17,7 @@ public class HouseholdTest {
 
     @Before
     public void initialise() {
+        RunModel runModel = new RunModel(123);
         household = new Household(1);
         Person p1 = new Person();
         Person p2 = new Person();
