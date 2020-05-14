@@ -4,7 +4,7 @@
 
 package uk.co.ramp.covid.simulation;
 
-import org.apache.commons.math3.distribution.PoissonDistribution;
+import org.apache.commons.math3.random.RandomDataGenerator;
 import uk.co.ramp.covid.simulation.population.*;
 
 public class Covid {
@@ -25,8 +25,10 @@ public class Covid {
     private final double mortalityRate;
     private int infCounter;
     private final Person ccase;
+    private final RandomDataGenerator rng;
 
     public Covid(Person ccase) {
+        this.rng = RunModel.getRng();
         this.meanLatentPeriod = CovidParameters.get().getMeanLatentPeriod();
         this.meanAsymptomaticPeriod = CovidParameters.get().getMeanAsymptomaticPeriod();
         this.meanP1 = CovidParameters.get().getMeanPhase1DurationMild();
@@ -66,20 +68,21 @@ public class Covid {
 
     // For each infection define the duration of the infection periods
     private void setPeriods() {
-        this.latentPeriod = new PoissonDistribution(this.meanLatentPeriod).sample();
-        this.asymptomaticPeriod = new PoissonDistribution(this.meanAsymptomaticPeriod).sample();
-        this.p1 = new PoissonDistribution(this.meanP1).sample();
-        this.p2 = new PoissonDistribution(this.meanP2).sample();
+        this.latentPeriod = (int) rng.nextPoisson(this.meanLatentPeriod);
+        this.latentPeriod = (int) rng.nextPoisson(this.meanAsymptomaticPeriod);
+
+        this.p1 = rng.nextPoisson(this.meanP1);
+        this.p2 = rng.nextPoisson(this.meanP2);
         if ((this.ccase instanceof Infant || this.ccase instanceof Child)
-                && Math.random() > CovidParameters.get().getChildProgressionPhase2()) {
+                && rng.nextUniform(0, 1) > CovidParameters.get().getChildProgressionPhase2()) {
             this.p2 = 0;
         }
         if ((this.ccase instanceof Adult)
-                && Math.random() > CovidParameters.get().getAdultProgressionPhase2()) {
+                && rng.nextUniform(0, 1) > CovidParameters.get().getAdultProgressionPhase2()) {
             this.p2 = 0;
         }
         if ((this.ccase instanceof Pensioner)
-                && Math.random() > CovidParameters.get().getPensionerProgressionPhase2()) {
+                && rng.nextUniform(0, 1) > CovidParameters.get().getPensionerProgressionPhase2()) {
             this.p2 = 0;
         }
 
@@ -100,7 +103,7 @@ public class Covid {
 
         } else if ((this.latentPeriod + this.asymptomaticPeriod + this.p1 + this.p2) * 24 > this.infCounter) {
             this.phase2 = true;
-            double rVal = Math.random();
+            double rVal = rng.nextUniform(0, 1);
             if (rVal < this.mortalityRate / 24) {
                 this.dead = true;
                 status = CStatus.DEAD;

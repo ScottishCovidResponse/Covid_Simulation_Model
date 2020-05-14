@@ -7,6 +7,8 @@
 
 package uk.co.ramp.covid.simulation.place;
 
+import org.apache.commons.math3.random.RandomDataGenerator;
+import uk.co.ramp.covid.simulation.RunModel;
 import uk.co.ramp.covid.simulation.population.CStatus;
 import uk.co.ramp.covid.simulation.population.Person;
 
@@ -20,9 +22,11 @@ public class Household {
     final ArrayList<Person> vDeaths;
     int[] neighbourList;
     final ArrayList<Person> vVisitors;
+    private final RandomDataGenerator rng;
 
     // Create household defined by who lives there
     public Household(int nType) {
+        this.rng = RunModel.getRng();
         this.nType = nType;
         this.vPeople = new ArrayList<>();
         this.vDeaths = new ArrayList<>();
@@ -58,7 +62,7 @@ public class Household {
     }
 
     public boolean seedInfection() {
-        Person cPers = this.vPeople.get(new Random().nextInt(this.getHouseholdSize()));
+        Person cPers = this.vPeople.get(rng.nextInt(0, this.getHouseholdSize() - 1));
         return cPers.infect();
     }
 
@@ -133,7 +137,7 @@ public class Household {
         ArrayList<Person> vGoHome = new ArrayList<>();
 
         for (int i = 0; i < this.vVisitors.size(); i++) {
-            if (Math.random() < 0.5) { // Assumes a 50% probability that people will go home each hour
+            if (rng.nextUniform(0, 1) < 0.5) { // Assumes a 50% probability that people will go home each hour
                 Person nPers = this.vVisitors.get(i);
                 if (nPers.cStatus() == CStatus.DEAD) {
                     this.vVisitors.remove(i);
