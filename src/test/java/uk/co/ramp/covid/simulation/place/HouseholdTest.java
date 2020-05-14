@@ -3,11 +3,17 @@ package uk.co.ramp.covid.simulation.place;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+
+import com.google.gson.JsonParseException;
+
 import uk.co.ramp.covid.simulation.RunModel;
+import uk.co.ramp.covid.simulation.io.ParameterReader;
 import uk.co.ramp.covid.simulation.population.Person;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+
+import java.io.IOException;
 
 public class HouseholdTest {
 
@@ -16,8 +22,9 @@ public class HouseholdTest {
     int[] neighbourArray;
 
     @Before
-    public void initialise() {
-        RunModel runModel = new RunModel(123);
+    public void initialise() throws JsonParseException, IOException {
+        ParameterReader.readParametersFromFile("parameters/example_params.json");
+        new RunModel(123);
         household = new Household(1);
         Person p1 = new Person();
         Person p2 = new Person();
