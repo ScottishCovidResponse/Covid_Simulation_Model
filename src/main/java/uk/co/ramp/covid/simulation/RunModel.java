@@ -36,7 +36,8 @@ public class RunModel {
 
     public static void main(String[] args) throws Exception {
         if (args.length != 1) {
-            LOGGER.warn("Missing a parameters file");
+            LOGGER.error("Missing parameters file");
+            System.exit(-1);
         } else {
             readParameters(args[0]);
         }

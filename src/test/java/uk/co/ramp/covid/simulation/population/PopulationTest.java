@@ -1,11 +1,20 @@
 package uk.co.ramp.covid.simulation.population;
 
+import org.junit.Before;
 import org.junit.Test;
+import uk.co.ramp.covid.simulation.io.ParameterReader;
 import uk.co.ramp.covid.simulation.place.Household;
+
+import java.io.IOException;
 
 import static org.junit.Assert.*;
 
 public class PopulationTest {
+
+    @Before
+    public void setupParams() throws IOException {
+        ParameterReader.readParametersFromFile("src/test/resources/default_params.json");
+    }
 
     @Test
     public void populateHouseholds() {

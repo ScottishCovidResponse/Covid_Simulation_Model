@@ -1,6 +1,9 @@
 package uk.co.ramp.covid.simulation.population;
 
-import java.util.HashMap;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import java.lang.reflect.Field;
 import java.util.Map;
 
 /**
@@ -10,16 +13,15 @@ import java.util.Map;
  * Note: This use of the singleton pattern is not thread safe
  */
 public class PopulationParameters {
+    private static final Logger LOGGER = LogManager.getLogger(PopulationParameters.class);
     private static PopulationParameters pp = null;
 
     // Proportions of each type of person in the population
     private static class Population {
-        public double pInfants = 0.08;
-        public double pChildren = 0.2;
-        public double pAdults = 0.5;
-        public double pPensioners = 0.22;
-
-        public Population() {}
+        public Double pInfants = null;
+        public Double pChildren = null;
+        public Double pAdults = null;
+        public Double pPensioners = null;
 
         @Override
         public String toString() {
@@ -35,12 +37,12 @@ public class PopulationParameters {
     // Household populations
     // These values define the probability of a household being an adult only, adult and child household etc
     private static class Households {
-        public double pAdultOnly = 0.3;
-        public double pPensionerOnly = 0.1;
-        public double pPensionerAdult = 0.1;
-        public double pAdultChildren = 0.3;
-        public double pPensionerChildren = 0.1;
-        public double pAdultPensionerChildren = 0.1;
+        public Double pAdultOnly = null;
+        public Double pPensionerOnly = null;
+        public Double pPensionerAdult = null;
+        public Double pAdultChildren = null;
+        public Double pPensionerChildren = null;
+        public Double pAdultPensionerChildren = null;
 
         @Override
         public String toString() {
@@ -53,45 +55,17 @@ public class PopulationParameters {
                     ", pAdultPensionerChildren=" + pAdultPensionerChildren +
                     '}';
         }
+
     }
 
     // Household allocation probabilities based on household size and type
     private static class AdditionalMembersDistributions {
-        public Map<Integer, Double> adultAllocationPMap;
-        public Map<Integer, Double> pensionerAllocationPMap;
-        public Map<Integer, Double> childAllocationPMap;
-        public Map<Integer, Double> infantAllocationPMap;
+        public Map<Integer, Double> adultAllocationPMap = null;
+        public Map<Integer, Double> pensionerAllocationPMap = null;
+        public Map<Integer, Double> childAllocationPMap = null;
+        public Map<Integer, Double> infantAllocationPMap = null;
 
-        public AdditionalMembersDistributions() {
-            // Default parameters
-            adultAllocationPMap = new HashMap<>();
-            adultAllocationPMap.put(1, 0.8);
-            adultAllocationPMap.put(2, 0.5);
-            adultAllocationPMap.put(3, 0.3);
-            adultAllocationPMap.put(4, 0.2);
-            adultAllocationPMap.put(5, 0.1);
-
-            pensionerAllocationPMap = new HashMap<>();
-            pensionerAllocationPMap.put(1, 0.8);
-            pensionerAllocationPMap.put(2, 0.5);
-            pensionerAllocationPMap.put(3, 0.3);
-            pensionerAllocationPMap.put(4, 0.2);
-            pensionerAllocationPMap.put(5, 0.1);
-
-            childAllocationPMap = new HashMap<>();
-            childAllocationPMap.put(1, 0.8);
-            childAllocationPMap.put(2, 0.5);
-            childAllocationPMap.put(3, 0.3);
-            childAllocationPMap.put(4, 0.2);
-            childAllocationPMap.put(5, 0.1);
-
-            infantAllocationPMap = new HashMap<>();
-            infantAllocationPMap.put(1, 0.8);
-            infantAllocationPMap.put(2, 0.5);
-            infantAllocationPMap.put(3, 0.3);
-            infantAllocationPMap.put(4, 0.2);
-            infantAllocationPMap.put(5, 0.1);
-        }
+        public AdditionalMembersDistributions() {}
 
         @Override
         public String toString() {
@@ -102,17 +76,18 @@ public class PopulationParameters {
                     ", infantAllocationPMap=" + infantAllocationPMap +
                     '}';
         }
+
     }
 
     // Defines the number of types of building per N people
     private static class BuildingDistribution {
-        public int hospitals = 10000;
-        public int schools = 2000;
-        public int shops = 500;
-        public int offices = 250;
-        public int constructionSites = 1000;
-        public int nurseries = 2000;
-        public int restaurants = 1000;
+        public Integer hospitals = null;
+        public Integer schools = null;
+        public Integer shops = null;
+        public Integer offices = null;
+        public Integer constructionSites = null;
+        public Integer nurseries = null;
+        public Integer restaurants = null;
 
         @Override
         public String toString() {
@@ -130,13 +105,13 @@ public class PopulationParameters {
 
     // Probability an Adult works in a particular job
     private static class WorkerAllocation {
-        public double pOffice = 0.2;
-        public double pShop = 0.1;
-        public double pHospital = 0.1;
-        public double pConstruction = 0.1;
-        public double pTeacher = 0.2;
-        public double pRestaurant = 0.1;
-        public double pUnemployed = 0.2;
+        public Double pOffice = null;
+        public Double pShop = null;
+        public Double pHospital = null;
+        public Double pConstruction = null;
+        public Double pTeacher = null;
+        public Double pRestaurant = null;
+        public Double pUnemployed = null;
 
         @Override
         public String toString() {
@@ -153,19 +128,19 @@ public class PopulationParameters {
     }
 
     private static class BuildingProperties {
-        public double pBaseTrans = 0.45;
-        public double pHospitalTrans = 0.03;
-        public double pConstructionSiteTrans = 0.2;
-        public double pNurseryTrans = 0.044118;
-        public double pOfficeTrans = 0.4;
-        public double pRestaurantTrans = 1;
-        public double pSchoolTrans = 0.044118;
-        public double pShopTrans = 0.2;
+        public Double pBaseTrans = null;
+        public Double pHospitalTrans = null;
+        public Double pConstructionSiteTrans = null;
+        public Double pNurseryTrans = null;
+        public Double pOfficeTrans = null;
+        public Double pRestaurantTrans = null;
+        public Double pSchoolTrans = null;
+        public Double pShopTrans = null;
 
-        public double pHospitalKey = 0;
-        public double pConstructionSiteKey = 0.5;
-        public double pOfficeKey = 0.5;
-        public double pShopKey = 0.5;
+        public Double pHospitalKey = null;
+        public Double pConstructionSiteKey = null;
+        public Double pOfficeKey = null;
+        public Double pShopKey = null;
 
         @Override
         public String toString() {
@@ -187,7 +162,7 @@ public class PopulationParameters {
     }
 
     private static class InfantAllocation {
-        public double pAttendsNursery = 0.8;
+        public Double pAttendsNursery = null;
 
         @Override
         public String toString() {
@@ -198,8 +173,8 @@ public class PopulationParameters {
     }
 
     private static class NeighbourProperties {
-        public double neighbourVisitFreq = 1.0 / 7.0 / 24.0;
-        public int expectedNeighbours = 3;
+        public Double neighbourVisitFreq = null;
+        public Integer expectedNeighbours = null;
 
         @Override
         public String toString() {
@@ -211,8 +186,8 @@ public class PopulationParameters {
     }
 
     private static class PersonProperties {
-        public double pQuarantine = 0.9;
-        public double pTransmission = 0.45;
+        public Double pQuarantine = null;
+        public Double pTransmission = null;
 
         @Override
         public String toString() {
@@ -245,10 +220,24 @@ public class PopulationParameters {
         personProperties = new PersonProperties();
     }
 
+    public boolean isValid() {
+        ParameterInitialisedChecker checker = new ParameterInitialisedChecker();
+        boolean valid = true;
+        // We don't do this in a single statement to ensure that all the "uninitalised" parameter warnings are printed in one go instead of being short circuited
+        valid = valid && checker.isValid(population);
+        valid = valid && checker.isValid(households);
+        valid = valid && checker.isValid(additionalMembersDistributions);
+        valid = valid && checker.isValid(buildingDistribution);
+        valid = valid && checker.isValid(workerAllocation);
+        valid = valid && checker.isValid(buildingProperties);
+        valid = valid && checker.isValid(infantAllocation);
+        valid = valid && checker.isValid(neighbourProperties);
+        valid = valid && checker.isValid(personProperties);
+        return valid;
+    }
+
     public static PopulationParameters get() {
-        if (pp == null) {
-            pp = new PopulationParameters();
-        }
+        assert pp != null : "Parameters have not yet been initialised";
         return pp;
     }
 
@@ -460,4 +449,28 @@ public class PopulationParameters {
                 personProperties + "\n" +
                 '}';
     }
+
+    public class ParameterInitialisedChecker {
+
+        public boolean isValid (Object o) {
+            try {
+                return fieldsValid(o);
+            } catch (IllegalAccessException e) {
+                LOGGER.warn(e);
+            }
+            return false;
+        }
+
+        private boolean fieldsValid (Object o) throws IllegalAccessException {
+            boolean res = true;
+            for (Field f : o.getClass().getFields()) {
+                if (f.get(o) == null) {
+                    LOGGER.warn("Uninitialised parameter: " + f.getName());
+                    res = false;
+                }
+            }
+            return res;
+        }
+    }
+
 }

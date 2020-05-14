@@ -25,5 +25,10 @@ public class ParameterReader {
 
         CovidParameters.setParameters(r.disease);
         PopulationParameters.setParameters(r.population);
+
+        assert CovidParameters.get().isValid()
+            : "Invalid disease parameters";
+        assert PopulationParameters.get().isValid()
+            : "Invalid population parameters";
     }
 }
