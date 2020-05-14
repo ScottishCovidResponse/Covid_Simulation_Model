@@ -91,7 +91,7 @@ public class Population {
     }
 
     // Checks we have enough people of the right types to perform a household allocation
-    private boolean householdAllocationPossible(BitSet adultIndex, BitSet pensionerIndex,
+    private boolean householdAllocationImpossible(BitSet adultIndex, BitSet pensionerIndex,
                                                 BitSet childIndex, BitSet infantIndex) {
         int adult = 0; int pensioner = 0; int adultPensioner = 0; int adultChild = 0;
         int pensionerChild = 0; int adultPensionerChild = 0;
@@ -173,7 +173,7 @@ public class Population {
 
         createPopulation(adultIndex, pensionerIndex, childIndex, infantIndex);
 
-        assert householdAllocationPossible(adultIndex, pensionerIndex, childIndex, infantIndex)
+        assert householdAllocationImpossible(adultIndex, pensionerIndex, childIndex, infantIndex)
                 : "Population distribution cannot populate household distribution";
 
         // Ensures miminal constraints are met
