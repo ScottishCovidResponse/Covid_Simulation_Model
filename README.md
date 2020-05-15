@@ -4,6 +4,8 @@
 
 ## Background
 
+This model is developed for the COVID-19 RMAP response (https://royalsociety.org/topics-policy/Health%20and%20wellbeing/ramp/) to simulate the spread of Covid-19 through a community. In the first instance we envisage a community o a similar scalt to the City of Glasgow. The intention is that it stochastically simulates the movements of people in near real time and their interactions and the spread through these mixing populations. We can subsequently simulate the implementation fo controls in these populations. 
+
 ## Building and Running
 
 ### Java SDK
