@@ -6,10 +6,11 @@
 
 package uk.co.ramp.covid.simulation.population;
 
-import org.apache.commons.math3.distribution.PoissonDistribution;
+import org.apache.commons.math3.random.RandomDataGenerator;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import uk.co.ramp.covid.simulation.DailyStats;
+import uk.co.ramp.covid.simulation.RunModel;
 import uk.co.ramp.covid.simulation.place.*;
 import uk.co.ramp.covid.simulation.util.ProbabilityDistribution;
 
@@ -32,8 +33,10 @@ public class Population {
     private int lockdownEnd;
     private double socialDist;
     private boolean schoolL;
+    private final RandomDataGenerator rng;
 
     public Population(int populationSize, int nHousehold) {
+        this.rng = RunModel.getRng();
         this.populationSize = populationSize;
         this.nHousehold = nHousehold;
         if (this.nHousehold > this.populationSize) LOGGER.warn("More households than population");
@@ -54,7 +57,7 @@ public class Population {
         double pAdults = PopulationParameters.get().getpAdults();
 
         for (int i = 0; i < this.populationSize; i++) {
-            double rand = Math.random();
+            double rand = rng.nextUniform(0, 1);
             if (rand < pInfants) {
                 this.aPopulation[i] = new Infant();
                 infantIndex.set(i);
@@ -73,18 +76,18 @@ public class Population {
 
     // Creates households based on probability of different household types
     private void createHouseholds() {
-        ProbabilityDistribution<Integer> p = new ProbabilityDistribution<Integer>();
-        p.add(PopulationParameters.get().getpAdultOnly(), 1);
-        p.add(PopulationParameters.get().getpPensionerOnly(), 2);
-        p.add(PopulationParameters.get().getpPensionerAdult(), 3);
-        p.add(PopulationParameters.get().getpAdultChildren(), 4);
-        p.add(PopulationParameters.get().getpPensionerChildren(), 5);
-        p.add(PopulationParameters.get().getpAdultPensionerChildren(), 6);
+        ProbabilityDistribution<Household.HouseholdType> p = new ProbabilityDistribution<>();
+        p.add(PopulationParameters.get().getpAdultOnly(), Household.HouseholdType.ADULT);
+        p.add(PopulationParameters.get().getpPensionerOnly(), Household.HouseholdType.PENSIONER);
+        p.add(PopulationParameters.get().getpPensionerAdult(), Household.HouseholdType.ADULTPENSIONER);
+        p.add(PopulationParameters.get().getpAdultChildren(), Household.HouseholdType.ADULTCHILD);
+        p.add(PopulationParameters.get().getpPensionerChildren(), Household.HouseholdType.PENSIONERCHILD);
+        p.add(PopulationParameters.get().getpAdultPensionerChildren(), Household.HouseholdType.ADULTPENSIONERCHILD);
 
 
-        for (int i = 0; i < this.nHousehold; i++) {
-           int ntype = p.sample();
-           population[i] = new Household(ntype);
+        for (int i = 0; i < nHousehold; i++) {
+            Household.HouseholdType t = p.sample();
+           population[i] = new Household(t);
         }
     }
 
@@ -94,38 +97,26 @@ public class Population {
         int adult = 0; int pensioner = 0; int adultPensioner = 0; int adultChild = 0;
         int pensionerChild = 0; int adultPensionerChild = 0;
         for (Household h : population) {
-            switch(h.getnType()) {
-                case 1:
-                    adult++;
-                    break;
-                case 2:
-                    pensioner++;
-                    break;
-                case 3:
-                    adultPensioner++;
-                    break;
-                case 4:
-                    adultChild++;
-                    break;
-                case 5:
-                    pensionerChild++;
-                    break;
-                case 6:
-                    adultPensionerChild++;
-                    break;
+            switch(h.gethType()) {
+                case ADULT: adult++; break;
+                case PENSIONER: pensioner++; break;
+                case ADULTPENSIONER: adultPensioner++; break;
+                case ADULTCHILD: adultChild++; break;
+                case PENSIONERCHILD: pensionerChild++; break;
+                case ADULTPENSIONERCHILD: adultPensionerChild++; break;
             }
         }
-        return adultIndex.cardinality() <= adult + adultPensioner + adultChild + adultPensionerChild
-                || pensionerIndex.cardinality() <= adultPensioner + pensioner + pensionerChild
-                || childIndex.cardinality() <= adultChild + pensionerChild + adultPensionerChild
-                || infantIndex.cardinality() <= adultChild + pensionerChild + adultPensionerChild;
+        boolean impossible = adultIndex.cardinality() <= adult + adultPensioner + adultChild + adultPensionerChild
+                || pensionerIndex.cardinality() <= adultPensioner + pensioner + pensionerChild + adultPensionerChild
+                || childIndex.cardinality() + infantIndex.cardinality() <= adultChild + pensionerChild + adultPensionerChild;
+        return  !impossible;
     }
 
     // Cycles over all bits of remainingPeople and ensures they are allocated to a household in a greedy fashion
-    private void greedyAllocate(BitSet remainingPeople, Set<Integer> types) {
+    private void greedyAllocate(BitSet remainingPeople, Set<Household.HouseholdType> types) {
         int i = 0; // Pointer into remaining
         for (int h = 0; h < population.length; h++) {
-            int htype = population[h].getnType();
+            Household.HouseholdType htype = population[h].gethType();
             if (types.contains(htype)) {
                 i = remainingPeople.nextSetBit(i);
                 if (i < 0) {
@@ -138,13 +129,15 @@ public class Population {
         }
     }
 
-    private void probAllocate(BitSet remainingPeople, Set<Integer> types, Map<Integer, Double> probabilities) {
+    private void probAllocate(BitSet remainingPeople,
+                              Set<Household.HouseholdType> types,
+                              Map<Integer, Double> probabilities) {
         int i = 0; // Pointer into remaining
         while (!remainingPeople.isEmpty()) {
             for (int h = 0; h < population.length; h++) {
-                int htype = population[h].getnType();
+                Household.HouseholdType htype = population[h].gethType();
                 if (types.contains(htype)) {
-                    double rand = Math.random();
+                    double rand = rng.nextUniform(0, 1);
                     double prob_to_add = probabilities.getOrDefault(population[h].getHouseholdSize(), 1.0);
                     if (rand < prob_to_add) {
                         i = remainingPeople.nextSetBit(i);
@@ -175,8 +168,8 @@ public class Population {
                 : "Population distribution cannot populate household distribution";
 
         // Ensures miminal constraints are met
-        greedyAllocate(adultIndex, new HashSet<>(Arrays.asList(1, 3, 4, 6)));
-        greedyAllocate(pensionerIndex, new HashSet<>(Arrays.asList(2, 3, 5, 6)));
+        greedyAllocate(adultIndex, Household.adultHouseholds);
+        greedyAllocate(pensionerIndex, Household.pensionerHouseholds);
 
         // For OR constraints, e.g. child or infant, we union the bitsets during the greedy algorithm
         // For the probabilistic allocations below, they can have different probabilities.
@@ -184,23 +177,23 @@ public class Population {
         childOrInfant.or(childIndex);
         childOrInfant.or(infantIndex);
 
-        greedyAllocate(childOrInfant, new HashSet<>(Arrays.asList(4, 5, 6)));
+        greedyAllocate(childOrInfant, Household.childHouseholds);
 
         // set intersections to allow children/infants to be treated independently again
         childIndex.and(childOrInfant);
         infantIndex.and(childOrInfant);
 
         probAllocate(adultIndex,
-                new HashSet<Integer>(Arrays.asList(1, 3, 4, 6)),
+                Household.adultHouseholds,
                 PopulationParameters.get().getAdultAllocationPMap());
         probAllocate(pensionerIndex,
-                new HashSet<Integer>(Arrays.asList(2, 3, 5, 6)),
+                Household.pensionerHouseholds,
                 PopulationParameters.get().getPensionerAllocationPMap());
         probAllocate(childIndex,
-                new HashSet<Integer>(Arrays.asList(4, 5, 6)),
+                Household.childHouseholds,
                 PopulationParameters.get().getChildAllocationPMap());
         probAllocate(infantIndex,
-                new HashSet<Integer>(Arrays.asList(4, 5, 6)),
+                Household.childHouseholds,
                 PopulationParameters.get().getInfantAllocationPMap());
     }
 
@@ -311,7 +304,7 @@ public class Population {
 
     // For selecting a CommunalPlace at random to assign a People to
     private CommunalPlace getRandom() {
-        int rnd = new Random().nextInt(this.cPlaces.length);
+        int rnd = rng.nextInt(0, this.cPlaces.length - 1);
         return this.cPlaces[rnd];
     }
 
@@ -320,10 +313,10 @@ public class Population {
         for (int i = 0; i < this.nHousehold; i++) {
             Household cHouse = this.population[i];
             int expectedNeighbours = PopulationParameters.get().getExpectedNeighbours();
-            int nneighbours = new PoissonDistribution(expectedNeighbours).sample();
+            int nneighbours = (int) rng.nextPoisson(expectedNeighbours);
             int[] neighbourArray = new int[nneighbours];
             for (int k = 0; k < nneighbours; k++) {
-                int nInt = new Random().nextInt(this.nHousehold);
+                int nInt = rng.nextInt(0, this.nHousehold - 1);
                 if (nInt == i) k--;
                 else neighbourArray[k] = nInt;
             }
@@ -335,7 +328,7 @@ public class Population {
     // Force infections into a defined number of people
     public void seedVirus(int nInfections) {
         for (int i = 1; i <= nInfections; i++) {
-            int nInt = new Random().nextInt(this.nHousehold);
+            int nInt = rng.nextInt(0, this.nHousehold - 1);
             if (this.population[nInt].getHouseholdSize() > 0) {
                 if (!population[nInt].seedInfection()) i--;
             }
@@ -352,7 +345,7 @@ public class Population {
             LOGGER.info("Lockdown = {}", this.lockdown);
             for (int k = 0; k < 24; k++) {
                 this.cycleHouseholds(dWeek, k);
-                this.cyclePlaces(dWeek, k);
+                this.cyclePlaces(k);
                 this.returnShoppers(k);
                 this.returnRestaurant(k);
                 this.shoppingTrip(dWeek, k);
@@ -456,9 +449,9 @@ public class Population {
     }
 
     // People returning ome at the end of the day
-    private void cyclePlaces(int day, int hour) {
+    private void cyclePlaces(int hour) {
         for (CommunalPlace cPlace : this.cPlaces) {
-            ArrayList<Person> retPeople = cPlace.cyclePlace(hour, day);
+            ArrayList<Person> retPeople = cPlace.cyclePlace(hour);
             for (Person cPers : retPeople) {
                 population[cPers.getHIndex()].addPerson(cPers);
             }
@@ -472,7 +465,7 @@ public class Population {
         if (cHouse.nNeighbours() > 0 && cHouse.getHouseholdSize() > 0) {
             int k = 0;
             while (k < cHouse.nNeighbours()) {
-                if (Math.random() < PopulationParameters.get().getNeighbourVisitFreq()) {
+                if (rng.nextUniform(0, 1) < PopulationParameters.get().getNeighbourVisitFreq()) {
                     visitIndex = k; // This sets the probability of a neighbour visit as once per week
                 }
                 k++;
@@ -502,11 +495,11 @@ public class Population {
 
         if (hour >= openingTime && hour < closingTime) {
             for (Household household : this.population) {
-                if (Math.random() < visitProb) {
+                if (rng.nextUniform(0, 1) < visitProb) {
                     vNext = household.shoppingTrip();
                 }
                 if (vNext != null) {
-                    int shopSample = new Random().nextInt(this.shopIndexes.length);
+                    int shopSample = rng.nextInt(0,this.shopIndexes.length - 1);
                     ((Shop) this.cPlaces[this.shopIndexes[shopSample]]).shoppingTrip(vNext);
                 }
                 vNext = null;
@@ -538,11 +531,11 @@ public class Population {
 
         if (hour >= openingTime && hour < closingTime && startDay >= day && endDay <= day) {
             for (Household household : this.population) {
-                if (Math.random() < visitProb) {
+                if (rng.nextUniform(0, 1) < visitProb) {
                     vNext = household.shoppingTrip(); // This method is fine for our purposes here
                 }
                 if (vNext != null) {
-                    int shopSample = new Random().nextInt(this.restaurantIndexes.length);
+                    int shopSample = rng.nextInt(0, this.restaurantIndexes.length - 1);
                     ((Restaurant) this.cPlaces[this.restaurantIndexes[shopSample]]).shoppingTrip(vNext);
                 }
                 vNext = null;

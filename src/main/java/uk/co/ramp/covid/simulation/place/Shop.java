@@ -12,7 +12,7 @@ public class Shop extends CommunalPlace {
         startDay = 1;
         endDay = 7;
         keyProb = PopulationParameters.get().getpShopKey();
-        if (Math.random() > keyProb) keyPremises = true;
+        if (rng.nextUniform(0, 1) > keyProb) keyPremises = true;
 
     }
 
@@ -24,7 +24,7 @@ public class Shop extends CommunalPlace {
         ArrayList<Person> vReturn = new ArrayList<>();
         for (int i = 0; i < this.listPeople.size(); i++) {
             Person nPers = this.listPeople.get(i);
-            if (!nPers.isShopWorker() && Math.random() < 0.5 || hour < super.endTime) {// Assumes a median lenght of shopping trip of 2 hours
+            if (!nPers.isShopWorker() && rng.nextUniform(0, 1) < 0.5 || hour < super.endTime) {// Assumes a median lenght of shopping trip of 2 hours
                 vReturn.add(nPers);
                 this.listPeople.remove(i);
                 i--;

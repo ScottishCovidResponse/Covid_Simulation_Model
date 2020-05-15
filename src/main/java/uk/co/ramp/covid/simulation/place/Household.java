@@ -7,55 +7,48 @@
 
 package uk.co.ramp.covid.simulation.place;
 
+import org.apache.commons.math3.random.RandomDataGenerator;
+import uk.co.ramp.covid.simulation.RunModel;
 import uk.co.ramp.covid.simulation.population.CStatus;
 import uk.co.ramp.covid.simulation.population.Person;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 public class Household {
-    int nType;
-    private String type;
+    public enum HouseholdType {
+       ADULT               { public String toString() {return "Adult only";                   } },
+       PENSIONER           { public String toString() {return "Pensioner only";               } },
+       ADULTPENSIONER      { public String toString() {return "Adult & pensioner";            } },
+       ADULTCHILD          { public String toString() {return "Adult & children";             } },
+       PENSIONERCHILD      { public String toString() {return "Pensioner & children";         } },
+       ADULTPENSIONERCHILD { public String toString() {return "Adult & pensioner & children"; } }
+    }
+
+    public static final Set<HouseholdType> adultHouseholds = new HashSet<>(Arrays.asList(
+            HouseholdType.ADULT, HouseholdType.ADULTPENSIONERCHILD,
+            HouseholdType.ADULTPENSIONER, HouseholdType.ADULTCHILD));
+
+    public static final Set<HouseholdType> pensionerHouseholds = new HashSet<>(Arrays.asList(
+            HouseholdType.PENSIONER, HouseholdType.ADULTPENSIONERCHILD,
+            HouseholdType.PENSIONERCHILD, HouseholdType.ADULTPENSIONER));
+
+    public static final Set<HouseholdType> childHouseholds = new HashSet<>(Arrays.asList(
+            HouseholdType.ADULTCHILD, HouseholdType.ADULTPENSIONERCHILD, HouseholdType.PENSIONERCHILD));
+
+    private final HouseholdType hType;
     private final ArrayList<Person> vPeople;
     private final ArrayList<Person> vDeaths;
     private int[] neighbourList;
     private final ArrayList<Person> vVisitors;
+    private final RandomDataGenerator rng;
 
     // Create household defined by who lives there
-    public Household(int nType) {
-        this.nType = nType;
-        this.setType();
-        this.vPeople = new ArrayList<>();
-        this.vDeaths = new ArrayList<>();
-        this.vVisitors = new ArrayList<>();
-    }
-
-    // Turn the number to a String to make it easier on the eye
-    public void setType() {
-        switch (this.nType) {
-            case 1:
-                this.type = "Adult only";
-                break;
-            case 2:
-                this.type = "Pensioner only";
-                break;
-            case 3:
-                this.type = "Adult & pensioner";
-                break;
-            case 4:
-                this.type = "Adult & children";
-                break;
-            case 5:
-                this.type = "Pensioner & children";
-                break;
-            case 6:
-                this.type = "Adult & pensioner & children";
-                break;
-            default:
-                this.type = "Invalid Type";
-                break;
-        }
+    public Household(HouseholdType hType) {
+        this.hType = hType;
+        vPeople = new ArrayList<>();
+        vDeaths = new ArrayList<>();
+        vVisitors = new ArrayList<>();
+        this.rng = RunModel.getRng();
     }
 
     public int getNeighbourIndex(int nNeighbour) {
@@ -66,17 +59,15 @@ public class Household {
         return this.neighbourList.length;
     }
 
-    public String getType() {
-        return this.type;
-    }
-
-    public int getnType() {
-        return this.nType;
+    public HouseholdType gethType() {
+        return this.hType;
     }
 
     public void addPerson(Person cPers) {
         this.vPeople.add(cPers);
     }
+
+    public void addDeath(Person cPers) { vDeaths.add(cPers); }
 
     public int getHouseholdSize() {
         return this.vPeople.size();
@@ -91,7 +82,7 @@ public class Household {
     }
 
     public boolean seedInfection() {
-        Person cPers = this.vPeople.get(new Random().nextInt(this.getHouseholdSize()));
+        Person cPers = this.vPeople.get(rng.nextInt(0, this.getHouseholdSize() - 1));
         return cPers.infect();
     }
 
@@ -166,7 +157,7 @@ public class Household {
         ArrayList<Person> vGoHome = new ArrayList<>();
 
         for (int i = 0; i < this.vVisitors.size(); i++) {
-            if (Math.random() < 0.5) { // Assumes a 50% probability that people will go home each hour
+            if (rng.nextUniform(0, 1) < 0.5) { // Assumes a 50% probability that people will go home each hour
                 Person nPers = this.vVisitors.get(i);
                 if (nPers.cStatus() == CStatus.DEAD) {
                     this.vVisitors.remove(i);
