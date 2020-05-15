@@ -191,5 +191,7 @@ public class Household {
         return vPeople;
     }
 
-    public List<Person> getVisitors() { return vVisitors; }
+    public List<Person> getVisitors() {
+        return vVisitors;
+    }
 }
