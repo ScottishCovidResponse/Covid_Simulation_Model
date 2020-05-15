@@ -109,13 +109,14 @@ public class Household {
                             if (!nPers.getInfectionStatus()) {
                                 boolean infected = nPers.infChallenge(1);
                                 if (infected) {
-                                    stats.infectedHome();
+                                    stats.infectedHome(nPers);
                                 }
                             }
                         }
                     }
                 }
                 if (cPers.cStatus() == CStatus.DEAD) {
+                    stats.registerDeath(cPers);
                     hVector.remove(i);
                     this.vDeaths.add(cPers);
                     this.vPeople.remove(cPers);

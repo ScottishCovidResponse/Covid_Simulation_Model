@@ -52,5 +52,23 @@ public class ModelTest {
             totalDailyInfects += s.getTotalDailyInfections();
         }
         assertEquals(cummulativeI, totalDailyInfects);
+
+        // Deaths should be proportional to phase2 progression
+        int adultDeaths = 0;
+        int pensionerDeaths = 0;
+        int childDeaths = 0;
+        for (DailyStats s : stats.get(0)) {
+            adultDeaths = s.getAdultDeaths();
+            pensionerDeaths += s.getPensionerDeaths();
+            childDeaths += s.getChildDeaths();
+        }
+
+        if (CovidParameters.get().getAdultProgressionPhase2() < CovidParameters.get().getPensionerProgressionPhase2()) {
+            assertTrue(adultDeaths <= pensionerDeaths);
+        }
+        if (CovidParameters.get().getChildProgressionPhase2() < CovidParameters.get().getAdultProgressionPhase2()) {
+            assertTrue(childDeaths <= pensionerDeaths);
+        }
+
     }
 }

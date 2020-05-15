@@ -191,7 +191,9 @@ public class Model {
 
     public void outputCSV(List<List<DailyStats>> stats) {
     final String[] headers = {"iter", "day", "H", "L", "A", "P1", "P2", "D", "R",
-                              "ICs", "IHos","INur","IOff","IRes","ISch","ISho","IHome"};
+                              "ICs", "IHos","INur","IOff","IRes","ISch","ISho","IHome",
+                              "IAdu","IPen","IChi","Iinf",
+                              "DAdul","DPen","Dchi","Dinf"  };
         try {
             FileWriter out = new FileWriter(outputFile);
             CSVPrinter printer = new CSVPrinter(out, CSVFormat.DEFAULT.withHeader(headers));

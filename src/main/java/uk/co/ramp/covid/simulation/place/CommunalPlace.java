@@ -86,13 +86,14 @@ public class CommunalPlace {
                             if (!nPers.getInfectionStatus()) {
                                 boolean infected = nPers.infChallenge(this.transProb * this.sDistance);
                                 if (infected) {
-                                    stats.infectedPlace(this);
+                                    stats.infectedPlace(this, nPers);
                                 }
                             }
                         }
                     }
                 }
                 if (cPers.cStatus() == CStatus.DEAD) {
+                    stats.registerDeath(cPers);
                     this.listPeople.remove(i);
                     i--;
                 }
