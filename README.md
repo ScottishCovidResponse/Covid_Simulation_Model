@@ -63,7 +63,7 @@ of iterations. Example json files and further documentation are provided in the
 
 To run the project:
 ```shell script
-gradle run  --args "parameters/example_population_params.json parameters/example_model_params.jsonm"
+gradle run  --args "parameters/example_population_params.json parameters/example_model_params.json"
 ```
 
 The result csv will be placed into the file specified by the `outputFile` parameter
