@@ -24,7 +24,7 @@ public class PopulationTest {
         try {
             p.populateHouseholds();
         } catch (ImpossibleAllocationException e) {
-            fail("Could not allocation households in test");
+            fail("Could not allocate households in test");
         }
 
         // Final population size = initial population size (all people allocated)
