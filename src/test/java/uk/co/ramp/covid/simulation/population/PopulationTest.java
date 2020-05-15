@@ -18,8 +18,8 @@ public class PopulationTest {
 
     @Test
     public void populateHouseholds() {
-        int populationSize = 200;
-        Population p = new Population(populationSize,80);
+        int populationSize = 500;
+        Population p = new Population(populationSize,60);
         p.populateHouseholds();
 
         // Final population size = initial population size (all people allocated)
@@ -32,23 +32,23 @@ public class PopulationTest {
         // Sanity check households
         for (Household h : p.getPopulation()){
             assertTrue("Each household must be assigned at least 1 person", h.getHouseholdSize() > 0);
-            switch (h.getnType()) {
+            switch (h.gethType()) {
                 // Adults only
-                case 1: {
+                case ADULT: {
                     for (Object i : h.getInhabitants()) {
                         assertTrue("Non Adult in adult only household", i instanceof Adult);
                     }
                     break;
                 }
                 // Pensioner only
-                case 2: {
+                case PENSIONER: {
                     for (Object i : h.getInhabitants()) {
                         assertTrue("Non Pensioner in pensioner only household", i instanceof Pensioner);
                     }
                     break;
                 }
                 // Adult + Pensioner (should contain at least one of each)
-                case 3: {
+                case ADULTPENSIONER: {
                     boolean adultSeen = false;
                     boolean pensionerSeen = false;
                     for (Object i : h.getInhabitants()) {
@@ -62,7 +62,7 @@ public class PopulationTest {
                     break;
                 }
                 //Adult + Infant/Child ( Should contain at least one of each)
-                case 4: {
+                case ADULTCHILD: {
                     boolean adultSeen = false;
                     boolean childInfantSeen = false;
                     for (Object i : h.getInhabitants()) {
@@ -77,7 +77,7 @@ public class PopulationTest {
                     break;
                 }
                 //Pensioner + Infant/Child ( Should contain at least one of each)
-                case 5: {
+                case PENSIONERCHILD: {
                     boolean pensionerSeen = false;
                     boolean childInfantSeen = false;
                     for (Object i : h.getInhabitants()) {
@@ -92,7 +92,7 @@ public class PopulationTest {
                     break;
                 }
                 //Adult + Pensioner + Infant/Child ( Should contain at least one of each)
-                case 6: {
+                case ADULTPENSIONERCHILD: {
                     boolean adultSeen = false;
                     boolean pensionerSeen = false;
                     boolean childInfantSeen = false;

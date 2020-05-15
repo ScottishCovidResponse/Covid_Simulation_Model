@@ -25,7 +25,7 @@ public class HouseholdTest {
     public void initialise() throws JsonParseException, IOException {
         ParameterReader.readParametersFromFile("parameters/example_params.json");
         new RunModel(123);
-        household = new Household(1);
+        household = new Household(Household.HouseholdType.ADULT);
         Person p1 = new Person();
         Person p2 = new Person();
         Person p3 = new Person();
@@ -52,8 +52,8 @@ public class HouseholdTest {
 
     @Test
     public void testGetnType() {
-        int expNType = 1;
-        assertEquals("Unexpected household nType", expNType, household.getnType());
+        Household.HouseholdType expHType = Household.HouseholdType.ADULT;
+        assertEquals("Unexpected household nType", expHType, household.gethType());
     }
 
     @Test
@@ -61,13 +61,13 @@ public class HouseholdTest {
         Person p4 = new Person();
         household.addPerson(p4);
         int expSize = 4;
-        assertEquals("Unexpected household size", expSize, household.vPeople.size());
+        assertEquals("Unexpected household size", expSize, household.getInhabitants().size());
     }
 
     @Test
     public void testGetHouseholdSize() {
         Person p1 = new Person();
-        household.vPeople.add(p1);
+        household.addPerson(p1);
         int expSize = 4;
         assertEquals("Unexpected household size", expSize, household.getHouseholdSize());
     }
@@ -92,7 +92,7 @@ public class HouseholdTest {
 
     @Test
     public void testCombVectors() {
-        Household newHouse = new Household(1);
+        Household newHouse = new Household(Household.HouseholdType.ADULT);
         Person p4 = new Person();
         newHouse.addPerson(p4);
         household.welcomeNeighbours(newHouse);
@@ -110,29 +110,29 @@ public class HouseholdTest {
     public void testGetDeaths() {
         Person p1 = new Person();
         Person p2 = new Person();
-        household.vDeaths.add(p1);
-        household.vDeaths.add(p2);
+        household.addDeath(p1);
+        household.addDeath(p2);
         int expDeaths = 2;
         assertEquals("Unexpected number of deaths", expDeaths, household.getDeaths());
     }
 
     @Test
     public void testWelcomeNeighbours() {
-        Household newHouse = new Household(1);
+        Household newHouse = new Household(Household.HouseholdType.ADULT);
         Person p1 = new Person();
         Person p2 = new Person();
         newHouse.addPerson(p1);
         newHouse.addPerson(p2);
         household.welcomeNeighbours(newHouse);
         int expSize = 2;
-        assertEquals("Unexpected household size", expSize, household.vVisitors.size());
+        assertEquals("Unexpected household size", expSize, household.getVisitors().size());
 
     }
 
     @Ignore //This test requires repeatable random numbers to pass
     @Test
     public void testSendNeighboursHome() {
-        Household newHouse = new Household(1);
+        Household newHouse = new Household(Household.HouseholdType.ADULT);
         Person p1 = new Person();
         newHouse.addPerson(p1);
         household.welcomeNeighbours(newHouse);
