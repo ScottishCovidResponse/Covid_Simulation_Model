@@ -340,18 +340,19 @@ public class Population {
     public List<DailyStats> timeStep(int nDays) {
         List<DailyStats> stats = new ArrayList<>(nDays);
         for (int i = 0; i < nDays; i++) {
+            DailyStats dStats = new DailyStats(i);
             int dWeek = (i + 1) % 7;
             this.implementLockdown(i);
             LOGGER.info("Lockdown = {}", this.lockdown);
             for (int k = 0; k < 24; k++) {
-                this.cycleHouseholds(dWeek, k);
-                this.cyclePlaces(k);
+                this.cycleHouseholds(dWeek, k, dStats);
+                this.cyclePlaces(k, dStats);
                 this.returnShoppers(k);
                 this.returnRestaurant(k);
                 this.shoppingTrip(dWeek, k);
                 if (!this.rLockdown) this.restaurantTrip(dWeek, k);
             }
-            stats.add(this.processCases(i));
+            stats.add(this.processCases(dStats));
         }
         return stats;
     }
@@ -397,9 +398,7 @@ public class Population {
     }
 
     // This method generates output at the end of each day
-    private DailyStats processCases(int day) {
-        DailyStats stats = new DailyStats(day);
-
+    private DailyStats processCases(DailyStats stats) {
         for (Household cHouse : population) {
             for (Person p : cHouse.getInhabitants()) {
                 stats.processPerson(p);
@@ -414,9 +413,9 @@ public class Population {
     }
 
     // Step through the households to identify individual movements to CommunalPlaces
-    private void cycleHouseholds(int day, int hour) {
+    private void cycleHouseholds(int day, int hour, DailyStats stats) {
         for (Household household : this.population) {
-            ArrayList<Person> vHouse = household.cycleHouse();
+            ArrayList<Person> vHouse = household.cycleHouse(stats);
             this.cycleMovements(vHouse, day, hour);
             this.returnNeighbours(household);
             if (!this.lockdown) this.cycleNeighbours(household);
@@ -449,9 +448,9 @@ public class Population {
     }
 
     // People returning ome at the end of the day
-    private void cyclePlaces(int hour) {
+    private void cyclePlaces(int hour, DailyStats stats) {
         for (CommunalPlace cPlace : this.cPlaces) {
-            ArrayList<Person> retPeople = cPlace.cyclePlace(hour);
+            ArrayList<Person> retPeople = cPlace.cyclePlace(hour, stats);
             for (Person cPers : retPeople) {
                 population[cPers.getHIndex()].addPerson(cPers);
             }

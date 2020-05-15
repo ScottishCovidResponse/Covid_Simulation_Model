@@ -20,6 +20,7 @@ import java.util.*;
 public class Model {
     private static final Logger LOGGER = LogManager.getLogger(Model.class);
 
+
     private class Lockdown {
         public Integer start = null;
         public Integer end = null;
@@ -49,6 +50,7 @@ public class Model {
         }
     }
 
+    private boolean outputDisabled;
     private Integer populationSize = null;
     private Integer nHouseholds = null;
     private Integer nInfections = null;
@@ -59,10 +61,7 @@ public class Model {
     private Lockdown lockDown = null;
     private Lockdown schoolLockDown = null;
 
-    public Model() {
-    }
-
-    ;
+    public Model() {}
 
     // Builder style interface
     public Model setPopulationSize(int populationSize) {
@@ -87,6 +86,11 @@ public class Model {
 
     public Model setIters(int iters) {
         this.nIters = iters;
+        return this;
+    }
+
+    public Model setNoOutput() {
+        this.outputDisabled = true;
         return this;
     }
 
@@ -133,9 +137,11 @@ public class Model {
             LOGGER.warn("Uninitialised model parameter: nDays");
             valid = false;
         }
-        if (outputFile == null) {
-            LOGGER.warn("Uninitialised model parameter: outputFile");
-            valid = false;
+        if (!outputDisabled) {
+            if (outputFile == null) {
+                LOGGER.warn("Uninitialised model parameter: outputFile");
+                valid = false;
+            }
         }
         // Handle optional args
         if (lockDown != null) {
@@ -174,15 +180,20 @@ public class Model {
             stats.add(p.timeStep(nDays));
         }
 
-        if (outputFile != null) {
-            outputCSV(stats);
+        if (!outputDisabled) {
+            if (outputFile != null) {
+                outputCSV(stats);
+            }
         }
 
         return stats;
     }
 
     public void outputCSV(List<List<DailyStats>> stats) {
-        final String[] headers = {"iter", "day", "H", "L", "A", "P1", "P2", "D", "R"};
+    final String[] headers = {"iter", "day", "H", "L", "A", "P1", "P2", "D", "R",
+                              "ICs", "IHos","INur","IOff","IRes","ISch","ISho","IHome",
+                              "IAdu","IPen","IChi","Iinf",
+                              "DAdul","DPen","Dchi","Dinf"  };
         try {
             FileWriter out = new FileWriter(outputFile);
             CSVPrinter printer = new CSVPrinter(out, CSVFormat.DEFAULT.withHeader(headers));

@@ -10,6 +10,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 public class ModelTest {
 
     @Before
@@ -28,25 +31,44 @@ public class ModelTest {
                 .setnHouseholds(3000)
                 .setIters(1)
                 .setnDays(90)
-                .setOutputFile("test_output.csv");
+                .setNoOutput();
 
         List<List<DailyStats>> stats = m.run();
 
         int lastTotalInfected = 10;
-        int lastDead = 0;
-        int totalHealthy = 0;
         for (DailyStats s : stats.get(0)) {
-            Assert.assertEquals(10000, s.getTotalPopulation());
-            Assert.assertTrue(s.getDead() <= s.getRecovered() * 0.1);
-            Assert.assertTrue(s.getDead() + nInfections >= s.getRecovered() * 0.005);
-            Assert.assertTrue(s.getTotalInfected() < lastTotalInfected * 2);
+            assertEquals(10000, s.getTotalPopulation());
+            assertTrue(s.getDead() <= s.getRecovered() * 0.1);
+            assertTrue(s.getDead() + nInfections >= s.getRecovered() * 0.005);
+            assertTrue(s.getTotalInfected() < lastTotalInfected * 2);
             lastTotalInfected = s.getTotalInfected();
-            lastDead = s.getDead();
-            totalHealthy = s.getHealthy();
         }
-        int totalInfections = population - totalHealthy;
 
-        //Check number of dead are 3% of total infections (+/- 1%)
-        Assert.assertEquals("Unexpected proportion of dead", 0.03, ((double)lastDead/(double)totalInfections), 0.01);
+        // Check all infections occurred somewhere
+        int totalDailyInfects = nInfections;
+        int cummulativeI = 0;
+        for (DailyStats s : stats.get(0)) {
+            cummulativeI = s.getTotalInfected() + s.getRecovered() + s.getDead();
+            totalDailyInfects += s.getTotalDailyInfections();
+        }
+        assertEquals(cummulativeI, totalDailyInfects);
+
+        // Deaths should be proportional to phase2 progression
+        int adultDeaths = 0;
+        int pensionerDeaths = 0;
+        int childDeaths = 0;
+        for (DailyStats s : stats.get(0)) {
+            adultDeaths = s.getAdultDeaths();
+            pensionerDeaths += s.getPensionerDeaths();
+            childDeaths += s.getChildDeaths();
+        }
+
+        if (CovidParameters.get().getAdultProgressionPhase2() < CovidParameters.get().getPensionerProgressionPhase2()) {
+            assertTrue(adultDeaths <= pensionerDeaths);
+        }
+        if (CovidParameters.get().getChildProgressionPhase2() < CovidParameters.get().getAdultProgressionPhase2()) {
+            assertTrue(childDeaths <= pensionerDeaths);
+        }
+
     }
 }

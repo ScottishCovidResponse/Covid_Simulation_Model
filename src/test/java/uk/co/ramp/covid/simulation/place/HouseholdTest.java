@@ -6,6 +6,7 @@ import org.junit.Test;
 
 import com.google.gson.JsonParseException;
 
+import uk.co.ramp.covid.simulation.DailyStats;
 import uk.co.ramp.covid.simulation.RunModel;
 import uk.co.ramp.covid.simulation.io.ParameterReader;
 import uk.co.ramp.covid.simulation.population.Person;
@@ -103,7 +104,8 @@ public class HouseholdTest {
     @Test
     public void testCycleHouse() {
         int expSize = 3;
-        assertEquals("Unexpected household size", expSize, household.cycleHouse().size());
+        DailyStats s = new DailyStats(0);
+        assertEquals("Unexpected household size", expSize, household.cycleHouse(s).size());
     }
 
     @Test
