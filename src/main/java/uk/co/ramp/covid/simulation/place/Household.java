@@ -7,13 +7,14 @@
 
 package uk.co.ramp.covid.simulation.place;
 
+import org.apache.commons.math3.random.RandomDataGenerator;
+import uk.co.ramp.covid.simulation.RunModel;
 import uk.co.ramp.covid.simulation.population.CStatus;
 import uk.co.ramp.covid.simulation.population.Person;
 
 import java.util.*;
 
 public class Household {
-
     public enum HouseholdType {
        ADULT               { public String toString() {return "Adult only";                   } },
        PENSIONER           { public String toString() {return "Pensioner only";               } },
@@ -39,6 +40,7 @@ public class Household {
     private final ArrayList<Person> vDeaths;
     private int[] neighbourList;
     private final ArrayList<Person> vVisitors;
+    private final RandomDataGenerator rng;
 
     // Create household defined by who lives there
     public Household(HouseholdType hType) {
@@ -46,6 +48,7 @@ public class Household {
         vPeople = new ArrayList<>();
         vDeaths = new ArrayList<>();
         vVisitors = new ArrayList<>();
+        this.rng = RunModel.getRng();
     }
 
     public int getNeighbourIndex(int nNeighbour) {
@@ -64,6 +67,8 @@ public class Household {
         this.vPeople.add(cPers);
     }
 
+    public void addDeath(Person cPers) { vDeaths.add(cPers); }
+
     public int getHouseholdSize() {
         return this.vPeople.size();
     }
@@ -77,7 +82,7 @@ public class Household {
     }
 
     public boolean seedInfection() {
-        Person cPers = this.vPeople.get(new Random().nextInt(this.getHouseholdSize()));
+        Person cPers = this.vPeople.get(rng.nextInt(0, this.getHouseholdSize() - 1));
         return cPers.infect();
     }
 
@@ -152,7 +157,7 @@ public class Household {
         ArrayList<Person> vGoHome = new ArrayList<>();
 
         for (int i = 0; i < this.vVisitors.size(); i++) {
-            if (Math.random() < 0.5) { // Assumes a 50% probability that people will go home each hour
+            if (rng.nextUniform(0, 1) < 0.5) { // Assumes a 50% probability that people will go home each hour
                 Person nPers = this.vVisitors.get(i);
                 if (nPers.cStatus() == CStatus.DEAD) {
                     this.vVisitors.remove(i);
@@ -185,4 +190,6 @@ public class Household {
     public List<Person> getInhabitants() {
         return vPeople;
     }
+
+    public List<Person> getVisitors() { return vVisitors; }
 }

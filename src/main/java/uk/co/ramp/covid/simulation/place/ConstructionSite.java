@@ -8,7 +8,7 @@ public class ConstructionSite extends CommunalPlace {
         super(cindex);
         transProb = PopulationParameters.get().getpBaseTrans() * PopulationParameters.get().getpConstructionSiteTrans();
         keyProb = PopulationParameters.get().getpConstructionSiteKey();
-        if (Math.random() > keyProb) keyPremises = true;
+        if (rng.nextUniform(0, 1) > keyProb) keyPremises = true;
 
     }
 }

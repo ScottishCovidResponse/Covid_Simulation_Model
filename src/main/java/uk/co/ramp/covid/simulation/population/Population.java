@@ -6,9 +6,10 @@
 
 package uk.co.ramp.covid.simulation.population;
 
-import org.apache.commons.math3.distribution.PoissonDistribution;
+import org.apache.commons.math3.random.RandomDataGenerator;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import uk.co.ramp.covid.simulation.RunModel;
 import uk.co.ramp.covid.simulation.place.*;
 import uk.co.ramp.covid.simulation.util.ProbabilityDistribution;
 
@@ -31,8 +32,10 @@ public class Population {
     private int lockdownEnd;
     private double socialDist;
     private boolean schoolL;
+    private final RandomDataGenerator rng;
 
     public Population(int populationSize, int nHousehold) {
+        this.rng = RunModel.getRng();
         this.populationSize = populationSize;
         this.nHousehold = nHousehold;
         if (this.nHousehold > this.populationSize) LOGGER.warn("More households than population");
@@ -53,7 +56,7 @@ public class Population {
         double pAdults = PopulationParameters.get().getpAdults();
 
         for (int i = 0; i < this.populationSize; i++) {
-            double rand = Math.random();
+            double rand = rng.nextUniform(0, 1);
             if (rand < pInfants) {
                 this.aPopulation[i] = new Infant();
                 infantIndex.set(i);
@@ -104,8 +107,7 @@ public class Population {
         }
         boolean impossible = adultIndex.cardinality() <= adult + adultPensioner + adultChild + adultPensionerChild
                 || pensionerIndex.cardinality() <= adultPensioner + pensioner + pensionerChild + adultPensionerChild
-                || childIndex.cardinality() <= adultChild + pensionerChild + adultPensionerChild
-                || infantIndex.cardinality() <= adultChild + pensionerChild + adultPensionerChild;
+                || childIndex.cardinality() + infantIndex.cardinality() <= adultChild + pensionerChild + adultPensionerChild;
         return  !impossible;
     }
 
@@ -134,7 +136,7 @@ public class Population {
             for (int h = 0; h < population.length; h++) {
                 Household.HouseholdType htype = population[h].gethType();
                 if (types.contains(htype)) {
-                    double rand = Math.random();
+                    double rand = rng.nextUniform(0, 1);
                     double prob_to_add = probabilities.getOrDefault(population[h].getHouseholdSize(), 1.0);
                     if (rand < prob_to_add) {
                         i = remainingPeople.nextSetBit(i);
@@ -301,7 +303,7 @@ public class Population {
 
     // For selecting a CommunalPlace at random to assign a People to
     private CommunalPlace getRandom() {
-        int rnd = new Random().nextInt(this.cPlaces.length);
+        int rnd = rng.nextInt(0, this.cPlaces.length - 1);
         return this.cPlaces[rnd];
     }
 
@@ -310,10 +312,10 @@ public class Population {
         for (int i = 0; i < this.nHousehold; i++) {
             Household cHouse = this.population[i];
             int expectedNeighbours = PopulationParameters.get().getExpectedNeighbours();
-            int nneighbours = new PoissonDistribution(expectedNeighbours).sample();
+            int nneighbours = (int) rng.nextPoisson(expectedNeighbours);
             int[] neighbourArray = new int[nneighbours];
             for (int k = 0; k < nneighbours; k++) {
-                int nInt = new Random().nextInt(this.nHousehold);
+                int nInt = rng.nextInt(0, this.nHousehold - 1);
                 if (nInt == i) k--;
                 else neighbourArray[k] = nInt;
             }
@@ -325,7 +327,7 @@ public class Population {
     // Force infections into a defined number of people
     public void seedVirus(int nInfections) {
         for (int i = 1; i <= nInfections; i++) {
-            int nInt = new Random().nextInt(this.nHousehold);
+            int nInt = rng.nextInt(0, this.nHousehold - 1);
             if (this.population[nInt].getHouseholdSize() > 0) {
                 if (!population[nInt].seedInfection()) i--;
             }
@@ -343,7 +345,7 @@ public class Population {
             LOGGER.info("Lockdown = {}", this.lockdown);
             for (int k = 0; k < 24; k++) {
                 this.cycleHouseholds(dWeek, k);
-                this.cyclePlaces(dWeek, k);
+                this.cyclePlaces(k);
                 this.returnShoppers(k);
                 this.returnRestaurant(k);
                 this.shoppingTrip(dWeek, k);
@@ -459,9 +461,9 @@ public class Population {
     }
 
     // People returning ome at the end of the day
-    private void cyclePlaces(int day, int hour) {
+    private void cyclePlaces(int hour) {
         for (CommunalPlace cPlace : this.cPlaces) {
-            ArrayList<Person> retPeople = cPlace.cyclePlace(hour, day);
+            ArrayList<Person> retPeople = cPlace.cyclePlace(hour);
             for (Person cPers : retPeople) {
                 population[cPers.getHIndex()].addPerson(cPers);
             }
@@ -475,7 +477,7 @@ public class Population {
         if (cHouse.nNeighbours() > 0 && cHouse.getHouseholdSize() > 0) {
             int k = 0;
             while (k < cHouse.nNeighbours()) {
-                if (Math.random() < PopulationParameters.get().getNeighbourVisitFreq()) {
+                if (rng.nextUniform(0, 1) < PopulationParameters.get().getNeighbourVisitFreq()) {
                     visitIndex = k; // This sets the probability of a neighbour visit as once per week
                 }
                 k++;
@@ -505,11 +507,11 @@ public class Population {
 
         if (hour >= openingTime && hour < closingTime) {
             for (Household household : this.population) {
-                if (Math.random() < visitProb) {
+                if (rng.nextUniform(0, 1) < visitProb) {
                     vNext = household.shoppingTrip();
                 }
                 if (vNext != null) {
-                    int shopSample = new Random().nextInt(this.shopIndexes.length);
+                    int shopSample = rng.nextInt(0,this.shopIndexes.length - 1);
                     ((Shop) this.cPlaces[this.shopIndexes[shopSample]]).shoppingTrip(vNext);
                 }
                 vNext = null;
@@ -541,11 +543,11 @@ public class Population {
 
         if (hour >= openingTime && hour < closingTime && startDay >= day && endDay <= day) {
             for (Household household : this.population) {
-                if (Math.random() < visitProb) {
+                if (rng.nextUniform(0, 1) < visitProb) {
                     vNext = household.shoppingTrip(); // This method is fine for our purposes here
                 }
                 if (vNext != null) {
-                    int shopSample = new Random().nextInt(this.restaurantIndexes.length);
+                    int shopSample = rng.nextInt(0, this.restaurantIndexes.length - 1);
                     ((Restaurant) this.cPlaces[this.restaurantIndexes[shopSample]]).shoppingTrip(vNext);
                 }
                 vNext = null;
