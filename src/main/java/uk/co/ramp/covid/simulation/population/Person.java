@@ -7,6 +7,7 @@ package uk.co.ramp.covid.simulation.population;
 import org.apache.commons.math3.random.RandomDataGenerator;
 import uk.co.ramp.covid.simulation.Covid;
 import uk.co.ramp.covid.simulation.RunModel;
+import uk.co.ramp.covid.simulation.util.RNG;
 
 public class Person {
     private boolean nursery;
@@ -28,7 +29,7 @@ public class Person {
     protected final RandomDataGenerator rng;
 
     public Person() {
-        this.rng = RunModel.getRng();
+        this.rng = RNG.get();
         this.transmissionProb = PopulationParameters.get().getpTransmission();
         this.mIndex = -1;
         this.quarantineProb = PopulationParameters.get().getpQuarantine();
