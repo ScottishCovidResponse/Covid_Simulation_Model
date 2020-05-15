@@ -7,7 +7,7 @@ public class Office extends CommunalPlace {
         super(cindex);
         transProb = PopulationParameters.get().getpBaseTrans() * PopulationParameters.get().getpOfficeTrans();
         keyProb = PopulationParameters.get().getpOfficeKey();
-        if (Math.random() > keyProb) keyPremises = true;
+        if (rng.nextUniform(0, 1) > keyProb) keyPremises = true;
     }
 
 }

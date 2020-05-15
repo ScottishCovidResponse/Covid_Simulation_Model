@@ -6,7 +6,7 @@ public class Infant extends Person {
     }
 
     private void setNursery() {
-        if (Math.random() < PopulationParameters.get().getpAttendsNursery()) {
+        if (rng.nextUniform(0, 1) < PopulationParameters.get().getpAttendsNursery()) {
             super.setNursery(true);
         }
     }

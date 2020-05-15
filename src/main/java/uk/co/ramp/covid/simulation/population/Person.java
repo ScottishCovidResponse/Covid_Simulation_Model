@@ -4,7 +4,9 @@
 
 package uk.co.ramp.covid.simulation.population;
 
+import org.apache.commons.math3.random.RandomDataGenerator;
 import uk.co.ramp.covid.simulation.Covid;
+import uk.co.ramp.covid.simulation.RunModel;
 
 public class Person {
     private boolean nursery;
@@ -23,12 +25,14 @@ public class Person {
     private boolean quarantine;
     private final double quarantineProb; // Needs more thought. The probability that the person will go into quarantine
     private final double quarantineVal;
+    protected final RandomDataGenerator rng;
 
     public Person() {
+        this.rng = RunModel.getRng();
         this.transmissionProb = PopulationParameters.get().getpTransmission();
         this.mIndex = -1;
         this.quarantineProb = PopulationParameters.get().getpQuarantine();
-        this.quarantineVal = Math.random();
+        this.quarantineVal = rng.nextUniform(0, 1);
     }
 
     public boolean isNursery() {
@@ -143,7 +147,7 @@ public class Person {
     }
 
     public boolean infChallenge(double challengeProb) {
-        if (Math.random() < this.transmissionProb / 24 * challengeProb) {
+        if (rng.nextUniform(0, 1) < this.transmissionProb / 24 * challengeProb) {
             this.cVirus = new Covid(this);
             return true;
         }
@@ -153,7 +157,6 @@ public class Person {
     // This method is pretty important, it returns the Covid infection status
     public CStatus cStatus() {
         CStatus cStatus = CStatus.HEALTHY;
-        if (!this.getInfectionStatus()) cStatus = CStatus.HEALTHY;
         if (this.getInfectionStatus()) {
             if (this.cVirus.isLatent()) cStatus = CStatus.LATENT;
             if (this.cVirus.isAsymptomatic()) cStatus = CStatus.ASYMPTOMATIC;

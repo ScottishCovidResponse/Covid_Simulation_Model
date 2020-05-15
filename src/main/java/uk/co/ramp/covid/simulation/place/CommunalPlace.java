@@ -4,9 +4,11 @@
 
 package uk.co.ramp.covid.simulation.place;
 
+import org.apache.commons.math3.random.RandomDataGenerator;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import uk.co.ramp.covid.simulation.DailyStats;
+import uk.co.ramp.covid.simulation.RunModel;
 import uk.co.ramp.covid.simulation.population.CStatus;
 import uk.co.ramp.covid.simulation.population.Pensioner;
 import uk.co.ramp.covid.simulation.population.Person;
@@ -28,8 +30,10 @@ public class CommunalPlace {
     protected boolean keyPremises;
     protected double keyProb;
     private double sDistance; // A social distancing coefficient;
+    protected final RandomDataGenerator rng;
 
     public CommunalPlace(int cIndex) {
+        this.rng = RunModel.getRng();
         this.listPeople = new ArrayList<>();
         this.startTime = 8; // The hour of the day that the Communal Place starts
         this.endTime = 17; // The hour of the day that it ends
@@ -39,7 +43,7 @@ public class CommunalPlace {
         this.transProb = PopulationParameters.get().getpBaseTrans(); // Pretty important parameter. This defines the transmission rate within this Communal Place
         this.keyProb = 1.0;
         this.sDistance = 1.0;
-        if (Math.random() > this.keyProb) this.keyPremises = true;
+        if (rng.nextUniform(0, 1) > this.keyProb) this.keyPremises = true;
 
     }
 
@@ -68,8 +72,7 @@ public class CommunalPlace {
     }
 
     // Cycle through the People objects in the Place and test their infection status etc
-    public ArrayList<Person> cyclePlace(int time, int day, DailyStats stats) {
-
+    public ArrayList<Person> cyclePlace(int time, DailyStats stats) {
         ArrayList<Person> cReturn = new  ArrayList<>();
         CStatus status = null;
         for (int i = 0; i < this.listPeople.size(); i++) {

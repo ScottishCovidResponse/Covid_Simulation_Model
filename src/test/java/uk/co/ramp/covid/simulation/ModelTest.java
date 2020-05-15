@@ -1,8 +1,11 @@
 package uk.co.ramp.covid.simulation;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.Assert;
+import uk.co.ramp.covid.simulation.io.ParameterReader;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -11,6 +14,11 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 public class ModelTest {
+
+    @Before
+    public void setupParams() throws IOException {
+        ParameterReader.readParametersFromFile("src/test/resources/default_params.json");
+    }
 
     @Test
     public void testBaseLine() {
@@ -38,16 +46,11 @@ public class ModelTest {
 
         // Check all infections occurred somewhere
         int totalDailyInfects = nInfections;
-        int totalHouseInfects = 0;
         int cummulativeI = 0;
         for (DailyStats s : stats.get(0)) {
             cummulativeI = s.getTotalInfected() + s.getRecovered() + s.getDead();
             totalDailyInfects += s.getTotalDailyInfections();
-            totalHouseInfects += s.getHomeInfections();
-            //assertEquals(cummulativeI, totalDailyInfects);
         }
-        System.out.println(totalHouseInfects);
-        System.out.println(totalDailyInfects);
-        System.out.println(cummulativeI);
+        assertEquals(cummulativeI, totalDailyInfects);
     }
 }

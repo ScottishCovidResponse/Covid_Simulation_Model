@@ -145,12 +145,16 @@ public class Model {
         }
         // Handle optional args
         if (lockDown != null) {
-            LOGGER.warn("lockDown parameters invalid");
-            valid = valid && lockDown.isValid();
+            if (!lockDown.isValid()) {
+                LOGGER.warn("lockDown parameters invalid");
+                valid = false;
+            }
         }
         if (schoolLockDown != null) {
-            LOGGER.warn("schoolLockDown parameters invalid");
-            valid = valid && schoolLockDown.isValid();
+            if (!schoolLockDown.isValid()) {
+                LOGGER.warn("schoollockDown parameters invalid");
+                valid = false;
+            }
         }
 
         return valid;
@@ -177,23 +181,26 @@ public class Model {
         }
 
         if (!outputDisabled) {
-            for (int i = 0; i < nIters; i++) {
-                outputCSV(outputFile, i, stats.get(i));
+            if (outputFile != null) {
+                outputCSV(stats);
             }
         }
 
         return stats;
     }
 
-    public void outputCSV(String fname, int iter, List<DailyStats> stats) {
-        final String[] headers = {"iter", "day", "H", "L", "A", "P1", "P2", "D", "R","ICs",
-                                  "IHos","INur","IOff","IRes","ISch","ISho","IHome"};
+    public void outputCSV(List<List<DailyStats>> stats) {
+    final String[] headers = {"iter", "day", "H", "L", "A", "P1", "P2", "D", "R",
+                              "ICs", "IHos","INur","IOff","IRes","ISch","ISho","IHome"};
         try {
-            FileWriter out = new FileWriter(fname);
+            FileWriter out = new FileWriter(outputFile);
             CSVPrinter printer = new CSVPrinter(out, CSVFormat.DEFAULT.withHeader(headers));
-            for (DailyStats s : stats) {
-                s.appendCSV(printer, iter);
+            for (int i = 0; i < nIters; i++) {
+                for (DailyStats s : stats.get(i)) {
+                    s.appendCSV(printer, i);
+                }
             }
+            out.close();
         } catch (IOException e) {
             LOGGER.error(e);
         }

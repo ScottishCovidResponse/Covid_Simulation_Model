@@ -24,7 +24,7 @@ public class Restaurant extends CommunalPlace {
         ArrayList<Person> vReturn = new ArrayList<>();
         for (int i = 0; i < this.listPeople.size(); i++) {
             Person nPers = this.listPeople.get(i);
-            if (!nPers.isShopWorker() && Math.random() < 0.4 || hour < super.endTime) {// Assumes a median lenght of shopping trip of 2 hours
+            if (!nPers.isShopWorker() && rng.nextUniform(0, 1) < 0.4 || hour < super.endTime) {// Assumes a median lenght of shopping trip of 2 hours
                 vReturn.add(nPers);
                 this.listPeople.remove(i);
                 i--;

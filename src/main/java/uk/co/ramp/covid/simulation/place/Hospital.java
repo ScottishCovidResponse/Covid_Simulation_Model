@@ -10,7 +10,7 @@ public class Hospital extends CommunalPlace {
         startDay = 3; //Bodge set start day to a different day of the week to help syncing
         endDay = 7;
         keyProb = PopulationParameters.get().getpHospitalKey();
-        if (Math.random() > keyProb) keyPremises = true;
+        if (rng.nextUniform(0, 1) > keyProb) keyPremises = true;
     }
 
 }
