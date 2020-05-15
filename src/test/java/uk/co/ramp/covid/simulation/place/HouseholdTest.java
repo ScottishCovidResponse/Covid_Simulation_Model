@@ -129,7 +129,6 @@ public class HouseholdTest {
 
     }
 
-    @Ignore //This test requires repeatable random numbers to pass
     @Test
     public void testSendNeighboursHome() {
         Household newHouse = new Household(1);
