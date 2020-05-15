@@ -6,6 +6,7 @@ import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import uk.co.ramp.covid.simulation.population.ImpossibleAllocationException;
 import uk.co.ramp.covid.simulation.population.Population;
 
 import java.io.FileReader;
@@ -160,13 +161,24 @@ public class Model {
         return valid;
     }
 
+    /** Runs the model with the given parameters. Returns null if the parameters are missing or invalid */
     public List<List<DailyStats>> run() {
-        assert isValid() : "Model parameters are invalid";
+        if (!isValid()) {
+            LOGGER.error("Model parameters missing or invalid");
+            return null;
+        }
 
         List<List<DailyStats>> stats = new ArrayList<>(nIters);
         for (int i = 0; i < nIters; i++) {
             Population p = new Population(populationSize, nHouseholds);
-            p.populateHouseholds();
+
+            try {
+                p.populateHouseholds();
+            } catch (ImpossibleAllocationException e) {
+                LOGGER.error(e);
+                break;
+            }
+
             p.summarisePop();
             p.createMixing();
             p.allocatePeople();

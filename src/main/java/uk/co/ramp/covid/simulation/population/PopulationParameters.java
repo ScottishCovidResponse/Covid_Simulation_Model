@@ -237,7 +237,9 @@ public class PopulationParameters {
     }
 
     public static PopulationParameters get() {
-        assert pp != null : "Parameters have not yet been initialised";
+        if (pp == null) {
+            pp = new PopulationParameters();
+        }
         return pp;
     }
 

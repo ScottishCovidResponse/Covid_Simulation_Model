@@ -154,7 +154,7 @@ public class Population {
     }
 
     // We populate houseHolds greedily.
-    public void populateHouseholds() {
+    public void populateHouseholds() throws ImpossibleAllocationException {
         createHouseholds();
 
         BitSet infantIndex = new BitSet(populationSize);
@@ -164,8 +164,9 @@ public class Population {
 
         createPopulation(adultIndex, pensionerIndex, childIndex, infantIndex);
 
-        assert householdAllocationPossible(adultIndex, pensionerIndex, childIndex, infantIndex)
-                : "Population distribution cannot populate household distribution";
+        if (!householdAllocationPossible(adultIndex, pensionerIndex, childIndex, infantIndex)) {
+            throw new ImpossibleAllocationException("Population distribution cannot populate household distribution");
+        }
 
         // Ensures miminal constraints are met
         greedyAllocate(adultIndex, Household.adultHouseholds);

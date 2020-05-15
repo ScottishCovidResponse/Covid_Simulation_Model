@@ -14,7 +14,9 @@ public class CovidParameters {
     public static CovidParameters cparams = null;
 
     public static CovidParameters get() {
-        assert cparams != null : "Parameters have not yet been initialised";
+        if (cparams == null) {
+            cparams = new CovidParameters();
+        }
         return cparams;
     }
 

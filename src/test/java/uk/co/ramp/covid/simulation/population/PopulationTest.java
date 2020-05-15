@@ -20,7 +20,12 @@ public class PopulationTest {
     public void populateHouseholds() {
         int populationSize = 500;
         Population p = new Population(populationSize,60);
-        p.populateHouseholds();
+
+        try {
+            p.populateHouseholds();
+        } catch (ImpossibleAllocationException e) {
+            fail("Could not allocation households in test");
+        }
 
         // Final population size = initial population size (all people allocated)
         int pop = 0;
