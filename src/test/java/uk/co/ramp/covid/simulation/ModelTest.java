@@ -33,12 +33,20 @@ public class ModelTest {
         List<List<DailyStats>> stats = m.run();
 
         int lastTotalInfected = 10;
+        int lastDead = 0;
+        int totalHealthy = 0;
         for (DailyStats s : stats.get(0)) {
             Assert.assertEquals(10000, s.getTotalPopulation());
             Assert.assertTrue(s.getDead() <= s.getRecovered() * 0.1);
             Assert.assertTrue(s.getDead() + nInfections >= s.getRecovered() * 0.005);
             Assert.assertTrue(s.getTotalInfected() < lastTotalInfected * 2);
             lastTotalInfected = s.getTotalInfected();
+            lastDead = s.getDead();
+            totalHealthy = s.getHealthy();
         }
+        int totalInfections = population - totalHealthy;
+
+        //Check number of dead are 3% of total infections (+/- 1%)
+        Assert.assertEquals("Unexpected proportion of dead", 0.03, ((double)lastDead/(double)totalInfections), 0.01);
     }
 }

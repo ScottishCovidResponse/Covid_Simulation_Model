@@ -13,10 +13,20 @@ public class AdultTest {
 
     @Test
     public void testSetProfession() throws JsonParseException, IOException {
+        //Test that a profession is set for an adult
         ParameterReader.readParametersFromFile("parameters/example_params.json");
         new RunModel(123);
         Adult adult = new Adult();
         adult.setProfession();
-        assertTrue("Unexpected adult profession", adult.isShopWorker());
+        boolean professionSet = false;
+        professionSet = professionSet
+                     || adult.isConstructionWorker()
+                     || adult.isShopWorker()
+                     || adult.isHospitalWorker()
+                     || adult.isOfficeWorker()
+                     || adult.isRestaurant()
+                     || adult.isTeacher();
+
+        assertTrue("Unexpected adult profession", professionSet);
     }
 }
