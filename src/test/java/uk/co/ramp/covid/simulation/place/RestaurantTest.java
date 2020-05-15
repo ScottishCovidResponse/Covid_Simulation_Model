@@ -25,7 +25,8 @@ public class RestaurantTest {
 
     @Before
     public void initialise() throws JsonParseException, IOException {
-        ParameterReader.readParametersFromFile("parameters/example_params.json");
+        ParameterReader.readParametersFromFile("src/test/resources/default_params.json");
+
         new RunModel(123);
         //Setup a restaurant with 2 people
         restaurant = new Restaurant(0);

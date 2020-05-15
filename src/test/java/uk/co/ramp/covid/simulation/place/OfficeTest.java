@@ -1,5 +1,6 @@
 package uk.co.ramp.covid.simulation.place;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import com.google.gson.JsonParseException;
@@ -13,9 +14,13 @@ import java.io.IOException;
 
 public class OfficeTest {
 
+    @Before
+    public void setupParams() throws IOException {
+        ParameterReader.readParametersFromFile("src/test/resources/default_params.json");
+    }
+
     @Test
     public void testOfficeTransProb() throws JsonParseException, IOException {
-        ParameterReader.readParametersFromFile("parameters/example_params.json");
         RunModel runModel = new RunModel(123);
         CommunalPlace place = new CommunalPlace(0);
         Office office = new Office(0);
