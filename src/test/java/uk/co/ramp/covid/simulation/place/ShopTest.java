@@ -2,12 +2,12 @@ package uk.co.ramp.covid.simulation.place;
 
 import org.junit.Before;
 import org.junit.Test;
-import uk.co.ramp.covid.simulation.RunModel;
 import uk.co.ramp.covid.simulation.population.Adult;
 import uk.co.ramp.covid.simulation.population.Child;
 import uk.co.ramp.covid.simulation.population.Pensioner;
 import uk.co.ramp.covid.simulation.population.Person;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 import static org.junit.Assert.assertEquals;
@@ -20,7 +20,6 @@ public class ShopTest {
 
     @Before
     public void initialise() {
-        RunModel runModel = new RunModel(123);
         //Setup a shop with 2 people
         shop = new Shop(0);
         p1 = new Adult();
