@@ -56,7 +56,7 @@ gradle build
 ## Running a Simulation
 
 The built java project takes two positional commandline arguments. The first is
-a josn file defining the disease and population parameters, and the second is a
+a json file defining the disease and population parameters, and the second is a
 json file defining the parameters of a particular run, for example, the number
 of iterations. Example json files and further documentation are provided in the
 `parameters` folder.

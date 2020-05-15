@@ -37,13 +37,13 @@ public class RunModel {
 
     public static void main(String[] args) throws Exception {
         if (args.length != 2) {
-            System.err.println("Expected parameters: <population_params.json> <model_params.json>");
+            LOGGER.error("Expected parameters: <population_params.json> <model_params.json>");
             System.exit(-1);
         } else {
             readParameters(args[0]);
             Model m  = Model.readModelFromFile(args[1]);
             if (!m.isValid()) {
-                System.err.println("Could not read model parameters");
+                LOGGER.error("Could not read model parameters");
                 System.exit(-1);
             } else {
                 m.run();
