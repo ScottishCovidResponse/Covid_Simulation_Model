@@ -4,33 +4,18 @@
 
 ## Background
 
-## Imports from Contact Tracing Model
+## Building and Running
 
-A number of classes have been imported from the Contact Tracing Model. Some of these are here for an example, so are not anything special:
-
-* **ContactReader:** A class to import data from a CSV file
-* **Output:** A CSV writer that outputs records from a map to a CSV file
-* **RandomSingleton:** stores random number generators in a map
-* **VirusStatus:** An enum for the current virus status.
-
-* **ContactRecord:** A POJO that stores data from the CSV in Java
-* **SeirRecord:** A POJO for storing people in different SEIR categories
-
-
-## Logging
-I have added the configuration for Log4J in the resources folder. All System.out lines should be replaced with logging. 
-See RunModel.java line 24 and Populations line 64 for examples. 
-
-
-## Running Pre-requisites
 ### Java SDK
-Please ensure you have a Java SDK installed. I recommend Java 11 as it is the current LTS version.
+
+The Covid_Simulation_Model targets Java 11, please ensure you have a Java SDK installed.
 
 ### Gradle
+
 To compile, run or test this model, Gradle must be installed. This manages the libraries utilised and simplifies the build process.
 
 #### For MacOS:
-I recommend using [homebrew](www.brew.sh). 
+We recommend using [homebrew](www.brew.sh). 
 
 To install homebrew:
 ```shell script
@@ -56,23 +41,33 @@ yum install gradle
 
 Follow instructions [here](https://gradle.org/install/).
 
-
-## Build/Test/Run Guide
+## Build/Test Guide
 
 To compile the project without running tests:
 ```shell script
 gradle assemble
 ```
 
-To compile and run the tests (there are none at present :-/):
+To compile and run the tests:
 ```shell script
 gradle build
 ```
 
+## Running a Simulation
+
+The built java project takes two positional commandline arguments. The first is
+a josn file defining the disease and population parameters, and the second is a
+json file defining the parameters of a particular run, for example, the number
+of iterations. Example json files and further documentation are provided in the
+`parameters` folder.
+
 To run the project:
 ```shell script
-gradle run
+gradle run  --args "parameters/example_population_params.json parameters/example_model_params.jsonm"
 ```
+
+The result csv will be placed into the file specified by the `outputFile` parameter
+in the model parameters.
 
 ## Version History
 
