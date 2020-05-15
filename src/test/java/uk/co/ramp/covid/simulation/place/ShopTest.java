@@ -25,7 +25,7 @@ public class ShopTest {
 
     @Before
     public void initialise() throws JsonParseException, IOException {
-        ParameterReader.readParametersFromFile("parameters/example_params.json");
+        ParameterReader.readParametersFromFile("src/test/resources/default_params.json");
         new RunModel(123);
         //Setup a shop with 2 people
         shop = new Shop(0);
