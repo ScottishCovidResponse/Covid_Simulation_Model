@@ -9,6 +9,7 @@ package uk.co.ramp.covid.simulation.population;
 import org.apache.commons.math3.random.RandomDataGenerator;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import uk.co.ramp.covid.simulation.DailyStats;
 import uk.co.ramp.covid.simulation.RunModel;
 import uk.co.ramp.covid.simulation.place.*;
 import uk.co.ramp.covid.simulation.util.ProbabilityDistribution;
@@ -75,18 +76,18 @@ public class Population {
 
     // Creates households based on probability of different household types
     private void createHouseholds() {
+        ProbabilityDistribution<Household.HouseholdType> p = new ProbabilityDistribution<>();
+        p.add(PopulationParameters.get().getpAdultOnly(), Household.HouseholdType.ADULT);
+        p.add(PopulationParameters.get().getpPensionerOnly(), Household.HouseholdType.PENSIONER);
+        p.add(PopulationParameters.get().getpPensionerAdult(), Household.HouseholdType.ADULTPENSIONER);
+        p.add(PopulationParameters.get().getpAdultChildren(), Household.HouseholdType.ADULTCHILD);
+        p.add(PopulationParameters.get().getpPensionerChildren(), Household.HouseholdType.PENSIONERCHILD);
+        p.add(PopulationParameters.get().getpAdultPensionerChildren(), Household.HouseholdType.ADULTPENSIONERCHILD);
 
-        ProbabilityDistribution<Integer> p = new ProbabilityDistribution<Integer>();
-        p.add(PopulationParameters.get().getpAdultOnly(), 1);
-        p.add(PopulationParameters.get().getpPensionerOnly(), 2);
-        p.add(PopulationParameters.get().getpPensionerAdult(), 3);
-        p.add(PopulationParameters.get().getpAdultChildren(), 4);
-        p.add(PopulationParameters.get().getpPensionerChildren(), 5);
-        p.add(PopulationParameters.get().getpAdultPensionerChildren(), 6);
 
-        for (int i = 0; i < this.nHousehold; i++) {
-           int ntype = p.sample();
-           population[i] = new Household(ntype);
+        for (int i = 0; i < nHousehold; i++) {
+            Household.HouseholdType t = p.sample();
+           population[i] = new Household(t);
         }
     }
 
@@ -96,38 +97,26 @@ public class Population {
         int adult = 0; int pensioner = 0; int adultPensioner = 0; int adultChild = 0;
         int pensionerChild = 0; int adultPensionerChild = 0;
         for (Household h : population) {
-            switch(h.getnType()) {
-                case 1:
-                    adult++;
-                    break;
-                case 2:
-                    pensioner++;
-                    break;
-                case 3:
-                    adultPensioner++;
-                    break;
-                case 4:
-                    adultChild++;
-                    break;
-                case 5:
-                    pensionerChild++;
-                    break;
-                case 6:
-                    adultPensionerChild++;
-                    break;
+            switch(h.gethType()) {
+                case ADULT: adult++; break;
+                case PENSIONER: pensioner++; break;
+                case ADULTPENSIONER: adultPensioner++; break;
+                case ADULTCHILD: adultChild++; break;
+                case PENSIONERCHILD: pensionerChild++; break;
+                case ADULTPENSIONERCHILD: adultPensionerChild++; break;
             }
         }
-        return adultIndex.cardinality() <= adult + adultPensioner + adultChild + adultPensionerChild
-                || pensionerIndex.cardinality() <= adultPensioner + pensioner + pensionerChild
-                || childIndex.cardinality() <= adultChild + pensionerChild + adultPensionerChild
-                || infantIndex.cardinality() <= adultChild + pensionerChild + adultPensionerChild;
+        boolean impossible = adultIndex.cardinality() <= adult + adultPensioner + adultChild + adultPensionerChild
+                || pensionerIndex.cardinality() <= adultPensioner + pensioner + pensionerChild + adultPensionerChild
+                || childIndex.cardinality() + infantIndex.cardinality() <= adultChild + pensionerChild + adultPensionerChild;
+        return  !impossible;
     }
 
     // Cycles over all bits of remainingPeople and ensures they are allocated to a household in a greedy fashion
-    private void greedyAllocate(BitSet remainingPeople, Set<Integer> types) {
+    private void greedyAllocate(BitSet remainingPeople, Set<Household.HouseholdType> types) {
         int i = 0; // Pointer into remaining
         for (int h = 0; h < population.length; h++) {
-            int htype = population[h].getnType();
+            Household.HouseholdType htype = population[h].gethType();
             if (types.contains(htype)) {
                 i = remainingPeople.nextSetBit(i);
                 if (i < 0) {
@@ -140,11 +129,13 @@ public class Population {
         }
     }
 
-    private void probAllocate(BitSet remainingPeople, Set<Integer> types, Map<Integer, Double> probabilities) {
+    private void probAllocate(BitSet remainingPeople,
+                              Set<Household.HouseholdType> types,
+                              Map<Integer, Double> probabilities) {
         int i = 0; // Pointer into remaining
         while (!remainingPeople.isEmpty()) {
             for (int h = 0; h < population.length; h++) {
-                int htype = population[h].getnType();
+                Household.HouseholdType htype = population[h].gethType();
                 if (types.contains(htype)) {
                     double rand = rng.nextUniform(0, 1);
                     double prob_to_add = probabilities.getOrDefault(population[h].getHouseholdSize(), 1.0);
@@ -177,8 +168,8 @@ public class Population {
                 : "Population distribution cannot populate household distribution";
 
         // Ensures miminal constraints are met
-        greedyAllocate(adultIndex, new HashSet<>(Arrays.asList(1, 3, 4, 6)));
-        greedyAllocate(pensionerIndex, new HashSet<>(Arrays.asList(2, 3, 5, 6)));
+        greedyAllocate(adultIndex, Household.adultHouseholds);
+        greedyAllocate(pensionerIndex, Household.pensionerHouseholds);
 
         // For OR constraints, e.g. child or infant, we union the bitsets during the greedy algorithm
         // For the probabilistic allocations below, they can have different probabilities.
@@ -186,23 +177,23 @@ public class Population {
         childOrInfant.or(childIndex);
         childOrInfant.or(infantIndex);
 
-        greedyAllocate(childOrInfant, new HashSet<>(Arrays.asList(4, 5, 6)));
+        greedyAllocate(childOrInfant, Household.childHouseholds);
 
         // set intersections to allow children/infants to be treated independently again
         childIndex.and(childOrInfant);
         infantIndex.and(childOrInfant);
 
         probAllocate(adultIndex,
-                new HashSet<>(Arrays.asList(1, 3, 4, 6)),
+                Household.adultHouseholds,
                 PopulationParameters.get().getAdultAllocationPMap());
         probAllocate(pensionerIndex,
-                new HashSet<>(Arrays.asList(2, 3, 5, 6)),
+                Household.pensionerHouseholds,
                 PopulationParameters.get().getPensionerAllocationPMap());
         probAllocate(childIndex,
-                new HashSet<>(Arrays.asList(4, 5, 6)),
+                Household.childHouseholds,
                 PopulationParameters.get().getChildAllocationPMap());
         probAllocate(infantIndex,
-                new HashSet<>(Arrays.asList(4, 5, 6)),
+                Household.childHouseholds,
                 PopulationParameters.get().getInfantAllocationPMap());
     }
 
@@ -346,10 +337,9 @@ public class Population {
     }
 
     // Step through nDays in 1 hour time steps
-    public ArrayList<String> timeStep(int nDays) {
-        ArrayList<String> outV = new ArrayList<>();
+    public List<DailyStats> timeStep(int nDays) {
+        List<DailyStats> stats = new ArrayList<>(nDays);
         for (int i = 0; i < nDays; i++) {
-            LOGGER.info("Day = {}", i);
             int dWeek = (i + 1) % 7;
             this.implementLockdown(i);
             LOGGER.info("Lockdown = {}", this.lockdown);
@@ -361,9 +351,9 @@ public class Population {
                 this.shoppingTrip(dWeek, k);
                 if (!this.rLockdown) this.restaurantTrip(dWeek, k);
             }
-            outV.add(this.processCases(i));
+            stats.add(this.processCases(i));
         }
-        return outV;
+        return stats;
     }
 
     // Basically a method to set the instance variables. Could also do this through an overloaded constructor, but I rather prefer this way of doing things
@@ -407,32 +397,20 @@ public class Population {
     }
 
     // This method generates output at the end of each day
-    private String processCases(int day) {
-        int healthy = 0;
-        int exposed = 0;
-        int asymptomatic = 0;
-        int phase1 = 0;
-        int phase2 = 0;
-        int dead = 0;
-        int recovered = 0;
+    private DailyStats processCases(int day) {
+        DailyStats stats = new DailyStats(day);
 
-        for (Household cHouse : this.population) {
-            ArrayList<Person> vHouse = cHouse.combVectors();
-            for (Person cPers : vHouse) {
-                switch (cPers.cStatus()) {
-                    case HEALTHY: healthy++; break;
-                    case LATENT: exposed++; break;
-                    case ASYMPTOMATIC: asymptomatic++; break;
-                    case PHASE1: phase1++; break;
-                    case PHASE2: phase2++; break;
-                    case RECOVERED: recovered++; break;
-                    default: LOGGER.info("Invalid Status"); break;
-                }
+        for (Household cHouse : population) {
+            for (Person p : cHouse.getInhabitants()) {
+                stats.processPerson(p);
             }
-            dead += cHouse.getDeaths();
+            for (Person p: cHouse.getVisitors()) {
+               stats.processPerson(p);
+            }
+            stats.incrementDeaths(cHouse.getDeaths());
         }
-        LOGGER.info("Healthy = {} Latent = {} Asymptomatic = {} Phase 1 = {} Phase 2 = {} Dead = {} Recovered = {}", healthy, exposed, asymptomatic,phase1, phase2, dead, recovered);
-        return day + "," + healthy + "," + exposed + "," + asymptomatic + "," + phase1 + "," + phase2 + "," + dead + "," + recovered;
+        stats.log();
+        return stats;
     }
 
     // Step through the households to identify individual movements to CommunalPlaces

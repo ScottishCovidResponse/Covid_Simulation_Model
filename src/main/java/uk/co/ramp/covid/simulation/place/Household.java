@@ -12,25 +12,43 @@ import uk.co.ramp.covid.simulation.RunModel;
 import uk.co.ramp.covid.simulation.population.CStatus;
 import uk.co.ramp.covid.simulation.population.Person;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 public class Household {
-    int nType;
-    final ArrayList<Person> vPeople;
-    final ArrayList<Person> vDeaths;
-    int[] neighbourList;
-    final ArrayList<Person> vVisitors;
+    public enum HouseholdType {
+       ADULT               { public String toString() {return "Adult only";                   } },
+       PENSIONER           { public String toString() {return "Pensioner only";               } },
+       ADULTPENSIONER      { public String toString() {return "Adult & pensioner";            } },
+       ADULTCHILD          { public String toString() {return "Adult & children";             } },
+       PENSIONERCHILD      { public String toString() {return "Pensioner & children";         } },
+       ADULTPENSIONERCHILD { public String toString() {return "Adult & pensioner & children"; } }
+    }
+
+    public static final Set<HouseholdType> adultHouseholds = new HashSet<>(Arrays.asList(
+            HouseholdType.ADULT, HouseholdType.ADULTPENSIONERCHILD,
+            HouseholdType.ADULTPENSIONER, HouseholdType.ADULTCHILD));
+
+    public static final Set<HouseholdType> pensionerHouseholds = new HashSet<>(Arrays.asList(
+            HouseholdType.PENSIONER, HouseholdType.ADULTPENSIONERCHILD,
+            HouseholdType.PENSIONERCHILD, HouseholdType.ADULTPENSIONER));
+
+    public static final Set<HouseholdType> childHouseholds = new HashSet<>(Arrays.asList(
+            HouseholdType.ADULTCHILD, HouseholdType.ADULTPENSIONERCHILD, HouseholdType.PENSIONERCHILD));
+
+    private final HouseholdType hType;
+    private final ArrayList<Person> vPeople;
+    private final ArrayList<Person> vDeaths;
+    private int[] neighbourList;
+    private final ArrayList<Person> vVisitors;
     private final RandomDataGenerator rng;
 
     // Create household defined by who lives there
-    public Household(int nType) {
+    public Household(HouseholdType hType) {
+        this.hType = hType;
+        vPeople = new ArrayList<>();
+        vDeaths = new ArrayList<>();
+        vVisitors = new ArrayList<>();
         this.rng = RunModel.getRng();
-        this.nType = nType;
-        this.vPeople = new ArrayList<>();
-        this.vDeaths = new ArrayList<>();
-        this.vVisitors = new ArrayList<>();
     }
 
     public int getNeighbourIndex(int nNeighbour) {
@@ -41,13 +59,15 @@ public class Household {
         return this.neighbourList.length;
     }
 
-    public int getnType() {
-        return this.nType;
+    public HouseholdType gethType() {
+        return this.hType;
     }
 
     public void addPerson(Person cPers) {
         this.vPeople.add(cPers);
     }
+
+    public void addDeath(Person cPers) { vDeaths.add(cPers); }
 
     public int getHouseholdSize() {
         return this.vPeople.size();
@@ -169,5 +189,9 @@ public class Household {
 
     public List<Person> getInhabitants() {
         return vPeople;
+    }
+
+    public List<Person> getVisitors() {
+        return vVisitors;
     }
 }

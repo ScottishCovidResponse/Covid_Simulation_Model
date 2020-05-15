@@ -1,0 +1,14 @@
+{
+    "populationSize":10000,
+    "nHouseholds":3000,
+    "nInfections":10,
+    "nDays":365,
+    "nIters":1,
+    "rngSeed":42,
+    "outputFile":"./example-lockdown.csv",
+    "lockDown":{
+        "start":20,
+        "end":50,
+        "socialDistance":0.7
+    }
+}
