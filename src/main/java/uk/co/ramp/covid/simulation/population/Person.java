@@ -6,10 +6,11 @@ package uk.co.ramp.covid.simulation.population;
 
 import org.apache.commons.math3.random.RandomDataGenerator;
 import uk.co.ramp.covid.simulation.Covid;
+import uk.co.ramp.covid.simulation.DailyStats;
 import uk.co.ramp.covid.simulation.RunModel;
 import uk.co.ramp.covid.simulation.util.RNG;
 
-public class Person {
+public abstract class Person {
     private boolean nursery;
     private boolean school;
     private boolean shopWorker;
@@ -27,6 +28,9 @@ public class Person {
     private final double quarantineProb; // Needs more thought. The probability that the person will go into quarantine
     private final double quarantineVal;
     protected final RandomDataGenerator rng;
+    
+    public abstract void reportInfection(DailyStats s);
+    public abstract void reportDeath (DailyStats s);
 
     public Person() {
         this.rng = RNG.get();

@@ -132,57 +132,6 @@ public class DailyStats {
         return day;
     }
 
-    private void registerInfected(Person p) {
-        if (p instanceof Adult) {
-            adultInfected++;
-        }
-        else if (p instanceof Pensioner) {
-            pensionerInfected++;
-        }
-        else if (p instanceof Child) {
-            childInfected++;
-        }
-        else if (p instanceof Infant) {
-            infantInfected++;
-        }
-    }
-
-    public void registerDeath(Person p) {
-        if (p instanceof Adult) {
-            adultDeaths++;
-        }
-        else if (p instanceof Pensioner) {
-            pensionerDeaths++;
-        }
-        else if (p instanceof Child) {
-            childDeaths++;
-            childDeaths++;
-        }
-        else if (p instanceof Infant) {
-            infantDeaths++;
-        }
-    }
-
-    public void infectedHome(Person p) {
-        homeInfections++;
-        registerInfected(p);
-    }
-
-    private void countDeathGroup(Person p) {
-        if (p instanceof Adult) {
-            adultDeaths++;
-        }
-        else if (p instanceof Pensioner) {
-            pensionerDeaths++;
-        }
-        else if (p instanceof Child) {
-            childDeaths++;
-        }
-        else if (p instanceof Infant) {
-            infantDeaths++;
-        }
-    }
-
     public int getHomeInfections() {
         return homeInfections;
     }
@@ -262,10 +211,6 @@ public class DailyStats {
                 infantDeaths == that.infantDeaths;
     }
 
-    public void incDeathConstructionSite() {
-        
-    }
-
     public void incInfectionConstructionSite() {
         constructionSiteInfections++;
     }
@@ -293,4 +238,41 @@ public class DailyStats {
     public void incInfectionsNursery() {
         nurseryInfections++;
     }
+
+    public void incInfectionsAdult() {
+        adultInfected++;
+    }
+
+    public void incInfectionsChild() {
+        childInfected++;
+    }
+
+    public void incInfectionsInfant() {
+        infantInfected++;
+    }
+
+    public void incInfectionsPensioner() {
+        pensionerInfected++;
+    }
+
+    public void incDeathsAdult() {
+        adultDeaths++;
+    }
+
+    public void incDeathsChild() {
+        childDeaths++;
+    }
+
+    public void incDeathsInfant() {
+        infantDeaths++;
+    }
+
+    public void incDeathsPensioner() {
+        pensionerDeaths++;
+    }
+
+    public void incInfectionsHome() {
+        homeInfections++;
+    }
+
 }

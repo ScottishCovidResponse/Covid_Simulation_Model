@@ -1,5 +1,6 @@
 package uk.co.ramp.covid.simulation.population;
 
+import uk.co.ramp.covid.simulation.DailyStats;
 import uk.co.ramp.covid.simulation.util.ProbabilityDistribution;
 
 public class Adult extends Person {
@@ -33,5 +34,15 @@ public class Adult extends Person {
             case TEACHER: super.setTeacher(true); break;
             case RESTAURANT: super.setRestaurant(true); break;
         }
+    }
+
+    @Override
+    public void reportInfection(DailyStats s) {
+        s.incInfectionsAdult();
+    }
+
+    @Override
+    public void reportDeath(DailyStats s) {
+        s.incDeathsAdult();
     }
 }

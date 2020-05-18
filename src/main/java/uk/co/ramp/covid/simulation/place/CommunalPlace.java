@@ -73,6 +73,10 @@ public abstract class CommunalPlace {
         }
         return cIn;
     }
+    private void registerInfection(DailyStats s, Person p) {
+        reportInfection(s);
+        p.reportInfection(s);
+    }
 
     // Cycle through the People objects in the Place and test their infection status etc
     public ArrayList<Person> cyclePlace(int time, DailyStats stats) {
@@ -89,14 +93,14 @@ public abstract class CommunalPlace {
                             if (!nPers.getInfectionStatus()) {
                                 boolean infected = nPers.infChallenge(this.transProb * this.sDistance);
                                 if (infected) {
-                                    reportInfection(stats);
+                                    registerInfection(stats, cPers);
                                 }
                             }
                         }
                     }
                 }
                 if (cPers.cStatus() == CStatus.DEAD) {
-                    stats.registerDeath(cPers);
+                    cPers.reportDeath(stats);
                     this.listPeople.remove(i);
                     i--;
                 }
