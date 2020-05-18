@@ -31,6 +31,7 @@ public class ModelTest {
                 .setnHouseholds(3000)
                 .setIters(1)
                 .setnDays(90)
+                .setRNGSeed(42)
                 .setNoOutput();
 
         List<List<DailyStats>> stats = m.run();
@@ -70,5 +71,43 @@ public class ModelTest {
             assertTrue(childDeaths <= pensionerDeaths);
         }
 
+    }
+
+    @Test
+    public void modelsWithSameRNGSeedGiveSameResult() {
+        int population = 10000;
+        int nInfections = 10;
+        int seed = 42;
+
+        Model run1 = new Model()
+                .setPopulationSize(population)
+                .setnInfections(nInfections)
+                .setnHouseholds(3000)
+                .setIters(1)
+                .setnDays(90)
+                .setRNGSeed(seed)
+                .setNoOutput();
+
+        List<List<DailyStats>> run1res = run1.run();
+
+        Model run2 = new Model()
+                .setPopulationSize(population)
+                .setnInfections(nInfections)
+                .setnHouseholds(3000)
+                .setIters(1)
+                .setnDays(90)
+                .setRNGSeed(seed)
+                .setNoOutput();
+
+        List<List<DailyStats>> run2res = run2.run();
+
+        assertEquals(run1res.size(), run2res.size());
+        assertEquals(run1res.get(0).size(), run2res.get(0).size());
+
+        List<DailyStats> r1 = run1res.get(0);
+        List<DailyStats> r2 = run2res.get(0);
+        for (int i = 0; i < r1.size(); i++) {
+            assertEquals(r1.get(i), r2.get(i));
+        }
     }
 }

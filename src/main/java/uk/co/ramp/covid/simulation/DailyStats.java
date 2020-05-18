@@ -8,6 +8,7 @@ import uk.co.ramp.covid.simulation.population.*;
 
 /** DailyStatis accumluates statistics, e.g. healthy/dead, for a particular day */
 import java.io.IOException;
+import java.util.Objects;
 
 public class DailyStats {
     private static final Logger LOGGER = LogManager.getLogger(DailyStats.class);
@@ -253,4 +254,35 @@ public class DailyStats {
     public int getChildDeaths() { return childDeaths; }
 
     public int getInfantDeaths() { return infantDeaths; }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        DailyStats that = (DailyStats) o;
+        return day == that.day &&
+                healthy == that.healthy &&
+                exposed == that.exposed &&
+                asymptomatic == that.asymptomatic &&
+                phase1 == that.phase1 &&
+                phase2 == that.phase2 &&
+                dead == that.dead &&
+                recovered == that.recovered &&
+                homeInfections == that.homeInfections &&
+                constructionSiteInfections == that.constructionSiteInfections &&
+                hospitalInfections == that.hospitalInfections &&
+                nurseryInfections == that.nurseryInfections &&
+                officeInfections == that.officeInfections &&
+                restaurantInfections == that.restaurantInfections &&
+                schoolInfections == that.schoolInfections &&
+                shopInfections == that.shopInfections &&
+                adultInfected == that.adultInfected &&
+                pensionerInfected == that.pensionerInfected &&
+                childInfected == that.childInfected &&
+                infantInfected == that.infantInfected &&
+                adultDeaths == that.adultDeaths &&
+                pensionerDeaths == that.pensionerDeaths &&
+                childDeaths == that.childDeaths &&
+                infantDeaths == that.infantDeaths;
+    }
 }
