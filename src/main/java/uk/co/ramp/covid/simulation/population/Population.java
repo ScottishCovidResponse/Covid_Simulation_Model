@@ -52,25 +52,33 @@ public class Population {
 
     // Creates the population of People based on the probabilities of age groups above
     private void createPopulation(BitSet adultIndex, BitSet pensionerIndex,
-                                  BitSet childIndex, BitSet infantIndex) {
-        double pInfants = PopulationParameters.get().getpInfants();
-        double pChildren = PopulationParameters.get().getpChildren();
-        double pAdults = PopulationParameters.get().getpAdults();
+                                  BitSet childIndex, BitSet infantIndex) { ;
+
+        ProbabilityDistribution<Integer> dist = new ProbabilityDistribution();
+        dist.add(PopulationParameters.get().getpAdults(), 0);
+        dist.add(PopulationParameters.get().getpPensioners(), 1);
+        dist.add(PopulationParameters.get().getpChildren(), 2);
+        dist.add(PopulationParameters.get().getpInfants(), 3);
 
         for (int i = 0; i < this.populationSize; i++) {
-            double rand = rng.nextUniform(0, 1);
-            if (rand < pInfants) {
-                this.aPopulation[i] = new Infant();
-                infantIndex.set(i);
-            } else if (rand - pInfants < pChildren) {
-                this.aPopulation[i] = new Child();
-                childIndex.set(i);
-            } else if (rand - pInfants - pChildren < pAdults) {
-                this.aPopulation[i] = new Adult();
-                adultIndex.set(i);
-            } else {
-                this.aPopulation[i] = new Pensioner();
-                pensionerIndex.set(i);
+            int type = dist.sample();
+            switch(type) {
+                case 0: {
+                    this.aPopulation[i] = new Adult();
+                    adultIndex.set(i);
+                } break;
+                case 1: {
+                    this.aPopulation[i] = new Pensioner();
+                    pensionerIndex.set(i);
+                } break;
+                case 2:{
+                    this.aPopulation[i] = new Child();
+                    childIndex.set(i);
+                } break;
+                case 3:{
+                    this.aPopulation[i] = new Infant();
+                    infantIndex.set(i);
+                } break;
             }
         }
     }
