@@ -21,19 +21,19 @@ public class Population {
 
     private static final Logger LOGGER = LogManager.getLogger(Population.class);
 
-    private final int populationSize;
-    private final int nHousehold;
-    private final Household[] population;
-    private final Person[] aPopulation;
+    final int populationSize;
+    final int nHousehold;
+    final Household[] population;
+    final Person[] aPopulation;
     private CommunalPlace[] cPlaces;
     private int[] shopIndexes;
     private int[] restaurantIndexes;
     private boolean lockdown;
     private boolean rLockdown;
-    private int lockdownStart;
-    private int lockdownEnd;
-    private double socialDist;
-    private boolean schoolL;
+    int lockdownStart;
+    int lockdownEnd;
+    double socialDist;
+    boolean schoolL;
     private final RandomDataGenerator rng;
 
     public Population(int populationSize, int nHousehold) {
@@ -310,7 +310,7 @@ public class Population {
     }
 
     // This method assigns a random number of neighbours to each Household
-    private void assignNeighbours() {
+    void assignNeighbours() {
         for (int i = 0; i < this.nHousehold; i++) {
             Household cHouse = this.population[i];
             int expectedNeighbours = PopulationParameters.get().getExpectedNeighbours();

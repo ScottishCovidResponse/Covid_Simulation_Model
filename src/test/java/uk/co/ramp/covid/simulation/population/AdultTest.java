@@ -4,6 +4,7 @@ import com.google.gson.JsonParseException;
 import org.junit.Test;
 import uk.co.ramp.covid.simulation.RunModel;
 import uk.co.ramp.covid.simulation.io.ParameterReader;
+import uk.co.ramp.covid.simulation.util.RNG;
 
 import java.io.IOException;
 
@@ -14,8 +15,9 @@ public class AdultTest {
     @Test
     public void testSetProfession() throws JsonParseException, IOException {
         //Test that a profession is set for an adult
-        ParameterReader.readParametersFromFile("parameters/example_params.json");
-        new RunModel(123);
+        ParameterReader.readParametersFromFile("src/test/resources/default_params.json");
+//        new RunModel(123);
+        RNG.seed(123);
         Adult adult = new Adult();
         adult.setProfession();
         boolean professionSet = false;
