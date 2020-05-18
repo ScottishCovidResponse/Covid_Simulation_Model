@@ -132,31 +132,6 @@ public class DailyStats {
         return day;
     }
 
-    public void infectedPlace(CommunalPlace p, Person pers) {
-        if (p instanceof ConstructionSite) {
-           constructionSiteInfections++;
-        }
-        else if (p instanceof Hospital) {
-            hospitalInfections++;
-        }
-        else if (p instanceof Nursery) {
-            nurseryInfections++;
-        }
-        else if (p instanceof Office) {
-            officeInfections++;
-        }
-        else if (p instanceof Restaurant) {
-            restaurantInfections++;
-        }
-        else if (p instanceof School) {
-            schoolInfections++;
-        }
-        else if (p instanceof Shop) {
-            shopInfections++;
-        }
-        registerInfected(pers);
-    }
-
     private void registerInfected(Person p) {
         if (p instanceof Adult) {
             adultInfected++;
@@ -180,6 +155,7 @@ public class DailyStats {
             pensionerDeaths++;
         }
         else if (p instanceof Child) {
+            childDeaths++;
             childDeaths++;
         }
         else if (p instanceof Infant) {
@@ -284,5 +260,37 @@ public class DailyStats {
                 pensionerDeaths == that.pensionerDeaths &&
                 childDeaths == that.childDeaths &&
                 infantDeaths == that.infantDeaths;
+    }
+
+    public void incDeathConstructionSite() {
+        
+    }
+
+    public void incInfectionConstructionSite() {
+        constructionSiteInfections++;
+    }
+
+    public void incInfectionOffice() {
+        officeInfections++;
+    }
+
+    public void incInfectionHospital() {
+        hospitalInfections++;
+    }
+
+    public void incInfectionsSchool() {
+        schoolInfections++;
+    }
+    
+    public void incInfectionsRestaurant() {
+        restaurantInfections++;
+    }
+    
+    public void incInfectionsShop() {
+        shopInfections++;
+    }
+
+    public void incInfectionsNursery() {
+        nurseryInfections++;
     }
 }

@@ -7,10 +7,7 @@ import com.google.gson.JsonParseException;
 
 import uk.co.ramp.covid.simulation.RunModel;
 import uk.co.ramp.covid.simulation.io.ParameterReader;
-import uk.co.ramp.covid.simulation.population.Adult;
-import uk.co.ramp.covid.simulation.population.Child;
-import uk.co.ramp.covid.simulation.population.Pensioner;
-import uk.co.ramp.covid.simulation.population.Person;
+import uk.co.ramp.covid.simulation.population.*;
 import uk.co.ramp.covid.simulation.util.RNG;
 
 import java.io.IOException;
@@ -39,8 +36,7 @@ public class RestaurantTest {
 
     @Test
     public void testRestaurantTransProb() {
-        CommunalPlace place = new CommunalPlace(0);
-        double expProb = place.transProb * 5d / (5000d / 1000d);
+        double expProb = PopulationParameters.get().getpBaseTrans() * 5d / (5000d / 1000d);
         double delta = 0.01;
         assertEquals("Unexpected restaurant TransProb", expProb, restaurant.transProb, delta);
     }

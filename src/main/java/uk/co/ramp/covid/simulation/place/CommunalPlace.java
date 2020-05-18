@@ -17,9 +17,11 @@ import uk.co.ramp.covid.simulation.util.RNG;
 
 import java.util.ArrayList;
 
-public class CommunalPlace {
+public abstract class CommunalPlace {
 
     private static final Logger LOGGER = LogManager.getLogger(CommunalPlace.class);
+
+    abstract public void reportInfection(DailyStats s);
 
     private int cIndex;
     protected int startTime;
@@ -87,7 +89,7 @@ public class CommunalPlace {
                             if (!nPers.getInfectionStatus()) {
                                 boolean infected = nPers.infChallenge(this.transProb * this.sDistance);
                                 if (infected) {
-                                    stats.infectedPlace(this, nPers);
+                                    reportInfection(stats);
                                 }
                             }
                         }
