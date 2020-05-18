@@ -111,7 +111,7 @@ public class Household {
                                 boolean infected = nPers.infChallenge(1);
                                 if (infected) {
                                     stats.incInfectionsHome();
-                                    cPers.reportInfection(stats);
+                                    nPers.reportInfection(stats);
                                 }
                             }
                         }

@@ -91,7 +91,7 @@ public abstract class CommunalPlace {
                             if (!nPers.getInfectionStatus()) {
                                 boolean infected = nPers.infChallenge(this.transProb * this.sDistance);
                                 if (infected) {
-                                    registerInfection(stats, cPers);
+                                    registerInfection(stats, nPers);
                                 }
                             }
                         }
