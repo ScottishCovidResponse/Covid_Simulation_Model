@@ -23,6 +23,6 @@ public class Child extends Person {
     public void allocateCommunalPlace(Population p) {
         CommunalPlace property = p.getRandomPlace();
         while (!(property instanceof School)) property = p.getRandomPlace();
-        this.setMIndex(property.getIndex());
+        setPrimaryPlace(property);
     }
 }

@@ -48,32 +48,32 @@ public class Adult extends Person {
             case TEACHER: {
                 CommunalPlace property = p.getRandomPlace();
                 while (!(property instanceof School)) property = p.getRandomPlace();
-                this.setMIndex(property.getIndex());
+                setPrimaryPlace(property);
             } break;
             case SHOP: {
                 CommunalPlace property = p.getRandomPlace();
                 while (!(property instanceof Shop)) property = p.getRandomPlace();
-                this.setMIndex(property.getIndex());
+                setPrimaryPlace(property);
             } break;
             case CONSTRUCTION: {
                 CommunalPlace property = p.getRandomPlace();
                 while (!(property instanceof ConstructionSite)) property = p.getRandomPlace();
-                this.setMIndex(property.getIndex());
+                setPrimaryPlace(property);
             } break;
             case OFFICE: {
                 CommunalPlace property = p.getRandomPlace();
                 while (!(property instanceof Office)) property = p.getRandomPlace();
-                this.setMIndex(property.getIndex());
+                setPrimaryPlace(property);
             } break;
             case HOSPITAL: {
                 CommunalPlace property = p.getRandomPlace();
                 while (!(property instanceof Hospital)) property = p.getRandomPlace();
-                this.setMIndex(property.getIndex());
+                setPrimaryPlace(property);
             } break;
             case RESTAURANT: {
                 CommunalPlace property = p.getRandomPlace();
                 while (!(property instanceof Restaurant)) property = p.getRandomPlace();
-                this.setMIndex(property.getIndex());
+                setPrimaryPlace(property);
             } break;
         }
     }

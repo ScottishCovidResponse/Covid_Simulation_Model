@@ -34,6 +34,6 @@ public class Infant extends Person {
     public void allocateCommunalPlace(Population p) {
         CommunalPlace property = p.getRandomPlace();
         while (!(property instanceof Nursery)) property = p.getRandomPlace();
-        this.setMIndex(property.getIndex());
+        setPrimaryPlace(property);
     }
 }

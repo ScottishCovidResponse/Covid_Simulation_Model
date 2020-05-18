@@ -379,8 +379,8 @@ public class Population {
         int i = 0;
         while (i < vHouse.size()) {
             Person nPers = vHouse.get(i);
-            if (nPers.getMIndex() >= 0 && !nPers.getQuarantine()) {
-                boolean visit = this.cPlaces[nPers.getMIndex()].checkVisit(nPers, hour, day, this.lockdown);
+            if (nPers.hasPrimaryCommunalPlace() && !nPers.getQuarantine()) {
+                boolean visit = nPers.getPrimaryCommunalPlace().checkVisit(nPers, hour, day, this.lockdown);
                 if (visit) {
                     vHouse.remove(i);
                     i--;

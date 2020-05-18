@@ -68,8 +68,6 @@ public abstract class CommunalPlace {
         if (this.startTime == time && day >= this.startDay && day <= this.endDay && (this.keyPremises || !clockdown)) {
             cIn = true;
             this.listPeople.add(cPers);
-            if (cPers instanceof Pensioner && (this instanceof Hospital))
-                LOGGER.info("Pensioner HERE " + cPers.getMIndex());
         }
         return cIn;
     }

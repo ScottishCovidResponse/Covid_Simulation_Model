@@ -13,7 +13,7 @@ import uk.co.ramp.covid.simulation.util.RNG;
 
 public abstract class Person {
     private boolean shopWorker = false;
-    private int mIndex;
+    private CommunalPlace primaryPlace = null;
     private int hIndex;
     private boolean recovered;
     private Covid cVirus;
@@ -30,7 +30,6 @@ public abstract class Person {
     public Person() {
         this.rng = RNG.get();
         this.transmissionProb = PopulationParameters.get().getpTransmission();
-        this.mIndex = -1;
         this.quarantineProb = PopulationParameters.get().getpQuarantine();
         this.quarantineVal = rng.nextUniform(0, 1);
     }
@@ -52,12 +51,12 @@ public abstract class Person {
         this.recovered = recovered;
     }
 
-    public int getMIndex() {
-        return this.mIndex;
+    public CommunalPlace getPrimaryCommunalPlace() {
+        return primaryPlace;
     }
 
-    public void setMIndex(int mIndex) {
-        this.mIndex = mIndex;
+    public void setPrimaryPlace(CommunalPlace p) {
+        primaryPlace = p;
     }
 
     public int getHIndex() {
@@ -122,4 +121,7 @@ public abstract class Person {
         return cStatus;
     }
 
+    public boolean hasPrimaryCommunalPlace() {
+        return primaryPlace != null;
+    }
 }
