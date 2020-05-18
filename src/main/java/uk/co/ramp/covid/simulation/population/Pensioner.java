@@ -14,4 +14,7 @@ public class Pensioner extends Person {
         s.incDeathsPensioner();
     }
 
+    @Override
+    public void allocateCommunalPlace(Population p) {}
+
 }

@@ -248,63 +248,14 @@ public class Population {
         for (int i = 0; i < this.nHousehold; i++) {
             for (int j = 0; j < this.population[i].getHouseholdSize(); j++) {
                 Person cPerson = this.population[i].getPerson(j);
-                if (cPerson.isNursery()) {
-
-                    CommunalPlace property = this.getRandom();
-                    while (!(property instanceof Nursery)) property = this.getRandom();
-                    cPerson.setMIndex(property.getIndex());
-
-                }
-                if (cPerson.isSchool()) {
-
-                    CommunalPlace property = this.getRandom();
-                    while (!(property instanceof School)) property = this.getRandom();
-                    cPerson.setMIndex(property.getIndex());
-
-                }
-                if (cPerson.isShopWorker()) {
-
-                    CommunalPlace property = this.getRandom();
-                    while (!(property instanceof Shop)) property = this.getRandom();
-                    cPerson.setMIndex(property.getIndex());
-
-                }
-                if (cPerson.isConstructionWorker()) {
-
-                    CommunalPlace property = this.getRandom();
-                    while (!(property instanceof ConstructionSite)) property = this.getRandom();
-                    cPerson.setMIndex(property.getIndex());
-
-                }
-                if (cPerson.isOfficeWorker()) {
-
-                    CommunalPlace property = this.getRandom();
-                    while (!(property instanceof Office)) property = this.getRandom();
-                    cPerson.setMIndex(property.getIndex());
-
-                }
-                if (cPerson.isHospitalWorker()) {
-
-                    CommunalPlace property = this.getRandom();
-                    while (!(property instanceof Hospital)) property = this.getRandom();
-                    cPerson.setMIndex(property.getIndex());
-
-                }
-                if (cPerson.isRestaurant()) {
-
-                    CommunalPlace property = this.getRandom();
-                    while (!(property instanceof Restaurant)) property = this.getRandom();
-                    cPerson.setMIndex(property.getIndex());
-
-                }
-
+                cPerson.allocateCommunalPlace(this);
             }
         }
         this.assignNeighbours();
     }
 
     // For selecting a CommunalPlace at random to assign a People to
-    private CommunalPlace getRandom() {
+    public CommunalPlace getRandomPlace() {
         int rnd = rng.nextInt(0, this.cPlaces.length - 1);
         return this.cPlaces[rnd];
     }
