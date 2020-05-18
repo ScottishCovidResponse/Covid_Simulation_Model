@@ -22,26 +22,20 @@ import java.util.Map;
 import java.util.Optional;
 
 public class RunModel {
-
     private static final Logger LOGGER = LogManager.getLogger(RunModel.class);
-    private static final Map<Integer, RandomDataGenerator> map = new HashMap<>();
-    private static int sid;
-
-    public RunModel() {
-    }
-
-    //For testing
-    public RunModel(int sid) {
-        this.sid = sid;
-    }
 
     public static void main(String[] args) throws Exception {
-        if (args.length != 2) {
-            LOGGER.error("Expected parameters: <population_params.json> <model_params.json>");
+        if (args.length < 2) {
+            LOGGER.error("Expected parameters: <population_params.json> <model_params.json> [rngseed]");
             System.exit(-1);
         } else {
             readParameters(args[0]);
             Model m  = Model.readModelFromFile(args[1]);
+
+            if (args.length == 3) {
+                m.setRNGSeed(Integer.parseInt(args[2]));
+            }
+
             if (!m.isValid()) {
                 LOGGER.error("Could not read model parameters");
                 System.exit(-1);
@@ -49,17 +43,6 @@ public class RunModel {
                 m.run();
             }
         }
-        sid = 123;
-    }
-
-
-    public static RandomDataGenerator getRng() {
-        map.computeIfAbsent(sid, f -> {
-            RandomDataGenerator rnd = new RandomDataGenerator();
-            rnd.reSeed(sid);
-            return rnd;
-        });
-        return map.get(sid);
     }
 
     public static void readParameters(String fpath) {

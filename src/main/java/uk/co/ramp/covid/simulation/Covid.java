@@ -6,6 +6,7 @@ package uk.co.ramp.covid.simulation;
 
 import org.apache.commons.math3.random.RandomDataGenerator;
 import uk.co.ramp.covid.simulation.population.*;
+import uk.co.ramp.covid.simulation.util.RNG;
 
 public class Covid {
     private boolean latent;
@@ -28,7 +29,7 @@ public class Covid {
     private final RandomDataGenerator rng;
 
     public Covid(Person ccase) {
-        this.rng = RunModel.getRng();
+        this.rng = RNG.get();
         this.meanLatentPeriod = CovidParameters.get().getMeanLatentPeriod();
         this.meanAsymptomaticPeriod = CovidParameters.get().getMeanAsymptomaticPeriod();
         this.meanP1 = CovidParameters.get().getMeanPhase1DurationMild();

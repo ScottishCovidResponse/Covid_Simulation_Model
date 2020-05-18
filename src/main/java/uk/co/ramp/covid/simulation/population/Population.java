@@ -13,6 +13,7 @@ import uk.co.ramp.covid.simulation.DailyStats;
 import uk.co.ramp.covid.simulation.RunModel;
 import uk.co.ramp.covid.simulation.place.*;
 import uk.co.ramp.covid.simulation.util.ProbabilityDistribution;
+import uk.co.ramp.covid.simulation.util.RNG;
 
 import java.util.*;
 
@@ -36,7 +37,7 @@ public class Population {
     private final RandomDataGenerator rng;
 
     public Population(int populationSize, int nHousehold) {
-        this.rng = RunModel.getRng();
+        this.rng = RNG.get();
         this.populationSize = populationSize;
         this.nHousehold = nHousehold;
         if (this.nHousehold > this.populationSize) LOGGER.warn("More households than population");

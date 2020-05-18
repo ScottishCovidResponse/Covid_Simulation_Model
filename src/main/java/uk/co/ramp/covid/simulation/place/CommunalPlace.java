@@ -13,6 +13,7 @@ import uk.co.ramp.covid.simulation.population.CStatus;
 import uk.co.ramp.covid.simulation.population.Pensioner;
 import uk.co.ramp.covid.simulation.population.Person;
 import uk.co.ramp.covid.simulation.population.PopulationParameters;
+import uk.co.ramp.covid.simulation.util.RNG;
 
 import java.util.ArrayList;
 
@@ -33,7 +34,7 @@ public class CommunalPlace {
     protected final RandomDataGenerator rng;
 
     public CommunalPlace(int cIndex) {
-        this.rng = RunModel.getRng();
+        this.rng = RNG.get();
         this.listPeople = new ArrayList<>();
         this.startTime = 8; // The hour of the day that the Communal Place starts
         this.endTime = 17; // The hour of the day that it ends

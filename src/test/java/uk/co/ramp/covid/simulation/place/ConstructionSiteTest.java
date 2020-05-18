@@ -7,6 +7,7 @@ import com.google.gson.JsonParseException;
 
 import uk.co.ramp.covid.simulation.RunModel;
 import uk.co.ramp.covid.simulation.io.ParameterReader;
+import uk.co.ramp.covid.simulation.util.RNG;
 
 import static org.junit.Assert.assertEquals;
 
@@ -21,7 +22,7 @@ public class ConstructionSiteTest {
 
     @Test
     public void testConstructionSiteTransProb() throws JsonParseException, IOException {
-        new RunModel(123);
+        RNG.seed(123);
         CommunalPlace place = new CommunalPlace(0);
         ConstructionSite constructionSite = new ConstructionSite(0);
         double expProb = place.transProb * 10d / (5000d / 100d);

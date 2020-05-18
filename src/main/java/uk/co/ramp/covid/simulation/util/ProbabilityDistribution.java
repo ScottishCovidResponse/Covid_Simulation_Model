@@ -35,7 +35,7 @@ public class ProbabilityDistribution<T> {
     public ProbabilityDistribution() {
         pmap = new ArrayList();
         totalProb = 0.0;
-        this.rng = RunModel.getRng();
+        this.rng = RNG.get();
     }
 
     /**
