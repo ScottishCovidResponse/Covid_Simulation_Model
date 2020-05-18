@@ -41,7 +41,7 @@ public class ModelTest {
             assertEquals(10000, s.getTotalPopulation());
             assertTrue(s.getDead() <= s.getRecovered() * 0.1);
             assertTrue(s.getDead() + nInfections >= s.getRecovered() * 0.005);
-            assertTrue(s.getTotalInfected() < lastTotalInfected * 2);
+            assertTrue(s.getTotalInfected() <= lastTotalInfected * 2);
             lastTotalInfected = s.getTotalInfected();
         }
 

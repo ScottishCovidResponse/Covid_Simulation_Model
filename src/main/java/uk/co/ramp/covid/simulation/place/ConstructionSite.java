@@ -1,5 +1,6 @@
 package uk.co.ramp.covid.simulation.place;
 
+import uk.co.ramp.covid.simulation.DailyStats;
 import uk.co.ramp.covid.simulation.population.PopulationParameters;
 
 public class ConstructionSite extends CommunalPlace {
@@ -11,4 +12,12 @@ public class ConstructionSite extends CommunalPlace {
         if (rng.nextUniform(0, 1) > keyProb) keyPremises = true;
 
     }
+
+    @Override
+    public void reportInfection(DailyStats s) {
+        s.incInfectionConstructionSite();
+    }
+
+
+
 }
