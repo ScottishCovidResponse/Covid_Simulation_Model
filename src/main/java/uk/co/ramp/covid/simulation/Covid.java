@@ -70,7 +70,7 @@ public class Covid {
     // For each infection define the duration of the infection periods
     private void setPeriods() {
         latentPeriod = (int) rng.nextPoisson(meanLatentPeriod);
-        latentPeriod = (int) rng.nextPoisson(meanAsymptomaticPeriod);
+        asymptomaticPeriod = (int) rng.nextPoisson(meanAsymptomaticPeriod);
 
         p1 = rng.nextPoisson(meanP1);
 

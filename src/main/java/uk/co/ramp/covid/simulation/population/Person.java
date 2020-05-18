@@ -52,11 +52,11 @@ public abstract class Person {
     }
 
     public CommunalPlace getPrimaryCommunalPlace() {
-        return primaryPlace;
+        return this.primaryPlace;
     }
 
     public void setPrimaryPlace(CommunalPlace p) {
-        primaryPlace = p;
+        this.primaryPlace = p;
     }
 
     public Household getHome() {
