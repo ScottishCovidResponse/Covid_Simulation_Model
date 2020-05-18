@@ -124,7 +124,7 @@ public class Population {
                     break;
                 }
                 remainingPeople.clear(i);
-                aPopulation[i].setHIndex(h);
+                aPopulation[i].setHome(population[h]);
                 population[h].addPerson(aPopulation[i]);
             }
         }
@@ -145,7 +145,7 @@ public class Population {
                         if (i < 0) {
                             break;
                         }
-                        aPopulation[i].setHIndex(h);
+                        aPopulation[i].setHome(population[h]);
                         population[h].addPerson(aPopulation[i]);
                         remainingPeople.clear(i);
                     }
@@ -404,7 +404,7 @@ public class Population {
         for (CommunalPlace cPlace : this.cPlaces) {
             ArrayList<Person> retPeople = cPlace.cyclePlace(hour, stats);
             for (Person cPers : retPeople) {
-                population[cPers.getHIndex()].addPerson(cPers);
+                cPers.returnHome();
             }
         }
     }
@@ -431,7 +431,7 @@ public class Population {
     private void returnNeighbours(Household cHouse) {
         ArrayList<Person> vReturn = cHouse.sendNeighboursHome();
         for (Person nPers : vReturn) {
-            this.population[nPers.getHIndex()].addPerson(nPers);
+            nPers.returnHome();
         }
     }
 
@@ -464,7 +464,7 @@ public class Population {
             ArrayList<Person> vCurr = ((Shop) this.cPlaces[shopIndex]).sendHome(hour);
             if (vCurr != null) {
                 for (Person nPers : vCurr) {
-                    this.population[nPers.getHIndex()].addPerson(nPers);
+                    nPers.returnHome();
                 }
             }
         }
@@ -496,11 +496,12 @@ public class Population {
 
     // People return from dinner
     private void returnRestaurant(int hour) {
+        // TODO CHECK-ME: Should this be restaurantIndexes?
         for (int shopIndex : this.shopIndexes) {
             ArrayList<Person> vCurr = ((Shop) this.cPlaces[shopIndex]).sendHome(hour);
             if (vCurr != null) {
                 for (Person nPers : vCurr) {
-                    this.population[nPers.getHIndex()].addPerson(nPers);
+                   nPers.returnHome();
                 }
             }
         }

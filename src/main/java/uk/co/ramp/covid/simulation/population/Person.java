@@ -9,12 +9,13 @@ import uk.co.ramp.covid.simulation.Covid;
 import uk.co.ramp.covid.simulation.DailyStats;
 import uk.co.ramp.covid.simulation.RunModel;
 import uk.co.ramp.covid.simulation.place.CommunalPlace;
+import uk.co.ramp.covid.simulation.place.Household;
 import uk.co.ramp.covid.simulation.util.RNG;
 
 public abstract class Person {
     private boolean shopWorker = false;
     private CommunalPlace primaryPlace = null;
-    private int hIndex;
+    private Household home;
     private boolean recovered;
     private Covid cVirus;
     private final double transmissionProb;
@@ -59,12 +60,16 @@ public abstract class Person {
         primaryPlace = p;
     }
 
-    public int getHIndex() {
-        return this.hIndex;
+    public Household getHome() {
+        return home;
     }
 
-    public void setHIndex(int hIndex) {
-        this.hIndex = hIndex;
+    public void setHome(Household h) {
+        home = h;
+    }
+    
+    public void returnHome() {
+        home.addPerson(this);
     }
 
     public boolean getQuarantine() {
