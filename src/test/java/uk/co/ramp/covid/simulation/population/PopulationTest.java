@@ -139,7 +139,6 @@ public class PopulationTest {
 
     @Test
     public void testAssignNeighbours() {
-        p.populateHouseholds();
         p.createMixing();
         p.assignNeighbours();
         int totalNeighbours = 0;
@@ -160,8 +159,6 @@ public class PopulationTest {
     public void testTimestep() {
         List<DailyStats> stats;
         int nDays = 3;
-
-        p.populateHouseholds();
         p.createMixing();
         p.assignNeighbours();
         stats = p.timeStep(nDays);

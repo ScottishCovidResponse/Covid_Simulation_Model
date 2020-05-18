@@ -22,14 +22,14 @@ public class PersonTest {
     @Test
     public void testInfect() {
         //Test that the infect() method returns true
-        Person person = new Person();
+        Person person = new Adult();
         assertTrue("Person unexpectedly not infected", person.infect());
     }
 
     @Test
     public void testInfectionStatus() {
         //Test that an infected person's infection status is true
-        Person person = new Person();
+        Person person = new Adult();
         boolean inf = person.infect();
         assertTrue("Person unexpectedly not infected", person.getInfectionStatus());
     }
@@ -37,7 +37,7 @@ public class PersonTest {
     @Test
     public void testStepInfection() {
         //Test that stepInfection returns a valid status
-        Person person = new Person();
+        Person person = new Adult();
         person.infChallenge(100.0);
         assertNotNull("Invalid CStatus", person.stepInfection());
     }
@@ -45,7 +45,7 @@ public class PersonTest {
     @Test
     public void testCStatus() {
         //Test the status of a new person is healthy
-        Person person = new Person();
+        Person person = new Adult();
         assertSame("Person not healthy", CStatus.HEALTHY, person.cStatus());
 
         //Test the status of an infected person is not healthy

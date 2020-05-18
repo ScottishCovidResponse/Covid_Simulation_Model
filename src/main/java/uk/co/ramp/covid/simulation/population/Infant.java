@@ -7,7 +7,7 @@ import uk.co.ramp.covid.simulation.place.Nursery;
 
 public class Infant extends Person {
 
-    private boolean goesToNursery;
+    boolean goesToNursery;
 
     public Infant() {
         setNursery();

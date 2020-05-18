@@ -22,12 +22,13 @@ public class AdultTest {
         adult.setProfession();
         boolean professionSet = false;
         professionSet = professionSet
-                     || adult.isConstructionWorker()
+                     || adult.profession == Adult.Professions.CONSTRUCTION
                      || adult.isShopWorker()
-                     || adult.isHospitalWorker()
-                     || adult.isOfficeWorker()
-                     || adult.isRestaurant()
-                     || adult.isTeacher();
+                     || adult.profession == Adult.Professions.HOSPITAL
+                     || adult.profession == Adult.Professions.OFFICE
+                     || adult.profession == Adult.Professions.RESTAURANT
+                     || adult.profession == Adult.Professions.TEACHER
+                     || adult.profession == Adult.Professions.NONE;
 
         assertTrue("Unexpected adult profession", professionSet);
     }
