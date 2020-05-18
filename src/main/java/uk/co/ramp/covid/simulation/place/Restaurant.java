@@ -7,8 +7,7 @@ import uk.co.ramp.covid.simulation.population.PopulationParameters;
 import java.util.ArrayList;
 
 public class Restaurant extends CommunalPlace {
-    public Restaurant(int cindex) {
-        super(cindex);
+    public Restaurant() {
         transProb = PopulationParameters.get().getpBaseTrans() * PopulationParameters.get().getpRestaurantTrans();
         startDay = 1;
         endDay = 7;

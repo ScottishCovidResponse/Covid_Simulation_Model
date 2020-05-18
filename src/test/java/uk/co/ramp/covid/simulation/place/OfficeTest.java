@@ -24,7 +24,7 @@ public class OfficeTest {
     @Test
     public void testOfficeTransProb() throws JsonParseException, IOException {
         RNG.seed(123);
-        Office office = new Office(0);
+        Office office = new Office();
         double expProb = PopulationParameters.get().getpBaseTrans() * 10d / (10000d / 400d);
         double delta = 0.01;
         assertEquals("Unexpected office TransProb", expProb, office.transProb, delta);

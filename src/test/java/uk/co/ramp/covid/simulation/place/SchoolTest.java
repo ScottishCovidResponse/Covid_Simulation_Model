@@ -22,7 +22,7 @@ public class SchoolTest {
     @Test
     public void testSchoolTransProb() {
         RNG.seed(123);
-        School school = new School(0);
+        School school = new School();
         double expProb = PopulationParameters.get().getpBaseTrans() * 30d / (34000d / 50d);
         double delta = 0.01;
         assertEquals("Unexpected school TransProb", expProb, school.transProb, delta);

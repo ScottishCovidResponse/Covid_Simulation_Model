@@ -27,7 +27,7 @@ public class RestaurantTest {
 
         RNG.seed(123);
         //Setup a restaurant with 2 people
-        restaurant = new Restaurant(0);
+        restaurant = new Restaurant();
         p1 = new Adult();
         p2 = new Pensioner();
         restaurant.listPeople.add(p1);

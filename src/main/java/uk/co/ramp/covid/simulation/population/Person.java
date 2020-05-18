@@ -9,6 +9,7 @@ import uk.co.ramp.covid.simulation.Covid;
 import uk.co.ramp.covid.simulation.DailyStats;
 import uk.co.ramp.covid.simulation.place.CommunalPlace;
 import uk.co.ramp.covid.simulation.place.Household;
+import uk.co.ramp.covid.simulation.place.Places;
 import uk.co.ramp.covid.simulation.util.RNG;
 
 public abstract class Person {
@@ -25,7 +26,7 @@ public abstract class Person {
     
     public abstract void reportInfection(DailyStats s);
     public abstract void reportDeath (DailyStats s);
-    public abstract void allocateCommunalPlace(Population p);
+    public abstract void allocateCommunalPlace(Places p);
 
     public Person() {
         this.rng = RNG.get();

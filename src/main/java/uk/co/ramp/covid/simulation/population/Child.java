@@ -3,6 +3,7 @@ package uk.co.ramp.covid.simulation.population;
 import uk.co.ramp.covid.simulation.CovidParameters;
 import uk.co.ramp.covid.simulation.DailyStats;
 import uk.co.ramp.covid.simulation.place.CommunalPlace;
+import uk.co.ramp.covid.simulation.place.Places;
 import uk.co.ramp.covid.simulation.place.School;
 
 public class Child extends Person {
@@ -21,10 +22,8 @@ public class Child extends Person {
 
     // All children go to school
     @Override
-    public void allocateCommunalPlace(Population p) {
-        CommunalPlace property = p.getRandomPlace();
-        while (!(property instanceof School)) property = p.getRandomPlace();
-        setPrimaryPlace(property);
+    public void allocateCommunalPlace(Places p) {
+        setPrimaryPlace(p.getRandomSchool());
     }
 
     @Override

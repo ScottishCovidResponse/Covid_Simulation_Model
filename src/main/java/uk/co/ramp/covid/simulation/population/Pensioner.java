@@ -2,6 +2,7 @@ package uk.co.ramp.covid.simulation.population;
 
 import uk.co.ramp.covid.simulation.CovidParameters;
 import uk.co.ramp.covid.simulation.DailyStats;
+import uk.co.ramp.covid.simulation.place.Places;
 
 public class Pensioner extends Person {
 
@@ -16,7 +17,7 @@ public class Pensioner extends Person {
     }
 
     @Override
-    public void allocateCommunalPlace(Population p) {}
+    public void allocateCommunalPlace(Places p) {}
 
     @Override
     public boolean avoidsPhase2(double testP) {

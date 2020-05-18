@@ -25,9 +25,7 @@ public class Population {
     private final int nHousehold;
     private final Household[] population;
     private final Person[] aPopulation;
-    private CommunalPlace[] cPlaces;
-    private int[] shopIndexes;
-    private int[] restaurantIndexes;
+    private Places places;
     private boolean lockdown;
     private boolean rLockdown;
     private int lockdownStart;
@@ -44,6 +42,7 @@ public class Population {
 
         this.population = new Household[this.nHousehold];
         this.aPopulation = new Person[this.populationSize];
+        this.places = new Places();
         this.lockdownStart = (-1);
         this.lockdownEnd = (-1);
         this.socialDist = 1.0;
@@ -224,31 +223,16 @@ public class Population {
         int nConstructionSites = populationSize / PopulationParameters.get().getConstructionSiteRatio();
         int nNurseries = populationSize / PopulationParameters.get().getNurseriesRatio();
         int nRestaurants = populationSize / PopulationParameters.get().getRestaurantRatio();
-        int nEstablishments = nHospitals + nSchools + nShops + nOffices + nConstructionSites + nNurseries + nRestaurants;
-        this.shopIndexes = new int[nShops];
-        this.restaurantIndexes = new int[nRestaurants];
 
-        LOGGER.info("Total number of establishments = {}", nEstablishments);
+        places.createNHospitals(nHospitals);
+        places.createNSchools(nSchools);
+        places.createNShops(nShops);
+        places.createNOffices(nOffices);
+        places.createNConstructionSites(nConstructionSites);
+        places.createNNurseries(nNurseries);
+        places.createNRestaurants(nRestaurants);
 
-        CommunalPlace[] places = new CommunalPlace[nEstablishments];
-        for (int i = 0; i < nEstablishments; i++) {
-            if (i < nHospitals) places[i] = new Hospital(i);
-            else if (i < nHospitals + nSchools) places[i] = new School(i);
-            else if (i < nHospitals + nSchools + nShops) { // Allocate shops and their indexes
-                places[i] = new Shop(i);
-                this.shopIndexes[i - nHospitals - nSchools] = i;
-            } else if (i < nHospitals + nSchools + nShops + nOffices) places[i] = new Office(i);
-            else if (i < nHospitals + nSchools + nShops + nOffices + nConstructionSites)
-                places[i] = new ConstructionSite(i);
-            else if (i < nHospitals + nSchools + nShops + nOffices + nConstructionSites + nNurseries)
-                places[i] = new Nursery(i);
-            else if (i < nHospitals + nSchools + nShops + nOffices + nConstructionSites + nNurseries + nRestaurants) {
-                places[i] = new Restaurant(i);
-                this.restaurantIndexes[i - nHospitals - nSchools - nShops - nOffices - nConstructionSites - nNurseries] = i;
-            }
-
-        }
-        this.cPlaces = places;
+        LOGGER.info("Total number of establishments = {}", places.getAllPlaces().size());
     }
 
     // Allocates people to communal places - work environments
@@ -256,16 +240,10 @@ public class Population {
         for (int i = 0; i < this.nHousehold; i++) {
             for (int j = 0; j < this.population[i].getHouseholdSize(); j++) {
                 Person cPerson = this.population[i].getPerson(j);
-                cPerson.allocateCommunalPlace(this);
+                cPerson.allocateCommunalPlace(places);
             }
         }
         this.assignNeighbours();
-    }
-
-    // For selecting a CommunalPlace at random to assign a People to
-    public CommunalPlace getRandomPlace() {
-        int rnd = rng.nextInt(0, this.cPlaces.length - 1);
-        return this.cPlaces[rnd];
     }
 
     // This method assigns a random number of neighbours to each Household
@@ -352,7 +330,7 @@ public class Population {
 
     // Sets the social distancing to parameters wihtin the CommunalPlaces
     private void socialDistancing() {
-        for (CommunalPlace cPlace : this.cPlaces) {
+        for (CommunalPlace cPlace : places.getAllPlaces()) {
             cPlace.adjustSDist(this.socialDist);
         }
     }
@@ -400,16 +378,17 @@ public class Population {
 
     // This sets the schools exempt from lockdown if that is triggered. Somewhat fudged at present by setting the schools to be KeyPremises - not entirely what thta was intended for, but it works
     private void schoolExemption() {
-        for (CommunalPlace cPlace : this.cPlaces) {
-            if (cPlace instanceof School || cPlace instanceof Nursery) {
-                cPlace.overrideKeyPremises(true);
-            }
+        for (School s : places.getSchools()) {
+                s.overrideKeyPremises(true);
+        }
+        for (Nursery n : places.getNurseries()) {
+            n.overrideKeyPremises(true);
         }
     }
 
     // People returning ome at the end of the day
     private void cyclePlaces(int hour, DailyStats stats) {
-        for (CommunalPlace cPlace : this.cPlaces) {
+        for (CommunalPlace cPlace : places.getAllPlaces()) {
             ArrayList<Person> retPeople = cPlace.cyclePlace(hour, stats);
             for (Person cPers : retPeople) {
                 cPers.returnHome();
@@ -458,8 +437,8 @@ public class Population {
                     vNext = household.shoppingTrip();
                 }
                 if (vNext != null) {
-                    int shopSample = rng.nextInt(0,this.shopIndexes.length - 1);
-                    ((Shop) this.cPlaces[this.shopIndexes[shopSample]]).shoppingTrip(vNext);
+                    Shop s = places.getRandomShop();
+                    s.shoppingTrip(vNext);
                 }
                 vNext = null;
             }
@@ -468,8 +447,8 @@ public class Population {
 
     // People return from shopping
     private void returnShoppers(int hour) {
-        for (int shopIndex : this.shopIndexes) {
-            ArrayList<Person> vCurr = ((Shop) this.cPlaces[shopIndex]).sendHome(hour);
+        for (Shop s  : places.getShops()) {
+            ArrayList<Person> vCurr = s.sendHome(hour);
             if (vCurr != null) {
                 for (Person nPers : vCurr) {
                     nPers.returnHome();
@@ -486,27 +465,25 @@ public class Population {
         int endDay = 7;
         double visitFrequency = 2.0 / 7.0; // Based on three visits per week to shops
         double visitProb = visitFrequency / 12.0;
-        ArrayList<Person> vNext = null;
 
         if (hour >= openingTime && hour < closingTime && startDay >= day && endDay <= day) {
             for (Household household : this.population) {
+                ArrayList<Person> vNext = null;
                 if (rng.nextUniform(0, 1) < visitProb) {
                     vNext = household.shoppingTrip(); // This method is fine for our purposes here
                 }
                 if (vNext != null) {
-                    int shopSample = rng.nextInt(0, this.restaurantIndexes.length - 1);
-                    ((Restaurant) this.cPlaces[this.restaurantIndexes[shopSample]]).shoppingTrip(vNext);
+                    Restaurant r = places.getRandomRestaurant();
+                    r.shoppingTrip(vNext);
                 }
-                vNext = null;
             }
         }
     }
 
     // People return from dinner
     private void returnRestaurant(int hour) {
-        // TODO CHECK-ME: Should this be restaurantIndexes?
-        for (int shopIndex : this.shopIndexes) {
-            ArrayList<Person> vCurr = ((Shop) this.cPlaces[shopIndex]).sendHome(hour);
+        for (Restaurant r : places.getRestaurants()) {
+            ArrayList<Person> vCurr = r.sendHome(hour);
             if (vCurr != null) {
                 for (Person nPers : vCurr) {
                    nPers.returnHome();

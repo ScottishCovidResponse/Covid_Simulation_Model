@@ -26,7 +26,7 @@ public class ShopTest {
         ParameterReader.readParametersFromFile("src/test/resources/default_params.json");
         RNG.seed(123);
         //Setup a shop with 2 people
-        shop = new Shop(0);
+        shop = new Shop();
         p1 = new Adult();
         p2 = new Pensioner();
         shop.listPeople.add(p1);

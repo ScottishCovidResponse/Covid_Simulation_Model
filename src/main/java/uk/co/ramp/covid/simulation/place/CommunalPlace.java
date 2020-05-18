@@ -23,7 +23,6 @@ public abstract class CommunalPlace {
 
     abstract public void reportInfection(DailyStats s);
 
-    private int cIndex;
     protected int startTime;
     protected int endTime;
     protected ArrayList<Person> listPeople;
@@ -35,14 +34,13 @@ public abstract class CommunalPlace {
     private double sDistance; // A social distancing coefficient;
     protected final RandomDataGenerator rng;
 
-    public CommunalPlace(int cIndex) {
+    public CommunalPlace() {
         this.rng = RNG.get();
         this.listPeople = new ArrayList<>();
         this.startTime = 8; // The hour of the day that the Communal Place starts
         this.endTime = 17; // The hour of the day that it ends
         this.startDay = 1; // Days of the week that it is active - start
         this.endDay = 5; // Days of the week that it is active - end
-        this.cIndex = cIndex; // This sets the index for each Communal Place to avoid searching
         this.transProb = PopulationParameters.get().getpBaseTrans(); // Pretty important parameter. This defines the transmission rate within this Communal Place
         this.keyProb = 1.0;
         this.sDistance = 1.0;
@@ -52,14 +50,6 @@ public abstract class CommunalPlace {
 
     public void overrideKeyPremises(boolean overR) {
         this.keyPremises = overR;
-    }
-
-    public int getIndex() {
-        return this.cIndex;
-    }
-
-    public void setIndex(int indexVal) {
-        this.cIndex = indexVal;
     }
 
     // Check whether a Person might visit at that hour of the day
