@@ -1,5 +1,6 @@
 package uk.co.ramp.covid.simulation.population;
 
+import uk.co.ramp.covid.simulation.CovidParameters;
 import uk.co.ramp.covid.simulation.DailyStats;
 import uk.co.ramp.covid.simulation.place.*;
 import uk.co.ramp.covid.simulation.util.ProbabilityDistribution;
@@ -13,6 +14,8 @@ public class Adult extends Person {
     Professions profession;
 
     public Adult() { setProfession(); }
+
+
 
     // Allocates adults to different professions
     public void setProfession() {
@@ -76,5 +79,10 @@ public class Adult extends Person {
                 setPrimaryPlace(property);
             } break;
         }
+    }
+
+    @Override
+    public boolean avoidsPhase2(double testP) {
+        return testP > CovidParameters.get().getAdultProgressionPhase2();
     }
 }

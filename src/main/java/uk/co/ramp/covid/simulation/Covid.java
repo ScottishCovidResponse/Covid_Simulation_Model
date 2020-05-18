@@ -69,24 +69,16 @@ public class Covid {
 
     // For each infection define the duration of the infection periods
     private void setPeriods() {
-        this.latentPeriod = (int) rng.nextPoisson(this.meanLatentPeriod);
-        this.latentPeriod = (int) rng.nextPoisson(this.meanAsymptomaticPeriod);
+        latentPeriod = (int) rng.nextPoisson(meanLatentPeriod);
+        latentPeriod = (int) rng.nextPoisson(meanAsymptomaticPeriod);
 
-        this.p1 = rng.nextPoisson(this.meanP1);
-        this.p2 = rng.nextPoisson(this.meanP2);
-        if ((this.ccase instanceof Infant || this.ccase instanceof Child)
-                && rng.nextUniform(0, 1) > CovidParameters.get().getChildProgressionPhase2()) {
-            this.p2 = 0;
-        }
-        if ((this.ccase instanceof Adult)
-                && rng.nextUniform(0, 1) > CovidParameters.get().getAdultProgressionPhase2()) {
-            this.p2 = 0;
-        }
-        if ((this.ccase instanceof Pensioner)
-                && rng.nextUniform(0, 1) > CovidParameters.get().getPensionerProgressionPhase2()) {
-            this.p2 = 0;
-        }
+        p1 = rng.nextPoisson(meanP1);
 
+        if (ccase.avoidsPhase2(rng.nextUniform(0, 1))) {
+            p2 = 0;
+        } else {
+            p2 = rng.nextPoisson(meanP2);
+        }
     }
 
     // Cycle through the infection for that timestep

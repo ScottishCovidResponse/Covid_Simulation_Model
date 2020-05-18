@@ -7,7 +7,6 @@ package uk.co.ramp.covid.simulation.population;
 import org.apache.commons.math3.random.RandomDataGenerator;
 import uk.co.ramp.covid.simulation.Covid;
 import uk.co.ramp.covid.simulation.DailyStats;
-import uk.co.ramp.covid.simulation.RunModel;
 import uk.co.ramp.covid.simulation.place.CommunalPlace;
 import uk.co.ramp.covid.simulation.place.Household;
 import uk.co.ramp.covid.simulation.util.RNG;
@@ -129,4 +128,6 @@ public abstract class Person {
     public boolean hasPrimaryCommunalPlace() {
         return primaryPlace != null;
     }
+
+    public abstract boolean avoidsPhase2(double testP);
 }

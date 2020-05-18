@@ -132,8 +132,7 @@ public class HouseholdTest {
         assertEquals("Unexpected household size", expSize, household.getVisitors().size());
 
     }
-
-    @Ignore //This test requires repeatable random numbers to pass
+    
     @Test
     public void testSendNeighboursHome() {
         Household newHouse = new Household(Household.HouseholdType.ADULT);
