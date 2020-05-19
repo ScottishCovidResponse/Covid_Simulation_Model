@@ -2,6 +2,8 @@ package uk.co.ramp.covid.simulation;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import uk.co.ramp.covid.simulation.util.InvalidParametersException;
+
 import java.lang.reflect.Field;
 
 /**
@@ -15,7 +17,7 @@ public class CovidParameters {
 
     public static CovidParameters get() {
         if (cparams == null) {
-            cparams = new CovidParameters();
+            throw new InvalidParametersException("Invalid COVID parameters");
         }
         return cparams;
     }

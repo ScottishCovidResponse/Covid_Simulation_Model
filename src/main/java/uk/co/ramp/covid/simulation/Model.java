@@ -8,6 +8,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import uk.co.ramp.covid.simulation.population.ImpossibleAllocationException;
 import uk.co.ramp.covid.simulation.population.Population;
+import uk.co.ramp.covid.simulation.util.InvalidParametersException;
 
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -164,14 +165,18 @@ public class Model {
     /** Runs the model with the given parameters. Returns null if the parameters are missing or invalid */
     public List<List<DailyStats>> run() {
         if (!isValid()) {
-            LOGGER.error("Model parameters missing or invalid");
-            return null;
+            throw new InvalidParametersException("Invalid model parameters");
         }
+
 
         List<List<DailyStats>> stats = new ArrayList<>(nIters);
         for (int i = 0; i < nIters; i++) {
             Population p = new Population(populationSize, nHouseholds);
 
+            // As households/person types are determined probabilistically in some cases it can be
+            // impossible to populate all houseolds, e.g. 50 ADULT households and only 49 ADULTS.
+            // He we return an empty run to indicate that the parameters etc are okay, but we used an unlucky random
+            // seed (this can be accounted for when processing the output).
             try {
                 p.populateHouseholds();
             } catch (ImpossibleAllocationException e) {

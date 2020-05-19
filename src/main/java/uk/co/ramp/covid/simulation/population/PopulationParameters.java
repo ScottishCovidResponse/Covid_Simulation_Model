@@ -2,6 +2,7 @@ package uk.co.ramp.covid.simulation.population;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import uk.co.ramp.covid.simulation.util.InvalidParametersException;
 
 import java.lang.reflect.Field;
 import java.util.Map;
@@ -238,7 +239,7 @@ public class PopulationParameters {
 
     public static PopulationParameters get() {
         if (pp == null) {
-            pp = new PopulationParameters();
+            throw new InvalidParametersException("Invalid population parameters");
         }
         return pp;
     }
