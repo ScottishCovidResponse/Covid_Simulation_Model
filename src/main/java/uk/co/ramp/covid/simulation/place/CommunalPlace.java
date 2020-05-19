@@ -18,33 +18,27 @@ import uk.co.ramp.covid.simulation.util.RNG;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class CommunalPlace {
+public abstract class CommunalPlace extends Place {
 
     private static final Logger LOGGER = LogManager.getLogger(CommunalPlace.class);
 
-    abstract public void reportInfection(DailyStats s);
-
     protected int startTime;
     protected int endTime;
-    protected ArrayList<Person> listPeople;
     protected int startDay;
     protected int endDay;
-    protected double transProb;
     protected boolean keyPremises;
     protected double keyProb;
-    private double sDistance; // A social distancing coefficient;
+
     protected final RandomDataGenerator rng;
 
     public CommunalPlace() {
+        super();
         this.rng = RNG.get();
-        this.listPeople = new ArrayList<>();
         this.startTime = 8; // The hour of the day that the Communal Place starts
         this.endTime = 17; // The hour of the day that it ends
         this.startDay = 1; // Days of the week that it is active - start
         this.endDay = 5; // Days of the week that it is active - end
-        this.transProb = PopulationParameters.get().getpBaseTrans(); // Pretty important parameter. This defines the transmission rate within this Communal Place
         this.keyProb = 1.0;
-        this.sDistance = 1.0;
         if (rng.nextUniform(0, 1) > this.keyProb) this.keyPremises = true;
 
     }
@@ -58,42 +52,9 @@ public abstract class CommunalPlace {
         boolean cIn = false;
         if (this.startTime == time && day >= this.startDay && day <= this.endDay && (this.keyPremises || !clockdown)) {
             cIn = true;
-            this.listPeople.add(cPers);
+            people.add(cPers);
         }
         return cIn;
-    }
-    private void registerInfection(DailyStats s, Person p) {
-        reportInfection(s);
-        p.reportInfection(s);
-    }
-
-    protected void doInfect(DailyStats stats) {
-        List<Person> deaths = new ArrayList<>();
-        for (Person cPers : listPeople) {
-            if (cPers.getInfectionStatus() && !cPers.isRecovered()) {
-                cPers.stepInfection();
-                if (cPers.isInfectious()) {
-                    for (Person nPers : listPeople) {
-                        if (cPers != nPers) {
-                            if (!nPers.getInfectionStatus()) {
-                                boolean infected = nPers.infChallenge(this.transProb * this.sDistance);
-                                if (infected) {
-                                    registerInfection(stats, nPers);
-                                }
-                            }
-                        }
-                    }
-                }
-                if (cPers.cStatus() == CStatus.DEAD) {
-                    cPers.reportDeath(stats);
-                    deaths.add(cPers);
-                }
-                if (cPers.cStatus() == CStatus.RECOVERED) {
-                    cPers.setRecovered(true);
-                }
-            }
-        }
-        listPeople.removeAll(deaths);
     }
 
     // Cycle through the People objects in the Place and test their infection status etc
@@ -101,14 +62,14 @@ public abstract class CommunalPlace {
         doInfect(stats);
 
         List<Person> left = new ArrayList<>();
-        for (Person cPers : listPeople) {
+        for (Person cPers : people) {
             if (time == endTime) {
                 cPers.returnHome();
                 left.add(cPers);
             }
         }
 
-        listPeople.removeAll(left);
+        people.removeAll(left);
     }
 
     public void adjustSDist(double sVal) {

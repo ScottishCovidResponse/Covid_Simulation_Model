@@ -236,10 +236,9 @@ public class Population {
 
     // Allocates people to communal places - work environments
     public void allocatePeople() {
-        for (int i = 0; i < this.nHousehold; i++) {
-            for (int j = 0; j < this.population[i].getHouseholdSize(); j++) {
-                Person cPerson = this.population[i].getPerson(j);
-                cPerson.allocateCommunalPlace(places);
+        for (Household h : population) {
+            for (Person p : h.getPeople() ) {
+                p.allocateCommunalPlace(places);
             }
         }
         this.assignNeighbours();
@@ -348,7 +347,7 @@ public class Population {
         for (Household household : this.population) {
             ArrayList<Person> vHouse = household.cycleHouse(stats);
             this.cycleMovements(vHouse, day, hour);
-            this.returnNeighbours(household);
+            household.sendNeighboursHome();
             if (!this.lockdown) this.cycleNeighbours(household);
         }
     }
@@ -392,21 +391,11 @@ public class Population {
             int k = 0;
             while (k < cHouse.nNeighbours()) {
                 if (rng.nextUniform(0, 1) < PopulationParameters.get().getNeighbourVisitFreq()) {
-                    visitIndex = k; // This sets the probability of a neighbour visit as once per week
+                    this.population[cHouse.getNeighbourIndex(k)].welcomeNeighbours(cHouse);
+                    break;
                 }
                 k++;
             }
-        }
-        if (visitIndex > (-1)) {
-            this.population[cHouse.getNeighbourIndex(visitIndex)].welcomeNeighbours(cHouse);
-        }
-    }
-
-    // Neighbours returning home
-    private void returnNeighbours(Household cHouse) {
-        ArrayList<Person> vReturn = cHouse.sendNeighboursHome();
-        for (Person nPers : vReturn) {
-            nPers.returnHome();
         }
     }
 
@@ -435,14 +424,7 @@ public class Population {
 
     // People return from shopping
     private void returnShoppers(int hour) {
-        for (Shop s  : places.getShops()) {
-            ArrayList<Person> vCurr = s.sendHome(hour);
-            if (vCurr != null) {
-                for (Person nPers : vCurr) {
-                    nPers.returnHome();
-                }
-            }
-        }
+        places.getShops().forEach(s -> s.sendHome(hour));
     }
 
     // People go out for dinner
@@ -470,14 +452,7 @@ public class Population {
 
     // People return from dinner
     private void returnRestaurant(int hour) {
-        for (Restaurant r : places.getRestaurants()) {
-            ArrayList<Person> vCurr = r.sendHome(hour);
-            if (vCurr != null) {
-                for (Person nPers : vCurr) {
-                   nPers.returnHome();
-                }
-            }
-        }
+        places.getRestaurants().forEach(r -> r.sendHome(hour));
     }
 
     public Household[] getPopulation() {

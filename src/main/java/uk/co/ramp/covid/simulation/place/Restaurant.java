@@ -17,20 +17,20 @@ public class Restaurant extends CommunalPlace {
     }
 
     public void shoppingTrip(ArrayList<Person> vHouse) {
-        this.listPeople.addAll(vHouse);
+        people.addAll(vHouse);
     }
 
-    public ArrayList<Person> sendHome(int hour) {
-        ArrayList<Person> vReturn = new ArrayList<>();
-        for (int i = 0; i < this.listPeople.size(); i++) {
-            Person nPers = this.listPeople.get(i);
-            if (!nPers.isShopWorker() && rng.nextUniform(0, 1) < 0.4 || hour < super.endTime) {// Assumes a median lenght of shopping trip of 2 hours
-                vReturn.add(nPers);
-                this.listPeople.remove(i);
-                i--;
+    public int sendHome(int hour) {
+        ArrayList<Person> left = new ArrayList<>();
+        for (Person nPers : people) {
+            if (!nPers.isShopWorker() && rng.nextUniform(0, 1) < 0.4
+                    || hour < super.endTime) { // Assumes a median lenght of shopping trip of 2 hours
+                left.add(nPers);
+                nPers.returnHome();
             }
         }
-        return vReturn;
+        people.removeAll(left);
+        return left.size();
     }
 
     @Override

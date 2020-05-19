@@ -30,8 +30,12 @@ public class RestaurantTest {
         restaurant = new Restaurant();
         p1 = new Adult();
         p2 = new Pensioner();
-        restaurant.listPeople.add(p1);
-        restaurant.listPeople.add(p2);
+        Household h1 = new Household(Household.HouseholdType.ADULT);
+        Household h2 = new Household(Household.HouseholdType.PENSIONER);
+        p1.setHome(h1);
+        p2.setHome(h2);
+        restaurant.people.add(p1);
+        restaurant.people.add(p2);
     }
 
     @Test
@@ -47,14 +51,14 @@ public class RestaurantTest {
         personList.add(new Child());
         restaurant.shoppingTrip(personList);
         int expPeople = 3;
-        assertEquals("Unexpected number of people in restaurant", expPeople, restaurant.listPeople.size());
+        assertEquals("Unexpected number of people in restaurant", expPeople, restaurant.people.size());
     }
 
     @Test
     public void testSendHome() {
         int time = restaurant.endTime - 1;
-        ArrayList<Person> personList = restaurant.sendHome(time);
+        int left = restaurant.sendHome(time);
         int expPeople = 2;
-        assertEquals("Unexpected number of people sent home from restaurant", expPeople, personList.size());
+        assertEquals("Unexpected number of people sent home from restaurant", expPeople, left);
     }
 }
