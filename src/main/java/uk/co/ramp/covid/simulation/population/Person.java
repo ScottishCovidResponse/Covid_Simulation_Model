@@ -126,6 +126,12 @@ public abstract class Person {
         return cStatus;
     }
 
+    public boolean isInfectious() {
+        return cStatus() == CStatus.ASYMPTOMATIC
+                || cStatus() == CStatus.PHASE1
+                || cStatus() == CStatus.PHASE2;
+    }
+
     public boolean hasPrimaryCommunalPlace() {
         return primaryPlace != null;
     }

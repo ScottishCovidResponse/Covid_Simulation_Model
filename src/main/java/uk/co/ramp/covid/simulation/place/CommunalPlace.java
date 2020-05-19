@@ -16,6 +16,7 @@ import uk.co.ramp.covid.simulation.population.PopulationParameters;
 import uk.co.ramp.covid.simulation.util.RNG;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public abstract class CommunalPlace {
 
@@ -66,18 +67,14 @@ public abstract class CommunalPlace {
         p.reportInfection(s);
     }
 
-    // Cycle through the People objects in the Place and test their infection status etc
-    public ArrayList<Person> cyclePlace(int time, DailyStats stats) {
-        ArrayList<Person> cReturn = new  ArrayList<>();
-        CStatus status = null;
-        for (int i = 0; i < this.listPeople.size(); i++) {
-            Person cPers = this.listPeople.get(i);
+    protected void doInfect(DailyStats stats) {
+        List<Person> deaths = new ArrayList<>();
+        for (Person cPers : listPeople) {
             if (cPers.getInfectionStatus() && !cPers.isRecovered()) {
-                status = cPers.stepInfection();
-                if (cPers.cStatus() == CStatus.ASYMPTOMATIC || cPers.cStatus() == CStatus.PHASE1 || cPers.cStatus() == CStatus.PHASE2) {
-                    for (int k = 0; k < this.listPeople.size(); k++) {
-                        if (k != i) {
-                            Person nPers = this.listPeople.get(k);
+                cPers.stepInfection();
+                if (cPers.isInfectious()) {
+                    for (Person nPers : listPeople) {
+                        if (cPers != nPers) {
                             if (!nPers.getInfectionStatus()) {
                                 boolean infected = nPers.infChallenge(this.transProb * this.sDistance);
                                 if (infected) {
@@ -89,20 +86,29 @@ public abstract class CommunalPlace {
                 }
                 if (cPers.cStatus() == CStatus.DEAD) {
                     cPers.reportDeath(stats);
-                    this.listPeople.remove(i);
-                    i--;
+                    deaths.add(cPers);
                 }
                 if (cPers.cStatus() == CStatus.RECOVERED) {
                     cPers.setRecovered(true);
                 }
             }
-            if (time == this.endTime && status != CStatus.DEAD) {
-                cReturn.add(cPers);
-                this.listPeople.remove(i);
-                i--;
+        }
+        listPeople.removeAll(deaths);
+    }
+
+    // Cycle through the People objects in the Place and test their infection status etc
+    public void cyclePlace(int time, DailyStats stats) {
+        doInfect(stats);
+
+        List<Person> left = new ArrayList<>();
+        for (Person cPers : listPeople) {
+            if (time == endTime) {
+                cPers.returnHome();
+                left.add(cPers);
             }
         }
-        return cReturn;
+
+        listPeople.removeAll(left);
     }
 
     public void adjustSDist(double sVal) {

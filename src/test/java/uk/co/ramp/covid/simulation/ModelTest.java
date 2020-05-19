@@ -57,7 +57,9 @@ public class ModelTest {
         for (DailyStats s : stats.get(0)) {
             cummulativeI = s.getTotalInfected() + s.getRecovered() + s.getDead();
             totalDailyInfects += s.getTotalDailyInfections();
+            assertEquals(s.getHealthy(), population - cummulativeI);
         }
+
         assertEquals(cummulativeI, totalDailyInfects);
 
         // Deaths should be proportional to phase2 progression

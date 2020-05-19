@@ -337,14 +337,8 @@ public class Population {
 
     // This method generates output at the end of each day
     private DailyStats processCases(DailyStats stats) {
-        for (Household cHouse : population) {
-            for (Person p : cHouse.getInhabitants()) {
-                stats.processPerson(p);
-            }
-            for (Person p: cHouse.getVisitors()) {
-               stats.processPerson(p);
-            }
-            stats.incrementDeaths(cHouse.getDeaths());
+        for (Person p : aPopulation) {
+            stats.processPerson(p);
         }
         stats.log();
         return stats;
@@ -388,12 +382,7 @@ public class Population {
 
     // People returning ome at the end of the day
     private void cyclePlaces(int hour, DailyStats stats) {
-        for (CommunalPlace cPlace : places.getAllPlaces()) {
-            ArrayList<Person> retPeople = cPlace.cyclePlace(hour, stats);
-            for (Person cPers : retPeople) {
-                cPers.returnHome();
-            }
-        }
+        places.getAllPlaces().forEach(p -> p.cyclePlace(hour,stats));
     }
 
     // Go through neighbours and see if they visit anybody
