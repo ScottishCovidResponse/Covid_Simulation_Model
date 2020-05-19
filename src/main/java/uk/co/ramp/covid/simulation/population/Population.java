@@ -115,8 +115,8 @@ public class Population {
             }
         }
         boolean possible = adultIndex.cardinality() > adult + adultPensioner + adultChild + adultPensionerChild
-                || pensionerIndex.cardinality() > adultPensioner + pensioner + pensionerChild + adultPensionerChild
-                || childIndex.cardinality() + infantIndex.cardinality() > adultChild + pensionerChild + adultPensionerChild;
+                && pensionerIndex.cardinality() > adultPensioner + pensioner + pensionerChild + adultPensionerChild
+                && childIndex.cardinality() + infantIndex.cardinality() > adultChild + pensionerChild + adultPensionerChild;
         return  possible;
     }
 
