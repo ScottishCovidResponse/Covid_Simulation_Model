@@ -19,7 +19,7 @@ public class InfantTest {
         //Test 50% of infants go to nursery
         for (int i = 0; i < 1000; i++) {
             Infant infant = new Infant();
-            if (infant.goesToNursery) nNursery++;
+            if (infant.isGoesToNursery()) nNursery++;
         }
         assertEquals("Unexpected number of infants at nursery", 500, nNursery, 10);
     }

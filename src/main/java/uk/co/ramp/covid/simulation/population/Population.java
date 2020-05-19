@@ -10,7 +10,6 @@ import org.apache.commons.math3.random.RandomDataGenerator;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import uk.co.ramp.covid.simulation.DailyStats;
-import uk.co.ramp.covid.simulation.RunModel;
 import uk.co.ramp.covid.simulation.place.*;
 import uk.co.ramp.covid.simulation.util.ProbabilityDistribution;
 import uk.co.ramp.covid.simulation.util.RNG;
@@ -21,19 +20,19 @@ public class Population {
 
     private static final Logger LOGGER = LogManager.getLogger(Population.class);
 
-    final int populationSize;
-    final int nHousehold;
-    final Household[] population;
-    final Person[] aPopulation;
+    private final int populationSize;
+    private final int nHousehold;
+    private final Household[] population;
+    private final Person[] aPopulation;
     private CommunalPlace[] cPlaces;
     private int[] shopIndexes;
     private int[] restaurantIndexes;
     private boolean lockdown;
     private boolean rLockdown;
-    int lockdownStart;
-    int lockdownEnd;
-    double socialDist;
-    boolean schoolL;
+    private int lockdownStart;
+    private int lockdownEnd;
+    private double socialDist;
+    private boolean schoolL;
     private final RandomDataGenerator rng;
 
     public Population(int populationSize, int nHousehold) {
@@ -52,9 +51,9 @@ public class Population {
 
     // Creates the population of People based on the probabilities of age groups above
     private void createPopulation(BitSet adultIndex, BitSet pensionerIndex,
-                                  BitSet childIndex, BitSet infantIndex) { ;
+                                  BitSet childIndex, BitSet infantIndex) {
 
-        ProbabilityDistribution<Integer> dist = new ProbabilityDistribution();
+        ProbabilityDistribution<Integer> dist = new ProbabilityDistribution<>();
         dist.add(PopulationParameters.get().getpAdults(), 0);
         dist.add(PopulationParameters.get().getpPensioners(), 1);
         dist.add(PopulationParameters.get().getpChildren(), 2);
@@ -101,7 +100,7 @@ public class Population {
     }
 
     // Checks we have enough people of the right types to perform a household allocation
-    private boolean householdAllocationImpossible(BitSet adultIndex, BitSet pensionerIndex,
+    private boolean householdAllocationPossible(BitSet adultIndex, BitSet pensionerIndex,
                                                 BitSet childIndex, BitSet infantIndex) {
         int adult = 0; int pensioner = 0; int adultPensioner = 0; int adultChild = 0;
         int pensionerChild = 0; int adultPensionerChild = 0;
@@ -115,10 +114,10 @@ public class Population {
                 case ADULTPENSIONERCHILD: adultPensionerChild++; break;
             }
         }
-        boolean impossible = adultIndex.cardinality() <= adult + adultPensioner + adultChild + adultPensionerChild
-                || pensionerIndex.cardinality() <= adultPensioner + pensioner + pensionerChild + adultPensionerChild
-                || childIndex.cardinality() + infantIndex.cardinality() <= adultChild + pensionerChild + adultPensionerChild;
-        return  !impossible;
+        boolean possible = adultIndex.cardinality() > adult + adultPensioner + adultChild + adultPensionerChild
+                || pensionerIndex.cardinality() > adultPensioner + pensioner + pensionerChild + adultPensionerChild
+                || childIndex.cardinality() + infantIndex.cardinality() > adultChild + pensionerChild + adultPensionerChild;
+        return  possible;
     }
 
     // Cycles over all bits of remainingPeople and ensures they are allocated to a household in a greedy fashion
@@ -173,7 +172,7 @@ public class Population {
 
         createPopulation(adultIndex, pensionerIndex, childIndex, infantIndex);
 
-        assert householdAllocationImpossible(adultIndex, pensionerIndex, childIndex, infantIndex)
+        assert householdAllocationPossible(adultIndex, pensionerIndex, childIndex, infantIndex)
                 : "Population distribution cannot populate household distribution";
 
         // Ensures miminal constraints are met
@@ -269,7 +268,7 @@ public class Population {
     }
 
     // This method assigns a random number of neighbours to each Household
-    void assignNeighbours() {
+    public void assignNeighbours() {
         for (int i = 0; i < this.nHousehold; i++) {
             Household cHouse = this.population[i];
             int expectedNeighbours = PopulationParameters.get().getExpectedNeighbours();
@@ -517,5 +516,53 @@ public class Population {
 
     public Household[] getPopulation() {
         return population;
+    }
+
+    public int getPopulationSize() {
+        return populationSize;
+    }
+
+    public int getnHousehold() {
+        return nHousehold;
+    }
+
+    public Person[] getaPopulation() {
+        return aPopulation;
+    }
+
+    public CommunalPlace[] getcPlaces() {
+        return cPlaces;
+    }
+
+    public int[] getShopIndexes() {
+        return shopIndexes;
+    }
+
+    public int[] getRestaurantIndexes() {
+        return restaurantIndexes;
+    }
+
+    public boolean isLockdown() {
+        return lockdown;
+    }
+
+    public boolean isrLockdown() {
+        return rLockdown;
+    }
+
+    public int getLockdownStart() {
+        return lockdownStart;
+    }
+
+    public int getLockdownEnd() {
+        return lockdownEnd;
+    }
+
+    public double getSocialDist() {
+        return socialDist;
+    }
+
+    public boolean isSchoolL() {
+        return schoolL;
     }
 }
