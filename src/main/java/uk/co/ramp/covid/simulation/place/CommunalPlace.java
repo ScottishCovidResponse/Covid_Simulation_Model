@@ -13,12 +13,15 @@ import uk.co.ramp.covid.simulation.population.CStatus;
 import uk.co.ramp.covid.simulation.population.Pensioner;
 import uk.co.ramp.covid.simulation.population.Person;
 import uk.co.ramp.covid.simulation.population.PopulationParameters;
+import uk.co.ramp.covid.simulation.util.RNG;
 
 import java.util.ArrayList;
 
-public class CommunalPlace {
+public abstract class CommunalPlace {
 
     private static final Logger LOGGER = LogManager.getLogger(CommunalPlace.class);
+
+    abstract public void reportInfection(DailyStats s);
 
     private int cIndex;
     protected int startTime;
@@ -33,7 +36,7 @@ public class CommunalPlace {
     protected final RandomDataGenerator rng;
 
     public CommunalPlace(int cIndex) {
-        this.rng = RunModel.getRng();
+        this.rng = RNG.get();
         this.listPeople = new ArrayList<>();
         this.startTime = 8; // The hour of the day that the Communal Place starts
         this.endTime = 17; // The hour of the day that it ends
@@ -65,10 +68,12 @@ public class CommunalPlace {
         if (this.startTime == time && day >= this.startDay && day <= this.endDay && (this.keyPremises || !clockdown)) {
             cIn = true;
             this.listPeople.add(cPers);
-            if (cPers instanceof Pensioner && (this instanceof Hospital))
-                LOGGER.info("Pensioner HERE " + cPers.getMIndex());
         }
         return cIn;
+    }
+    private void registerInfection(DailyStats s, Person p) {
+        reportInfection(s);
+        p.reportInfection(s);
     }
 
     // Cycle through the People objects in the Place and test their infection status etc
@@ -86,14 +91,14 @@ public class CommunalPlace {
                             if (!nPers.getInfectionStatus()) {
                                 boolean infected = nPers.infChallenge(this.transProb * this.sDistance);
                                 if (infected) {
-                                    stats.infectedPlace(this, nPers);
+                                    registerInfection(stats, nPers);
                                 }
                             }
                         }
                     }
                 }
                 if (cPers.cStatus() == CStatus.DEAD) {
-                    stats.registerDeath(cPers);
+                    cPers.reportDeath(stats);
                     this.listPeople.remove(i);
                     i--;
                 }

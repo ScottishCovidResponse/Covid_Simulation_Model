@@ -6,19 +6,15 @@ package uk.co.ramp.covid.simulation.population;
 
 import org.apache.commons.math3.random.RandomDataGenerator;
 import uk.co.ramp.covid.simulation.Covid;
-import uk.co.ramp.covid.simulation.RunModel;
+import uk.co.ramp.covid.simulation.DailyStats;
+import uk.co.ramp.covid.simulation.place.CommunalPlace;
+import uk.co.ramp.covid.simulation.place.Household;
+import uk.co.ramp.covid.simulation.util.RNG;
 
-public class Person {
-    private boolean nursery;
-    private boolean school;
-    private boolean shopWorker;
-    private boolean hospitalWorker;
-    private boolean officeWorker;
-    private boolean constructionWorker;
-    private boolean teacher;
-    private boolean restaurant;
-    private int mIndex;
-    private int hIndex;
+public abstract class Person {
+    private boolean shopWorker = false;
+    private CommunalPlace primaryPlace = null;
+    private Household home;
     private boolean recovered;
     private Covid cVirus;
     private final double transmissionProb;
@@ -26,79 +22,27 @@ public class Person {
     private final double quarantineProb; // Needs more thought. The probability that the person will go into quarantine
     private final double quarantineVal;
     protected final RandomDataGenerator rng;
+    
+    public abstract void reportInfection(DailyStats s);
+    public abstract void reportDeath (DailyStats s);
+    public abstract void allocateCommunalPlace(Population p);
 
     public Person() {
-        this.rng = RunModel.getRng();
+        this.rng = RNG.get();
         this.transmissionProb = PopulationParameters.get().getpTransmission();
-        this.mIndex = -1;
         this.quarantineProb = PopulationParameters.get().getpQuarantine();
         this.quarantineVal = rng.nextUniform(0, 1);
     }
-
-    public boolean isNursery() {
-        return nursery;
-    }
-
-    public void setNursery(boolean nursery) {
-        this.nursery = nursery;
-    }
-
-    public boolean isSchool() {
-        return school;
-    }
-
-    public void setSchool(boolean school) {
-        this.school = school;
+    
+    public void setShopWorker() {
+        shopWorker = true;
     }
 
     public boolean isShopWorker() {
         return shopWorker;
     }
 
-    public void setShopWorker(boolean shopWorker) {
-        this.shopWorker = shopWorker;
-    }
-
-    public boolean isHospitalWorker() {
-        return hospitalWorker;
-    }
-
-    public void setHospitalWorker(boolean hospitalWorker) {
-        this.hospitalWorker = hospitalWorker;
-    }
-
-    public boolean isOfficeWorker() {
-        return officeWorker;
-    }
-
-    public void setOfficeWorker(boolean officeWorker) {
-        this.officeWorker = officeWorker;
-    }
-
-    public boolean isConstructionWorker() {
-        return constructionWorker;
-    }
-
-    public void setConstructionWorker(boolean constructionWorker) {
-        this.constructionWorker = constructionWorker;
-    }
-
-    public boolean isTeacher() {
-        return teacher;
-    }
-
-    public void setTeacher(boolean teacher) {
-        this.teacher = teacher;
-    }
-
-    public boolean isRestaurant() {
-        return restaurant;
-    }
-
-    public void setRestaurant(boolean restaurant) {
-        this.restaurant = restaurant;
-    }
-
+   
     public boolean isRecovered() {
         return recovered;
     }
@@ -107,20 +51,24 @@ public class Person {
         this.recovered = recovered;
     }
 
-    public int getMIndex() {
-        return this.mIndex;
+    public CommunalPlace getPrimaryCommunalPlace() {
+        return this.primaryPlace;
     }
 
-    public void setMIndex(int mIndex) {
-        this.mIndex = mIndex;
+    public void setPrimaryPlace(CommunalPlace p) {
+        this.primaryPlace = p;
     }
 
-    public int getHIndex() {
-        return this.hIndex;
+    public Household getHome() {
+        return home;
     }
 
-    public void setHIndex(int hIndex) {
-        this.hIndex = hIndex;
+    public void setHome(Household h) {
+        home = h;
+    }
+    
+    public void returnHome() {
+        home.addPerson(this);
     }
 
     public boolean getQuarantine() {
@@ -177,4 +125,9 @@ public class Person {
         return cStatus;
     }
 
+    public boolean hasPrimaryCommunalPlace() {
+        return primaryPlace != null;
+    }
+
+    public abstract boolean avoidsPhase2(double testP);
 }

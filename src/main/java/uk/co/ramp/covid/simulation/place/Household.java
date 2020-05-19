@@ -12,6 +12,7 @@ import org.apache.commons.math3.random.RandomDataGenerator;
 import uk.co.ramp.covid.simulation.RunModel;
 import uk.co.ramp.covid.simulation.population.CStatus;
 import uk.co.ramp.covid.simulation.population.Person;
+import uk.co.ramp.covid.simulation.util.RNG;
 
 import java.util.*;
 
@@ -49,7 +50,7 @@ public class Household {
         vPeople = new ArrayList<>();
         vDeaths = new ArrayList<>();
         vVisitors = new ArrayList<>();
-        this.rng = RunModel.getRng();
+        this.rng = RNG.get();
     }
 
     public int getNeighbourIndex(int nNeighbour) {
@@ -109,14 +110,15 @@ public class Household {
                             if (!nPers.getInfectionStatus()) {
                                 boolean infected = nPers.infChallenge(1);
                                 if (infected) {
-                                    stats.infectedHome(nPers);
+                                    stats.incInfectionsHome();
+                                    nPers.reportInfection(stats);
                                 }
                             }
                         }
                     }
                 }
                 if (cPers.cStatus() == CStatus.DEAD) {
-                    stats.registerDeath(cPers);
+                    cPers.reportDeath(stats);
                     hVector.remove(i);
                     this.vDeaths.add(cPers);
                     this.vPeople.remove(cPers);

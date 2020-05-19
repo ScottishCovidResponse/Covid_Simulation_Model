@@ -9,7 +9,9 @@ import com.google.gson.JsonParseException;
 import uk.co.ramp.covid.simulation.DailyStats;
 import uk.co.ramp.covid.simulation.RunModel;
 import uk.co.ramp.covid.simulation.io.ParameterReader;
+import uk.co.ramp.covid.simulation.population.Adult;
 import uk.co.ramp.covid.simulation.population.Person;
+import uk.co.ramp.covid.simulation.util.RNG;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -25,11 +27,11 @@ public class HouseholdTest {
     @Before
     public void initialise() throws JsonParseException, IOException {
         ParameterReader.readParametersFromFile("src/test/resources/default_params.json");
-        new RunModel(123);
+        RNG.seed(123);
         household = new Household(Household.HouseholdType.ADULT);
-        Person p1 = new Person();
-        Person p2 = new Person();
-        Person p3 = new Person();
+        Person p1 = new Adult();
+        Person p2 = new Adult();
+        Person p3 = new Adult();
         household.addPerson(p1);
         household.addPerson(p2);
         household.addPerson(p3);
@@ -59,7 +61,7 @@ public class HouseholdTest {
 
     @Test
     public void testAddPerson() {
-        Person p4 = new Person();
+        Person p4 = new Adult();
         household.addPerson(p4);
         int expSize = 4;
         assertEquals("Unexpected household size", expSize, household.getInhabitants().size());
@@ -67,7 +69,7 @@ public class HouseholdTest {
 
     @Test
     public void testGetHouseholdSize() {
-        Person p1 = new Person();
+        Person p1 = new Adult();
         household.addPerson(p1);
         int expSize = 4;
         assertEquals("Unexpected household size", expSize, household.getHouseholdSize());
@@ -75,7 +77,7 @@ public class HouseholdTest {
 
     @Test
     public void testGetPerson() {
-        Person p4 = new Person();
+        Person p4 = new Adult();
         household.addPerson(p4);
         assertEquals("Unexpected person found", p4, household.getPerson(3));
     }
@@ -94,7 +96,7 @@ public class HouseholdTest {
     @Test
     public void testCombVectors() {
         Household newHouse = new Household(Household.HouseholdType.ADULT);
-        Person p4 = new Person();
+        Person p4 = new Adult();
         newHouse.addPerson(p4);
         household.welcomeNeighbours(newHouse);
         int expSize = 4;
@@ -110,8 +112,8 @@ public class HouseholdTest {
 
     @Test
     public void testGetDeaths() {
-        Person p1 = new Person();
-        Person p2 = new Person();
+        Person p1 = new Adult();
+        Person p2 = new Adult();
         household.addDeath(p1);
         household.addDeath(p2);
         int expDeaths = 2;
@@ -121,8 +123,8 @@ public class HouseholdTest {
     @Test
     public void testWelcomeNeighbours() {
         Household newHouse = new Household(Household.HouseholdType.ADULT);
-        Person p1 = new Person();
-        Person p2 = new Person();
+        Person p1 = new Adult();
+        Person p2 = new Adult();
         newHouse.addPerson(p1);
         newHouse.addPerson(p2);
         household.welcomeNeighbours(newHouse);
@@ -130,12 +132,11 @@ public class HouseholdTest {
         assertEquals("Unexpected household size", expSize, household.getVisitors().size());
 
     }
-
-    @Ignore //This test requires repeatable random numbers to pass
+    
     @Test
     public void testSendNeighboursHome() {
         Household newHouse = new Household(Household.HouseholdType.ADULT);
-        Person p1 = new Person();
+        Person p1 = new Adult();
         newHouse.addPerson(p1);
         household.welcomeNeighbours(newHouse);
         int expSize = 1;

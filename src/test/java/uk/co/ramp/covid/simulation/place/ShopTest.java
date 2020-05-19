@@ -7,10 +7,8 @@ import com.google.gson.JsonParseException;
 
 import uk.co.ramp.covid.simulation.RunModel;
 import uk.co.ramp.covid.simulation.io.ParameterReader;
-import uk.co.ramp.covid.simulation.population.Adult;
-import uk.co.ramp.covid.simulation.population.Child;
-import uk.co.ramp.covid.simulation.population.Pensioner;
-import uk.co.ramp.covid.simulation.population.Person;
+import uk.co.ramp.covid.simulation.population.*;
+import uk.co.ramp.covid.simulation.util.RNG;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -26,7 +24,7 @@ public class ShopTest {
     @Before
     public void initialise() throws JsonParseException, IOException {
         ParameterReader.readParametersFromFile("src/test/resources/default_params.json");
-        new RunModel(123);
+        RNG.seed(123);
         //Setup a shop with 2 people
         shop = new Shop(0);
         p1 = new Adult();
@@ -37,8 +35,7 @@ public class ShopTest {
 
     @Test
     public void testShopTransProb() {
-        CommunalPlace place = new CommunalPlace(0);
-        double expProb = place.transProb * 5d / (5000d / 200d);
+        double expProb = PopulationParameters.get().getpBaseTrans() * 5d / (5000d / 200d);
         double delta = 0.01;
         assertEquals("Unexpected shop TransProb", expProb, shop.transProb, delta);
     }

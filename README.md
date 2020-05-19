@@ -4,6 +4,8 @@
 
 ## Background
 
+This model is developed for the COVID-19 RMAP response (https://royalsociety.org/topics-policy/Health%20and%20wellbeing/ramp/) to simulate the spread of Covid-19 through a community. In the first instance we envisage a community o a similar scalt to the City of Glasgow. The intention is that it stochastically simulates the movements of people in near real time and their interactions and the spread through these mixing populations. We can subsequently simulate the implementation fo controls in these populations. 
+
 ## Building and Running
 
 ### Java SDK
@@ -65,6 +67,10 @@ To run the project:
 ```shell script
 gradle run  --args "parameters/example_population_params.json parameters/example_model_params.json"
 ```
+
+The run command optionally takes an integer to be used as the seed for the
+random number generator (such that two identically seeded runs will return the
+same result).
 
 The result csv will be placed into the file specified by the `outputFile` parameter
 in the model parameters.

@@ -4,6 +4,8 @@ import org.junit.Before;
 import org.junit.Test;
 import uk.co.ramp.covid.simulation.RunModel;
 import uk.co.ramp.covid.simulation.io.ParameterReader;
+import uk.co.ramp.covid.simulation.population.PopulationParameters;
+import uk.co.ramp.covid.simulation.util.RNG;
 
 import java.io.IOException;
 
@@ -19,10 +21,9 @@ public class SchoolTest {
 
     @Test
     public void testSchoolTransProb() {
-        RunModel runModel = new RunModel(123);
-        CommunalPlace place = new CommunalPlace(0);
+        RNG.seed(123);
         School school = new School(0);
-        double expProb = place.transProb * 30d / (34000d / 50d);
+        double expProb = PopulationParameters.get().getpBaseTrans() * 30d / (34000d / 50d);
         double delta = 0.01;
         assertEquals("Unexpected school TransProb", expProb, school.transProb, delta);
     }

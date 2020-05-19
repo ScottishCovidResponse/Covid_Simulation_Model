@@ -1,5 +1,8 @@
 package uk.co.ramp.covid.simulation.population;
 
+import uk.co.ramp.covid.simulation.CovidParameters;
+import uk.co.ramp.covid.simulation.DailyStats;
+import uk.co.ramp.covid.simulation.place.*;
 import uk.co.ramp.covid.simulation.util.ProbabilityDistribution;
 
 public class Adult extends Person {
@@ -8,9 +11,11 @@ public class Adult extends Person {
         OFFICE, SHOP, HOSPITAL, CONSTRUCTION, TEACHER, RESTAURANT, NONE
     }
 
-    public Adult() {
-        this.setProfession();
-    }
+    Professions profession;
+
+    public Adult() { setProfession(); }
+
+
 
     // Allocates adults to different professions
     public void setProfession() {
@@ -23,15 +28,61 @@ public class Adult extends Person {
         p.add(PopulationParameters.get().getpRestaurantWorker(), Professions.RESTAURANT);
         p.add(PopulationParameters.get().getpUnemployed(), Professions.NONE);
 
-        Professions t = p.sample();
-
-        switch(t) {
-            case OFFICE: super.setOfficeWorker(true); break;
-            case SHOP: super.setShopWorker(true); break;
-            case HOSPITAL: super.setHospitalWorker(true); break;
-            case CONSTRUCTION: super.setConstructionWorker(true); break;
-            case TEACHER: super.setTeacher(true); break;
-            case RESTAURANT: super.setRestaurant(true); break;
+        profession = p.sample();
+        // There is special logic for shop workers returning home
+        if (profession == Professions.SHOP) {
+            super.setShopWorker();
         }
+    }
+
+    @Override
+    public void reportInfection(DailyStats s) {
+        s.incInfectionsAdult();
+    }
+
+    @Override
+    public void reportDeath(DailyStats s) {
+        s.incDeathsAdult();
+    }
+
+    @Override
+    public void allocateCommunalPlace(Population p) {
+        switch(profession) {
+            case TEACHER: {
+                CommunalPlace property = p.getRandomPlace();
+                while (!(property instanceof School)) property = p.getRandomPlace();
+                setPrimaryPlace(property);
+            } break;
+            case SHOP: {
+                CommunalPlace property = p.getRandomPlace();
+                while (!(property instanceof Shop)) property = p.getRandomPlace();
+                setPrimaryPlace(property);
+            } break;
+            case CONSTRUCTION: {
+                CommunalPlace property = p.getRandomPlace();
+                while (!(property instanceof ConstructionSite)) property = p.getRandomPlace();
+                setPrimaryPlace(property);
+            } break;
+            case OFFICE: {
+                CommunalPlace property = p.getRandomPlace();
+                while (!(property instanceof Office)) property = p.getRandomPlace();
+                setPrimaryPlace(property);
+            } break;
+            case HOSPITAL: {
+                CommunalPlace property = p.getRandomPlace();
+                while (!(property instanceof Hospital)) property = p.getRandomPlace();
+                setPrimaryPlace(property);
+            } break;
+            case RESTAURANT: {
+                CommunalPlace property = p.getRandomPlace();
+                while (!(property instanceof Restaurant)) property = p.getRandomPlace();
+                setPrimaryPlace(property);
+            } break;
+        }
+    }
+
+    @Override
+    public boolean avoidsPhase2(double testP) {
+        return testP > CovidParameters.get().getAdultProgressionPhase2();
     }
 }

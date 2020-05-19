@@ -9,6 +9,8 @@ import org.apache.logging.log4j.Logger;
 import uk.co.ramp.covid.simulation.population.ImpossibleAllocationException;
 import uk.co.ramp.covid.simulation.population.Population;
 import uk.co.ramp.covid.simulation.util.InvalidParametersException;
+import uk.co.ramp.covid.simulation.util.RNG;
+
 
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -21,7 +23,6 @@ import java.util.*;
  */
 public class Model {
     private static final Logger LOGGER = LogManager.getLogger(Model.class);
-
 
     private class Lockdown {
         public Integer start = null;
@@ -168,6 +169,12 @@ public class Model {
             throw new InvalidParametersException("Invalid model parameters");
         }
 
+
+        if (rngSeed != null) {
+            RNG.seed(rngSeed);
+        } else {
+            LOGGER.warn("No RNG seed given. Proceeding with random seed");
+        }
 
         List<List<DailyStats>> stats = new ArrayList<>(nIters);
         for (int i = 0; i < nIters; i++) {

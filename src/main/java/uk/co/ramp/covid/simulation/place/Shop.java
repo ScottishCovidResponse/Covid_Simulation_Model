@@ -1,5 +1,6 @@
 package uk.co.ramp.covid.simulation.place;
 
+import uk.co.ramp.covid.simulation.DailyStats;
 import uk.co.ramp.covid.simulation.population.Person;
 import uk.co.ramp.covid.simulation.population.PopulationParameters;
 
@@ -31,5 +32,10 @@ public class Shop extends CommunalPlace {
             }
         }
         return vReturn;
+    }
+
+    @Override
+    public void reportInfection(DailyStats s) {
+        s.incInfectionsShop();
     }
 }
