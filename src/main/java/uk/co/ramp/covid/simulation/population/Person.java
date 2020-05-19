@@ -9,7 +9,6 @@ import uk.co.ramp.covid.simulation.Covid;
 import uk.co.ramp.covid.simulation.DailyStats;
 import uk.co.ramp.covid.simulation.place.CommunalPlace;
 import uk.co.ramp.covid.simulation.place.Household;
-import uk.co.ramp.covid.simulation.place.Places;
 import uk.co.ramp.covid.simulation.util.RNG;
 
 public abstract class Person {

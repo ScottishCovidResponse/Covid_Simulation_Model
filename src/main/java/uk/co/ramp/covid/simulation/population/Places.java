@@ -1,5 +1,6 @@
-package uk.co.ramp.covid.simulation.place;
+package uk.co.ramp.covid.simulation.population;
 
+import uk.co.ramp.covid.simulation.place.*;
 import uk.co.ramp.covid.simulation.util.RNG;
 
 import java.util.ArrayList;
