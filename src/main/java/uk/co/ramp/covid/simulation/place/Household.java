@@ -170,4 +170,20 @@ public class Household extends Place {
     public void reportInfection(DailyStats s) {
         s.incInfectionsHome();
     }
+
+    // For each household processes any movements to Communal Places that are relevant
+    public void cycleMovements(int day, int hour, boolean lockdown) {
+        List<Person> left = new ArrayList<>();
+        int i = 0;
+        for (Person p : vPeople) {
+            if (p.hasPrimaryCommunalPlace() && !p.getQuarantine()) {
+                boolean visit = p.getPrimaryCommunalPlace().checkVisit(p, hour, day, lockdown);
+                if (visit) {
+                    left.add(p);
+                }
+            }
+        }
+        people.removeAll(left);
+        vPeople.removeAll(left);
+    }
 }

@@ -345,28 +345,14 @@ public class Population {
     // Step through the households to identify individual movements to CommunalPlaces
     private void cycleHouseholds(int day, int hour, DailyStats stats) {
         for (Household household : this.population) {
-            ArrayList<Person> vHouse = household.cycleHouse(stats);
-            this.cycleMovements(vHouse, day, hour);
+            household.cycleHouse(stats);
+            household.cycleMovements(day, hour, lockdown);
             household.sendNeighboursHome();
             if (!this.lockdown) this.cycleNeighbours(household);
         }
     }
 
-    // For each household processes any movements to Communal Places that are relevant
-    private void cycleMovements(ArrayList<Person> vHouse, int day, int hour) {
-        int i = 0;
-        while (i < vHouse.size()) {
-            Person nPers = vHouse.get(i);
-            if (nPers.hasPrimaryCommunalPlace() && !nPers.getQuarantine()) {
-                boolean visit = nPers.getPrimaryCommunalPlace().checkVisit(nPers, hour, day, this.lockdown);
-                if (visit) {
-                    vHouse.remove(i);
-                    i--;
-                }
-            }
-            i++;
-        }
-    }
+
 
     // This sets the schools exempt from lockdown if that is triggered. Somewhat fudged at present by setting the schools to be KeyPremises - not entirely what thta was intended for, but it works
     private void schoolExemption() {
