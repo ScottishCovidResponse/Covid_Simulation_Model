@@ -21,6 +21,10 @@ public class Infant extends Person {
         }
     }
 
+    public boolean isGoesToNursery() {
+        return goesToNursery;
+    }
+
     @Override
     public void reportInfection(DailyStats s) {
         s.incInfectionsInfant();
