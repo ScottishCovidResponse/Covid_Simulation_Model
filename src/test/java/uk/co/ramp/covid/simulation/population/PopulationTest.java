@@ -4,7 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 import uk.co.ramp.covid.simulation.DailyStats;
 import uk.co.ramp.covid.simulation.io.ParameterReader;
-import uk.co.ramp.covid.simulation.place.Household;
+import uk.co.ramp.covid.simulation.place.*;
 import uk.co.ramp.covid.simulation.util.RNG;
 
 import java.io.IOException;
@@ -19,10 +19,10 @@ public class PopulationTest {
 
     @Before
     public void setupParams() throws IOException {
-        ParameterReader.readParametersFromFile("src/test/resources/default_params.json");
-        populationSize = 500;
+        ParameterReader.readParametersFromFile("src/test/resources/test_params.json");
+        populationSize = 2000;
         RNG.seed(123);
-        p = new Population(populationSize,60);
+        p = new Population(populationSize,240);
         p.populateHouseholds();
     }
 
@@ -119,6 +119,80 @@ public class PopulationTest {
             }
         }
     }
+
+    @Test
+    public void testAllocateConstructionSite() {
+        //Test that the primary place of adult construction workers is set to construction site
+        p.createMixing();
+        Adult adult = new Adult();
+        adult.profession = Adult.Professions.CONSTRUCTION;
+        p.population[0].addPerson(adult);
+        adult.allocateCommunalPlace(p);
+        CommunalPlace cp = adult.getPrimaryCommunalPlace();
+        assertTrue("Unexpected primary communal place", cp instanceof ConstructionSite);
+    }
+
+    @Test
+    public void testAllocateHospital() {
+        //Test that the primary place of adult hospital workers is set to hospital
+        p.createMixing();
+        Adult adult = new Adult();
+        adult.profession = Adult.Professions.HOSPITAL;
+        p.population[0].addPerson(adult);
+        adult.allocateCommunalPlace(p);
+        CommunalPlace cp = adult.getPrimaryCommunalPlace();
+        assertTrue("Unexpected primary communal place", cp instanceof Hospital);
+    }
+
+    @Test
+    public void testAllocateOffice() {
+        //Test that the primary place of adult office workers is set to office
+        p.createMixing();
+        Adult adult = new Adult();
+        adult.profession = Adult.Professions.OFFICE;
+        p.population[0].addPerson(adult);
+        adult.allocateCommunalPlace(p);
+        CommunalPlace cp = adult.getPrimaryCommunalPlace();
+        assertTrue("Unexpected primary communal place", cp instanceof Office);
+    }
+
+    @Test
+    public void testAllocateRestaurant() {
+        //Test that the primary place of adult restaurant workers is set to restaurant
+        p.createMixing();
+        Adult adult = new Adult();
+        adult.profession = Adult.Professions.RESTAURANT;
+        p.population[0].addPerson(adult);
+        adult.allocateCommunalPlace(p);
+        CommunalPlace cp = adult.getPrimaryCommunalPlace();
+        assertTrue("Unexpected primary communal place", cp instanceof Restaurant);
+    }
+
+    @Test
+    public void testAllocateSchool() {
+        //Test that the primary place of adult teachers is set to school
+        p.createMixing();
+        Adult adult = new Adult();
+        adult.profession = Adult.Professions.TEACHER;
+        p.population[0].addPerson(adult);
+        adult.allocateCommunalPlace(p);
+        CommunalPlace cp = adult.getPrimaryCommunalPlace();
+        assertTrue("Unexpected primary communal place", cp instanceof School);
+    }
+
+    @Test
+    public void testAllocateShop() {
+        //Test that the primary place of adult shop workers is set to shop
+        p.createMixing();
+        Adult adult = new Adult();
+        adult.profession = Adult.Professions.SHOP;
+        p.population[0].addPerson(adult);
+        adult.allocateCommunalPlace(p);
+        CommunalPlace cp = adult.getPrimaryCommunalPlace();
+        assertTrue("Unexpected primary communal place", cp instanceof Shop);
+    }
+
+
 
     @Test
     public void testSeedVirus() {

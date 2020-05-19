@@ -2,7 +2,6 @@ package uk.co.ramp.covid.simulation.population;
 
 import com.google.gson.JsonParseException;
 import org.junit.Test;
-import uk.co.ramp.covid.simulation.RunModel;
 import uk.co.ramp.covid.simulation.io.ParameterReader;
 import uk.co.ramp.covid.simulation.place.School;
 import uk.co.ramp.covid.simulation.util.RNG;
