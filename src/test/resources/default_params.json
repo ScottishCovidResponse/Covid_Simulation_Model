@@ -95,7 +95,8 @@
         "infantAllocation":{
             "pAttendsNursery":0.5
         },
-        "neighbourProperties":{
+        "householdProperties":{
+            "visitorLeaveRate":0.5,
             "neighbourVisitFreq":0.006,
             "expectedNeighbours":3
         },

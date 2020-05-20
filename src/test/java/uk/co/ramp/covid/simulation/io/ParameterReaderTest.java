@@ -86,6 +86,8 @@ public class ParameterReaderTest {
 
         assertEquals(0.9, PopulationParameters.get().getpTransmission(), EPSILON);
         assertEquals(0.7, PopulationParameters.get().getpQuarantine(), EPSILON);
+
+        assertEquals(0.8, PopulationParameters.get().getHouseholdVisitorLeaveRate(), EPSILON);
     }
 
     @After

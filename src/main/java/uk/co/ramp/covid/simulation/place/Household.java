@@ -12,6 +12,7 @@ import org.apache.commons.math3.random.RandomDataGenerator;
 import uk.co.ramp.covid.simulation.RunModel;
 import uk.co.ramp.covid.simulation.population.CStatus;
 import uk.co.ramp.covid.simulation.population.Person;
+import uk.co.ramp.covid.simulation.population.PopulationParameters;
 import uk.co.ramp.covid.simulation.util.RNG;
 
 import java.util.*;
@@ -129,7 +130,7 @@ public class Household extends Place {
         ArrayList<Person> left = new ArrayList<>();
 
         for (Person p : vVisitors) {
-            if (rng.nextUniform(0, 1) < 0.5) { // Assumes a 50% probability that people will go home each hour
+            if (rng.nextUniform(0, 1) < PopulationParameters.get().getHouseholdVisitorLeaveRate()) {
                 left.add(p);
                 if (p.cStatus() != CStatus.DEAD) {
                    p.returnHome();

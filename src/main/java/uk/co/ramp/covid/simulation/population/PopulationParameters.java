@@ -2,6 +2,7 @@ package uk.co.ramp.covid.simulation.population;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import uk.co.ramp.covid.simulation.place.Household;
 
 import java.lang.reflect.Field;
 import java.util.Map;
@@ -172,19 +173,6 @@ public class PopulationParameters {
         }
     }
 
-    private static class NeighbourProperties {
-        public Double neighbourVisitFreq = null;
-        public Integer expectedNeighbours = null;
-
-        @Override
-        public String toString() {
-            return "NeighbourProperties{" +
-                    "neighbourVisitFreq=" + neighbourVisitFreq +
-                    ", expectedNeighbours=" + expectedNeighbours +
-                    '}';
-        }
-    }
-
     private static class PersonProperties {
         public Double pQuarantine = null;
         public Double pTransmission = null;
@@ -197,6 +185,21 @@ public class PopulationParameters {
                     '}';
         }
     }
+    
+    private static class HouseholdProperties {
+        public Double visitorLeaveRate = null;
+        public Double neighbourVisitFreq = null;
+        public Integer expectedNeighbours = null;
+
+        @Override
+        public String toString() {
+            return "HouseholdProperties{" +
+                    "visitorLeaveRate=" + visitorLeaveRate +
+                    ", neighbourVisitFreq=" + neighbourVisitFreq +
+                    ", expectedNeighbours=" + expectedNeighbours +
+                    '}';
+        }
+    }
 
     private final Population population;
     private final Households households;
@@ -205,8 +208,8 @@ public class PopulationParameters {
     private final WorkerAllocation workerAllocation;
     private final BuildingProperties buildingProperties;
     private final InfantAllocation infantAllocation;
-    private final NeighbourProperties neighbourProperties;
     private final PersonProperties personProperties;
+    private final HouseholdProperties householdProperties;
 
     private PopulationParameters() {
         population = new Population();
@@ -216,14 +219,15 @@ public class PopulationParameters {
         workerAllocation = new WorkerAllocation();
         buildingProperties = new BuildingProperties();
         infantAllocation = new InfantAllocation();
-        neighbourProperties = new NeighbourProperties();
         personProperties = new PersonProperties();
+        householdProperties = new HouseholdProperties();
     }
 
     public boolean isValid() {
         ParameterInitialisedChecker checker = new ParameterInitialisedChecker();
         boolean valid = true;
-        // We don't do this in a single statement to ensure that all the "uninitalised" parameter warnings are printed in one go instead of being short circuited
+        // We don't do this in a single statement to ensure that all the "uninitalised" parameter warnings are printed
+        // in one go instead of being short circuited
         valid = valid && checker.isValid(population);
         valid = valid && checker.isValid(households);
         valid = valid && checker.isValid(additionalMembersDistributions);
@@ -231,8 +235,8 @@ public class PopulationParameters {
         valid = valid && checker.isValid(workerAllocation);
         valid = valid && checker.isValid(buildingProperties);
         valid = valid && checker.isValid(infantAllocation);
-        valid = valid && checker.isValid(neighbourProperties);
         valid = valid && checker.isValid(personProperties);
+        valid = valid && checker.isValid(householdProperties);
         return valid;
     }
 
@@ -418,13 +422,14 @@ public class PopulationParameters {
         return infantAllocation.pAttendsNursery;
     }
 
-    // Neighbour properties
+    // Household properties
     public double getNeighbourVisitFreq() {
-        return neighbourProperties.neighbourVisitFreq;
+        return householdProperties.neighbourVisitFreq;
     }
     public int getExpectedNeighbours() {
-        return neighbourProperties.expectedNeighbours;
+        return householdProperties.expectedNeighbours;
     }
+    public double getHouseholdVisitorLeaveRate() { return householdProperties.visitorLeaveRate; }
 
     // Person Properties
     public double getpQuarantine() {
@@ -434,6 +439,7 @@ public class PopulationParameters {
     public double getpTransmission() {
         return personProperties.pTransmission;
     }
+
 
     @Override
     public String toString() {
@@ -445,7 +451,7 @@ public class PopulationParameters {
                 workerAllocation + "\n" +
                 buildingProperties + "\n" +
                 infantAllocation + "\n" +
-                neighbourProperties + "\n" +
+                householdProperties + "\n" +
                 personProperties + "\n" +
                 '}';
     }

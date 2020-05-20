@@ -100,8 +100,11 @@ public class Places {
 
     // We often need a random place
     private <T> T getRandom(List<T> s) {
-        int i = (int) RNG.get().nextInt(0, s.size() - 1);
-        return s.get(i);
+        if (s.size() > 0) {
+            int i = (int) RNG.get().nextInt(0, s.size() - 1);
+            return s.get(i);
+        }
+        return null;
     }
 
     public Office getRandomOffice() {
