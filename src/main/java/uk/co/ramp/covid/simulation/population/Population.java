@@ -457,18 +457,6 @@ public class Population {
         return aPopulation;
     }
 
-    public CommunalPlace[] getcPlaces() {
-        return cPlaces;
-    }
-
-    public int[] getShopIndexes() {
-        return shopIndexes;
-    }
-
-    public int[] getRestaurantIndexes() {
-        return restaurantIndexes;
-    }
-
     public boolean isLockdown() {
         return lockdown;
     }
@@ -491,5 +479,9 @@ public class Population {
 
     public boolean isSchoolL() {
         return schoolL;
+    }
+
+    public Places getPlaces() {
+        return places;
     }
 }
