@@ -25,7 +25,7 @@ public abstract class Person {
     
     public abstract void reportInfection(DailyStats s);
     public abstract void reportDeath (DailyStats s);
-    public abstract void allocateCommunalPlace(Population p);
+    public abstract void allocateCommunalPlace(Places p);
 
     public Person() {
         this.rng = RNG.get();
@@ -123,6 +123,12 @@ public abstract class Person {
             }
         }
         return cStatus;
+    }
+
+    public boolean isInfectious() {
+        return cStatus() == CStatus.ASYMPTOMATIC
+                || cStatus() == CStatus.PHASE1
+                || cStatus() == CStatus.PHASE2;
     }
 
     public boolean hasPrimaryCommunalPlace() {
