@@ -16,7 +16,7 @@ public class CovidTest {
     @Test
     public void testStepInfection() throws IOException {
         RNG.seed(321);
-        //Use the test file which has a mortality rate of 100
+        //Use the test file with a mortality rate of 100
         ParameterReader.readParametersFromFile("src/test/resources/test_params.json");
         CStatus cStatus = null;
         Person pensioner = new Pensioner();

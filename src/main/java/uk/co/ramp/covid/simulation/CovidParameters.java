@@ -103,7 +103,7 @@ public class CovidParameters {
         return checker.isValid(diseaseParameters);
     }
 
-    public class ParameterInitialisedChecker {
+    public static class ParameterInitialisedChecker {
 
         public boolean isValid (Object o) {
             try {
