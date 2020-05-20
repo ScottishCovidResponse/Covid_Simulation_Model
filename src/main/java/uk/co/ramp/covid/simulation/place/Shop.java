@@ -7,8 +7,7 @@ import uk.co.ramp.covid.simulation.population.PopulationParameters;
 import java.util.ArrayList;
 
 public class Shop extends CommunalPlace {
-    public Shop(int cindex) {
-        super(cindex);
+    public Shop() {
         transProb = PopulationParameters.get().getpBaseTrans() *  PopulationParameters.get().getpShopTrans();
         startDay = 1;
         endDay = 7;
@@ -18,20 +17,20 @@ public class Shop extends CommunalPlace {
     }
 
     public void shoppingTrip(ArrayList<Person> vHouse) {
-        this.listPeople.addAll(vHouse);
+       people.addAll(vHouse);
     }
 
-    public ArrayList<Person> sendHome(int hour) {
-        ArrayList<Person> vReturn = new ArrayList<>();
-        for (int i = 0; i < this.listPeople.size(); i++) {
-            Person nPers = this.listPeople.get(i);
-            if (!nPers.isShopWorker() && rng.nextUniform(0, 1) < 0.5 || hour < super.endTime) {// Assumes a median lenght of shopping trip of 2 hours
-                vReturn.add(nPers);
-                this.listPeople.remove(i);
-                i--;
+    public int sendHome(int hour) {
+        ArrayList<Person> left = new ArrayList<>();
+        for (Person nPers : people) {
+            if (!nPers.isShopWorker() && rng.nextUniform(0, 1) < 0.5 
+                    || hour < super.endTime) {// Assumes a median lenght of shopping trip of 2 hours
+                left.add(nPers);
+                nPers.returnHome();
             }
         }
-        return vReturn;
+        people.removeAll(left);
+        return left.size();
     }
 
     @Override

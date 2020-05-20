@@ -2,7 +2,6 @@ package uk.co.ramp.covid.simulation.population;
 
 import uk.co.ramp.covid.simulation.CovidParameters;
 import uk.co.ramp.covid.simulation.DailyStats;
-import uk.co.ramp.covid.simulation.place.*;
 import uk.co.ramp.covid.simulation.util.ProbabilityDistribution;
 
 public class Adult extends Person {
@@ -46,37 +45,25 @@ public class Adult extends Person {
     }
 
     @Override
-    public void allocateCommunalPlace(Population p) {
+    public void allocateCommunalPlace(Places p) {
         switch(profession) {
             case TEACHER: {
-                CommunalPlace property = p.getRandomPlace();
-                while (!(property instanceof School)) property = p.getRandomPlace();
-                setPrimaryPlace(property);
+                setPrimaryPlace(p.getRandomSchool());
             } break;
             case SHOP: {
-                CommunalPlace property = p.getRandomPlace();
-                while (!(property instanceof Shop)) property = p.getRandomPlace();
-                setPrimaryPlace(property);
+                setPrimaryPlace(p.getRandomShop());
             } break;
             case CONSTRUCTION: {
-                CommunalPlace property = p.getRandomPlace();
-                while (!(property instanceof ConstructionSite)) property = p.getRandomPlace();
-                setPrimaryPlace(property);
+                setPrimaryPlace(p.getRandomConstructionSite());
             } break;
             case OFFICE: {
-                CommunalPlace property = p.getRandomPlace();
-                while (!(property instanceof Office)) property = p.getRandomPlace();
-                setPrimaryPlace(property);
+                setPrimaryPlace(p.getRandomOffice());
             } break;
             case HOSPITAL: {
-                CommunalPlace property = p.getRandomPlace();
-                while (!(property instanceof Hospital)) property = p.getRandomPlace();
-                setPrimaryPlace(property);
+                setPrimaryPlace(p.getRandomHospital());
             } break;
             case RESTAURANT: {
-                CommunalPlace property = p.getRandomPlace();
-                while (!(property instanceof Restaurant)) property = p.getRandomPlace();
-                setPrimaryPlace(property);
+                setPrimaryPlace(p.getRandomRestaurant());
             } break;
         }
     }

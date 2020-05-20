@@ -39,7 +39,13 @@ public class ModelTest {
         int lastTotalInfected = 10;
         for (DailyStats s : stats.get(0)) {
             assertEquals(10000, s.getTotalPopulation());
-            assertTrue(s.getDead() <= s.getRecovered() * 0.1);
+
+            // Check there are deaths, but not too many
+            // Near the start of runs this is sometimes untrue, e.g. we may have 8 recoveries and 1 death,
+            // so we wait for enough recoveries for this to make sense.
+            if (s.getRecovered() >= 10) {
+                assertTrue(s.getDead() <= s.getRecovered() * 0.1);
+            }
             assertTrue(s.getDead() + nInfections >= s.getRecovered() * 0.005);
             assertTrue(s.getTotalInfected() <= lastTotalInfected * 2);
             lastTotalInfected = s.getTotalInfected();
@@ -51,7 +57,9 @@ public class ModelTest {
         for (DailyStats s : stats.get(0)) {
             cummulativeI = s.getTotalInfected() + s.getRecovered() + s.getDead();
             totalDailyInfects += s.getTotalDailyInfections();
+            assertEquals(s.getHealthy(), population - cummulativeI);
         }
+
         assertEquals(cummulativeI, totalDailyInfects);
 
         // Deaths should be proportional to phase2 progression
