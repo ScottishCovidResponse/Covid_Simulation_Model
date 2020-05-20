@@ -58,14 +58,43 @@
             "schools":500,
             "shops":200,
             "offices":100,
-            "officeSizes":{
-                "pSmall":0.25,
-                "pMed":0.4,
-                "pLarge":0.35
-            },
             "constructionSites":2000,
             "nurseries":3000,
-            "restaurants":800
+            "restaurants":800,
+          "hospitalSizes":{
+            "pSmall":0,
+            "pMed":1.0,
+            "pLarge":0
+          },
+          "schoolSizes":{
+            "pSmall":0,
+            "pMed":1.0,
+            "pLarge":0
+          },
+          "shopSizes":{
+            "pSmall":0.7,
+            "pMed":0.2,
+            "pLarge":0.1
+          },
+          "officeSizes":{
+            "pSmall":0.25,
+            "pMed":0.4,
+            "pLarge":0.35},
+          "constructionSiteSizes":{
+            "pSmall":0.7,
+            "pMed":0.2,
+            "pLarge":0.1
+          },
+          "nurserySizes":{
+            "pSmall":0,
+            "pMed":1,
+            "pLarge":0
+          },
+          "restaurantSizes":{
+            "pSmall":0.3,
+            "pMed":0.6,
+            "pLarge":0.1
+          }
         },
         "workerAllocation":{
             "pOffice":0.1,

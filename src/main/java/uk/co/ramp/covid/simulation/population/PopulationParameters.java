@@ -91,15 +91,25 @@ public class PopulationParameters {
     // Defines the number of types of building per N people
     private static class BuildingDistribution {
         public Integer hospitals = null;
+        public Size hospitalSizes = null;
+
         public Integer schools = null;
+        public Size schoolSizes = null;
+
         public Integer shops = null;
+        public Size shopSizes = null;
 
         public Integer offices = null;
         public Size officeSizes = null;
 
         public Integer constructionSites = null;
+        public Size constructionSiteSizes = null;
+
         public Integer nurseries = null;
+        public Size nurserySizes = null;
+
         public Integer restaurants = null;
+        public Size restaurantSizes = null;
 
         @Override
         public String toString() {
@@ -328,12 +338,48 @@ public class PopulationParameters {
         return buildingDistribution.hospitals;
     }
 
+    public double getpHospitalSmall() {
+        return buildingDistribution.hospitalSizes.pSmall;
+    }
+
+    public double getpHospitalMed() {
+        return buildingDistribution.hospitalSizes.pMed;
+    }
+
+    public double getpHospitalLarge() {
+        return buildingDistribution.hospitalSizes.pLarge;
+    }
+
     public int getSchoolsRatio() {
         return buildingDistribution.schools;
     }
 
+    public double getpSchoolSmall() {
+        return buildingDistribution.schoolSizes.pSmall;
+    }
+
+    public double getpSchoolMed() {
+        return buildingDistribution.schoolSizes.pMed;
+    }
+
+    public double getpSchoolLarge() {
+        return buildingDistribution.schoolSizes.pLarge;
+    }
+
     public int getShopsRatio() {
         return buildingDistribution.shops;
+    }
+
+    public double getpShopSmall() {
+        return buildingDistribution.shopSizes.pSmall;
+    }
+
+    public double getpShopMed() {
+        return buildingDistribution.shopSizes.pMed;
+    }
+
+    public double getpShopLarge() {
+        return buildingDistribution.shopSizes.pLarge;
     }
 
     public int getOfficesRatio() {
@@ -356,12 +402,48 @@ public class PopulationParameters {
         return buildingDistribution.constructionSites;
     }
 
+    public double getpConstructionSiteSmall() {
+        return buildingDistribution.constructionSiteSizes.pSmall;
+    }
+
+    public double getpConstructionSiteMed() {
+        return buildingDistribution.constructionSiteSizes.pMed;
+    }
+
+    public double getpConstructionSiteLarge() {
+        return buildingDistribution.constructionSiteSizes.pLarge;
+    }
+
     public int getNurseriesRatio() {
         return buildingDistribution.nurseries;
     }
 
+    public double getpNurserySmall() {
+        return buildingDistribution.nurserySizes.pSmall;
+    }
+
+    public double getpNurseryMed() {
+        return buildingDistribution.nurserySizes.pMed;
+    }
+
+    public double getpNurseryLarge() {
+        return buildingDistribution.nurserySizes.pLarge;
+    }
+
     public int getRestaurantRatio() {
         return buildingDistribution.restaurants;
+    }
+
+    public double getpRestaurantSmall() {
+        return buildingDistribution.restaurantSizes.pSmall;
+    }
+
+    public double getpRestaurantMed() {
+        return buildingDistribution.restaurantSizes.pMed;
+    }
+
+    public double getpRestaurantLarge() {
+        return buildingDistribution.restaurantSizes.pLarge;
     }
 
     // Worker job assignment probabilities
