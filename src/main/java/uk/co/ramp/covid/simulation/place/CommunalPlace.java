@@ -22,6 +22,12 @@ public abstract class CommunalPlace extends Place {
 
     private static final Logger LOGGER = LogManager.getLogger(CommunalPlace.class);
 
+    public enum Size {
+        SMALL, MED, LARGE, UNKNOWN;
+    }
+    
+    protected Size size;
+
     protected int startTime;
     protected int endTime;
     protected int startDay;
@@ -30,6 +36,11 @@ public abstract class CommunalPlace extends Place {
     protected double keyProb;
 
     protected final RandomDataGenerator rng;
+
+    public CommunalPlace(Size s) {
+        this();
+        size = s;
+    }
 
     public CommunalPlace() {
         super();
@@ -74,6 +85,13 @@ public abstract class CommunalPlace extends Place {
 
     public void adjustSDist(double sVal) {
         this.sDistance = sVal;
+    }
+
+    public Size getSize() {
+        return size;
+    }
+    public void setSize(Size s) {
+        size = s;
     }
 
 }

@@ -7,6 +7,7 @@ import uk.co.ramp.covid.simulation.util.RNG;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 
 /** Helper class to manage communal places of particular types */
 public class Places {
@@ -130,39 +131,57 @@ public class Places {
     public Shop getRandomShop() {
         return getRandom(shops);
     }
-    
-    public void createNOffices(int n) {
-        ProbabilityDistribution<Office.OfficeSize> p = new ProbabilityDistribution();
-        p.add(PopulationParameters.get().getpOfficeSmall(), Office.OfficeSize.SMALL);
-        p.add(PopulationParameters.get().getpOfficeMed(), Office.OfficeSize.MED);
-        p.add(PopulationParameters.get().getpOfficeLarge(), Office.OfficeSize.LARGE);
 
-        List<Office> os = new ArrayList<>();
+    private <T extends CommunalPlace> void createNGeneric(
+            Function<CommunalPlace.Size,T> constructor,
+            int n,
+            ProbabilityDistribution<CommunalPlace.Size> sizeDist,
+            ProbabilityDistribution<T> finalDist) {
 
+        List<T> places = new ArrayList<>();
         int s = 0, m = 0, l = 0;
         for (int i = 0; i < n; i++) {
-            Office.OfficeSize size = p.sample();
+            CommunalPlace.Size size = sizeDist.sample();
             switch (size) {
-                case SMALL: s++; break;
-                case MED: m++; break;
-                case LARGE: l++; break;
+                case SMALL:
+                    s++;
+                    break;
+                case MED:
+                    m++;
+                    break;
+                case LARGE:
+                    l++;
+                    break;
             }
-            os.add(new Office(size));
+            places.add(constructor.apply(size));
         }
 
-        // Create a scaled distribution such that large is more common than med etc
-        double pl = PopulationParameters.get().getpAllocateLarge()/l;
-        double pm = PopulationParameters.get().getpAllocateMed()/m;
-        double ps = PopulationParameters.get().getpAllocateSmall()/s;
+        double pl = PopulationParameters.get().getpAllocateLarge() / l;
+        double pm = PopulationParameters.get().getpAllocateMed() / m;
+        double ps = PopulationParameters.get().getpAllocateSmall() / s;
 
-        for (Office o : os) {
-            switch (o.getSize()) {
-                case SMALL: offices.add(ps, o); break;
-                case MED: offices.add(pm, o); break;
-                case LARGE: offices.add(pl, o); break;
+        for (T p : places) {
+            switch (p.getSize()) {
+                case SMALL:
+                    finalDist.add(ps, p);
+                    break;
+                case MED:
+                    finalDist.add(pm, p);
+                    break;
+                case LARGE:
+                    finalDist.add(pl, p);
+                    break;
             }
-            all.add(o);
+            all.add(p);
         }
+    }
+
+    public void createNOffices(int n) {
+        ProbabilityDistribution<CommunalPlace.Size> p = new ProbabilityDistribution();
+        p.add(PopulationParameters.get().getpOfficeSmall(), CommunalPlace.Size.SMALL);
+        p.add(PopulationParameters.get().getpOfficeMed(), CommunalPlace.Size.MED);
+        p.add(PopulationParameters.get().getpOfficeLarge(), CommunalPlace.Size.LARGE);
+        createNGeneric(s -> new Office(s), n, p, offices);
     }
 
     public void createNHospitals(int n) {
