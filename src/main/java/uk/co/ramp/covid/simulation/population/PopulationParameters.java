@@ -17,6 +17,7 @@ public class PopulationParameters {
     private static final Logger LOGGER = LogManager.getLogger(PopulationParameters.class);
     private static PopulationParameters pp = null;
 
+
     // Proportions of each type of person in the population
     private static class Population {
         public Double pInfants = null;
@@ -80,12 +81,22 @@ public class PopulationParameters {
 
     }
 
+    private static class BuildingSize {
+        public Double pSmall = null;
+        public Double pMed = null;
+        public Double pLarge = null;
+    }
+
+
     // Defines the number of types of building per N people
     private static class BuildingDistribution {
         public Integer hospitals = null;
         public Integer schools = null;
         public Integer shops = null;
+
         public Integer offices = null;
+        public BuildingSize officeSizes = null;
+
         public Integer constructionSites = null;
         public Integer nurseries = null;
         public Integer restaurants = null;
@@ -327,6 +338,18 @@ public class PopulationParameters {
         return buildingDistribution.offices;
     }
 
+    public double getpOfficeSmall() {
+        return buildingDistribution.officeSizes.pSmall;
+    }
+
+    public double getpOfficeMed() {
+        return buildingDistribution.officeSizes.pMed;
+    }
+
+    public double getpOfficeLarge() {
+        return buildingDistribution.officeSizes.pLarge;
+    }
+
     public int getConstructionSiteRatio() {
         return buildingDistribution.constructionSites;
     }
@@ -439,6 +462,8 @@ public class PopulationParameters {
     public double getpTransmission() {
         return personProperties.pTransmission;
     }
+
+
 
 
     @Override

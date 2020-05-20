@@ -63,4 +63,13 @@ public class ProbabilityDistribution<T> {
         }
         return null;
     }
+
+    public List<T> toList() {
+        List<T> l = new ArrayList<>();
+        for (ProbPair p : pmap) {
+            l.add(p.val);
+        }
+        return l;
+    }
+
 }

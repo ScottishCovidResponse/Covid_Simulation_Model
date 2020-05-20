@@ -58,6 +58,11 @@
             "schools":500,
             "shops":200,
             "offices":100,
+            "officeSizes":{
+                "pSmall":0.25,
+                "pMed":0.4,
+                "pLarge":0.35
+            },
             "constructionSites":2000,
             "nurseries":3000,
             "restaurants":800

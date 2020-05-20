@@ -1,6 +1,7 @@
 package uk.co.ramp.covid.simulation.population;
 
 import uk.co.ramp.covid.simulation.place.*;
+import uk.co.ramp.covid.simulation.util.ProbabilityDistribution;
 import uk.co.ramp.covid.simulation.util.RNG;
 
 import java.util.ArrayList;
@@ -10,7 +11,7 @@ import java.util.Map;
 /** Helper class to manage communal places of particular types */
 public class Places {
 
-    private List<Office> offices;
+    private ProbabilityDistribution<Office> offices;
     private List<ConstructionSite> constructionSites;
     private List<Hospital> hospitals;
     private List<Nursery> nurseries;
@@ -19,7 +20,7 @@ public class Places {
     private List<Shop> shops;
 
     public List<Office> getOffices() {
-        return offices;
+        return offices.toList();
     }
 
     public List<ConstructionSite> getConstructionSites() {
@@ -53,7 +54,7 @@ public class Places {
     private List<CommunalPlace> all;
 
     public Places() {
-        offices = new ArrayList<>();
+        offices = new ProbabilityDistribution<>();
         constructionSites = new ArrayList<>();
         hospitals = new ArrayList<>();
         nurseries = new ArrayList<>();
@@ -61,11 +62,6 @@ public class Places {
         schools = new ArrayList<>();
         shops = new ArrayList<>();
         all = new ArrayList<>();
-    }
-
-    public void addOffice(Office o) {
-        offices.add(o);
-        all.add(o);
     }
 
     public void addConstructionSite(ConstructionSite s) {
@@ -108,7 +104,7 @@ public class Places {
     }
 
     public Office getRandomOffice() {
-        return getRandom(offices);
+        return offices.sample();
     }
 
     public ConstructionSite getRandomConstructionSite() {
@@ -136,8 +132,37 @@ public class Places {
     }
     
     public void createNOffices(int n) {
+        ProbabilityDistribution<Office.OfficeSize> p = new ProbabilityDistribution();
+        p.add(PopulationParameters.get().getpOfficeSmall(), Office.OfficeSize.SMALL);
+        p.add(PopulationParameters.get().getpOfficeMed(), Office.OfficeSize.MED);
+        p.add(PopulationParameters.get().getpOfficeLarge(), Office.OfficeSize.LARGE);
+
+        List<Office> os = new ArrayList<>();
+
+        int s = 0, m = 0, l = 0;
         for (int i = 0; i < n; i++) {
-            addOffice(new Office());
+            Office.OfficeSize size = p.sample();
+            switch (size) {
+                case SMALL: s++; break;
+                case MED: m++; break;
+                case LARGE: l++; break;
+            }
+            os.add(new Office(size));
+        }
+
+        // Create a scaled distribution such that large is more common than med etc
+        // Division in multiples of 3 to create 3 uniform classes
+        double pl = (2.0/3)/l;
+        double pm = (2.0/9)/m;
+        double ps = (1.0/9)/s;
+
+        for (Office o : os) {
+            switch (o.getSize()) {
+                case SMALL: offices.add(ps, o); break;
+                case MED: offices.add(pm, o); break;
+                case LARGE: offices.add(pl, o); break;
+            }
+            all.add(o);
         }
     }
 
