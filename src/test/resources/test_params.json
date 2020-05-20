@@ -74,7 +74,12 @@
             "pConstruction":0.1,
             "pTeacher":0.1,
             "pRestaurant":0.2,
-            "pUnemployed":0.1
+            "pUnemployed":0.1,
+            "sizeAllocation":{
+              "pSmall": 0.2,
+              "pMed": 0.3,
+              "pLarge": 0.5
+            }
         },
         "buildingProperties":{
             "pBaseTrans":0.8,

@@ -57,15 +57,24 @@ Distribution should add to 1.
 
 -   Object name: `workerAllocation`
 
-| Parameter Name | Description                            | Type   |
-|----------------|----------------------------------------|--------|
-| pOffice        | Probability of working in an office    | Double |
-| pShop          | Probability of working in a shop       | Double |
-| pHospital      | Probability of working in a hospital   | Double |
-| pConstruction  | Probability of working in construction | Double |
-| pTeacher       | Probability of being a teacher         | Double |
-| pRestaurant    | Probability of working in a restaurant | Double |
-| pUnemployed    | Probability of being unemployed        | Double |
+| Parameter Name  | Description                                                             | Type   |
+|-----------------|-------------------------------------------------------------------------|--------|
+| pOffice         | Probability of working in an office                                     | Double |
+| pShop           | Probability of working in a shop                                        | Double |
+| pHospital       | Probability of working in a hospital                                    | Double |
+| pConstruction   | Probability of working in construction                                  | Double |
+| pTeacher        | Probability of being a teacher                                          | Double |
+| pRestaurant     | Probability of working in a restaurant                                  | Double |
+| pUnemployed     | Probability of being unemployed                                         | Double |
+| allocationSizes | Probability of being assigned to work in a large/medium/small workplace | Double |
+
+Where allocationSizes has the form
+
+| Parameter Name | Description                                      | Type   |
+|----------------|--------------------------------------------------|--------|
+| pSmall         | Probability of being assigned a small workplace  | Double |
+| pMed           | Probability of being assigned a medium workplace | Double |
+| pLarge         | Probability of being assigned a large workplace  | Double |
 
 ## Infant Properties
 

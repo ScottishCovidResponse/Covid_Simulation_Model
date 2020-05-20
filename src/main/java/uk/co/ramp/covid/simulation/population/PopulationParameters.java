@@ -81,7 +81,7 @@ public class PopulationParameters {
 
     }
 
-    private static class BuildingSize {
+    private static class Size {
         public Double pSmall = null;
         public Double pMed = null;
         public Double pLarge = null;
@@ -95,7 +95,7 @@ public class PopulationParameters {
         public Integer shops = null;
 
         public Integer offices = null;
-        public BuildingSize officeSizes = null;
+        public Size officeSizes = null;
 
         public Integer constructionSites = null;
         public Integer nurseries = null;
@@ -124,6 +124,8 @@ public class PopulationParameters {
         public Double pTeacher = null;
         public Double pRestaurant = null;
         public Double pUnemployed = null;
+
+        public Size sizeAllocation = null;
 
         @Override
         public String toString() {
@@ -365,6 +367,16 @@ public class PopulationParameters {
     // Worker job assignment probabilities
     public double getpOfficeWorker() {
         return workerAllocation.pOffice;
+    }
+
+    public double getpAllocateSmall() {
+        return workerAllocation.sizeAllocation.pSmall;
+    }
+    public double getpAllocateMed() {
+        return workerAllocation.sizeAllocation.pMed;
+    }
+    public double getpAllocateLarge() {
+        return workerAllocation.sizeAllocation.pLarge;
     }
 
     public double getpShopWorker() {

@@ -73,9 +73,9 @@ public class PlacesTest {
         assertTrue("We should sample large offices more often than medium", l > m);
         assertTrue("We should sample medium offices more often than small", m > s);
 
-        int DELTA = (int) iters*0.5; // Allow a 5% delta
-        assertTrue("We sample large offices almost three times as often as medium", l - DELTA <= m*3 && l + DELTA >= m*3);
-        assertTrue("We sample large offices almost six times as often as small", l - DELTA <= s*6 && l + DELTA >= s*6);
-        assertTrue("We sample medium offices almost two times as often as small", m - DELTA <= s*2 && m + DELTA >= s*2);
+        double DELTA = 0.02;
+        assertEquals(PopulationParameters.get().getpOfficeLarge(),  (double) l/ (double) iters, DELTA);
+        assertEquals(PopulationParameters.get().getpOfficeMed(), (double) m / (double) iters, DELTA);
+        assertEquals(PopulationParameters.get().getpOfficeSmall(), (double) s / (double) iters, DELTA);
     }
 }

@@ -151,10 +151,9 @@ public class Places {
         }
 
         // Create a scaled distribution such that large is more common than med etc
-        // Division in multiples of 3 to create 3 uniform classes
-        double pl = (2.0/3)/l;
-        double pm = (2.0/9)/m;
-        double ps = (1.0/9)/s;
+        double pl = PopulationParameters.get().getpAllocateLarge()/l;
+        double pm = PopulationParameters.get().getpAllocateMed()/m;
+        double ps = PopulationParameters.get().getpAllocateSmall()/s;
 
         for (Office o : os) {
             switch (o.getSize()) {
