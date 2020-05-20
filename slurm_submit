@@ -1,0 +1,66 @@
+#!/bin/bash
+
+#! sbatch directives begin here ###############################
+#! Name of the job:
+#SBATCH -J cpujob
+#! Which project should be charged:
+#SBATCH -A DIRAC-DC003-CPU
+
+#! Output filename:
+#! %A means slurm job ID and %a means array index
+#SBATCH --output=test_%A_%a.out
+#! Errors filename:
+#SBATCH --error=test_%A_%a.err
+
+#! How many whole nodes should be allocated?
+#SBATCH --nodes=1
+#! How many (MPI) tasks will there be in total? (<= nodes*32)
+#! The skylake/skylake-himem nodes have 32 CPUs (cores) each.
+#SBATCH --ntasks=1
+#! How much wallclock time will be required?
+#SBATCH --time=00:05:00
+#! What types of email messages do you wish to receive?
+#SBATCH --mail-type=FAIL
+#! Uncomment this to prevent the job from being requeued (e.g. if
+#! interrupted by node failure or system downtime):
+##SBATCH --no-requeue
+
+#! Estimated maximum memory needed (job is force-stopped if exceeded):
+#! RAM is allocated in ~5980mb blocks, you are charged per block used,
+#! and unused fractions of blocks will not be usable by others.
+#SBATCH --mem=5980mb
+#! Submit a job array with a range of index values --array=[first]-[last]
+#SBATCH --array=0-1
+
+#! For 6GB per CPU, set "-p skylake"; for 12GB per CPU, set "-p skylake-himem": 
+#SBATCH -p skylake
+
+#! sbatch directives end here (put any additional directives above this line)
+
+#! Note: Charging is determined by core number*walltime.
+
+#! Optionally modify the environment seen by the application
+#! (note that SLURM reproduces the environment at submission irrespective of ~/.bashrc):
+. /etc/profile.d/modules.sh                # Leave this line (enables the module command)
+module purge                               # Removes all modules still loaded
+module load rhel7/default-peta4            # REQUIRED - loads the basic environment
+
+#! Additional module load commands:
+module load jdk-8u141-b15-intel-17.0.4-3g6rhr2
+
+#! The variable $SLURM_ARRAY_TASK_ID contains the array index for each job.
+echo "This is job" $SLURM_ARRAY_TASK_ID
+
+
+#! Work directory (i.e. where the job will run):
+workdir="$SLURM_SUBMIT_DIR/job_$SLURM_ARRAY_TASK_ID"  # The value of SLURM_SUBMIT_DIR sets workdir to the directory
+                             # in which sbatch is run.
+
+mkdir $workdir
+cd $workdir
+
+application="$SLURM_SUBMIT_DIR/build/install/Covid-Simulation-Model/bin/Covid-Simulation-Model"
+paramDir="$SLURM_SUBMIT_DIR/parameters"
+options="$paramDir/example_population_params.json $paramDir/example_model_params.json $SLURM_ARRAY_TASK_ID"
+
+$application $options
