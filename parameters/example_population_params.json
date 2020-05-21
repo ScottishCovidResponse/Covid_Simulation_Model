@@ -87,7 +87,7 @@
             },
             "constructionSites":1000,
             "constructionSiteSizes":{
-                "pSmall":0.75,
+                "pSmall":0.7,
                 "pMed":0.2,
                 "pLarge":0.1
             },
