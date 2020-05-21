@@ -2,6 +2,8 @@ package uk.co.ramp.covid.simulation;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import uk.co.ramp.covid.simulation.util.InvalidParametersException;
+
 import java.lang.reflect.Field;
 
 /**
@@ -14,7 +16,9 @@ public class CovidParameters {
     public static CovidParameters cparams = null;
 
     public static CovidParameters get() {
-        assert cparams != null : "Parameters have not yet been initialised";
+        if (cparams == null) {
+            throw new InvalidParametersException("Invalid COVID parameters");
+        }
         return cparams;
     }
 
@@ -103,7 +107,7 @@ public class CovidParameters {
         return checker.isValid(diseaseParameters);
     }
 
-    public class ParameterInitialisedChecker {
+    public static class ParameterInitialisedChecker {
 
         public boolean isValid (Object o) {
             try {

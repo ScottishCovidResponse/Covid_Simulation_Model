@@ -2,7 +2,7 @@ package uk.co.ramp.covid.simulation.population;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import uk.co.ramp.covid.simulation.place.Household;
+import uk.co.ramp.covid.simulation.util.InvalidParametersException;
 
 import java.lang.reflect.Field;
 import java.util.Map;
@@ -264,7 +264,9 @@ public class PopulationParameters {
     }
 
     public static PopulationParameters get() {
-        assert pp != null : "Parameters have not yet been initialised";
+        if (pp == null) {
+            throw new InvalidParametersException("Invalid population parameters");
+        }
         return pp;
     }
 

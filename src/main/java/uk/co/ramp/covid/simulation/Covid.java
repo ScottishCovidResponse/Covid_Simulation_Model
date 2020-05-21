@@ -107,12 +107,21 @@ public class Covid {
             }
         } else if ((this.latentPeriod + this.asymptomaticPeriod + this.p1 + this.p2) * 24 <= this.infCounter) {
             this.recovered = true;
-
             status = CStatus.RECOVERED;
         }
         return status;
 
     }
 
+    public int getLatentPeriod() {
+        return latentPeriod;
+    }
 
+    public double getAsymptomaticPeriod() {
+        return asymptomaticPeriod;
+    }
+
+    public double getP1() {
+        return p1;
+    }
 }

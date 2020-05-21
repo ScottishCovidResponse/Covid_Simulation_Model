@@ -1,6 +1,7 @@
 package uk.co.ramp.covid.simulation.population;
 
 import com.google.gson.JsonParseException;
+import org.junit.Assert;
 import org.junit.Test;
 import uk.co.ramp.covid.simulation.DailyStats;
 import uk.co.ramp.covid.simulation.io.ParameterReader;
@@ -30,7 +31,11 @@ public class InfantTest {
         ParameterReader.readParametersFromFile("src/test/resources/default_params.json");
         RNG.seed(123);
         Population p = new Population(500,60);
-        p.populateHouseholds();
+        try {
+            p.populateHouseholds();
+        } catch (ImpossibleAllocationException e) {
+            Assert.fail("Could not populate households in test");
+        }
         p.createMixing();
         p.assignNeighbours();
         Infant infant = new Infant();
