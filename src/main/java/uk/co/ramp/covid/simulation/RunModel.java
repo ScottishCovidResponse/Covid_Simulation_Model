@@ -12,6 +12,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import uk.co.ramp.covid.simulation.io.ParameterReader;
 import uk.co.ramp.covid.simulation.population.Population;
+import uk.co.ramp.covid.simulation.population.PopulationParameters;
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -30,6 +31,17 @@ public class RunModel {
             System.exit(-1);
         } else {
             readParameters(args[0]);
+
+            if (!PopulationParameters.get().isValid()) {
+                LOGGER.error("Could not read population parameters");
+                System.exit(-2);
+            }
+
+            if (!CovidParameters.get().isValid()) {
+                LOGGER.error("Could not read disease parameters");
+                System.exit(-2);
+            }
+
             Model m  = Model.readModelFromFile(args[1]);
 
             if (args.length == 3) {
@@ -38,7 +50,7 @@ public class RunModel {
 
             if (!m.isValid()) {
                 LOGGER.error("Could not read model parameters");
-                System.exit(-1);
+                System.exit(-2);
             } else {
                 m.run();
             }
