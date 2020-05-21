@@ -10,7 +10,7 @@ This model is developed as part of the [COVID-19 RAMP response](https://royalsoc
 
 ### Java SDK
 
-The Covid_Simulation_Model targets Java 11, please ensure you have a Java SDK installed.
+The Covid_Simulation_Model targets Java 8, please ensure you have a Java SDK installed.
 
 ### Gradle
 
