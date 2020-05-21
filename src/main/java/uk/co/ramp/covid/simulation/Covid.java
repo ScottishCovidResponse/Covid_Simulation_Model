@@ -15,11 +15,11 @@ public class Covid {
     private boolean phase2;
     private boolean recovered;
     private boolean dead;
-    private final int meanLatentPeriod;
-    private final int meanAsymptomaticPeriod;
-    private final int meanP1;
-    private final int meanP2;
-    private int latentPeriod;
+    private final double meanLatentPeriod;
+    private final double meanAsymptomaticPeriod;
+    private final double meanP1;
+    private final double meanP2;
+    private double latentPeriod;
     private double asymptomaticPeriod;
     private double p1;
     private double p2;
@@ -70,15 +70,15 @@ public class Covid {
 
     // For each infection define the duration of the infection periods
     private void setPeriods() {
-        latentPeriod = (int) rng.nextPoisson(meanLatentPeriod);
-        asymptomaticPeriod = (int) rng.nextPoisson(meanAsymptomaticPeriod);
+        latentPeriod = (double) rng.nextExponential(meanLatentPeriod);
+        asymptomaticPeriod = (double) rng.nextExponential(meanAsymptomaticPeriod);
 
-        p1 = rng.nextPoisson(meanP1);
+        p1 = rng.nextExponential(meanP1);
 
         if (ccase.avoidsPhase2(rng.nextUniform(0, 1))) {
             p2 = 0;
         } else {
-            p2 = rng.nextPoisson(meanP2);
+            p2 = rng.nextExponential(meanP2);
         }
     }
 
@@ -86,34 +86,37 @@ public class Covid {
     public CStatus stepInfection() {
         this.infCounter++;
         CStatus status = CStatus.LATENT;
-        if ((this.latentPeriod * 24) > this.infCounter) {
+        if ((this.latentPeriod) > this.infCounter) {
             this.latent = true;
-        } else if (((this.latentPeriod + this.asymptomaticPeriod) * 24) > this.infCounter) {
+        } else if (((this.latentPeriod + this.asymptomaticPeriod)) > this.infCounter) {
             this.asymptomatic = true;
             status = CStatus.ASYMPTOMATIC;
-        } else if ((this.latentPeriod + this.asymptomaticPeriod + this.p1) * 24 > this.infCounter) {
+        } else if ((this.latentPeriod + this.asymptomaticPeriod + this.p1) > this.infCounter) {
             this.phase1 = true;
             status = CStatus.PHASE1;
 
-        } else if ((this.latentPeriod + this.asymptomaticPeriod + this.p1 + this.p2) * 24 > this.infCounter) {
+        } else if ((this.latentPeriod + this.asymptomaticPeriod + this.p1 + this.p2) > this.infCounter) {
             this.phase2 = true;
             double rVal = rng.nextUniform(0, 1);
             if (rVal < this.mortalityRate / 24) {
                 this.dead = true;
                 status = CStatus.DEAD;
+
             }
             if (rVal >= this.mortalityRate / 24) {
                 status = CStatus.PHASE2;
+
             }
-        } else if ((this.latentPeriod + this.asymptomaticPeriod + this.p1 + this.p2) * 24 <= this.infCounter) {
+        } else if ((this.latentPeriod + this.asymptomaticPeriod + this.p1 + this.p2) <= this.infCounter) {
             this.recovered = true;
             status = CStatus.RECOVERED;
+
         }
         return status;
 
     }
 
-    public int getLatentPeriod() {
+    public double getLatentPeriod() {
         return latentPeriod;
     }
 
@@ -123,5 +126,9 @@ public class Covid {
 
     public double getP1() {
         return p1;
+    }
+    
+    public double getP2() {
+        return p2;
     }
 }

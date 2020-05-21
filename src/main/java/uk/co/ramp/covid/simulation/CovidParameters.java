@@ -23,10 +23,10 @@ public class CovidParameters {
     }
 
     private static class DiseaseParameters {
-        public Integer meanLatentPeriod = null;
-        public Integer meanAsymptomaticPeriod = null;
-        public Integer meanPhase1DurationMild = null;
-        public Integer meanPhase1DurationSevere = null;
+        public Double meanLatentPeriod = null;
+        public Double meanAsymptomaticPeriod = null;
+        public Double meanPhase1DurationMild = null;
+        public Double meanPhase1DurationSevere = null;
 
         public Double mortalityRate = null;
         public Double childProgressionPhase2 = null;
@@ -63,19 +63,19 @@ public class CovidParameters {
     }
 
     // Getters
-    public int getMeanLatentPeriod () {
+    public double getMeanLatentPeriod () {
         return diseaseParameters.meanLatentPeriod;
     }
 
-    public int getMeanAsymptomaticPeriod () {
+    public double getMeanAsymptomaticPeriod () {
         return diseaseParameters.meanAsymptomaticPeriod;
     }
 
-    public int getMeanPhase1DurationMild () {
+    public double getMeanPhase1DurationMild () {
         return diseaseParameters.meanPhase1DurationMild;
     }
 
-    public int getMeanPhase1DurationSevere () {
+    public double getMeanPhase1DurationSevere () {
         return diseaseParameters.meanPhase1DurationSevere;
     }
 
