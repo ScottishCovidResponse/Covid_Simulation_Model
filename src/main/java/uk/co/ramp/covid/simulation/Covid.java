@@ -70,15 +70,15 @@ public class Covid {
 
     // For each infection define the duration of the infection periods
     private void setPeriods() {
-        latentPeriod = (double) rng.nextExponential(meanLatentPeriod);
-        asymptomaticPeriod = (double) rng.nextExponential(meanAsymptomaticPeriod);
+        latentPeriod = (double) Math.exp(rng.nextGaussian(Math.log(meanLatentPeriod), 1.0));
+        asymptomaticPeriod = (double) Math.exp(rng.nextGaussian(Math.log(meanAsymptomaticPeriod), 1.0));
 
-        p1 = rng.nextExponential(meanP1);
+        p1 = Math.exp(rng.nextGaussian(Math.log(meanP1), 1.0));
 
         if (ccase.avoidsPhase2(rng.nextUniform(0, 1))) {
             p2 = 0;
         } else {
-            p2 = rng.nextExponential(meanP2);
+            p2 = Math.exp(rng.nextGaussian(Math.log(meanP2), 1.0));
         }
     }
 
