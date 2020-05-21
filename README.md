@@ -4,7 +4,7 @@
 
 ## Background
 
-This model is developed for the COVID-19 RMAP response (https://royalsociety.org/topics-policy/Health%20and%20wellbeing/ramp/) to simulate the spread of Covid-19 through a community. In the first instance we envisage a community o a similar scalt to the City of Glasgow. The intention is that it stochastically simulates the movements of people in near real time and their interactions and the spread through these mixing populations. We can subsequently simulate the implementation fo controls in these populations. 
+This model is developed as part of the [COVID-19 RAMP response](https://royalsociety.org/topics-policy/Health%20and%20wellbeing/ramp/). It simulates the spread of Covid-19 through a community. In the first instance we envisage a community of a similar scale to the City of Glasgow. The intention is that it stochastically simulates the movements of people in near real time (with a 1 hour resolution) and their interactions and the spread through these mixing populations. We can subsequently simulate the implementation of controls, such as lockdowns, in these populations.
 
 ## Building and Running
 
@@ -74,7 +74,3 @@ same result).
 
 The result csv will be placed into the file specified by the `outputFile` parameter
 in the model parameters.
-
-## Version History
-
-
