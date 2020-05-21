@@ -99,8 +99,8 @@
             },
             "restaurants":1000,
             "restaurantSizes":{
-                "pSmall":0.3,
-                "pMed":0.6,
+                "pSmall":0.4,
+                "pMed":0.5,
                 "pLarge":0.1
             }
         },
