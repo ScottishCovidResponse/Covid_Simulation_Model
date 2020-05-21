@@ -41,6 +41,7 @@ public class Covid {
         this.infCounter = 0;
         this.setPeriods();
 
+        this.latent = true;
     }
 
     public boolean isLatent() {
