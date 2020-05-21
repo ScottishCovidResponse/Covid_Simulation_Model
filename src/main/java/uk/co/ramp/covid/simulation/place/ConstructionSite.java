@@ -5,8 +5,7 @@ import uk.co.ramp.covid.simulation.population.PopulationParameters;
 
 public class ConstructionSite extends CommunalPlace {
 
-    public ConstructionSite(int cindex) {
-        super(cindex);
+    public ConstructionSite() {
         transProb = PopulationParameters.get().getpBaseTrans() * PopulationParameters.get().getpConstructionSiteTrans();
         keyProb = PopulationParameters.get().getpConstructionSiteKey();
         if (rng.nextUniform(0, 1) > keyProb) keyPremises = true;

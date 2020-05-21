@@ -24,7 +24,7 @@ public class ChildTest {
         }
         p.createMixing();
         Child child = new Child();
-        child.allocateCommunalPlace(p);
+        child.allocateCommunalPlace(p.getPlaces());
         assertTrue("Child not at school", child.getPrimaryCommunalPlace() instanceof School);
     }
 }

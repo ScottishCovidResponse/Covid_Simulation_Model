@@ -26,7 +26,7 @@ public class ParameterReaderTest {
         assertEquals(5, CovidParameters.get().getMeanAsymptomaticPeriod());
         assertEquals(2, CovidParameters.get().getMeanPhase1DurationMild());
         assertEquals(5, CovidParameters.get().getMeanPhase1DurationSevere());
-        assertEquals(0.05, CovidParameters.get().getMortalityRate(), EPSILON);
+        assertEquals(100.0, CovidParameters.get().getMortalityRate(), EPSILON);
         assertEquals(0.03, CovidParameters.get().getChildProgressionPhase2(), EPSILON);
         assertEquals(0.20, CovidParameters.get().getAdultProgressionPhase2(), EPSILON);
         assertEquals(0.5, CovidParameters.get().getPensionerProgressionPhase2(), EPSILON);
@@ -86,6 +86,8 @@ public class ParameterReaderTest {
 
         assertEquals(0.9, PopulationParameters.get().getpTransmission(), EPSILON);
         assertEquals(0.7, PopulationParameters.get().getpQuarantine(), EPSILON);
+
+        assertEquals(0.8, PopulationParameters.get().getHouseholdVisitorLeaveRate(), EPSILON);
     }
 
     @After

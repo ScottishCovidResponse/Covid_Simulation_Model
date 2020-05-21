@@ -113,16 +113,17 @@ distributions only need to account for household sizes greater than 1.
 | childAllocationPMap     | Probability map for adding additional children to households   | Map (householdSize : probability) |
 | infantAllocationPMap    | Probability map for adding additional infants to households    | Map (householdSize : probability) |
 
-## Neighbour Properties
+## Household Properties
 
-Determines the number and expected visit rate of neighbours
+Determines the number and expected visit/leave rate of neighbours
 
--   Object name: `neighbourProperties`
+-   Object name: `householdProperties`
 
-| Parameter Name     | Description                              | Type   |
-|--------------------|------------------------------------------|--------|
-| visitFrequency     | Probability a neighbour visits in a hour | Double |
-| expectedNeighbours | Expected (Poisson) number of neighbours  | Int    |
+| Parameter Name     | Description                                             | Type   |
+|--------------------|---------------------------------------------------------|--------|
+| visitFrequency     | Probability a neighbour visits in a hour                | Double |
+| expectedNeighbours | Expected (Poisson) number of neighbours                 | Int    |
+| visitorLeaveRate   | The chance, per hour, that a visitor leaves a household | Double |
 
 ## Building Distributions
 

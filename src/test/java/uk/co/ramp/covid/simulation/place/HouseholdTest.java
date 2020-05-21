@@ -94,30 +94,10 @@ public class HouseholdTest {
     }
 
     @Test
-    public void testCombVectors() {
-        Household newHouse = new Household(Household.HouseholdType.ADULT);
-        Person p4 = new Adult();
-        newHouse.addPerson(p4);
-        household.welcomeNeighbours(newHouse);
-        int expSize = 4;
-        assertEquals("Unexpected combined list size", expSize, household.combVectors().size());
-    }
-
-    @Test
     public void testCycleHouse() {
         int expSize = 3;
         DailyStats s = new DailyStats(0);
         assertEquals("Unexpected household size", expSize, household.cycleHouse(s).size());
-    }
-
-    @Test
-    public void testGetDeaths() {
-        Person p1 = new Adult();
-        Person p2 = new Adult();
-        household.addDeath(p1);
-        household.addDeath(p2);
-        int expDeaths = 2;
-        assertEquals("Unexpected number of deaths", expDeaths, household.getDeaths());
     }
 
     @Test
@@ -138,9 +118,10 @@ public class HouseholdTest {
         Household newHouse = new Household(Household.HouseholdType.ADULT);
         Person p1 = new Adult();
         newHouse.addPerson(p1);
+        p1.setHome(newHouse);
         household.welcomeNeighbours(newHouse);
         int expSize = 1;
-        assertEquals("Unexpected number of visitors", expSize, household.sendNeighboursHome().size());
+        assertEquals("Unexpected number of visitors", expSize, household.sendNeighboursHome());
     }
 
     @Test

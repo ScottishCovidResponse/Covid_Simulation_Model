@@ -58,7 +58,7 @@ public class DailyStats {
             case PHASE1: phase1++; break;
             case PHASE2: phase2++; break;
             case RECOVERED: recovered++; break;
-            default: LOGGER.info("Invalid Status"); break;
+            case DEAD: dead++; break;
         }
     }
 

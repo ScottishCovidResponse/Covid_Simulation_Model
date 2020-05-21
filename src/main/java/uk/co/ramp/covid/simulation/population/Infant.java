@@ -2,8 +2,6 @@ package uk.co.ramp.covid.simulation.population;
 
 import uk.co.ramp.covid.simulation.CovidParameters;
 import uk.co.ramp.covid.simulation.DailyStats;
-import uk.co.ramp.covid.simulation.place.CommunalPlace;
-import uk.co.ramp.covid.simulation.place.Nursery;
 
 public class Infant extends Person {
 
@@ -36,10 +34,11 @@ public class Infant extends Person {
     }
 
     @Override
-    public void allocateCommunalPlace(Population p) {
-        CommunalPlace property = p.getRandomPlace();
-        while (!(property instanceof Nursery)) property = p.getRandomPlace();
-        setPrimaryPlace(property);
+    public void allocateCommunalPlace(Places p) {
+        if (goesToNursery) {
+            setPrimaryPlace(p.getRandomNursery());
+        }
+
     }
 
     @Override

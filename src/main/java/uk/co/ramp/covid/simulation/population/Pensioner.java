@@ -16,7 +16,7 @@ public class Pensioner extends Person {
     }
 
     @Override
-    public void allocateCommunalPlace(Population p) {}
+    public void allocateCommunalPlace(Places p) {}
 
     @Override
     public boolean avoidsPhase2(double testP) {
