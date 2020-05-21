@@ -58,9 +58,8 @@ public class ModelTest {
             cummulativeI = s.getTotalInfected() + s.getRecovered() + s.getDead();
             totalDailyInfects += s.getTotalDailyInfections();
             assertEquals(s.getHealthy(), population - cummulativeI);
+            assertEquals(cummulativeI, totalDailyInfects);
         }
-
-        assertEquals(cummulativeI, totalDailyInfects);
 
         // Deaths should be proportional to phase2 progression
         int adultDeaths = 0;

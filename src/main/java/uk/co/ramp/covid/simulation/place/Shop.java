@@ -7,7 +7,13 @@ import uk.co.ramp.covid.simulation.population.PopulationParameters;
 import java.util.ArrayList;
 
 public class Shop extends CommunalPlace {
+
     public Shop() {
+        this(Size.UNKNOWN);
+    }
+
+    public Shop(Size s) {
+        super(s);
         transProb = PopulationParameters.get().getpBaseTrans() *  PopulationParameters.get().getpShopTrans();
         startDay = 1;
         endDay = 7;

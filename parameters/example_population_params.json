@@ -62,12 +62,47 @@
         },
         "buildingDistribution":{
             "hospitals":10000,
+            "hospitalSizes":{
+                "pSmall":0,
+                "pMed":1.0,
+                "pLarge":0
+            },
             "schools":2000,
+            "schoolSizes":{
+                "pSmall":0,
+                "pMed":1.0,
+                "pLarge":0
+            },
             "shops":500,
+            "shopSizes":{
+                "pSmall":0.7,
+                "pMed":0.2,
+                "pLarge":0.1
+            },
             "offices":250,
+            "officeSizes":{
+                "pSmall":0.2,
+                "pMed":0.3,
+                "pLarge":0.5
+            },
             "constructionSites":1000,
+            "constructionSiteSizes":{
+                "pSmall":0.75,
+                "pMed":0.2,
+                "pLarge":0.1
+            },
             "nurseries":2000,
-            "restaurants":1000
+            "nurserySizes":{
+                "pSmall":0,
+                "pMed":1,
+                "pLarge":0
+            },
+            "restaurants":1000,
+            "restaurantSizes":{
+                "pSmall":0.3,
+                "pMed":0.6,
+                "pLarge":0.1
+            }
         },
         "workerAllocation":{
             "pOffice":0.2,
@@ -76,7 +111,12 @@
             "pConstruction":0.1,
             "pTeacher":0.2,
             "pRestaurant":0.1,
-            "pUnemployed":0.2
+            "pUnemployed":0.2,
+            "sizeAllocation":{
+                "pSmall": 0.2,
+                "pMed": 0.3,
+                "pLarge": 0.5
+            }
         },
         "buildingProperties":{
             "pBaseTrans":0.45,

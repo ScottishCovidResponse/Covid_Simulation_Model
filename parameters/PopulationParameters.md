@@ -57,15 +57,24 @@ Distribution should add to 1.
 
 -   Object name: `workerAllocation`
 
-| Parameter Name | Description                            | Type   |
-|----------------|----------------------------------------|--------|
-| pOffice        | Probability of working in an office    | Double |
-| pShop          | Probability of working in a shop       | Double |
-| pHospital      | Probability of working in a hospital   | Double |
-| pConstruction  | Probability of working in construction | Double |
-| pTeacher       | Probability of being a teacher         | Double |
-| pRestaurant    | Probability of working in a restaurant | Double |
-| pUnemployed    | Probability of being unemployed        | Double |
+| Parameter Name  | Description                                                             | Type   |
+|-----------------|-------------------------------------------------------------------------|--------|
+| pOffice         | Probability of working in an office                                     | Double |
+| pShop           | Probability of working in a shop                                        | Double |
+| pHospital       | Probability of working in a hospital                                    | Double |
+| pConstruction   | Probability of working in construction                                  | Double |
+| pTeacher        | Probability of being a teacher                                          | Double |
+| pRestaurant     | Probability of working in a restaurant                                  | Double |
+| pUnemployed     | Probability of being unemployed                                         | Double |
+| allocationSizes | Probability of being assigned to work in a large/medium/small workplace | Double |
+
+Where allocationSizes has the form
+
+| Parameter Name | Description                                      | Type   |
+|----------------|--------------------------------------------------|--------|
+| pSmall         | Probability of being assigned a small workplace  | Double |
+| pMed           | Probability of being assigned a medium workplace | Double |
+| pLarge         | Probability of being assigned a large workplace  | Double |
 
 ## Infant Properties
 
@@ -131,15 +140,31 @@ Determines the number of buildings, of a particular type, per N people.
 
 -   Object name: `buildingDistribution`
 
-| Parameter Name    | Description                     | Type |
-|-------------------|---------------------------------|------|
-| hospitals         | Hospitals per N people          | Int  |
-| schools           | Schools per N people            | Int  |
-| shops             | Shops per N people              | Int  |
-| offices           | Offices per N people            | Int  |
-| constructionSites | Construction Sites per N people | Int  |
-| nurseries         | Nurseries per N people          | Int  |
-| restaurants       | Restaurants per N people        | Int  |
+| Parameter Name        | Description                            | Type |
+|-----------------------|----------------------------------------|------|
+| hospitals             | Hospitals per N people                 | Int  |
+| hospitalSizes         | Distribution of hospital sizes         | Size |
+| schools               | Schools per N people                   | Int  |
+| schoolSizes           | Distribution of school sizes           | Size |
+| shops                 | Shops per N people                     | Int  |
+| shopSizes             | Distribution of shop sizes             | Size |
+| offices               | Offices per N people                   | Int  |
+| officeSizes           | Distribution of office sizes           | Size |
+| constructionSites     | Construction Sites per N people        | Int  |
+| constructionSiteSizes | Distribution of constructionSite sizes | Size |
+| nurseries             | Nurseries per N people                 | Int  |
+| nurserySizes          | Distribution of nursery sizes          | Size |
+| restaurants           | Restaurants per N people               | Int  |
+| restaurantSizes       | Distribution of restaurant sizes       | Size |
+
+Where `Size` is an object with the following parameters:
+
+| Parameter Name | Description                         | Type   |
+|----------------|-------------------------------------|--------|
+| pSmall         | Probability of a place being small  | Double |
+| pMed           | Probability of a place being medium | Double |
+| pLarge         | Probability of a place being large  | Double |
+
 
 ## Building Properties
 
