@@ -27,7 +27,9 @@ public class CovidParameters {
         public Double meanAsymptomaticPeriod = null;
         public Double meanPhase1DurationMild = null;
         public Double meanPhase1DurationSevere = null;
-
+        public Double probabilitySymptoms = null;
+        public Double meanSymptomDelay = null;
+        public Double meanInfectiousDuration = null;
         public Double mortalityRate = null;
         public Double childProgressionPhase2 = null;
         public Double adultProgressionPhase2 = null;
@@ -40,6 +42,9 @@ public class CovidParameters {
                     ", meanAsymptomaticPeriod=" + meanAsymptomaticPeriod +
                     ", meanPhase1DurationMild=" + meanPhase1DurationMild +
                     ", meanPhase1DurationSevere=" + meanPhase1DurationSevere +
+                    ", symptomProbability=" + probabilitySymptoms +
+                    ", symptomDelay=" + meanSymptomDelay +
+                    ", infectiousDuration=" + meanInfectiousDuration +
                     ", mortalityRate=" + mortalityRate +
                     ", childProgressionPhase2=" + childProgressionPhase2 +
                     ", adultProgressionPhase2=" + adultProgressionPhase2 +
@@ -77,6 +82,18 @@ public class CovidParameters {
 
     public double getMeanPhase1DurationSevere () {
         return diseaseParameters.meanPhase1DurationSevere;
+    }
+
+    public double getSymptomProbability () {
+        return diseaseParameters.probabilitySymptoms;
+    }
+
+    public double getSymptomDelay () {
+        return diseaseParameters.meanSymptomDelay;
+    }
+
+    public double getInfectiousPeriod () {
+        return diseaseParameters.meanInfectiousDuration;
     }
 
     public double getMortalityRate () {

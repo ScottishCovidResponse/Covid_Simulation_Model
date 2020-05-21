@@ -11,16 +11,22 @@ import uk.co.ramp.covid.simulation.util.RNG;
 public class Covid {
     private boolean latent;
     private boolean asymptomatic;
+    private boolean symptomaticCase;
     private boolean phase1;
     private boolean phase2;
     private boolean recovered;
     private boolean dead;
     private final double meanLatentPeriod;
     private final double meanAsymptomaticPeriod;
+    private final double pSymptoms;
+    private final double meanSymptomDelay;
+    private final double meanInfectiousDuration;
     private final double meanP1;
     private final double meanP2;
     private double latentPeriod;
     private double asymptomaticPeriod;
+    private double symptomDelay;
+    private double infectiousPeriod;
     private double p1;
     private double p2;
     private final double mortalityRate;
@@ -32,6 +38,9 @@ public class Covid {
         this.rng = RNG.get();
         this.meanLatentPeriod = CovidParameters.get().getMeanLatentPeriod();
         this.meanAsymptomaticPeriod = CovidParameters.get().getMeanAsymptomaticPeriod();
+        this.pSymptoms = CovidParameters.get().getSymptomProbability();
+        this.meanSymptomDelay = CovidParameters.get().getSymptomDelay();
+        this.meanInfectiousDuration = CovidParameters.get().getInfectiousPeriod();
         this.meanP1 = CovidParameters.get().getMeanPhase1DurationMild();
         this.meanP2 = CovidParameters.get().getMeanPhase1DurationSevere();
 
@@ -71,14 +80,21 @@ public class Covid {
     // For each infection define the duration of the infection periods
     private void setPeriods() {
         latentPeriod = (double) Math.exp(rng.nextGaussian(Math.log(meanLatentPeriod), 1.0));
-        asymptomaticPeriod = (double) Math.exp(rng.nextGaussian(Math.log(meanAsymptomaticPeriod), 1.0));
-
+        symptomaticCase = rng.nextUniform(0.0, 1.0) < pSymptoms;
+        if(!symptomaticCase) asymptomaticPeriod = Math.exp(rng.nextGaussian(Math.log(meanAsymptomaticPeriod), 1.0));
+        if(symptomaticCase) {
+        symptomDelay = latentPeriod - (double) rng.nextGaussian(meanSymptomDelay, 1.25); // Basically if symptom delay < 0 then the symproms appear after the infetcious period has started; otherwise before
+        if(symptomDelay < 0) symptomDelay = 1.0;
+        
+        infectiousPeriod = Math.exp(rng.nextGaussian(Math.log(meanInfectiousDuration), 1.0));
+        
         p1 = Math.exp(rng.nextGaussian(Math.log(meanP1), 1.0));
 
         if (ccase.avoidsPhase2(rng.nextUniform(0, 1))) {
             p2 = 0;
         } else {
             p2 = Math.exp(rng.nextGaussian(Math.log(meanP2), 1.0));
+        }
         }
     }
 
