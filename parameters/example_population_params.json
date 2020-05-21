@@ -87,7 +87,7 @@
             },
             "constructionSites":1000,
             "constructionSiteSizes":{
-                "pSmall":0.75,
+                "pSmall":0.7,
                 "pMed":0.2,
                 "pLarge":0.1
             },
@@ -127,7 +127,7 @@
             "pRestaurantTrans":1,
             "pSchoolTrans":0.044118,
             "pShopTrans":0.2,
-            "pHospitalKey":0,
+            "pHospitalKey":0.8,
             "pConstructionSiteKey":0.5,
             "pOfficeKey":0.5,
             "pShopKey":0.5
