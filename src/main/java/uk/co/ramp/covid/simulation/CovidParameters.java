@@ -40,9 +40,9 @@ public class CovidParameters {
             return "DiseaseParameters{" +
                     "meanLatentPeriod=" + meanLatentPeriod +
                     ", meanAsymptomaticPeriod=" + meanAsymptomaticPeriod +
-                    ", symptomProbability=" + probabilitySymptoms +
-                    ", symptomDelay=" + meanSymptomDelay +
-                    ", infectiousDuration=" + meanInfectiousDuration +
+                    ", probabilitySymptoms=" + probabilitySymptoms +
+                    ", meanSymptomDelay=" + meanSymptomDelay +
+                    ", meanInfectiousDuration=" + meanInfectiousDuration +
                     ", phase1Betaa=" + phase1Betaa +
                     ", phase1Betab=" + phase1Betab +                    
                     ", mortalityRate=" + mortalityRate +

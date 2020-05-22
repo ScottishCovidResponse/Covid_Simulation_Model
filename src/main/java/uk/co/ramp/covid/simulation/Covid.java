@@ -48,9 +48,15 @@ public class Covid {
         this.mortalityRate = CovidParameters.get().getMortalityRate();
 
         this.infCounter = 0;
+        this.setSymptomatic();
         this.setPeriods();
 
         this.latent = true;
+    }
+    
+    public void forceSymptomatic(boolean symptoms) { // This is for testing to force the symptomatic status
+    	this.symptomaticCase = symptoms;
+    	this.setPeriods();
     }
 
     public boolean isLatent() {
@@ -76,11 +82,14 @@ public class Covid {
     public boolean isDead() {
         return dead;
     }
+    
+    private void setSymptomatic() {
+        symptomaticCase = rng.nextUniform(0.0, 1.0) < pSymptoms;    	
+    }
 
     // For each infection define the duration of the infection periods
     private void setPeriods() {
         latentPeriod = (double) Math.exp(rng.nextGaussian(Math.log(meanLatentPeriod), 1.0));
-        symptomaticCase = rng.nextUniform(0.0, 1.0) < pSymptoms;
         if(!symptomaticCase) asymptomaticPeriod = Math.exp(rng.nextGaussian(Math.log(meanAsymptomaticPeriod), 1.0));
         if(symptomaticCase) {
         	symptomDelay = latentPeriod - (double) rng.nextGaussian(meanSymptomDelay, 1.25); // Basically if symptom delay < 0 then the symproms appear after the infetcious period has started; otherwise before
@@ -145,7 +154,7 @@ public class Covid {
             status = CStatus.RECOVERED;
 
         }
-        if((symptomDelay) < infCounter) isSymptomatic = true;
+        if((symptomDelay) < infCounter && !recovered) isSymptomatic = true;
         return status;
     }
 
@@ -158,7 +167,7 @@ public class Covid {
     }
     
     public boolean getIsSymptomatic() {
-    	return this.isSymptomatic;
+    	return isSymptomatic;
     }
 
     public double getP1() {
