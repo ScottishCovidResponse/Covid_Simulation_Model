@@ -133,6 +133,13 @@ public class PopulationTest {
         }
     }
 
+    @Test (expected = ImpossibleAllocationException.class )
+    public void testImpossibleAllocationException() throws ImpossibleAllocationException {
+        populationSize = 10;
+        p = new Population(populationSize,1000);
+        p.populateHouseholds();
+    }
+
     @Test
     public void testAllocateConstructionSite() {
         //Test that the primary place of adult construction workers is set to construction site
