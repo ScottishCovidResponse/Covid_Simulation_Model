@@ -9,6 +9,8 @@ import uk.co.ramp.covid.simulation.util.RNG;
 import java.io.IOException;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class CovidTest {
 
@@ -37,7 +39,8 @@ public class CovidTest {
             cStatus = virus.stepInfection();
         }
         assertEquals(CStatus.PHASE1, cStatus);
-        assertEquals(true, virus.getIsSymptomatic());
+        assertTrue(virus.getIsSymptomatic());
+
 
         //Test that the person becomes dead after the phase1 period       
         double p2Period = virus.getP2();
@@ -59,7 +62,6 @@ public class CovidTest {
         virus.forceSymptomatic(true);
 
         double latentPeriod = virus.getLatentPeriod();
-        double asymptomaticPeriod = virus.getAsymptomaticPeriod();
         double p1Period = virus.getP1();
 
         //Test that the person becomes recovered after the total infection period
@@ -68,7 +70,7 @@ public class CovidTest {
         }
       //  cStatus = virus.stepInfection();
         assertEquals(CStatus.RECOVERED, cStatus);
-        assertEquals(false, virus.getIsSymptomatic());
+        assertFalse(virus.getIsSymptomatic());
     }
 
     //Test that a child steps through the infection from latent to recovered
@@ -88,19 +90,19 @@ public class CovidTest {
         //Test that the person becomes recovered after the total infection period
         for (int i = 1; i < latentPeriod; i++) {
             assertEquals(CStatus.LATENT, cStatus);
-            assertEquals(false, virus.getIsSymptomatic());
+            assertFalse(virus.getIsSymptomatic());
         	cStatus = virus.stepInfection();
         }
         
         for (int i = 0; i < asymptomaticPeriod; i++) {
             assertEquals(CStatus.ASYMPTOMATIC, cStatus);
-            assertEquals(false, virus.getIsSymptomatic());
+            assertFalse(virus.getIsSymptomatic());
         	cStatus = virus.stepInfection();
         }
 //        cStatus = virus.stepInfection();
         
         assertEquals(CStatus.RECOVERED, cStatus);
-        assertEquals(false, virus.getIsSymptomatic());
+        assertFalse(virus.getIsSymptomatic());
     }
 
     @After
