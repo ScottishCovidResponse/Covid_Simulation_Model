@@ -131,7 +131,7 @@ public class Population {
                 }
                 remainingPeople.clear(i);
                 aPopulation[i].setHome(population[h]);
-                population[h].addPerson(aPopulation[i]);
+                population[h].addInhabitant(aPopulation[i]);
             }
         }
     }
@@ -152,7 +152,7 @@ public class Population {
                             break;
                         }
                         aPopulation[i].setHome(population[h]);
-                        population[h].addPerson(aPopulation[i]);
+                        population[h].addInhabitant(aPopulation[i]);
                         remainingPeople.clear(i);
                     }
                 }
@@ -454,7 +454,7 @@ public class Population {
         return nHousehold;
     }
 
-    public Person[] getaPopulation() {
+    public Person[] getAllPeople() {
         return aPopulation;
     }
 
