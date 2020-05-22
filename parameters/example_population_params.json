@@ -9,6 +9,8 @@
             "symptomProbability": 0.692,
             "symptomDelay": -0.67,
             "infectiousDuration": 321.6,
+            "phase1Betaa": 25,
+            "ohase2betab": 30,
             "mortalityRate":0.01,
             "childProgressionPhase2":0.02,
             "adultProgressionPhase2":0.15,

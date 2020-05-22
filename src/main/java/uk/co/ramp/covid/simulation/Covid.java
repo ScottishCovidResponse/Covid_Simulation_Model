@@ -21,7 +21,8 @@ public class Covid {
     private final double pSymptoms;
     private final double meanSymptomDelay;
     private final double meanInfectiousDuration;
-    private final double meanP1;
+    private final double oPhase1Betaa;
+    private final double oPhase1Betab;
     private final double meanP2;
     private double latentPeriod;
     private double asymptomaticPeriod;
@@ -41,9 +42,9 @@ public class Covid {
         this.pSymptoms = CovidParameters.get().getSymptomProbability();
         this.meanSymptomDelay = CovidParameters.get().getSymptomDelay();
         this.meanInfectiousDuration = CovidParameters.get().getInfectiousPeriod();
-        this.meanP1 = CovidParameters.get().getMeanPhase1DurationMild();
+        this.oPhase1Betaa = CovidParameters.get().getphase1Betaa(); 
+        this.oPhase1Betab = CovidParameters.get().getphase1Betab(); 
         this.meanP2 = CovidParameters.get().getMeanPhase1DurationSevere();
-
         this.ccase = ccase;
         this.mortalityRate = CovidParameters.get().getMortalityRate();
 
@@ -83,18 +84,16 @@ public class Covid {
         symptomaticCase = rng.nextUniform(0.0, 1.0) < pSymptoms;
         if(!symptomaticCase) asymptomaticPeriod = Math.exp(rng.nextGaussian(Math.log(meanAsymptomaticPeriod), 1.0));
         if(symptomaticCase) {
-        symptomDelay = latentPeriod - (double) rng.nextGaussian(meanSymptomDelay, 1.25); // Basically if symptom delay < 0 then the symproms appear after the infetcious period has started; otherwise before
-        if(symptomDelay < 0) symptomDelay = 1.0;
+        	symptomDelay = latentPeriod - (double) rng.nextGaussian(meanSymptomDelay, 1.25); // Basically if symptom delay < 0 then the symproms appear after the infetcious period has started; otherwise before
+        	if(symptomDelay < 1.0) symptomDelay = 1.0; // There could be the odd instance where we have a negative value here 
         
-        infectiousPeriod = Math.exp(rng.nextGaussian(Math.log(meanInfectiousDuration), 1.0));
+        	infectiousPeriod = Math.exp(rng.nextGaussian(Math.log(meanInfectiousDuration), 1.0));
         
-        p1 = Math.exp(rng.nextGaussian(Math.log(meanP1), 1.0));
+        p1 = infectiousPeriod * rng.nextBeta(oPhase1Betaa, oPhase1Betab);
+        p2 = infectiousPeriod - p1;
 
-        if (ccase.avoidsPhase2(rng.nextUniform(0, 1))) {
-            p2 = 0;
-        } else {
-            p2 = Math.exp(rng.nextGaussian(Math.log(meanP2), 1.0));
-        }
+        if (ccase.avoidsPhase2(rng.nextUniform(0, 1)))  p2 = 0;
+       
         }
     }
 
