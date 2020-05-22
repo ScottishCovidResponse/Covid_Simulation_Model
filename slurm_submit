@@ -1,0 +1,58 @@
+#!/bin/bash
+
+#! sbatch directives begin here ###############################
+#! Name of the job:
+#SBATCH -J covid-sim-model
+#! Charge the SCRC project:
+#SBATCH -A DIRAC-DC003-CPU
+
+#! Set file paths for output to stdout and stderr:
+#! %A means slurm job ID and %a means array index
+#! (Note: It appears that these can _not_ go in the folders we create for each job)
+#SBATCH --output=job_%A_%a_std.out
+#SBATCH --error=job_%A_%a_std.err
+
+#! Simple single core jobs use one node and one task
+#SBATCH --nodes=1
+#SBATCH --ntasks=1
+#! Set a time limit of 5 minutes
+#SBATCH --time=00:05:00
+#! Set --mail-type=FAIL to get an email if the job array fails
+#SBATCH --mail-type=FAIL
+
+#! Maximum memory should be 6GB or 12GB
+#SBATCH --mem=5980mb
+#! For 6GB per CPU, set "-p skylake"; for 12GB per CPU, set "-p skylake-himem": 
+#SBATCH -p skylake
+
+#! Note: Charging is determined by core number*walltime (doubled for 12GB per CPU)
+
+#! This submits a job array with a range of index values --array=[first]-[last]
+#! TODO: Set your required number of jobs here
+#SBATCH --array=0-1
+
+#! sbatch directives end here (put any additional directives above this line)
+
+#! Setup the environment seen by the application
+#! (note that SLURM reproduces the environment at submission irrespective of ~/.bashrc):
+. /etc/profile.d/modules.sh                # Enable the module command
+module purge                               # Remove all modules still loaded
+module load rhel7/default-peta4            # Load the basic (required) environment
+module load jdk-8u141-b15-intel-17.0.4-3g6rhr2 # Load Java
+
+#! Create a folder for each array job
+#! SLURM_SUBMIT_DIR is the directory in which sbatch is run
+#! SLURM_ARRAY_TASK_ID is the array index for each job
+#! SLURM_ARRAY_JOB_ID is the job array's master job ID number
+
+workdir="$SLURM_SUBMIT_DIR/job_${SLURM_ARRAY_JOB_ID}_${SLURM_ARRAY_TASK_ID}"
+mkdir -p $workdir
+cd $workdir
+
+#! TODO: Set these paths to point to the correct model and parameters
+application="$SLURM_SUBMIT_DIR/build/install/Covid-Simulation-Model/bin/Covid-Simulation-Model"
+paramsDir="$SLURM_SUBMIT_DIR/parameters"
+populationParams="$paramsDir/example_population_params.json"
+modelParams="$paramsDir/example_model_params.json"
+
+$application $populationParams $modelParams $SLURM_ARRAY_TASK_ID
