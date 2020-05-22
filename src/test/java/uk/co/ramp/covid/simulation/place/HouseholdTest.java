@@ -27,7 +27,6 @@ public class HouseholdTest {
     @Before
     public void initialise() throws JsonParseException, IOException {
         ParameterReader.readParametersFromFile("src/test/resources/default_params.json");
-        RNG.seed(123);
         household = new Household(Household.HouseholdType.ADULT);
         Person p1 = new Adult();
         Person p2 = new Adult();

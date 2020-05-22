@@ -22,7 +22,6 @@ public class PopulationTest {
     public void setupParams() throws IOException {
         ParameterReader.readParametersFromFile("src/test/resources/default_params.json");
         populationSize = 10000;
-        RNG.seed(123);
         p = new Population(populationSize,1000);
         try {
             p.populateHouseholds();

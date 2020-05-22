@@ -15,7 +15,6 @@ public class InfantTest {
     @Test
     public void testInfant() throws JsonParseException, IOException {
         ParameterReader.readParametersFromFile("src/test/resources/default_params.json");
-        RNG.seed(100);
         int nNursery = 0;
         //Test 50% of infants go to nursery
         for (int i = 0; i < 1000; i++) {
@@ -29,7 +28,6 @@ public class InfantTest {
     public void testInfantReports() throws IOException {
         //Test Infant methods reportInfection() and reportDeath()
         ParameterReader.readParametersFromFile("src/test/resources/default_params.json");
-        RNG.seed(123);
         Population p = new Population(500,60);
         try {
             p.populateHouseholds();
