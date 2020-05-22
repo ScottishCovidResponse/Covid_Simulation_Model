@@ -8,11 +8,7 @@ import org.apache.commons.math3.random.RandomDataGenerator;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import uk.co.ramp.covid.simulation.DailyStats;
-import uk.co.ramp.covid.simulation.RunModel;
-import uk.co.ramp.covid.simulation.population.CStatus;
-import uk.co.ramp.covid.simulation.population.Pensioner;
 import uk.co.ramp.covid.simulation.population.Person;
-import uk.co.ramp.covid.simulation.population.PopulationParameters;
 import uk.co.ramp.covid.simulation.util.RNG;
 
 import java.util.ArrayList;
@@ -23,7 +19,7 @@ public abstract class CommunalPlace extends Place {
     private static final Logger LOGGER = LogManager.getLogger(CommunalPlace.class);
 
     public enum Size {
-        SMALL, MED, LARGE, UNKNOWN;
+        SMALL, MED, LARGE, UNKNOWN
     }
     
     protected Size size;
@@ -94,4 +90,7 @@ public abstract class CommunalPlace extends Place {
         size = s;
     }
 
+    public boolean isKeyPremises() {
+        return keyPremises;
+    }
 }

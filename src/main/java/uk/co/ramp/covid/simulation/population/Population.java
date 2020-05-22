@@ -314,7 +314,7 @@ public class Population {
         this.schoolL = true;
     }
 
-    // Tests on each daily time step whether to do anything wiht the  lockdown
+    // Tests on each daily time step whether to do anything with the lockdown
     private void implementLockdown(int day) {
         if (day == this.lockdownStart) {
             this.lockdown = true;
@@ -327,7 +327,7 @@ public class Population {
         }
     }
 
-    // Sets the social distancing to parameters wihtin the CommunalPlaces
+    // Sets the social distancing to parameters within the CommunalPlaces
     private void socialDistancing() {
         for (CommunalPlace cPlace : places.getAllPlaces()) {
             cPlace.adjustSDist(this.socialDist);
@@ -423,7 +423,7 @@ public class Population {
         double visitFrequency = 2.0 / 7.0; // Based on three visits per week to shops
         double visitProb = visitFrequency / 12.0;
 
-        if (hour >= openingTime && hour < closingTime && startDay >= day && endDay <= day) {
+        if (hour >= openingTime && hour < closingTime && day >= startDay && day <= endDay) {
             for (Household household : this.population) {
                 ArrayList<Person> vNext = null;
                 if (rng.nextUniform(0, 1) < visitProb) {

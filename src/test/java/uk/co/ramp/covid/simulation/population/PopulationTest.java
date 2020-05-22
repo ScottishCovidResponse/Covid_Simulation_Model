@@ -212,8 +212,6 @@ public class PopulationTest {
         assertTrue("Unexpected primary communal place", cp instanceof Shop);
     }
 
-
-
     @Test
     public void testSeedVirus() {
         int nInfections = 10;
@@ -271,6 +269,34 @@ public class PopulationTest {
     }
 
     @Test
+    public void testLockdownOver() {
+        List<DailyStats> stats;
+        int nDays = 5;
+        int startLockdown = 2;
+        int endLockdown = 4;
+        double socialDist = 2.0;
+        p.createMixing();
+        p.assignNeighbours();
+        p.setLockdown(startLockdown, endLockdown, socialDist);
+        stats = p.timeStep(nDays);
+        assertFalse("Unexpectedly still in lockdown", p.isLockdown());
+    }
+
+    @Test
+    public void testInLockdown() {
+        List<DailyStats> stats;
+        int nDays = 5;
+        int start = 3;
+        int end = 6;
+        double socialDist = 2.0;
+        p.createMixing();
+        p.assignNeighbours();
+        p.setLockdown(start, end, socialDist);
+        stats = p.timeStep(nDays);
+        assertTrue("Unexpectedly not in lockdown", p.isLockdown());
+    }
+
+    @Test
     public void testSetSchoolLockdown() {
         int start = 1;
         int end = 2;
@@ -281,5 +307,23 @@ public class PopulationTest {
         assertTrue("Unexpected school lockdown", p.isSchoolL());
     }
 
-
+    @Test
+    public void testSchoolExemption() {
+        List<DailyStats> stats;
+        int nDays = 5;
+        int startLockdown = 1;
+        int endLockdown = 5;
+        double socialDist = 2.0;
+        p.createMixing();
+        p.assignNeighbours();
+        p.setLockdown(startLockdown, endLockdown, socialDist);
+        p.setSchoolLockdown(startLockdown, endLockdown - 2, socialDist);
+        stats = p.timeStep(nDays);
+        for (School s : p.getPlaces().getSchools()) {
+            assertTrue("School should be a key premises", s.isKeyPremises());
+        }
+        for (Nursery n : p.getPlaces().getNurseries()) {
+            assertTrue("Nursery should be a key premises", n.isKeyPremises());
+        }
+    }
 }

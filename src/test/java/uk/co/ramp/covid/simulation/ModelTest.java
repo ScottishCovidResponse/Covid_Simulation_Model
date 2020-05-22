@@ -53,7 +53,7 @@ public class ModelTest {
 
         // Check all infections occurred somewhere
         int totalDailyInfects = nInfections;
-        int cummulativeI = 0;
+        int cummulativeI;
         for (DailyStats s : stats.get(0)) {
             cummulativeI = s.getTotalInfected() + s.getRecovered() + s.getDead();
             totalDailyInfects += s.getTotalDailyInfections();
@@ -116,5 +116,23 @@ public class ModelTest {
         for (int i = 0; i < r1.size(); i++) {
             assertEquals(r1.get(i), r2.get(i));
         }
+    }
+
+    @Test
+    public void testLockdown() {
+        int population = 10000;
+        int nInfections = 10;
+
+        Model m = new Model()
+                .setPopulationSize(population)
+                .setnInfections(nInfections)
+                .setnHouseholds(3000)
+                .setIters(1)
+                .setnDays(90)
+                .setRNGSeed(42)
+                .setNoOutput()
+                .setLockdown(1, 20, 2.0);
+
+        List<List<DailyStats>> stats = m.run();
     }
 }
