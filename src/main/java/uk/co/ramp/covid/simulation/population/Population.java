@@ -130,7 +130,6 @@ public class Population {
                     break;
                 }
                 remainingPeople.clear(i);
-                aPopulation[i].setHome(population[h]);
                 population[h].addInhabitant(aPopulation[i]);
             }
         }
@@ -151,7 +150,6 @@ public class Population {
                         if (i < 0) {
                             break;
                         }
-                        aPopulation[i].setHome(population[h]);
                         population[h].addInhabitant(aPopulation[i]);
                         remainingPeople.clear(i);
                     }
@@ -254,7 +252,14 @@ public class Population {
 
                 Household neighbour = population[rng.nextInt(0, population.length - 1)];
 
+                // Cannot be a neighbour of ourselves
                 if (neighbour == cHouse) {
+                    k--;
+                    continue;
+                }
+
+                // Avoid duplicate neighbours
+                if (cHouse.isNeighbour(neighbour)) {
                     k--;
                     continue;
                 }
