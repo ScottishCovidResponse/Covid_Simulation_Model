@@ -13,7 +13,10 @@ import uk.co.ramp.covid.simulation.util.RNG;
 
 public abstract class Person {
     private boolean shopWorker = false;
+
     private CommunalPlace primaryPlace = null;
+    protected Shifts shifts = null;
+
     private Household home;
     private boolean recovered;
     private Covid cVirus;

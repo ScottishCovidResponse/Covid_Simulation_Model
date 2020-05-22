@@ -12,9 +12,10 @@ public class Adult extends Person {
 
     Professions profession;
 
-    public Adult() { setProfession(); }
-
-
+    public Adult() {
+        setProfession();
+        shifts = Shifts.getAllTimes();
+    }
 
     // Allocates adults to different professions
     public void setProfession() {
