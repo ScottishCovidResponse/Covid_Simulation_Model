@@ -8,6 +8,8 @@
           "meanInfectiousDuration": 321.6,
           "phase1Betaa": 25.0,
           "phase1Betab": 30.0,
+          "aSymptomaticTransAdjustment": 0.1,
+          "symptomaticTransAdjustment": 1.0,
           "mortalityRate":100.0,
           "childProgressionPhase2":0.0,
           "adultProgressionPhase2":0.15,

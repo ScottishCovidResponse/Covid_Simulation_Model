@@ -29,7 +29,9 @@ public class CovidParameters {
         public Double meanSymptomDelay = null;
         public Double meanInfectiousDuration = null;
         public Double phase1Betaa = null;
-        public Double phase1Betab = null;        
+        public Double phase1Betab = null;
+        public Double aSymptomaticTransAdjustment = null;
+        public Double symptomaticTransAdjustment = null;
         public Double mortalityRate = null;
         public Double childProgressionPhase2 = null;
         public Double adultProgressionPhase2 = null;
@@ -44,7 +46,9 @@ public class CovidParameters {
                     ", meanSymptomDelay=" + meanSymptomDelay +
                     ", meanInfectiousDuration=" + meanInfectiousDuration +
                     ", phase1Betaa=" + phase1Betaa +
-                    ", phase1Betab=" + phase1Betab +                    
+                    ", phase1Betab=" + phase1Betab +
+                    ", aSymptomaticTransAdjustment=" + aSymptomaticTransAdjustment +
+                    ", symptomaticTransAdjustment=" + symptomaticTransAdjustment +                    
                     ", mortalityRate=" + mortalityRate +
                     ", childProgressionPhase2=" + childProgressionPhase2 +
                     ", adultProgressionPhase2=" + adultProgressionPhase2 +
@@ -94,6 +98,14 @@ public class CovidParameters {
 
     public double getphase1Betab () {
         return diseaseParameters.phase1Betab;
+    }
+    
+    public double getAsymptomaticTransAdjustment() {
+    	return diseaseParameters.aSymptomaticTransAdjustment;
+    }
+    
+    public double getSymptomaticTransAdjustment() {
+    	return diseaseParameters.symptomaticTransAdjustment;
     }
     
     public double getMortalityRate () {
