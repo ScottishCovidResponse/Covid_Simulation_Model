@@ -139,7 +139,7 @@ public class PopulationTest {
         p.createMixing();
         Adult adult = new Adult();
         adult.profession = Adult.Professions.CONSTRUCTION;
-        p.getPopulation()[0].addPerson(adult);
+        p.getPopulation()[0].addInhabitant(adult);
         adult.allocateCommunalPlace(p.getPlaces());
         CommunalPlace cp = adult.getPrimaryCommunalPlace();
         assertTrue("Unexpected primary communal place", cp instanceof ConstructionSite);
@@ -151,7 +151,7 @@ public class PopulationTest {
         p.createMixing();
         Adult adult = new Adult();
         adult.profession = Adult.Professions.HOSPITAL;
-        p.getPopulation()[0].addPerson(adult);
+        p.getPopulation()[0].addInhabitant(adult);
         adult.allocateCommunalPlace(p.getPlaces());
         CommunalPlace cp = adult.getPrimaryCommunalPlace();
         assertTrue("Unexpected primary communal place", cp instanceof Hospital);
@@ -163,7 +163,7 @@ public class PopulationTest {
         p.createMixing();
         Adult adult = new Adult();
         adult.profession = Adult.Professions.OFFICE;
-        p.getPopulation()[0].addPerson(adult);
+        p.getPopulation()[0].addInhabitant(adult);
         adult.allocateCommunalPlace(p.getPlaces());
         CommunalPlace cp = adult.getPrimaryCommunalPlace();
         assertTrue("Unexpected primary communal place", cp instanceof Office);
@@ -175,7 +175,7 @@ public class PopulationTest {
         p.createMixing();
         Adult adult = new Adult();
         adult.profession = Adult.Professions.RESTAURANT;
-        p.getPopulation()[0].addPerson(adult);
+        p.getPopulation()[0].addInhabitant(adult);
         adult.allocateCommunalPlace(p.getPlaces());
         CommunalPlace cp = adult.getPrimaryCommunalPlace();
         assertTrue("Unexpected primary communal place", cp instanceof Restaurant);
@@ -187,7 +187,7 @@ public class PopulationTest {
         p.createMixing();
         Adult adult = new Adult();
         adult.profession = Adult.Professions.TEACHER;
-        p.getPopulation()[0].addPerson(adult);
+        p.getPopulation()[0].addInhabitant(adult);
         adult.allocateCommunalPlace(p.getPlaces());
         CommunalPlace cp = adult.getPrimaryCommunalPlace();
         assertTrue("Unexpected primary communal place", cp instanceof School);
@@ -199,7 +199,7 @@ public class PopulationTest {
         p.createMixing();
         Adult adult = new Adult();
         adult.profession = Adult.Professions.SHOP;
-        p.getPopulation()[0].addPerson(adult);
+        p.getPopulation()[0].addInhabitant(adult);
         adult.allocateCommunalPlace(p.getPlaces());
         CommunalPlace cp = adult.getPrimaryCommunalPlace();
         assertTrue("Unexpected primary communal place", cp instanceof Shop);
@@ -214,13 +214,12 @@ public class PopulationTest {
         p.seedVirus(nInfections);
 
         //Check that there are just 10 infections amongst the population
-        for (int i = 0; i < p.getnHousehold(); i++) {
-            for (int j = 0; j < p.getPopulation()[i].getHouseholdSize(); j++) {
-               if (p.getPopulation()[i].getPerson(j).getInfectionStatus()) {
-                   nInfected ++;
-               }
+        for (Person p : p.getAllPeople()) {
+            if (p.getInfectionStatus()) {
+                nInfected++;
             }
         }
+
         assertEquals("Unexpected number of infections", nInfections, nInfected);
     }
 
