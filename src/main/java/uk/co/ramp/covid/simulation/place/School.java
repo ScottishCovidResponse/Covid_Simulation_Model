@@ -10,8 +10,9 @@ public class School extends CommunalPlace {
 
     public School(Size s) {
         super(s);
-        int startTime = 9; // TODO. Not used at the moment, but may be used in the future. LEave them in for completeness
-        int endTime = 15;
+        times.setOpen(9);
+        times.setClose(15);
+        times.setOpenDays(OpeningTimes.getWeekdays());
         transProb = PopulationParameters.get().getpBaseTrans() * PopulationParameters.get().getpSchoolTrans();
     }
 

@@ -281,14 +281,14 @@ public class Population {
         List<DailyStats> stats = new ArrayList<>(nDays);
         for (int i = 0; i < nDays; i++) {
             DailyStats dStats = new DailyStats(i);
-            int dWeek = (i + 1) % 7;
+            int dWeek = i % 7;
             this.implementLockdown(i);
             LOGGER.info("Lockdown = {}", this.lockdown);
             for (int k = 0; k < 24; k++) {
                 this.cycleHouseholds(dWeek, k, dStats);
-                this.cyclePlaces(k, dStats);
-                this.returnShoppers(k);
-                this.returnRestaurant(k);
+                this.cyclePlaces(k, dWeek, dStats);
+                this.returnShoppers(k, dWeek);
+                this.returnRestaurant(k, dWeek);
                 this.shoppingTrip(dWeek, k);
                 if (!this.rLockdown) this.restaurantTrip(dWeek, k);
             }
@@ -369,8 +369,8 @@ public class Population {
     }
 
     // People returning ome at the end of the day
-    private void cyclePlaces(int hour, DailyStats stats) {
-        places.getAllPlaces().forEach(p -> p.cyclePlace(hour,stats));
+    private void cyclePlaces(int hour, int day, DailyStats stats) {
+        places.getAllPlaces().forEach(p -> p.cyclePlace(hour, day, stats));
     }
 
     // Go through neighbours and see if they visit anybody
@@ -410,8 +410,8 @@ public class Population {
     }
 
     // People return from shopping
-    private void returnShoppers(int hour) {
-        places.getShops().forEach(s -> s.sendHome(hour));
+    private void returnShoppers(int hour, int day) {
+        places.getShops().forEach(s -> s.sendHome(hour, day));
     }
 
     // People go out for dinner
@@ -438,8 +438,8 @@ public class Population {
     }
 
     // People return from dinner
-    private void returnRestaurant(int hour) {
-        places.getRestaurants().forEach(r -> r.sendHome(hour));
+    private void returnRestaurant(int hour, int day) {
+        places.getRestaurants().forEach(r -> r.sendHome(hour, day));
     }
 
     public Household[] getPopulation() {

@@ -55,8 +55,8 @@ public class ShopTest {
 
     @Test
     public void testSendHome() {
-        int time = shop.endTime - 1;
-        int left = shop.sendHome(time);
+        int time = shop.times.getClose() - 1;
+        int left = shop.sendHome(time, 0);
         int expPeople = 2;
         assertEquals("Unexpected number of people sent home", expPeople, left);
     }

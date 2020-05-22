@@ -56,8 +56,8 @@ public class RestaurantTest {
 
     @Test
     public void testSendHome() {
-        int time = restaurant.endTime - 1;
-        int left = restaurant.sendHome(time);
+        int time = restaurant.times.getClose() - 1;
+        int left = restaurant.sendHome(time, 0);
         int expPeople = 2;
         assertEquals("Unexpected number of people sent home from restaurant", expPeople, left);
     }

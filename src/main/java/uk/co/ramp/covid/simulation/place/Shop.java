@@ -15,8 +15,8 @@ public class Shop extends CommunalPlace {
     public Shop(Size s) {
         super(s);
         transProb = PopulationParameters.get().getpBaseTrans() *  PopulationParameters.get().getpShopTrans();
-        startDay = 1;
-        endDay = 7;
+        //startDay = 1;
+        //endDay = 7;
         keyProb = PopulationParameters.get().getpShopKey();
         if (rng.nextUniform(0, 1) > keyProb) keyPremises = true;
 
@@ -26,11 +26,12 @@ public class Shop extends CommunalPlace {
        people.addAll(vHouse);
     }
 
-    public int sendHome(int hour) {
+    public int sendHome(int hour, int day) {
         ArrayList<Person> left = new ArrayList<>();
         for (Person nPers : people) {
+            // TODO: Average shopping time should be a parameter
             if (!nPers.isShopWorker() && rng.nextUniform(0, 1) < 0.5 
-                    || hour < super.endTime) {// Assumes a median lenght of shopping trip of 2 hours
+                    || !times.isOpen(hour + 1, day)) {
                 left.add(nPers);
                 nPers.returnHome();
             }

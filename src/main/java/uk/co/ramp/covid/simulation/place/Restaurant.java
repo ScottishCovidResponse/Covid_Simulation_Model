@@ -15,10 +15,8 @@ public class Restaurant extends CommunalPlace {
     public Restaurant(Size s) {
         super(s);
         transProb = PopulationParameters.get().getpBaseTrans() * PopulationParameters.get().getpRestaurantTrans();
-        startDay = 1;
-        endDay = 7;
-        startTime = 10;
-        endTime = 22;
+        times.setOpen(10);
+        times.setClose(22);
         keyPremises = false;
     }
 
@@ -26,11 +24,12 @@ public class Restaurant extends CommunalPlace {
         people.addAll(vHouse);
     }
 
-    public int sendHome(int hour) {
+    public int sendHome(int hour, int day) {
         ArrayList<Person> left = new ArrayList<>();
         for (Person nPers : people) {
+            // TODO: average dining time should be a parameter
             if (!nPers.isShopWorker() && rng.nextUniform(0, 1) < 0.4
-                    || hour < super.endTime) { // Assumes a median lenght of shopping trip of 2 hours
+                    || !times.isOpen(hour + 1,day)) {
                 left.add(nPers);
                 nPers.returnHome();
             }
