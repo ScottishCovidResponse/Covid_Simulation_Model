@@ -68,7 +68,7 @@ public abstract class Person {
     }
     
     public void returnHome() {
-        home.addPerson(this);
+        home.addInhabitant(this);
     }
 
     public boolean getQuarantine() {
