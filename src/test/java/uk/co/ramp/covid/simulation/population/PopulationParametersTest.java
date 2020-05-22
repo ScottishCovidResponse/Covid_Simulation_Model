@@ -1,16 +1,13 @@
 package uk.co.ramp.covid.simulation.population;
 
-
 import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
-import uk.co.ramp.covid.simulation.CovidParameters;
 import uk.co.ramp.covid.simulation.io.ParameterReader;
 import uk.co.ramp.covid.simulation.util.InvalidParametersException;
-import uk.co.ramp.covid.simulation.util.RNG;
 
 import java.io.IOException;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 public class PopulationParametersTest {
@@ -22,17 +19,17 @@ public class PopulationParametersTest {
         assertTrue(PopulationParameters.get().isValid());
     }
 
-    @Test (expected = AssertionError.class)
+    @Test
     public void testIsInValid() throws IOException {
         //Test that invalid parameters are handled correctly
         ParameterReader.readParametersFromFile("src/test/resources/test_invalid_params.json");
-        assertTrue(PopulationParameters.get().isValid());
+        assertFalse(PopulationParameters.get().isValid());
     }
 
     @Test (expected = InvalidParametersException.class)
     public void testNullParameters() {
-        //Test that null parameters are handled correctly
-        assertTrue(PopulationParameters.get().isValid());
+        //Test that null parameters throw an InvalidParametersException
+        PopulationParameters.get().isValid();
     }
 
     @After
