@@ -14,6 +14,7 @@ public class InfantTest {
 
     @Test
     public void testInfant() throws JsonParseException, IOException {
+        RNG.seed(0); // This test is sensitive to random numbers
         ParameterReader.readParametersFromFile("src/test/resources/default_params.json");
         int nNursery = 0;
         //Test 50% of infants go to nursery

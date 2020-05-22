@@ -100,6 +100,7 @@ public class HouseholdTest {
     
     @Test
     public void testSendNeighboursHome() {
+        RNG.seed(3); // This test is very sensitive to random numbers
         Household newHouse = new Household(Household.HouseholdType.ADULT);
         Person p1 = new Adult();
         newHouse.addInhabitant(p1);
