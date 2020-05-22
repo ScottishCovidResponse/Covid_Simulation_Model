@@ -41,21 +41,22 @@ public class Household extends Place {
             HouseholdType.ADULTCHILD, HouseholdType.ADULTPENSIONERCHILD, HouseholdType.PENSIONERCHILD));
 
     private final HouseholdType hType;
-    private int[] neighbourList;
+    private List<Household> neighbours;
     private final RandomDataGenerator rng;
 
     // Create household defined by who lives there
     public Household(HouseholdType hType) {
         this.hType = hType;
         this.rng = RNG.get();
+        this.neighbours = new ArrayList<>();
     }
 
-    public int getNeighbourIndex(int nNeighbour) {
-        return this.neighbourList[nNeighbour];
+    public List<Household> getNeighbours() {
+        return neighbours;
     }
 
     public int nNeighbours() {
-        return this.neighbourList.length;
+        return neighbours.size();
     }
 
     public HouseholdType gethType() {
@@ -71,8 +72,8 @@ public class Household extends Place {
         return this.getInhabitants().size();
     }
 
-    public void setNeighbourList(int[] neighbours) {
-        this.neighbourList = neighbours;
+    public void addNeighbour(Household n) {
+        neighbours.add(n);
     }
 
     public boolean seedInfection() {

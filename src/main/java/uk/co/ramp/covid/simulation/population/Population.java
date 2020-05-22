@@ -247,17 +247,20 @@ public class Population {
 
     // This method assigns a random number of neighbours to each Household
     public void assignNeighbours() {
-        for (int i = 0; i < this.nHousehold; i++) {
-            Household cHouse = this.population[i];
+        for (Household cHouse : population) {
             int expectedNeighbours = PopulationParameters.get().getExpectedNeighbours();
             int nneighbours = (int) rng.nextPoisson(expectedNeighbours);
-            int[] neighbourArray = new int[nneighbours];
             for (int k = 0; k < nneighbours; k++) {
-                int nInt = rng.nextInt(0, this.nHousehold - 1);
-                if (nInt == i) k--;
-                else neighbourArray[k] = nInt;
+
+                Household neighbour = population[rng.nextInt(0, population.length - 1)];
+
+                if (neighbour == cHouse) {
+                    k--;
+                    continue;
+                }
+
+                cHouse.addNeighbour(neighbour);
             }
-            cHouse.setNeighbourList(neighbourArray);
         }
     }
 
@@ -372,16 +375,13 @@ public class Population {
 
     // Go through neighbours and see if they visit anybody
     private void cycleNeighbours(Household cHouse) {
-        int visitIndex = -1; // Set a default for this here.
-
         if (cHouse.nNeighbours() > 0 && cHouse.getHouseholdSize() > 0) {
-            int k = 0;
-            while (k < cHouse.nNeighbours()) {
+            // We only welcome one set of visitors at a time
+            for (Household n : cHouse.getNeighbours()) {
                 if (rng.nextUniform(0, 1) < PopulationParameters.get().getNeighbourVisitFreq()) {
-                    this.population[cHouse.getNeighbourIndex(k)].welcomeNeighbours(cHouse);
+                    n.welcomeNeighbours(cHouse);
                     break;
                 }
-                k++;
             }
         }
     }

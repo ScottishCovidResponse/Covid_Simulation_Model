@@ -19,8 +19,12 @@ import java.io.IOException;
 public class HouseholdTest {
 
     Household household;
-    int nneighbours;
-    int[] neighbourArray;
+
+    //Neighbours
+    Household household2;
+    Household household3;
+    Household household4;
+    int nneighbours = 3;
 
     @Before
     public void initialise() throws JsonParseException, IOException {
@@ -33,21 +37,18 @@ public class HouseholdTest {
         household.addInhabitant(p1);
         household.addInhabitant(p2);
         household.addInhabitant(p3);
-        nneighbours = 5;
-        neighbourArray = new int[]{3, 4, 1, 2, 1};
-    }
+        household2 = new Household(Household.HouseholdType.ADULT);
+        household3 = new Household(Household.HouseholdType.ADULT);
+        household4 = new Household(Household.HouseholdType.ADULT);
 
-    @Test
-    public void testGetNeighbourIndex() {
-        int ExpNeighbourIndex = 4;
-        household.setNeighbourList(neighbourArray);
-        assertEquals("Unexpected neighbours", ExpNeighbourIndex, household.getNeighbourIndex(1));
     }
 
     @Test
     public void testNNeighbours() {
-        int ExpNNeighbour = 5;
-        household.setNeighbourList(neighbourArray);
+        int ExpNNeighbour = 3;
+        household.addNeighbour(household2);
+        household.addNeighbour(household3);
+        household.addNeighbour(household4);
         assertEquals("Unexpected neighbour list", ExpNNeighbour, household.nNeighbours());
     }
 
@@ -71,19 +72,6 @@ public class HouseholdTest {
         household.addInhabitant(p1);
         int expSize = 4;
         assertEquals("Unexpected household size", expSize, household.getHouseholdSize());
-    }
-
-    @Test
-    public void testGetPerson() {
-        Person p4 = new Adult();
-        household.addInhabitant(p4);
-      //  assertEquals("Unexpected person found", p4, household.getPerson(3));
-    }
-
-    @Test
-    public void testSetNeighbourList() {
-        household.setNeighbourList(neighbourArray);
-        assertEquals("Unexpected number of neighbours", nneighbours, neighbourArray.length);
     }
 
     @Test
