@@ -1,15 +1,6 @@
-/*
- * Paul Bessell
- * This initilaises each Household as a Vector of People.
- * It has a method for cycling throuhg the Household to challenge wiht infection (when relevant)
- */
-
-
 package uk.co.ramp.covid.simulation.place;
 
 import uk.co.ramp.covid.simulation.DailyStats;
-import org.apache.commons.math3.random.RandomDataGenerator;
-import uk.co.ramp.covid.simulation.RunModel;
 import uk.co.ramp.covid.simulation.population.CStatus;
 import uk.co.ramp.covid.simulation.population.Person;
 import uk.co.ramp.covid.simulation.population.PopulationParameters;
@@ -18,7 +9,6 @@ import uk.co.ramp.covid.simulation.util.RNG;
 import java.util.*;
 
 public class Household extends Place {
-
 
     public enum HouseholdType {
        ADULT               { public String toString() {return "Adult only";                   } },
@@ -41,13 +31,12 @@ public class Household extends Place {
             HouseholdType.ADULTCHILD, HouseholdType.ADULTPENSIONERCHILD, HouseholdType.PENSIONERCHILD));
 
     private final HouseholdType hType;
-    private List<Household> neighbours;
-    private final RandomDataGenerator rng;
+    private final List<Household> neighbours;
+    private int householdSize = 0;
 
     // Create household defined by who lives there
     public Household(HouseholdType hType) {
         this.hType = hType;
-        this.rng = RNG.get();
         this.neighbours = new ArrayList<>();
     }
 
@@ -65,11 +54,12 @@ public class Household extends Place {
 
     public void addInhabitant(Person cPers) {
         cPers.setHome(this);
+        householdSize++;
         this.people.add(cPers);
     }
 
     public int getHouseholdSize() {
-        return this.getInhabitants().size();
+        return householdSize;
     }
 
     public void addNeighbour(Household n) {
@@ -78,7 +68,7 @@ public class Household extends Place {
 
     public boolean seedInfection() {
         List<Person> inhabitants = getInhabitants();
-        Person cPers = inhabitants.get(rng.nextInt(0, inhabitants.size() - 1));
+        Person cPers = inhabitants.get(RNG.get().nextInt(0, inhabitants.size() - 1));
         return cPers.infect();
     }
 
@@ -118,7 +108,7 @@ public class Household extends Place {
         ArrayList<Person> left = new ArrayList<>();
 
         for (Person p : getVisitors()) {
-            if (rng.nextUniform(0, 1) < PopulationParameters.get().getHouseholdVisitorLeaveRate()) {
+            if (RNG.get().nextUniform(0, 1) < PopulationParameters.get().getHouseholdVisitorLeaveRate()) {
                 left.add(p);
                 if (p.cStatus() != CStatus.DEAD) {
                    p.returnHome();
@@ -176,7 +166,6 @@ public class Household extends Place {
     // For each household processes any movements to Communal Places that are relevant
     public void cycleMovements(int day, int hour, boolean lockdown) {
         List<Person> left = new ArrayList<>();
-        int i = 0;
         for (Person p : getInhabitants()) {
             if (p.hasPrimaryCommunalPlace() && !p.getQuarantine()) {
                 boolean visit = p.getPrimaryCommunalPlace().checkVisit(p, hour, day, lockdown);
@@ -187,6 +176,4 @@ public class Household extends Place {
         }
         people.removeAll(left);
     }
-    
-   
 }
