@@ -91,7 +91,7 @@ public class Covid {
     private void setPeriods() {
         latentPeriod = (double) Math.exp(rng.nextGaussian(Math.log(meanLatentPeriod), 1.0));
         if(!symptomaticCase) asymptomaticPeriod = Math.exp(rng.nextGaussian(Math.log(meanAsymptomaticPeriod), 1.0));
-        if(symptomaticCase) {
+        else if(symptomaticCase) {
         	symptomDelay = latentPeriod - (double) rng.nextGaussian(meanSymptomDelay, 1.25); // Basically if symptom delay < 0 then the symproms appear after the infetcious period has started; otherwise before
         	if(symptomDelay < 1.0) symptomDelay = 1.0; // There could be the odd instance where we have a negative value here 
         
@@ -108,7 +108,7 @@ public class Covid {
     public CStatus stepInfection() {
     	CStatus status = null;
     	if(symptomaticCase) status = this.stepInfectionSymptomatic();
-    	if(!symptomaticCase) status = this.stepInfectionAsymptomatic();
+    	else if(!symptomaticCase) status = this.stepInfectionAsymptomatic();
     	return status;
     }
     
