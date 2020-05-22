@@ -1,17 +1,19 @@
 {
     "disease":{
 
-        "diseaseParameters":{
+      "diseaseParameters":{
           "meanLatentPeriod":123.12,
           "meanAsymptomaticPeriod":192,
-          "meanPhase1DurationMild":120,
-          "meanPhase1DurationSevere":240,
           "symptomProbability": 0.692,
+          "symptomDelay": -0.67,
+          "infectiousDuration": 321.6,
+          "phase1Betaa": 25,
+          "phase2Betab": 30,
           "mortalityRate":0.01,
           "childProgressionPhase2":0.02,
           "adultProgressionPhase2":0.15,
           "pensionerProgressionPhase2":0.8
-        }
+      }
     },
     "population":{
         "population":{

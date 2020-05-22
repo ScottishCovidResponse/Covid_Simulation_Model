@@ -12,6 +12,7 @@ public class Covid {
     private boolean latent;
     private boolean asymptomatic;
     private boolean symptomaticCase;
+    private boolean isSymptomatic;
     private boolean phase1;
     private boolean phase2;
     private boolean recovered;
@@ -23,7 +24,6 @@ public class Covid {
     private final double meanInfectiousDuration;
     private final double oPhase1Betaa;
     private final double oPhase1Betab;
-    private final double meanP2;
     private double latentPeriod;
     private double asymptomaticPeriod;
     private double symptomDelay;
@@ -44,7 +44,6 @@ public class Covid {
         this.meanInfectiousDuration = CovidParameters.get().getInfectiousPeriod();
         this.oPhase1Betaa = CovidParameters.get().getphase1Betaa(); 
         this.oPhase1Betab = CovidParameters.get().getphase1Betab(); 
-        this.meanP2 = CovidParameters.get().getMeanPhase1DurationSevere();
         this.ccase = ccase;
         this.mortalityRate = CovidParameters.get().getMortalityRate();
 
@@ -97,38 +96,57 @@ public class Covid {
         }
     }
 
-    // Cycle through the infection for that timestep
     public CStatus stepInfection() {
-        this.infCounter++;
+    	CStatus status = null;
+    	if(symptomaticCase) status = this.stepInfectionSymptomatic();
+    	if(!symptomaticCase) status = this.stepInfectionAsymptomatic();
+    	return status;
+    }
+    
+    // Cycle through the infection for that timestep
+    public CStatus stepInfectionAsymptomatic() {
+        infCounter++;
         CStatus status = CStatus.LATENT;
-        if ((this.latentPeriod) > this.infCounter) {
-            this.latent = true;
-        } else if (((this.latentPeriod + this.asymptomaticPeriod)) > this.infCounter) {
-            this.asymptomatic = true;
+        if ((latentPeriod) > infCounter) {
+            latent = true;
+        } else if (((latentPeriod + asymptomaticPeriod)) > infCounter) {
+            asymptomatic = true;
             status = CStatus.ASYMPTOMATIC;
-        } else if ((this.latentPeriod + this.asymptomaticPeriod + this.p1) > this.infCounter) {
-            this.phase1 = true;
-            status = CStatus.PHASE1;
+        } else if ((latentPeriod + asymptomaticPeriod) <= infCounter) {
+            recovered = true;
+            status = CStatus.RECOVERED;
+        }
+        return status;
+    }
 
-        } else if ((this.latentPeriod + this.asymptomaticPeriod + this.p1 + this.p2) > this.infCounter) {
-            this.phase2 = true;
+    public CStatus stepInfectionSymptomatic() {
+        infCounter++;
+        CStatus status = CStatus.LATENT;
+        if ((latentPeriod) > infCounter) {
+            latent = true;
+        } else if ((latentPeriod + p1) > infCounter) {
+            phase1 = true;
+            status = CStatus.PHASE1;
+        } else if ((latentPeriod + p1 + p2) > infCounter) {
+            phase2 = true;
             double rVal = rng.nextUniform(0, 1);
-            if (rVal < this.mortalityRate / 24) {
-                this.dead = true;
+            if (rVal < mortalityRate / 24) {
+                dead = true;
                 status = CStatus.DEAD;
 
             }
-            if (rVal >= this.mortalityRate / 24) {
+            if (rVal >= mortalityRate / 24) {
                 status = CStatus.PHASE2;
 
             }
-        } else if ((this.latentPeriod + this.asymptomaticPeriod + this.p1 + this.p2) <= this.infCounter) {
-            this.recovered = true;
+        } else if ((latentPeriod + p1 + p2) <= infCounter) {
+            recovered = true;
+            isSymptomatic = false;
             status = CStatus.RECOVERED;
 
         }
+        if((symptomDelay) < infCounter) isSymptomatic = true;
         return status;
-
     }
 
     public double getLatentPeriod() {
@@ -137,6 +155,10 @@ public class Covid {
 
     public double getAsymptomaticPeriod() {
         return asymptomaticPeriod;
+    }
+    
+    public boolean getIsSymptomatic() {
+    	return this.isSymptomatic;
     }
 
     public double getP1() {
