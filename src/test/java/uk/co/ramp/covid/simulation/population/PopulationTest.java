@@ -32,6 +32,11 @@ public class PopulationTest {
     }
 
     @Test
+    public void testPopulationSize() {
+        assertEquals("Unexpected population size", populationSize, p.getPopulationSize());
+    }
+
+    @Test
     public void populateHouseholds() {
         int populationSize = 500;
         Population p = new Population(populationSize,60);
@@ -293,6 +298,7 @@ public class PopulationTest {
         p.setLockdown(start, end, socialDist);
         stats = p.timeStep(nDays);
         assertTrue("Unexpectedly not in lockdown", p.isLockdown());
+        assertTrue("Restaurants not in lockdown", p.isrLockdown());
     }
 
     @Test
