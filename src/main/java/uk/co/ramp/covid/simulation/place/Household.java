@@ -1,15 +1,6 @@
-/*
- * Paul Bessell
- * This initilaises each Household as a Vector of People.
- * It has a method for cycling throuhg the Household to challenge wiht infection (when relevant)
- */
-
-
 package uk.co.ramp.covid.simulation.place;
 
 import uk.co.ramp.covid.simulation.DailyStats;
-import org.apache.commons.math3.random.RandomDataGenerator;
-import uk.co.ramp.covid.simulation.RunModel;
 import uk.co.ramp.covid.simulation.population.CStatus;
 import uk.co.ramp.covid.simulation.population.Person;
 import uk.co.ramp.covid.simulation.population.PopulationParameters;
@@ -18,7 +9,6 @@ import uk.co.ramp.covid.simulation.util.RNG;
 import java.util.*;
 
 public class Household extends Place {
-
 
     public enum HouseholdType {
        ADULT               { public String toString() {return "Adult only";                   } },
@@ -41,67 +31,59 @@ public class Household extends Place {
             HouseholdType.ADULTCHILD, HouseholdType.ADULTPENSIONERCHILD, HouseholdType.PENSIONERCHILD));
 
     private final HouseholdType hType;
-    private final ArrayList<Person> vPeople;
-    private int[] neighbourList;
-    private final ArrayList<Person> vVisitors;
-    private final RandomDataGenerator rng;
+    private final List<Household> neighbours;
+    private int householdSize = 0;
 
     // Create household defined by who lives there
     public Household(HouseholdType hType) {
         this.hType = hType;
-        vPeople = new ArrayList<>();
-        vVisitors = new ArrayList<>();
-        this.rng = RNG.get();
+        this.neighbours = new ArrayList<>();
     }
 
-    public int getNeighbourIndex(int nNeighbour) {
-        return this.neighbourList[nNeighbour];
+    public List<Household> getNeighbours() {
+        return neighbours;
     }
 
     public int nNeighbours() {
-        return this.neighbourList.length;
+        return neighbours.size();
     }
 
     public HouseholdType gethType() {
         return this.hType;
     }
 
-    public void addPerson(Person cPers) {
-        this.vPeople.add(cPers);
+    public void addInhabitant(Person cPers) {
+        cPers.setHome(this);
+        householdSize++;
         this.people.add(cPers);
     }
 
     public int getHouseholdSize() {
-        return this.vPeople.size();
+        return householdSize;
     }
 
-    public Person getPerson(int pos) {
-        return this.vPeople.get(pos);
+    public void addNeighbour(Household n) {
+        neighbours.add(n);
     }
 
-    public void setNeighbourList(int[] neighbours) {
-        this.neighbourList = neighbours;
-    }
+    public boolean isNeighbour(Household n) { return neighbours.contains(n); }
 
     public boolean seedInfection() {
-        Person cPers = this.vPeople.get(rng.nextInt(0, this.getHouseholdSize() - 1));
+        List<Person> inhabitants = getInhabitants();
+        Person cPers = inhabitants.get(RNG.get().nextInt(0, inhabitants.size() - 1));
         return cPers.infect();
     }
 
     // Go through the household at each time step and see what they get up to
-    public ArrayList<Person> cycleHouse(DailyStats stats) {
+    public List<Person> cycleHouse(DailyStats stats) {
         doInfect(stats);
-        // Fix the 2 sub-sets of people
-        vPeople.retainAll(people);
-        vVisitors.retainAll(people);
-        return vPeople;
+        return people;
     }
 
-    // When neighbours visit, stick everybody in a single vector ans see wat they get up to
     private ArrayList<Person> neighbourVisit() {
         ArrayList<Person> visitPeople = new ArrayList<>();
 
-        for (Person p : vPeople) {
+        for (Person p : getInhabitants()) {
             if (!p.getQuarantine()) {
                 visitPeople.add(p);
             }
@@ -111,7 +93,6 @@ public class Household extends Place {
             return null;
         }
 
-        vPeople.removeAll(visitPeople);
         people.removeAll(visitPeople);
 
         return visitPeople;
@@ -121,7 +102,6 @@ public class Household extends Place {
     public void welcomeNeighbours(Household visitHouse) {
         ArrayList<Person> visitVector = visitHouse.neighbourVisit();
         if (visitVector != null) {
-            this.vVisitors.addAll(visitVector);
             this.people.addAll(visitVector);
         }
     }
@@ -129,8 +109,8 @@ public class Household extends Place {
     public int sendNeighboursHome() {
         ArrayList<Person> left = new ArrayList<>();
 
-        for (Person p : vVisitors) {
-            if (rng.nextUniform(0, 1) < PopulationParameters.get().getHouseholdVisitorLeaveRate()) {
+        for (Person p : getVisitors()) {
+            if (RNG.get().nextUniform(0, 1) < PopulationParameters.get().getHouseholdVisitorLeaveRate()) {
                 left.add(p);
                 if (p.cStatus() != CStatus.DEAD) {
                    p.returnHome();
@@ -138,9 +118,7 @@ public class Household extends Place {
             }
         }
 
-        vVisitors.removeAll(left);
         people.removeAll(left);
-
         return left.size();
     }
 
@@ -148,25 +126,40 @@ public class Household extends Place {
     public ArrayList<Person> shoppingTrip() {
         ArrayList<Person> shopping = new ArrayList<>();
 
-        for (Person p : vPeople) {
+        for (Person p : getInhabitants()) {
             if (!p.getQuarantine()) {
                 shopping.add(p);
             }
         }
         people.removeAll(shopping);
-        vPeople.removeAll(shopping);
 
         return shopping;
     }
-
-    public List<Person> getInhabitants() {
-        return vPeople;
+    
+    private boolean isVisitor(Person p) {
+        return p.getHome() != this;
     }
 
     public List<Person> getVisitors() {
-        return vVisitors;
+        List<Person> ret = new ArrayList<>();
+        for (Person p : people) {
+            if (isVisitor(p)) {
+                ret.add(p);
+            }
+        }
+        return ret;
     }
 
+    public List<Person> getInhabitants() {
+        List<Person> ret = new ArrayList<>();
+        for (Person p : people) {
+            if (!isVisitor(p)) {
+                ret.add(p);
+            }
+        }
+        return ret;
+    }
+    
     @Override
     public void reportInfection(DailyStats s) {
         s.incInfectionsHome();
@@ -175,8 +168,7 @@ public class Household extends Place {
     // For each household processes any movements to Communal Places that are relevant
     public void cycleMovements(int day, int hour, boolean lockdown) {
         List<Person> left = new ArrayList<>();
-        int i = 0;
-        for (Person p : vPeople) {
+        for (Person p : getInhabitants()) {
             if (p.hasPrimaryCommunalPlace() && !p.getQuarantine()) {
                 boolean visit = p.getPrimaryCommunalPlace().checkVisit(p, hour, day, lockdown);
                 if (visit) {
@@ -185,6 +177,5 @@ public class Household extends Place {
             }
         }
         people.removeAll(left);
-        vPeople.removeAll(left);
     }
 }

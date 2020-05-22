@@ -6,7 +6,6 @@ import org.junit.Test;
 import com.google.gson.JsonParseException;
 
 import uk.co.ramp.covid.simulation.io.ParameterReader;
-import uk.co.ramp.covid.simulation.util.RNG;
 
 import java.io.IOException;
 import java.util.List;
@@ -44,7 +43,7 @@ public class ModelTest {
             // Check there are deaths, but not too many
             // Near the start of runs this is sometimes untrue, e.g. we may have 8 recoveries and 1 death,
             // so we wait for enough recoveries for this to make sense.
-            if (s.getRecovered() >= 10) {
+            if (s.getRecovered() >= 50) {
                 assertTrue(s.getDead() <= s.getRecovered() * 0.1);
             }
             assertTrue(s.getDead() + nInfections >= s.getRecovered() * 0.005);
@@ -54,7 +53,7 @@ public class ModelTest {
 
         // Check all infections occurred somewhere
         int totalDailyInfects = nInfections;
-        int cummulativeI = 0;
+        int cummulativeI;
         for (DailyStats s : stats.get(0)) {
             cummulativeI = s.getTotalInfected() + s.getRecovered() + s.getDead();
             totalDailyInfects += s.getTotalDailyInfections();
@@ -124,6 +123,24 @@ public class ModelTest {
         Model m  = Model.readModelFromFile("src/test/resources/test_model_params.json");
         m.setNoOutput();
         assertTrue(m.isValid());
+        m.run(0);
+    }
+
+    @Test
+    public void testLockdown() {
+        int population = 10000;
+        int nInfections = 10;
+
+        Model m = new Model()
+                .setPopulationSize(population)
+                .setnInfections(nInfections)
+                .setnHouseholds(3000)
+                .setIters(1)
+                .setnDays(90)
+                .setRNGSeed(42)
+                .setNoOutput()
+                .setLockdown(1, 20, 2.0);
+
         m.run(0);
     }
 }

@@ -1,13 +1,11 @@
 package uk.co.ramp.covid.simulation.place;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.google.gson.JsonParseException;
 
 import uk.co.ramp.covid.simulation.DailyStats;
-import uk.co.ramp.covid.simulation.RunModel;
 import uk.co.ramp.covid.simulation.io.ParameterReader;
 import uk.co.ramp.covid.simulation.population.Adult;
 import uk.co.ramp.covid.simulation.population.Person;
@@ -21,8 +19,12 @@ import java.io.IOException;
 public class HouseholdTest {
 
     Household household;
-    int nneighbours;
-    int[] neighbourArray;
+
+    //Neighbours
+    Household household2;
+    Household household3;
+    Household household4;
+    int nneighbours = 3;
 
     @Before
     public void initialise() throws JsonParseException, IOException {
@@ -31,24 +33,21 @@ public class HouseholdTest {
         Person p1 = new Adult();
         Person p2 = new Adult();
         Person p3 = new Adult();
-        household.addPerson(p1);
-        household.addPerson(p2);
-        household.addPerson(p3);
-        nneighbours = 5;
-        neighbourArray = new int[]{3, 4, 1, 2, 1};
-    }
+        household.addInhabitant(p1);
+        household.addInhabitant(p2);
+        household.addInhabitant(p3);
+        household2 = new Household(Household.HouseholdType.ADULT);
+        household3 = new Household(Household.HouseholdType.ADULT);
+        household4 = new Household(Household.HouseholdType.ADULT);
 
-    @Test
-    public void testGetNeighbourIndex() {
-        int ExpNeighbourIndex = 4;
-        household.setNeighbourList(neighbourArray);
-        assertEquals("Unexpected neighbours", ExpNeighbourIndex, household.getNeighbourIndex(1));
     }
 
     @Test
     public void testNNeighbours() {
-        int ExpNNeighbour = 5;
-        household.setNeighbourList(neighbourArray);
+        int ExpNNeighbour = 3;
+        household.addNeighbour(household2);
+        household.addNeighbour(household3);
+        household.addNeighbour(household4);
         assertEquals("Unexpected neighbour list", ExpNNeighbour, household.nNeighbours());
     }
 
@@ -61,7 +60,7 @@ public class HouseholdTest {
     @Test
     public void testAddPerson() {
         Person p4 = new Adult();
-        household.addPerson(p4);
+        household.addInhabitant(p4);
         int expSize = 4;
         assertEquals("Unexpected household size", expSize, household.getInhabitants().size());
     }
@@ -69,22 +68,9 @@ public class HouseholdTest {
     @Test
     public void testGetHouseholdSize() {
         Person p1 = new Adult();
-        household.addPerson(p1);
+        household.addInhabitant(p1);
         int expSize = 4;
         assertEquals("Unexpected household size", expSize, household.getHouseholdSize());
-    }
-
-    @Test
-    public void testGetPerson() {
-        Person p4 = new Adult();
-        household.addPerson(p4);
-        assertEquals("Unexpected person found", p4, household.getPerson(3));
-    }
-
-    @Test
-    public void testSetNeighbourList() {
-        household.setNeighbourList(neighbourArray);
-        assertEquals("Unexpected number of neighbours", nneighbours, neighbourArray.length);
     }
 
     @Test
@@ -104,8 +90,8 @@ public class HouseholdTest {
         Household newHouse = new Household(Household.HouseholdType.ADULT);
         Person p1 = new Adult();
         Person p2 = new Adult();
-        newHouse.addPerson(p1);
-        newHouse.addPerson(p2);
+        newHouse.addInhabitant(p1);
+        newHouse.addInhabitant(p2);
         household.welcomeNeighbours(newHouse);
         int expSize = 2;
         assertEquals("Unexpected household size", expSize, household.getVisitors().size());
@@ -116,7 +102,7 @@ public class HouseholdTest {
     public void testSendNeighboursHome() {
         Household newHouse = new Household(Household.HouseholdType.ADULT);
         Person p1 = new Adult();
-        newHouse.addPerson(p1);
+        newHouse.addInhabitant(p1);
         p1.setHome(newHouse);
         household.welcomeNeighbours(newHouse);
         int expSize = 1;

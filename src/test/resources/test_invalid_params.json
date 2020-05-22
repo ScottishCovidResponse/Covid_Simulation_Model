@@ -1,27 +1,22 @@
 {
     "disease":{
-      "diseaseParameters":{
-          "meanLatentPeriod":123.12,
-          "meanAsymptomaticPeriod":192,
-          "probabilitySymptoms": 0.692,
-          "meanSymptomDelay": -0.67,
-          "meanInfectiousDuration": 321.6,
-          "phase1Betaa": 25.0,
-          "phase1Betab": 30.0,
-          "aSymptomaticTransAdjustment": 0.1,
-          "symptomaticTransAdjustment": 1.0,
-          "mortalityRate":100.0,
-          "childProgressionPhase2":0.0,
-          "adultProgressionPhase2":0.15,
-          "pensionerProgressionPhase2":1.0
-      }
+        "diseaseParameters":{
+                "meanLatentPeriod":10,
+                "meanAsymptomaticPeriod":5,
+                "meanPhase1DurationMild":2,
+                "meanPhase1DurationSevere":5,
+                "mortalityRate":100.0,
+                "childProgressionPhase2":0.03,
+                "adultProgressionPhase2":0.20,
+                "pensionerProgressionPhase2":0.5
+        }
     },
   "population":{
         "population":{
             "pInfants":0.1,
             "pChildren":0.3,
             "pAdults":0.4,
-            "pPensioners":0.2
+            "pPensioners":0.25
         },
         "households":{
             "pAdultOnly":0.2,

@@ -130,8 +130,7 @@ public class Population {
                     break;
                 }
                 remainingPeople.clear(i);
-                aPopulation[i].setHome(population[h]);
-                population[h].addPerson(aPopulation[i]);
+                population[h].addInhabitant(aPopulation[i]);
             }
         }
     }
@@ -151,8 +150,7 @@ public class Population {
                         if (i < 0) {
                             break;
                         }
-                        aPopulation[i].setHome(population[h]);
-                        population[h].addPerson(aPopulation[i]);
+                        population[h].addInhabitant(aPopulation[i]);
                         remainingPeople.clear(i);
                     }
                 }
@@ -247,17 +245,27 @@ public class Population {
 
     // This method assigns a random number of neighbours to each Household
     public void assignNeighbours() {
-        for (int i = 0; i < this.nHousehold; i++) {
-            Household cHouse = this.population[i];
+        for (Household cHouse : population) {
             int expectedNeighbours = PopulationParameters.get().getExpectedNeighbours();
             int nneighbours = (int) rng.nextPoisson(expectedNeighbours);
-            int[] neighbourArray = new int[nneighbours];
             for (int k = 0; k < nneighbours; k++) {
-                int nInt = rng.nextInt(0, this.nHousehold - 1);
-                if (nInt == i) k--;
-                else neighbourArray[k] = nInt;
+
+                Household neighbour = population[rng.nextInt(0, population.length - 1)];
+
+                // Cannot be a neighbour of ourselves
+                if (neighbour == cHouse) {
+                    k--;
+                    continue;
+                }
+
+                // Avoid duplicate neighbours
+                if (cHouse.isNeighbour(neighbour)) {
+                    k--;
+                    continue;
+                }
+
+                cHouse.addNeighbour(neighbour);
             }
-            cHouse.setNeighbourList(neighbourArray);
         }
     }
 
@@ -314,7 +322,7 @@ public class Population {
         this.schoolL = true;
     }
 
-    // Tests on each daily time step whether to do anything wiht the  lockdown
+    // Tests on each daily time step whether to do anything with the lockdown
     private void implementLockdown(int day) {
         if (day == this.lockdownStart) {
             this.lockdown = true;
@@ -327,7 +335,7 @@ public class Population {
         }
     }
 
-    // Sets the social distancing to parameters wihtin the CommunalPlaces
+    // Sets the social distancing to parameters within the CommunalPlaces
     private void socialDistancing() {
         for (CommunalPlace cPlace : places.getAllPlaces()) {
             cPlace.adjustSDist(this.socialDist);
@@ -372,16 +380,13 @@ public class Population {
 
     // Go through neighbours and see if they visit anybody
     private void cycleNeighbours(Household cHouse) {
-        int visitIndex = -1; // Set a default for this here.
-
         if (cHouse.nNeighbours() > 0 && cHouse.getHouseholdSize() > 0) {
-            int k = 0;
-            while (k < cHouse.nNeighbours()) {
+            // We only welcome one set of visitors at a time
+            for (Household n : cHouse.getNeighbours()) {
                 if (rng.nextUniform(0, 1) < PopulationParameters.get().getNeighbourVisitFreq()) {
-                    this.population[cHouse.getNeighbourIndex(k)].welcomeNeighbours(cHouse);
+                    n.welcomeNeighbours(cHouse);
                     break;
                 }
-                k++;
             }
         }
     }
@@ -423,7 +428,7 @@ public class Population {
         double visitFrequency = 2.0 / 7.0; // Based on three visits per week to shops
         double visitProb = visitFrequency / 12.0;
 
-        if (hour >= openingTime && hour < closingTime && startDay >= day && endDay <= day) {
+        if (hour >= openingTime && hour < closingTime && day >= startDay && day <= endDay) {
             for (Household household : this.population) {
                 ArrayList<Person> vNext = null;
                 if (rng.nextUniform(0, 1) < visitProb) {
@@ -454,7 +459,7 @@ public class Population {
         return nHousehold;
     }
 
-    public Person[] getaPopulation() {
+    public Person[] getAllPeople() {
         return aPopulation;
     }
 

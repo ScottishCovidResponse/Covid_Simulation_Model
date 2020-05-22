@@ -42,7 +42,7 @@ public abstract class Place {
                     for (Person nPers : people) {
                         if (cPers != nPers) {
                             if (!nPers.getInfectionStatus()) {
-                                boolean infected = nPers.infChallenge(this.transProb * this.sDistance);
+                                boolean infected = nPers.infChallenge(this.transProb * this.sDistance * cPers.getTransAdjustment());
                                 if (infected) {
                                     registerInfection(stats, nPers);
                                 }
