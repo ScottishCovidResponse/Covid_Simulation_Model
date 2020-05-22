@@ -133,8 +133,7 @@ public abstract class Person {
     }
     
     public double getTransAdjustment() {
-    	double test = 0.0;
-    	return test;
+    	return this.cVirus.getTransAdjustment();
     }
 
     public boolean hasPrimaryCommunalPlace() {
