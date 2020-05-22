@@ -99,7 +99,6 @@ public class CovidTest {
             assertFalse(virus.getIsSymptomatic());
         	cStatus = virus.stepInfection();
         }
-//        cStatus = virus.stepInfection();
         
         assertEquals(CStatus.RECOVERED, cStatus);
         assertFalse(virus.getIsSymptomatic());
