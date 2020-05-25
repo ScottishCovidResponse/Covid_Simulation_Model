@@ -14,7 +14,7 @@ public class InfantTest {
 
     @Test
     public void testInfant() throws JsonParseException, IOException {
-        ParameterReader.readParametersFromFile("src/test/resources/default_params.json");
+        ParameterReader.readParametersFromFile("src/test/resources/integration_test_params.json");
         RNG.seed(100);
         int nNursery = 0;
         //Test 50% of infants go to nursery
@@ -22,7 +22,7 @@ public class InfantTest {
             Infant infant = new Infant();
             if (infant.isGoesToNursery()) nNursery++;
         }
-        assertEquals("Unexpected number of infants at nursery", 500, nNursery, 10);
+        assertEquals("Unexpected number of infants at nursery", 0, nNursery, 10);
     }
 
     @Test
