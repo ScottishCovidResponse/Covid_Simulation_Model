@@ -281,7 +281,7 @@ public class PopulationTest {
         p.createMixing();
         p.assignNeighbours();
         p.setLockdown(startLockdown, endLockdown, socialDist);
-        stats = p.timeStep(nDays);
+        stats = p.simulate(nDays);
         assertFalse("Unexpectedly still in lockdown", p.isLockdown());
     }
 
@@ -295,7 +295,7 @@ public class PopulationTest {
         p.createMixing();
         p.assignNeighbours();
         p.setLockdown(start, end, socialDist);
-        stats = p.timeStep(nDays);
+        stats = p.simulate(nDays);
         assertTrue("Unexpectedly not in lockdown", p.isLockdown());
         assertTrue("Restaurants not in lockdown", p.isrLockdown());
     }
@@ -322,7 +322,7 @@ public class PopulationTest {
         p.assignNeighbours();
         p.setLockdown(startLockdown, endLockdown, socialDist);
         p.setSchoolLockdown(startLockdown, endLockdown - 2, socialDist);
-        stats = p.timeStep(nDays);
+        stats = p.simulate(nDays);
         for (School s : p.getPlaces().getSchools()) {
             assertTrue("School should be a key premises", s.isKeyPremises());
         }

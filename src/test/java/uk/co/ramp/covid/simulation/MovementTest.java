@@ -37,7 +37,7 @@ public class MovementTest {
         Set<Child> schooled = new HashSet();
         DailyStats s = new DailyStats(day);
         for (int i = 0; i < 24; i++) {
-            p.timeStep(day, i, false, s);
+            p.timeStep(day, i, s);
             
             for (School school : p.getPlaces().getSchools()) {
                 for (Person c : school.getPeople()) {
@@ -64,7 +64,7 @@ public class MovementTest {
         Set<Infant> nursed = new HashSet();
         DailyStats s = new DailyStats(day);
         for (int i = 0; i < 24; i++) {
-            p.timeStep(day, i, false, s);
+            p.timeStep(day, i, s);
 
             for (Nursery nursery : p.getPlaces().getNurseries()) {
                 for (Person c : nursery.getPeople()) {
@@ -86,7 +86,7 @@ public class MovementTest {
         Set<Adult> working = new HashSet();
         DailyStats s = new DailyStats(day);
         for (int i = 0; i < 24; i++) {
-            p.timeStep(day, i, false, s);
+            p.timeStep(day, i, s);
 
             for (CommunalPlace place : p.getPlaces().getAllPlaces()) {
                 for (Person per : place.getPeople()) {
@@ -106,7 +106,7 @@ public class MovementTest {
         Set<Person> shopping = new HashSet();
         DailyStats s = new DailyStats(day);
         for (int i = 0; i < 24; i++) {
-            p.timeStep(day, i, false, s);
+            p.timeStep(day, i, s);
 
             for (Shop place : p.getPlaces().getShops()) {
                 for (Person per : place.getPeople()) {
@@ -127,7 +127,7 @@ public class MovementTest {
         Set<Person> eating = new HashSet();
         DailyStats s = new DailyStats(day);
         for (int i = 0; i < 24; i++) {
-            p.timeStep(day, i, false, s);
+            p.timeStep(day, i, s);
 
             for (Restaurant place : p.getPlaces().getRestaurants()) {
                 for (Person per : place.getPeople()) {
@@ -148,7 +148,7 @@ public class MovementTest {
         Set<Person> visiting = new HashSet();
         DailyStats s = new DailyStats(day);
         for (int i = 0; i < 24; i++) {
-            p.timeStep(day, i, false, s);
+            p.timeStep(day, i, s);
 
             for (Household place : p.getHouseholds()) {
                 visiting.addAll(place.getVisitors());
@@ -162,7 +162,7 @@ public class MovementTest {
         int day = 1;
         DailyStats s = new DailyStats(day);
         for (int i = 0; i < 24; i++) {
-            p.timeStep(day, i, false, s);
+            p.timeStep(day, i, s);
 
             int npeople = 0;
             for (Place place : p.getPlaces().getAllPlaces()) {
