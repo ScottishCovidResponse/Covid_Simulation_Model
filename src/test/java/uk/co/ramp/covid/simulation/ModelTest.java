@@ -43,7 +43,7 @@ public class ModelTest {
             // Check there are deaths, but not too many
             // Near the start of runs this is sometimes untrue, e.g. we may have 8 recoveries and 1 death,
             // so we wait for enough recoveries for this to make sense.
-            if (s.getRecovered() >= 10) {
+            if (s.getRecovered() >= 50) {
                 assertTrue(s.getDead() <= s.getRecovered() * 0.1);
             }
             assertTrue(s.getDead() + nInfections >= s.getRecovered() * 0.005);

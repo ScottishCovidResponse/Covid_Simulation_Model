@@ -66,6 +66,8 @@ public class Household extends Place {
         neighbours.add(n);
     }
 
+    public boolean isNeighbour(Household n) { return neighbours.contains(n); }
+
     public boolean seedInfection() {
         List<Person> inhabitants = getInhabitants();
         Person cPers = inhabitants.get(RNG.get().nextInt(0, inhabitants.size() - 1));

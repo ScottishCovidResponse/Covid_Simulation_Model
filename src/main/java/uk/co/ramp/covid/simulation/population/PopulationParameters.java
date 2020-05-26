@@ -16,7 +16,7 @@ import java.util.Map;
 public class PopulationParameters {
     private static final Logger LOGGER = LogManager.getLogger(PopulationParameters.class);
     private static PopulationParameters pp = null;
-
+    private static final double EPSILON = 0.001;
 
     // Proportions of each type of person in the population
     private static class Population {
@@ -34,6 +34,22 @@ public class PopulationParameters {
                     ", pPensioners=" + pPensioners +
                     '}';
         }
+
+        public boolean isValid() {
+            boolean probabilitiesValid = isValidProbability(pInfants, "pInfants")
+                    && isValidProbability(pChildren, "pChildren")
+                    && isValidProbability(pAdults, "pAdults")
+                    && isValidProbability(pPensioners, "pPensioners");
+
+            double totalP = pAdults + pChildren + pInfants + pPensioners;
+            if(!(totalP <= 1 + EPSILON && totalP >= 1 - EPSILON)) {
+                LOGGER.error("Population parameter probabilities do not total one");
+                return false;
+            }
+
+            return probabilitiesValid;
+        }
+
     }
 
     // Household populations
@@ -56,6 +72,23 @@ public class PopulationParameters {
                     ", pPensionerChildren=" + pPensionerChildren +
                     ", pAdultPensionerChildren=" + pAdultPensionerChildren +
                     '}';
+        }
+
+        public boolean isValid() {
+            boolean probabilitiesValid = isValidProbability(pAdultOnly, "pAdultOnly")
+                    && isValidProbability(pPensionerOnly, "pPensionerOnly")
+                    && isValidProbability(pAdultChildren, "pAdultChildren")
+                    && isValidProbability(pAdultPensionerChildren, "pAdultPensionerChildren")
+                    && isValidProbability(pPensionerChildren, "pPensionerChildren")
+                    && isValidProbability(pPensionerAdult, "pPensionerAdult");
+
+            double totalP = pAdultOnly + pPensionerAdult + pPensionerOnly + pAdultChildren
+                    + pPensionerChildren + pAdultPensionerChildren;
+            if(!(totalP <= 1 + EPSILON && totalP >= 1 - EPSILON)) {
+                LOGGER.error("Household parameter probabilities do not total one");
+                return false;
+            }
+            return probabilitiesValid;
         }
 
     }
@@ -85,6 +118,15 @@ public class PopulationParameters {
         public Double pSmall = null;
         public Double pMed = null;
         public Double pLarge = null;
+
+        public boolean isValid(String name) {
+            double totalP = pSmall + pMed + pLarge;
+            if (!(totalP <= 1 + EPSILON && totalP >= 1 - EPSILON)) {
+                LOGGER.error("Building size parameters for " + name + " do not total one");
+                return false;
+            }
+            return true;
+        }
     }
 
 
@@ -123,6 +165,16 @@ public class PopulationParameters {
                     ", restaurants=" + restaurants +
                     '}';
         }
+
+        public boolean isValid() {
+            return hospitalSizes.isValid("hospital")
+                    && schoolSizes.isValid("school")
+                    && shopSizes.isValid("shop")
+                    && officeSizes.isValid("office")
+                    && constructionSiteSizes.isValid("construction site")
+                    && nurserySizes.isValid("nurseries")
+                    && restaurantSizes.isValid("restaurant");
+        }
     }
 
     // Probability an Adult works in a particular job
@@ -148,6 +200,24 @@ public class PopulationParameters {
                     ", pRestaurant=" + pRestaurant +
                     ", pUnemployed=" + pUnemployed +
                     '}';
+        }
+
+        public boolean isValid() {
+            boolean probabilitiesValid = isValidProbability(pOffice, "pOffice")
+                    && isValidProbability(pShop, "pShop")
+                    && isValidProbability(pHospital, "pHospital")
+                    && isValidProbability(pConstruction, "pConstruction")
+                    && isValidProbability(pTeacher, "pTeacher")
+                    && isValidProbability(pRestaurant, "pRestaurant")
+                    && isValidProbability(pUnemployed, "pUnemployed");
+
+            double totalP = pOffice + pShop + pHospital + pConstruction + pTeacher + pRestaurant + pUnemployed;
+            if(!(totalP <= 1 + EPSILON && totalP >= 1 - EPSILON)) {
+                LOGGER.error("Worker allocation parameter probabilities do not total one");
+                return false;
+            }
+
+            return probabilitiesValid;
         }
     }
 
@@ -183,6 +253,21 @@ public class PopulationParameters {
                     ", pShopKey=" + pShopKey +
                     '}';
         }
+
+        public boolean isValid() {
+            return isValidProbability(pBaseTrans, "pBaseTrans")
+                    && isValidProbability(pHospitalTrans, "pHospitalTrans")
+                    && isValidProbability(pConstructionSiteTrans, "pConstructionSiteTrans")
+                    && isValidProbability(pNurseryTrans, "pNurseryTrans")
+                    && isValidProbability(pOfficeTrans, "pOfficeTrans")
+                    && isValidProbability(pRestaurantTrans, "pRestaurantTrans")
+                    && isValidProbability(pSchoolTrans, "pSchoolTrans")
+                    && isValidProbability(pShopTrans, "pShopTrans")
+                    && isValidProbability(pHospitalKey, "pHospitalKey")
+                    && isValidProbability(pConstructionSiteKey, "pConstructionSiteKey")
+                    && isValidProbability(pOfficeKey, "pOfficeKey")
+                    && isValidProbability(pShopKey, "pShopKey");
+        }
     }
 
     private static class InfantAllocation {
@@ -194,6 +279,12 @@ public class PopulationParameters {
                     "pAttendsNursery=" + pAttendsNursery +
                     '}';
         }
+
+        public boolean isValid() {
+            return isValidProbability(pAttendsNursery, "pAttendsNursery");
+        }
+
+
     }
 
     private static class PersonProperties {
@@ -206,6 +297,11 @@ public class PopulationParameters {
                     "pQuarantine=" + pQuarantine +
                     ", pTransmission=" + pTransmission +
                     '}';
+        }
+
+        public boolean isValid() {
+            return isValidProbability(pQuarantine, "pQuarantine")
+                    && isValidProbability(pTransmission, "pTransmission");
         }
     }
     
@@ -251,14 +347,14 @@ public class PopulationParameters {
         boolean valid = true;
         // We don't do this in a single statement to ensure that all the "uninitalised" parameter warnings are printed
         // in one go instead of being short circuited
-        valid = valid && checker.isValid(population);
-        valid = valid && checker.isValid(households);
+        valid = valid && checker.isValid(population) && population.isValid();
+        valid = valid && checker.isValid(households) && households.isValid();
         valid = valid && checker.isValid(additionalMembersDistributions);
-        valid = valid && checker.isValid(buildingDistribution);
-        valid = valid && checker.isValid(workerAllocation);
-        valid = valid && checker.isValid(buildingProperties);
-        valid = valid && checker.isValid(infantAllocation);
-        valid = valid && checker.isValid(personProperties);
+        valid = valid && checker.isValid(buildingDistribution) && buildingDistribution.isValid();
+        valid = valid && checker.isValid(workerAllocation) && workerAllocation.isValid();
+        valid = valid && checker.isValid(buildingProperties) && buildingProperties.isValid();
+        valid = valid && checker.isValid(infantAllocation) && infantAllocation.isValid();
+        valid = valid && checker.isValid(personProperties) && personProperties.isValid();
         valid = valid && checker.isValid(householdProperties);
         return valid;
     }
@@ -559,9 +655,6 @@ public class PopulationParameters {
         return personProperties.pTransmission;
     }
 
-
-
-
     @Override
     public String toString() {
         return "PopulationParameters{" + "\n" +
@@ -575,6 +668,14 @@ public class PopulationParameters {
                 householdProperties + "\n" +
                 personProperties + "\n" +
                 '}';
+    }
+    
+    private static boolean isValidProbability(Double val, String name) {
+        if(val < 0 || val > 1) {
+            LOGGER.error(name + " is not a valid probability");
+            return false;
+        }
+        return true;
     }
 
     public class ParameterInitialisedChecker {
@@ -599,5 +700,4 @@ public class PopulationParameters {
             return res;
         }
     }
-
 }
