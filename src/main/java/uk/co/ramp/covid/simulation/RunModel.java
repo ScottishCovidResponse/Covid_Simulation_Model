@@ -7,30 +7,26 @@
 package uk.co.ramp.covid.simulation;
 
 import com.google.gson.JsonParseException;
-import org.apache.commons.math3.random.RandomDataGenerator;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import uk.co.ramp.covid.simulation.io.ParameterReader;
-import uk.co.ramp.covid.simulation.population.Population;
 import uk.co.ramp.covid.simulation.population.PopulationParameters;
 
-import java.io.FileWriter;
 import java.io.IOException;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
 
 public class RunModel {
     private static final Logger LOGGER = LogManager.getLogger(RunModel.class);
 
     public static void main(String[] args) throws Exception {
-        if (args.length < 2) {
-            LOGGER.error("Expected parameters: <population_params.json> <model_params.json> [rngseed]");
+        if (args.length != 3) {
+            LOGGER.error("Expected parameters: <population_params.json> <model_params.json> <simulationID>");
             System.exit(-1);
         } else {
-            readParameters(args[0]);
+            String populationParamsFile = args[0];
+            String modelParamsFile = args[1];
+            int simulationID = Integer.parseInt(args[2]);
+            
+            readParameters(populationParamsFile);
 
             if (!PopulationParameters.get().isValid()) {
                 LOGGER.error("Could not read population parameters");
@@ -42,17 +38,13 @@ public class RunModel {
                 System.exit(-2);
             }
 
-            Model m  = Model.readModelFromFile(args[1]);
-
-            if (args.length == 3) {
-                m.setRNGSeed(Integer.parseInt(args[2]));
-            }
+            Model m  = Model.readModelFromFile(modelParamsFile);
 
             if (!m.isValid()) {
                 LOGGER.error("Could not read model parameters");
                 System.exit(-2);
             } else {
-                m.run();
+                m.run(simulationID);
             }
         }
     }

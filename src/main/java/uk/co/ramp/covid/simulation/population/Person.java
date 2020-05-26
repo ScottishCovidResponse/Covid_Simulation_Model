@@ -111,9 +111,10 @@ public abstract class Person {
         if (this.getInfectionStatus()) {
             if (this.cVirus.isLatent()) cStatus = CStatus.LATENT;
             if (this.cVirus.isAsymptomatic()) cStatus = CStatus.ASYMPTOMATIC;
+            if (this.cVirus.getIsSymptomatic()) this.quarantine = this.quarantineProb > this.quarantineVal;
             if (this.cVirus.isPhase1()) {
                 cStatus = CStatus.PHASE1;
-                this.quarantine = this.quarantineProb > this.quarantineVal;
+          //      this.quarantine = this.quarantineProb > this.quarantineVal;
             }
             if (this.cVirus.isPhase2()) {
                 cStatus = CStatus.PHASE2;
@@ -132,6 +133,10 @@ public abstract class Person {
         return cStatus() == CStatus.ASYMPTOMATIC
                 || cStatus() == CStatus.PHASE1
                 || cStatus() == CStatus.PHASE2;
+    }
+    
+    public double getTransAdjustment() {
+    	return this.cVirus.getTransAdjustment();
     }
 
     public boolean hasPrimaryCommunalPlace() {

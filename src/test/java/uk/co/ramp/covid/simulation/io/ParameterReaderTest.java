@@ -22,14 +22,12 @@ public class ParameterReaderTest {
         ParameterReader.readParametersFromFile("src/test/resources/test_params.json");
 
         // Disease Parameters (Tests CovidParameters as a side effect)
-        assertEquals(10, CovidParameters.get().getMeanLatentPeriod());
-        assertEquals(5, CovidParameters.get().getMeanAsymptomaticPeriod());
-        assertEquals(2, CovidParameters.get().getMeanPhase1DurationMild());
-        assertEquals(5, CovidParameters.get().getMeanPhase1DurationSevere());
+        assertEquals(123.12, CovidParameters.get().getMeanLatentPeriod(), EPSILON);
+        assertEquals(192.0, CovidParameters.get().getMeanAsymptomaticPeriod(), EPSILON);
         assertEquals(100.0, CovidParameters.get().getMortalityRate(), EPSILON);
-        assertEquals(0.03, CovidParameters.get().getChildProgressionPhase2(), EPSILON);
-        assertEquals(0.20, CovidParameters.get().getAdultProgressionPhase2(), EPSILON);
-        assertEquals(0.5, CovidParameters.get().getPensionerProgressionPhase2(), EPSILON);
+        assertEquals(0.0, CovidParameters.get().getChildProgressionPhase2(), EPSILON);
+        assertEquals(0.15, CovidParameters.get().getAdultProgressionPhase2(), EPSILON);
+        assertEquals(1.0, CovidParameters.get().getPensionerProgressionPhase2(), EPSILON);
 
         // Population Parameters
         assertEquals(0.1, PopulationParameters.get().getpInfants(), EPSILON);

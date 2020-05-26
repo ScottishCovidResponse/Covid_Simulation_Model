@@ -23,7 +23,6 @@ public class ConstructionSiteTest {
 
     @Test
     public void testConstructionSiteTransProb() throws JsonParseException, IOException {
-        RNG.seed(123);
         ConstructionSite constructionSite = new ConstructionSite();
         double expProb = PopulationParameters.get().getpBaseTrans() * 10d / (5000d / 100d);
         double delta = 0.01;

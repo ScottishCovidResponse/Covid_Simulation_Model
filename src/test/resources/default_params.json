@@ -1,16 +1,21 @@
 {
     "disease":{
 
-        "diseaseParameters":{
-            "meanLatentPeriod":7,
-            "meanAsymptomaticPeriod":1,
-            "meanPhase1DurationMild":5,
-            "meanPhase1DurationSevere":10,
-            "mortalityRate":0.01,
-            "childProgressionPhase2":0.02,
-            "adultProgressionPhase2":0.15,
-            "pensionerProgressionPhase2":0.8
-        }
+      "diseaseParameters":{
+          "meanLatentPeriod":123.12,
+          "meanAsymptomaticPeriod":192,
+          "probabilitySymptoms": 0.692,
+          "meanSymptomDelay": -0.67,
+          "meanInfectiousDuration": 321.6,
+          "phase1Betaa": 25.0,
+          "phase1Betab": 30.0,
+          "aSymptomaticTransAdjustment": 0.1,
+          "symptomaticTransAdjustment": 1.0,
+          "mortalityRate":0.01,
+          "childProgressionPhase2":0.02,
+          "adultProgressionPhase2":0.15,
+          "pensionerProgressionPhase2":0.8
+      }
     },
     "population":{
         "population":{
@@ -127,7 +132,7 @@
             "pRestaurantTrans":1,
             "pSchoolTrans":0.044118,
             "pShopTrans":0.2,
-            "pHospitalKey":0,
+            "pHospitalKey":0.8,
             "pConstructionSiteKey":0.5,
             "pOfficeKey":0.5,
             "pShopKey":0.5,

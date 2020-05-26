@@ -19,7 +19,7 @@ public abstract class CommunalPlace extends Place {
     private static final Logger LOGGER = LogManager.getLogger(CommunalPlace.class);
 
     public enum Size {
-        SMALL, MED, LARGE, UNKNOWN;
+        SMALL, MED, LARGE, UNKNOWN
     }
     
     protected Size size;
@@ -105,5 +105,7 @@ public abstract class CommunalPlace extends Place {
         moveShifts(day, hour, lockdown);
     }
 
-    public boolean isKeyPremises() { return keyPremises; }
+    public boolean isKeyPremises() {
+        return keyPremises;
+    }
 }

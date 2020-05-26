@@ -17,7 +17,6 @@ public class PensionerTest {
     public void testPensionerReports() throws IOException {
         //Test Pensioner methods reportInfection() and reportDeath()
         ParameterReader.readParametersFromFile("src/test/resources/default_params.json");
-        RNG.seed(123);
         Population p = new Population(500,60);
         try {
             p.populateHouseholds();
