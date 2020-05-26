@@ -24,7 +24,6 @@ public class ShopTest {
     @Before
     public void initialise() throws JsonParseException, IOException {
         ParameterReader.readParametersFromFile("src/test/resources/default_params.json");
-        RNG.seed(123);
         //Setup a shop with 2 people
         shop = new Shop();
         p1 = new Adult();

@@ -11,12 +11,10 @@ import uk.co.ramp.covid.simulation.population.Population;
 import uk.co.ramp.covid.simulation.util.InvalidParametersException;
 import uk.co.ramp.covid.simulation.util.RNG;
 
-
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Reader;
-import java.lang.reflect.Field;
 import java.util.*;
 
 /** A uk.co.ramp.covid.simulation.Model represents a particular run of the model with some given parameters
@@ -140,6 +138,10 @@ public class Model {
             LOGGER.warn("Uninitialised model parameter: nDays");
             valid = false;
         }
+        if (rngSeed == null) {
+            LOGGER.warn("Uninitialised model parameter: rngSeed");
+            valid = false;
+        }
         if (!outputDisabled) {
             if (outputFile == null) {
                 LOGGER.warn("Uninitialised model parameter: outputFile");
@@ -164,17 +166,12 @@ public class Model {
     }
 
     /** Runs the model with the given parameters. Returns null if the parameters are missing or invalid */
-    public List<List<DailyStats>> run() {
+    public List<List<DailyStats>> run(int simulationID) {
         if (!isValid()) {
             throw new InvalidParametersException("Invalid model parameters");
         }
 
-
-        if (rngSeed != null) {
-            RNG.seed(rngSeed);
-        } else {
-            LOGGER.warn("No RNG seed given. Proceeding with random seed");
-        }
+        RNG.seed(rngSeed + simulationID);
 
         List<List<DailyStats>> stats = new ArrayList<>(nIters);
         for (int i = 0; i < nIters; i++) {
@@ -206,14 +203,14 @@ public class Model {
 
         if (!outputDisabled) {
             if (outputFile != null) {
-                outputCSV(stats);
+                outputCSV(simulationID, stats);
             }
         }
 
         return stats;
     }
 
-    public void outputCSV(List<List<DailyStats>> stats) {
+    public void outputCSV(int startIterID, List<List<DailyStats>> stats) {
     final String[] headers = {"iter", "day", "H", "L", "A", "P1", "P2", "D", "R",
                               "ICs", "IHos","INur","IOff","IRes","ISch","ISho","IHome",
                               "IAdu","IPen","IChi","Iinf",
@@ -223,7 +220,7 @@ public class Model {
             CSVPrinter printer = new CSVPrinter(out, CSVFormat.DEFAULT.withHeader(headers));
             for (int i = 0; i < nIters; i++) {
                 for (DailyStats s : stats.get(i)) {
-                    s.appendCSV(printer, i);
+                    s.appendCSV(printer, startIterID + i);
                 }
             }
             out.close();

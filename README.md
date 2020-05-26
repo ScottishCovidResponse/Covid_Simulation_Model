@@ -57,20 +57,16 @@ gradle build
 
 ## Running a Simulation
 
-The built java project takes two positional commandline arguments. The first is
-a json file defining the disease and population parameters, and the second is a
-json file defining the parameters of a particular run, for example, the number
-of iterations. Example json files and further documentation are provided in the
-`parameters` folder.
+The built java project takes three positional commandline arguments. The first is
+a json file defining the disease and population parameters, the second is a
+json file defining parameters of a particular run, and the third is the simulation
+number for HPC array runs (which should be 0 for single runs). Example json files
+and further documentation are provided in the `parameters` folder.
 
 To run the project:
 ```shell script
-gradle run  --args "parameters/example_population_params.json parameters/example_model_params.json"
+gradle run  --args "parameters/example_population_params.json parameters/example_model_params.json 0"
 ```
-
-The run command optionally takes an integer to be used as the seed for the
-random number generator (such that two identically seeded runs will return the
-same result).
 
 The result csv will be placed into the file specified by the `outputFile` parameter
 in the model parameters.

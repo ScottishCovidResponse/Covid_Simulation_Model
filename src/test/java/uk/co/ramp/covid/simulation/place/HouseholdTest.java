@@ -29,7 +29,6 @@ public class HouseholdTest {
     @Before
     public void initialise() throws JsonParseException, IOException {
         ParameterReader.readParametersFromFile("src/test/resources/default_params.json");
-        RNG.seed(123);
         household = new Household(Household.HouseholdType.ADULT);
         Person p1 = new Adult();
         Person p2 = new Adult();
@@ -101,6 +100,7 @@ public class HouseholdTest {
     
     @Test
     public void testSendNeighboursHome() {
+        RNG.seed(3); // This test is very sensitive to random numbers
         Household newHouse = new Household(Household.HouseholdType.ADULT);
         Person p1 = new Adult();
         newHouse.addInhabitant(p1);
