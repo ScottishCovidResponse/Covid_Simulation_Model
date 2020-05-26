@@ -11,8 +11,6 @@ import uk.co.ramp.covid.simulation.place.CommunalPlace;
 import uk.co.ramp.covid.simulation.place.Household;
 import uk.co.ramp.covid.simulation.util.RNG;
 
-import java.util.ArrayList;
-
 public abstract class Person {
     private boolean shopWorker = false;
 
@@ -73,7 +71,7 @@ public abstract class Person {
     }
     
     public void returnHome() {
-        home.addInhabitant(this);
+        home.addPersonNext(this);
     }
 
     public boolean getQuarantine() {
@@ -142,19 +140,29 @@ public abstract class Person {
 
     public abstract boolean avoidsPhase2(double testP);
 
+    // TODO: Don't think this works for non-workers etc
     public boolean worksNextHour(CommunalPlace communalPlace, int day, int hour) {
-        if (shifts == null) {
+        if (primaryPlace == null || shifts == null) {
             return false;
         }
 
         return primaryPlace == communalPlace
                 && hour + 1 >= shifts.getShift(day).getStart()
-                || hour + 1 < shifts.getShift(day).getEnd();
+                && hour + 1 < shifts.getShift(day).getEnd();
     }
 
     public void visitPrimaryPlace() {
         if (primaryPlace != null) {
-            primaryPlace.addPerson(this);
+            primaryPlace.addPersonNext(this);
         }
+    }
+
+    // People need to leave early if they have a shift starting in 2 hours time
+    // 1 hour travels home, 1 travels to work; There is currently no direct travel to work.
+    public boolean mustGoHome(int day, int hour) {
+        if (primaryPlace != null && shifts != null) {
+            return hour + 2 >= shifts.getShift(day).getStart();
+        }
+        return false;
     }
 }

@@ -291,12 +291,22 @@ public class Population {
             p.doInfect(dStats);
         }
 
+        // Movement places people in "next" buffers (to avoid people moving twice)
         for (Place p : population) {
             p.doMovement(day, hour);
         }
 
         for (Place p : places.getAllPlaces()) {
             p.doMovement(day, hour);
+        }
+
+        // Step flips the buffers, completing the movement
+        for (Place p : population) {
+            p.stepPeople();
+        }
+
+        for (Place p : places.getAllPlaces()) {
+            p.stepPeople();
         }
     }
 

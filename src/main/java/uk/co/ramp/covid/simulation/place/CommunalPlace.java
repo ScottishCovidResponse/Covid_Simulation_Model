@@ -89,6 +89,7 @@ public abstract class CommunalPlace extends Place {
         for (Person p : people) {
             if (!p.worksNextHour(this, day, hour)) {
                 p.returnHome();
+                left.add(p);
             }
         }
         people.removeAll(left);
@@ -99,4 +100,8 @@ public abstract class CommunalPlace extends Place {
                 && hour + 1 < times.getVisitorClose();
     }
 
+    @Override
+    public void doMovement(int day, int hour) {
+        moveShifts(day, hour);
+    }
 }

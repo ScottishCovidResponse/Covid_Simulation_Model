@@ -99,6 +99,7 @@ public class HouseholdTest {
 
     }
     
+
     @Test
     public void testSendNeighboursHome() {
         Household newHouse = new Household(Household.HouseholdType.ADULT, null);
@@ -107,7 +108,7 @@ public class HouseholdTest {
         p1.setHome(newHouse);
         household.welcomeNeighbours(newHouse);
         int expSize = 1;
-        assertEquals("Unexpected number of visitors", expSize, household.sendNeighboursHome());
+        assertEquals("Unexpected number of visitors", expSize, household.sendNeighboursHome(0,0));
     }
 
     @Test

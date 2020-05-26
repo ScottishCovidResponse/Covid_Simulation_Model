@@ -21,8 +21,4 @@ public class School extends CommunalPlace {
         s.incInfectionsSchool();
     }
 
-    @Override
-    public void doMovement(int day, int hour) {
-        moveShifts(day, hour);
-    }
 }

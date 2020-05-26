@@ -12,7 +12,11 @@ import java.util.Set;
 
 public abstract class Place {
 
+    // People are managed in 2 lists, those currently in the place "people" and
+    // those who will be in the place in the next hour "nextPeople"
     protected List<Person> people;
+    protected List<Person> nextPeople;
+    
     protected double sDistance;
     protected double transProb;
 
@@ -20,6 +24,7 @@ public abstract class Place {
 
     public Place() {
         this.people = new ArrayList<>();
+        this.nextPeople = new ArrayList<>();
         this.transProb = PopulationParameters.get().getpBaseTrans();
         this.sDistance = 1.0;
     }
@@ -30,6 +35,9 @@ public abstract class Place {
     
     public void addPerson(Person p) {
         people.add(p);
+    }
+    public void addPersonNext(Person p) {
+        nextPeople.add(p);
     }
 
     private void registerInfection(DailyStats s, Person p) {
@@ -65,6 +73,15 @@ public abstract class Place {
             }
         }
         people.removeAll(deaths);
+    }
+    
+    /** Do a timestep by switching to the new set of people */
+    public void stepPeople() {
+        // Anyone who didn't move should remain.
+        // TODO: might be better to force that they do move even back to the same place.
+        nextPeople.addAll(people);
+        people = nextPeople;
+        nextPeople = new ArrayList();
     }
 
     /** Handles movement between people in this place */

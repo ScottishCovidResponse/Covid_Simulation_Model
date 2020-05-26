@@ -29,11 +29,15 @@ public class Shop extends CommunalPlace {
     public int sendHome(int day, int hour) {
         ArrayList<Person> left = new ArrayList<>();
         for (Person nPers : people) {
-            // TODO: Average shopping time should be a parameter
-            if (!nPers.isShopWorker() && rng.nextUniform(0, 1) < 0.5 
-                    || !times.isOpen(hour + 1, day)) {
+            // Under certain conditions we must go home, e.g. if there is a shift starting soon
+            if (nPers.mustGoHome(day, hour)) {
                 left.add(nPers);
                 nPers.returnHome();
+            }
+            // TODO: Average shopping time should be a parameter
+            else if (rng.nextUniform(0, 1) < 0.5 || !times.isOpen(hour + 1, day)) {
+                nPers.returnHome();
+                left.add(nPers);
             }
         }
         people.removeAll(left);
@@ -48,6 +52,6 @@ public class Shop extends CommunalPlace {
     @Override
     public void doMovement(int day, int hour) {
         moveShifts(day, hour);
-        //sendHome(day, hour);
+        sendHome(day, hour);
     }
 }

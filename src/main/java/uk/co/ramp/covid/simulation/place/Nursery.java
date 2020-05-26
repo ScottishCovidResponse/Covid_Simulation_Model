@@ -18,9 +18,4 @@ public class Nursery extends CommunalPlace {
     public void reportInfection(DailyStats s) {
         s.incInfectionsNursery();
     }
-
-    @Override
-    public void doMovement(int day, int hour) {
-        moveShifts(day, hour);
-    }
 }

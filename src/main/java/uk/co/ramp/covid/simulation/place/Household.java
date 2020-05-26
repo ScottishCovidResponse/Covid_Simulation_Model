@@ -109,11 +109,16 @@ public class Household extends Place {
         }
     }
 
-    public int sendNeighboursHome() {
+    public int sendNeighboursHome(int day, int hour) {
         ArrayList<Person> left = new ArrayList<>();
 
         for (Person p : getVisitors()) {
-            if (RNG.get().nextUniform(0, 1) < PopulationParameters.get().getHouseholdVisitorLeaveRate()) {
+            // Under certain conditions we must go home, e.g. if there is a shift starting soon
+            if (p.mustGoHome(day, hour)) {
+                left.add(p);
+                p.returnHome();
+            }
+            else if (RNG.get().nextUniform(0, 1) < PopulationParameters.get().getHouseholdVisitorLeaveRate()) {
                 left.add(p);
                 if (p.cStatus() != CStatus.DEAD) {
                    p.returnHome();
@@ -191,6 +196,8 @@ public class Household extends Place {
 
        moveNeighbour(day, hour);
        moveRestaurant(day, hour);
+
+       sendNeighboursHome(day, hour);
     }
 
     private void moveNeighbour(int day, int hour) {
@@ -201,9 +208,11 @@ public class Household extends Place {
                 // We visit neighbours as a family
                 for (Person p : getInhabitants()) {
                     if (!p.getQuarantine()) {
-                        n.addPerson(p);
+                        n.addPersonNext(p);
+                        left.add(p);
                     }
                 }
+                break;
             }
         }
         
@@ -219,11 +228,15 @@ public class Household extends Place {
 
         if (RNG.get().nextUniform(0, 1) < visitProb) {
             Shop s = places.getRandomShop();
+            if (s == null) {
+                return;
+            }
             // We go shopping as a family
             if (s.isVisitorOpenNextHour(day, hour)) {
                 for (Person p : getInhabitants()) {
                     if (!p.getQuarantine()) {
-                        s.addPerson(p);
+                        s.addPersonNext(p);
+                        left.add(p);
                     }
                 }
             }
@@ -243,10 +256,15 @@ public class Household extends Place {
         if (RNG.get().nextUniform(0, 1) < visitProb) {
             Restaurant r = places.getRandomRestaurant();
             // We go to restaurants as a family
+            if (r == null) {
+                return;
+            }
+
             if (r.isVisitorOpenNextHour(day, hour)) {
                 for (Person p : getInhabitants()) {
                     if (!p.getQuarantine()) {
-                        r.addPerson(p);
+                        r.addPersonNext(p);
+                        left.add(p);
                     }
                 }
             }
@@ -262,8 +280,8 @@ public class Household extends Place {
             if (p.worksNextHour(p.getPrimaryCommunalPlace(), day, hour)) {
                 if (!p.getQuarantine()) {
                     p.visitPrimaryPlace();
+                    left.add(p);
                 }
-                left.add(p);
             }
         }
         people.removeAll(left);

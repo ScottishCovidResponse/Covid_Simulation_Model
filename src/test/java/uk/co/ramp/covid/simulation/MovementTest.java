@@ -7,6 +7,7 @@ import static org.junit.Assert.*;
 import uk.co.ramp.covid.simulation.io.ParameterReader;
 import uk.co.ramp.covid.simulation.place.*;
 import uk.co.ramp.covid.simulation.population.*;
+import uk.co.ramp.covid.simulation.util.RNG;
 
 import java.io.IOException;
 import java.util.HashSet;
@@ -16,14 +17,14 @@ import java.util.Set;
 public class MovementTest {
 
     Population p;
+    int populationSize = 10000;
+    int nHouseholds = 3000;
+    int nInfections = 10;
 
     @Before
     public void initialiseTestModel() throws ImpossibleAllocationException, IOException {
         ParameterReader.readParametersFromFile("src/test/resources/default_params.json");
 
-        int populationSize = 10000;
-        int nHouseholds = 3000;
-        int nInfections = 10;
         p = new Population(populationSize, nHouseholds);
         p.populateHouseholds();
         p.createMixing();
@@ -151,12 +152,29 @@ public class MovementTest {
             p.timeStep(day, i, s);
 
             for (Household place : p.getPopulation()) {
-                for (Person per : place.getVisitors()) {
-                    visiting.add(per);
-                }
+                visiting.addAll(place.getVisitors());
             }
         }
         assertTrue(visiting.size() > 0);
+    }
+
+    @Test
+    public void weDontLosePeople() {
+        int day = 1;
+        DailyStats s = new DailyStats(day);
+        for (int i = 0; i < 24; i++) {
+            p.timeStep(day, i, s);
+
+            int npeople = 0;
+            for (Place place : p.getPlaces().getAllPlaces()) {
+                npeople += place.getPeople().size();
+            }
+
+            for (Household hld : p.getPopulation()) {
+                npeople += hld.getPeople().size();
+            }
+            assertEquals(populationSize, npeople);
+        }
     }
 
 

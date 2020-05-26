@@ -22,10 +22,4 @@ public class ConstructionSite extends CommunalPlace {
         s.incInfectionConstructionSite();
     }
 
-    @Override
-    public void doMovement(int day, int hour) {
-        moveShifts(day, hour);
-    }
-
-
 }
