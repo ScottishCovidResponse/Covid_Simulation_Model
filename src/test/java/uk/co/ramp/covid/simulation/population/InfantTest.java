@@ -17,7 +17,7 @@ public class InfantTest {
         ParameterReader.readParametersFromFile("src/test/resources/integration_test_params.json");
         RNG.seed(100);
         int nNursery = 0;
-        //Test 50% of infants go to nursery
+        //Test 0% of infants go to nursery
         for (int i = 0; i < 1000; i++) {
             Infant infant = new Infant();
             if (infant.isGoesToNursery()) nNursery++;

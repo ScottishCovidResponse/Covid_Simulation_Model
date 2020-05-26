@@ -6,14 +6,14 @@ import org.junit.Test;
 
 import com.google.gson.JsonParseException;
 
+import uk.co.ramp.covid.simulation.DailyStats;
+import uk.co.ramp.covid.simulation.Model;
 import uk.co.ramp.covid.simulation.io.ParameterReader;
-import uk.co.ramp.covid.simulation.population.ImpossibleAllocationException;
-import uk.co.ramp.covid.simulation.population.Person;
-import uk.co.ramp.covid.simulation.population.Population;
-import uk.co.ramp.covid.simulation.population.PopulationParameters;
+import uk.co.ramp.covid.simulation.population.*;
 import uk.co.ramp.covid.simulation.util.RNG;
 
 import java.io.IOException;
+import java.util.List;
 
 import static org.junit.Assert.*;
 
@@ -54,4 +54,32 @@ public class ConstructionSiteTest {
         }
 
     }
+
+    @Test
+    public void testNoCSInfections() throws JsonParseException, IOException {
+        //The input ConstructionSites ratio is set very high so that there are no construction sites.
+        //Check that there are no infections on construction sites
+
+        ParameterReader.readParametersFromFile("src/test/resources/Integration_test_params.json");
+
+        int population = 10000;
+        int nInfections = 100;
+
+        Model m = new Model()
+                .setPopulationSize(population)
+                .setnInfections(nInfections)
+                .setnHouseholds(3000)
+                .setIters(1)
+                .setnDays(90)
+                .setRNGSeed(42)
+                .setNoOutput();
+
+        List<List<DailyStats>> stats = m.run();
+
+        for (DailyStats s : stats.get(0)) {
+            assertEquals(0, s.getConstructionSiteInfections());
+        }
+
+    }
+
 }
