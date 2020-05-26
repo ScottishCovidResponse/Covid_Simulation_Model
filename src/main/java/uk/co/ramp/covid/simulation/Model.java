@@ -190,7 +190,6 @@ public class Model {
                 break;
             }
 
-            p.summarisePop();
             p.createMixing();
             p.allocatePeople();
             p.seedVirus(nInfections);

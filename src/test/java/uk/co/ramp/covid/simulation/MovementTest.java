@@ -7,7 +7,6 @@ import static org.junit.Assert.*;
 import uk.co.ramp.covid.simulation.io.ParameterReader;
 import uk.co.ramp.covid.simulation.place.*;
 import uk.co.ramp.covid.simulation.population.*;
-import uk.co.ramp.covid.simulation.util.RNG;
 
 import java.io.IOException;
 import java.util.HashSet;
@@ -151,7 +150,7 @@ public class MovementTest {
         for (int i = 0; i < 24; i++) {
             p.timeStep(day, i, s);
 
-            for (Household place : p.getPopulation()) {
+            for (Household place : p.getHouseholds()) {
                 visiting.addAll(place.getVisitors());
             }
         }
@@ -170,7 +169,7 @@ public class MovementTest {
                 npeople += place.getPeople().size();
             }
 
-            for (Household hld : p.getPopulation()) {
+            for (Household hld : p.getHouseholds()) {
                 npeople += hld.getPeople().size();
             }
             assertEquals(populationSize, npeople);
