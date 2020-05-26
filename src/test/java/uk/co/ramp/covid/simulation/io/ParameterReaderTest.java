@@ -4,10 +4,7 @@ import org.junit.After;
 import org.junit.Test;
 import uk.co.ramp.covid.simulation.CovidParameters;
 import uk.co.ramp.covid.simulation.population.PopulationParameters;
-
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Path;
 
 import static org.junit.Assert.*;
 
@@ -85,7 +82,7 @@ public class ParameterReaderTest {
         assertEquals(0.9, PopulationParameters.get().getpTransmission(), EPSILON);
         assertEquals(0.7, PopulationParameters.get().getpQuarantine(), EPSILON);
 
-        assertEquals(1.0, PopulationParameters.get().getHouseholdVisitorLeaveRate(), EPSILON);
+        assertEquals(0.8, PopulationParameters.get().getHouseholdVisitorLeaveRate(), EPSILON);
 
         assertEquals(0.25, PopulationParameters.get().getpOfficeSmall(), EPSILON);
         assertEquals(0.4, PopulationParameters.get().getpOfficeMed(), EPSILON);

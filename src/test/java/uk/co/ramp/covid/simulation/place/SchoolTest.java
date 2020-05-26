@@ -2,7 +2,6 @@ package uk.co.ramp.covid.simulation.place;
 
 import org.junit.Before;
 import org.junit.Test;
-import uk.co.ramp.covid.simulation.RunModel;
 import uk.co.ramp.covid.simulation.io.ParameterReader;
 import uk.co.ramp.covid.simulation.population.PopulationParameters;
 import uk.co.ramp.covid.simulation.util.RNG;

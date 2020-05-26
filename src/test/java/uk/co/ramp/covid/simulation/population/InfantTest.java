@@ -14,15 +14,16 @@ public class InfantTest {
 
     @Test
     public void testInfant() throws JsonParseException, IOException {
-        ParameterReader.readParametersFromFile("src/test/resources/integration_test_params.json");
+        ParameterReader.readParametersFromFile("src/test/resources/default_params.json");
         RNG.seed(100);
         int nNursery = 0;
+        PopulationParameters.get().setAttendsNursery(1.0);
         //Test 0% of infants go to nursery
-        for (int i = 0; i < 1000; i++) {
+        for (int i = 0; i < 100; i++) {
             Infant infant = new Infant();
             if (infant.isGoesToNursery()) nNursery++;
         }
-        assertEquals("Unexpected number of infants at nursery", 0, nNursery, 10);
+        assertEquals("Unexpected number of infants at nursery", 100, nNursery);
     }
 
     @Test

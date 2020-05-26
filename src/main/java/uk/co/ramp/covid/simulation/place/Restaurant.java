@@ -30,7 +30,7 @@ public class Restaurant extends CommunalPlace {
         ArrayList<Person> left = new ArrayList<>();
         for (Person nPers : people) {
             if (!nPers.isShopWorker() && rng.nextUniform(0, 1) < 0.4
-                    || hour < super.endTime) { // Assumes a median lenght of shopping trip of 2 hours
+                    || hour < super.endTime) { // Assumes a median length of shopping trip of 2 hours
                 left.add(nPers);
                 nPers.returnHome();
             }

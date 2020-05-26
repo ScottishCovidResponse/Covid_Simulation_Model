@@ -123,9 +123,8 @@ public class ModelTest {
     }
 
     @Test
-    public void testLockdown() throws IOException {
+    public void testLockdown() {
 
-        ParameterReader.readParametersFromFile("src/test/resources/Integration_test_params.json");
         int startLock = 30;
         int endLock = 60;
 

@@ -323,12 +323,12 @@ public class PopulationParameters {
     private final Population population;
     private final Households households;
     private final AdditionalMembersDistributions additionalMembersDistributions;
-    private final BuildingDistribution buildingDistribution;
+    private BuildingDistribution buildingDistribution;
     private final WorkerAllocation workerAllocation;
     private final BuildingProperties buildingProperties;
-    private final InfantAllocation infantAllocation;
+    private InfantAllocation infantAllocation;
     private final PersonProperties personProperties;
-    private final HouseholdProperties householdProperties;
+    private HouseholdProperties householdProperties;
 
     private PopulationParameters() {
         population = new Population();
@@ -500,6 +500,9 @@ public class PopulationParameters {
         return buildingDistribution.constructionSites;
     }
 
+    public void setConstructionSiteRatio(Integer ratio) {
+        buildingDistribution.constructionSites = ratio;
+    }
     public double getpConstructionSiteSmall() {
         return buildingDistribution.constructionSiteSizes.pSmall;
     }
@@ -636,6 +639,9 @@ public class PopulationParameters {
     public double getpAttendsNursery() {
         return infantAllocation.pAttendsNursery;
     }
+    public void setAttendsNursery(double pAttendsNursery) {
+        infantAllocation.pAttendsNursery = pAttendsNursery;
+    }
 
     // Household properties
     public double getNeighbourVisitFreq() {
@@ -644,8 +650,12 @@ public class PopulationParameters {
     public int getExpectedNeighbours() {
         return householdProperties.expectedNeighbours;
     }
-    public double getHouseholdVisitorLeaveRate() { return householdProperties.visitorLeaveRate; }
-
+    public double getHouseholdVisitorLeaveRate() {
+        return householdProperties.visitorLeaveRate;
+    }
+    public void setVisitorLeaveRate(double leaveRate) {
+        householdProperties.visitorLeaveRate = leaveRate;
+    }
     // Person Properties
     public double getpQuarantine() {
         return personProperties.pQuarantine;

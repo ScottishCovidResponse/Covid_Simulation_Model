@@ -34,11 +34,10 @@ public class ConstructionSiteTest {
     }
 
     @Test
-    public void testNoConstructionSites() throws JsonParseException, IOException {
+    public void testNoConstructionSites() throws JsonParseException {
         //The input ConstructionSites ratio is set very high so that there are no construction sites.
         //Check that each person's primary place is never set to construction site
-
-        ParameterReader.readParametersFromFile("src/test/resources/Integration_test_params.json");
+        PopulationParameters.get().setConstructionSiteRatio(100000);
         Population p = new Population(10000,1000);
         try {
             p.populateHouseholds();
@@ -52,16 +51,13 @@ public class ConstructionSiteTest {
             allPerson.allocateCommunalPlace(p.getPlaces());
             assertFalse("Primary communal place cannot be a construction site", allPerson.getPrimaryCommunalPlace() instanceof ConstructionSite);
         }
-
     }
 
     @Test
-    public void testNoCSInfections() throws JsonParseException, IOException {
+    public void testNoCSInfections() throws JsonParseException {
         //The input ConstructionSites ratio is set very high so that there are no construction sites.
         //Check that there are no infections on construction sites
-
-        ParameterReader.readParametersFromFile("src/test/resources/Integration_test_params.json");
-
+        PopulationParameters.get().setConstructionSiteRatio(100000);
         int population = 10000;
         int nInfections = 100;
 
@@ -77,9 +73,8 @@ public class ConstructionSiteTest {
         List<List<DailyStats>> stats = m.run();
 
         for (DailyStats s : stats.get(0)) {
-            assertEquals(0, s.getConstructionSiteInfections());
+            assertEquals("Unexpected construction site infections", 0, s.getConstructionSiteInfections());
         }
-
     }
 
 }
