@@ -4,6 +4,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.google.gson.JsonParseException;
+
+import uk.co.ramp.covid.simulation.RunModel;
 import uk.co.ramp.covid.simulation.io.ParameterReader;
 import uk.co.ramp.covid.simulation.population.PopulationParameters;
 import uk.co.ramp.covid.simulation.util.RNG;
@@ -20,8 +22,7 @@ public class OfficeTest {
     }
 
     @Test
-    public void testOfficeTransProb() throws JsonParseException {
-        RNG.seed(123);
+    public void testOfficeTransProb() throws JsonParseException, IOException {
         Office office = new Office();
         double expProb = PopulationParameters.get().getpBaseTrans() * 10d / (10000d / 400d);
         double delta = 0.01;

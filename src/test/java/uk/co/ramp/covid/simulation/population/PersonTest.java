@@ -13,7 +13,6 @@ public class PersonTest {
     @Before
     public void initialise() throws JsonParseException, IOException {
         ParameterReader.readParametersFromFile("src/test/resources/default_params.json");
-        RNG.seed(123);
     }
 
     @Test

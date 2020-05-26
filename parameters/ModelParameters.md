@@ -11,7 +11,7 @@ An example parameters file is in `example_model_params.json`
 | nDays          | Number of days to simulate                       | Int          |
 | nIters         | Number of simulation iterations                  | Int          |
 | outputFile     | Name/location of output csv file                 | String       |
-| rngSeed        | Daily probability an adult progresses to Phase 2 | Optional Int |
+| rngSeed        | Seed for random number generation                | Int          |
 
 ## Lockdowns 
 
