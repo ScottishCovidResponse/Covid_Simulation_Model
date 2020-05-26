@@ -9,6 +9,7 @@ import uk.co.ramp.covid.simulation.DailyStats;
 import uk.co.ramp.covid.simulation.io.ParameterReader;
 import uk.co.ramp.covid.simulation.population.Adult;
 import uk.co.ramp.covid.simulation.population.Person;
+import uk.co.ramp.covid.simulation.population.PopulationParameters;
 import uk.co.ramp.covid.simulation.util.RNG;
 
 import static org.junit.Assert.assertEquals;
@@ -24,11 +25,11 @@ public class HouseholdTest {
     Household household2;
     Household household3;
     Household household4;
-    int nneighbours = 3;
 
     @Before
     public void initialise() throws JsonParseException, IOException {
         ParameterReader.readParametersFromFile("src/test/resources/default_params.json");
+        RNG.seed(123);
         household = new Household(Household.HouseholdType.ADULT);
         Person p1 = new Adult();
         Person p2 = new Adult();
@@ -99,8 +100,9 @@ public class HouseholdTest {
     }
     
     @Test
-    public void testSendNeighboursHome() {
-        RNG.seed(3); // This test is very sensitive to random numbers
+    public void testSendNeighboursHome() throws JsonParseException, IOException {
+        ParameterReader.readParametersFromFile("src/test/resources/test_params.json");
+        PopulationParameters.get().setVisitorLeaveRate(1.0);
         Household newHouse = new Household(Household.HouseholdType.ADULT);
         Person p1 = new Adult();
         newHouse.addInhabitant(p1);

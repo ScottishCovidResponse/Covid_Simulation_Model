@@ -17,7 +17,7 @@ public class CovidTest {
     //Test that a pensioner steps through the infection from latent to death
     @Test
     public void testStepInfectionSymptomatic() throws IOException {
-        RNG.seed(1); // This test is sensitive to random numbers
+        RNG.seed(321);
         //Use the test file with a mortality rate of 100
         ParameterReader.readParametersFromFile("src/test/resources/test_params.json");
         CStatus cStatus = null;
@@ -54,6 +54,7 @@ public class CovidTest {
     //Test that a child steps through the infection from latent to recovered
     @Test
     public void testStepInfectionRecover() throws IOException {
+        RNG.seed(321);
         ParameterReader.readParametersFromFile("src/test/resources/default_params.json");
         CStatus cStatus = null;
         Person child = new Child();

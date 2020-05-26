@@ -58,7 +58,7 @@ public class CovidParameters {
 
     }
 
-    private final DiseaseParameters diseaseParameters;
+    private DiseaseParameters diseaseParameters;
 
     public CovidParameters() {
         diseaseParameters = new DiseaseParameters();
@@ -84,12 +84,22 @@ public class CovidParameters {
         return diseaseParameters.probabilitySymptoms;
     }
 
+    public void setSymptomProbability(double symptomProbability) {
+        diseaseParameters.probabilitySymptoms = symptomProbability;
+    }
     public double getSymptomDelay () {
         return diseaseParameters.meanSymptomDelay;
     }
 
+    public void setMeanSymptomDelay(double meanSymptomDelay) {
+        diseaseParameters.meanSymptomDelay = meanSymptomDelay;
+    }
     public double getInfectiousPeriod () {
         return diseaseParameters.meanInfectiousDuration;
+    }
+
+    public void setMeanInfectiousPeriod(double meanInfectiousPeriod) {
+        diseaseParameters.meanInfectiousDuration = meanInfectiousPeriod;
     }
 
     public double getphase1Betaa () {
@@ -103,25 +113,48 @@ public class CovidParameters {
     public double getAsymptomaticTransAdjustment() {
     	return diseaseParameters.aSymptomaticTransAdjustment;
     }
-    
+
+    public void setAsymptomaticTransAdjustment(double aSymptomaticTransAdjustment) {
+        diseaseParameters.aSymptomaticTransAdjustment = aSymptomaticTransAdjustment;
+    }
     public double getSymptomaticTransAdjustment() {
     	return diseaseParameters.symptomaticTransAdjustment;
     }
-    
+
+    public void setSymptomaticTransAdjustment(double symptomaticTransAdjustment) {
+        diseaseParameters.symptomaticTransAdjustment = symptomaticTransAdjustment;
+    }
+
     public double getMortalityRate () {
         return diseaseParameters.mortalityRate;
+    }
+
+    public void setMortalityRate(double mortalityRate) {
+        diseaseParameters.mortalityRate = mortalityRate;
     }
 
     public double getChildProgressionPhase2 () {
         return diseaseParameters.childProgressionPhase2;
     }
 
+    public void setChildProgressionPhase2(double childProgressionPhase2) {
+        diseaseParameters.childProgressionPhase2 = childProgressionPhase2;
+    }
+
     public double getAdultProgressionPhase2 () {
         return diseaseParameters.adultProgressionPhase2;
     }
 
+    public void setAdultProgressionPhase2(double adultProgressionPhase2) {
+        diseaseParameters.adultProgressionPhase2 = adultProgressionPhase2;
+    }
+
     public double getPensionerProgressionPhase2 () {
         return diseaseParameters.pensionerProgressionPhase2;
+    }
+
+    public void setPensionerProgressionPhase2(double pensionerProgressionPhase2) {
+        diseaseParameters.pensionerProgressionPhase2 = pensionerProgressionPhase2;
     }
 
     @Override

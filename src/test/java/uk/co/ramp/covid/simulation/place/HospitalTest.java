@@ -5,7 +5,6 @@ import org.junit.Test;
 
 import com.google.gson.JsonParseException;
 
-import uk.co.ramp.covid.simulation.RunModel;
 import uk.co.ramp.covid.simulation.io.ParameterReader;
 import uk.co.ramp.covid.simulation.population.PopulationParameters;
 import uk.co.ramp.covid.simulation.util.RNG;
@@ -22,7 +21,8 @@ public class HospitalTest {
     }
 
     @Test
-    public void testHospitalTransProb() throws JsonParseException, IOException {
+    public void testHospitalTransProb() throws JsonParseException {
+        RNG.seed(123);
         Hospital hospital = new Hospital();
         double expProb = PopulationParameters.get().getpBaseTrans() * 15d / (5000d / 10d);
         double delta = 0.01;

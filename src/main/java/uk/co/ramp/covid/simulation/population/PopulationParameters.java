@@ -127,6 +127,7 @@ public class PopulationParameters {
             }
             return true;
         }
+
     }
 
 
@@ -661,10 +662,16 @@ public class PopulationParameters {
         return personProperties.pQuarantine;
     }
 
+    public void setPQuarantine(double pQuarantine) {
+        personProperties.pQuarantine = pQuarantine;
+    }
     public double getpTransmission() {
         return personProperties.pTransmission;
     }
 
+    public void setPTransmission(double pTransmission) {
+        personProperties.pTransmission = pTransmission;
+    }
     @Override
     public String toString() {
         return "PopulationParameters{" + "\n" +

@@ -13,6 +13,7 @@ public class AdultTest {
     public void testSetProfession() throws JsonParseException, IOException {
         //Test that a profession is set for an adult
         ParameterReader.readParametersFromFile("src/test/resources/default_params.json");
+        RNG.seed(123);
         Adult adult = new Adult();
         adult.setProfession();
         boolean professionSet = false;

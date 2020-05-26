@@ -4,8 +4,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.google.gson.JsonParseException;
-
-import uk.co.ramp.covid.simulation.RunModel;
 import uk.co.ramp.covid.simulation.io.ParameterReader;
 import uk.co.ramp.covid.simulation.population.PopulationParameters;
 import uk.co.ramp.covid.simulation.util.RNG;
@@ -22,7 +20,8 @@ public class NurseryTest {
     }
 
     @Test
-    public void testNurseryTransProb() throws JsonParseException, IOException {
+    public void testNurseryTransProb() throws JsonParseException {
+        RNG.seed(123);
         Nursery nursery = new Nursery();
         double expProb = PopulationParameters.get().getpBaseTrans() * 30d / (34000d / 50d);
         double delta = 0.01;

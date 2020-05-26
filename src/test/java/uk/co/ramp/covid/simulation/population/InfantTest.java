@@ -14,11 +14,11 @@ public class InfantTest {
 
     @Test
     public void testInfant() throws JsonParseException, IOException {
-        RNG.seed(0); // This test is sensitive to random numbers
         ParameterReader.readParametersFromFile("src/test/resources/default_params.json");
+        RNG.seed(100);
         int nNursery = 0;
         PopulationParameters.get().setAttendsNursery(1.0);
-        //Test 0% of infants go to nursery
+        //Test 100% of infants go to nursery
         for (int i = 0; i < 100; i++) {
             Infant infant = new Infant();
             if (infant.isGoesToNursery()) nNursery++;
@@ -30,6 +30,7 @@ public class InfantTest {
     public void testInfantReports() throws IOException {
         //Test Infant methods reportInfection() and reportDeath()
         ParameterReader.readParametersFromFile("src/test/resources/default_params.json");
+        RNG.seed(123);
         Population p = new Population(500,60);
         try {
             p.populateHouseholds();
