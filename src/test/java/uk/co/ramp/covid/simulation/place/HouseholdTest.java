@@ -100,7 +100,9 @@ public class HouseholdTest {
     }
     
     @Test
-    public void testSendNeighboursHome() {
+    public void testSendNeighboursHome() throws JsonParseException, IOException {
+        ParameterReader.readParametersFromFile("src/test/resources/test_params.json");
+
         Household newHouse = new Household(Household.HouseholdType.ADULT);
         Person p1 = new Adult();
         newHouse.addInhabitant(p1);

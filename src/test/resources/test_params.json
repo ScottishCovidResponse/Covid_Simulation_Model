@@ -134,7 +134,7 @@
         },
         "householdProperties":{
             "neighbourVisitFreq":0.05,
-            "visitorLeaveRate":0.8,
+            "visitorLeaveRate":1.0,
             "expectedNeighbours":2
         },
         "personProperties":{
