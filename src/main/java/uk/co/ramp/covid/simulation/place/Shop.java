@@ -32,7 +32,6 @@ public class Shop extends CommunalPlace {
                 left.add(nPers);
                 nPers.returnHome();
             }
-            // TODO: Average shopping time should be a parameter
             else if (rng.nextUniform(0, 1) < PopulationParameters.get().getpLeaveShop()
                     || !times.isOpen(hour + 1, day)) {
                 nPers.returnHome();
@@ -49,8 +48,8 @@ public class Shop extends CommunalPlace {
     }
 
     @Override
-    public void doMovement(int day, int hour) {
-        moveShifts(day, hour);
+    public void doMovement(int day, int hour, boolean lockdown) {
+        moveShifts(day, hour, lockdown);
         sendHome(day, hour);
     }
 }

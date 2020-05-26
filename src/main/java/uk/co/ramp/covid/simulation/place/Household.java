@@ -188,15 +188,17 @@ public class Household extends Place {
     }
 
     @Override
-    public void doMovement(int day, int hour) {
-       moveShift(day, hour);
+    public void doMovement(int day, int hour, boolean lockdown) {
+       moveShift(day, hour, lockdown);
 
        // Implies shopping trips have higher priority than neighbour and restaurant trips
-       moveShop(day, hour);
+       moveShop(day, hour, lockdown);
 
        moveNeighbour(day, hour);
-       moveRestaurant(day, hour);
-
+       if (!lockdown) {
+           moveRestaurant(day, hour);
+       }
+       
        sendNeighboursHome(day, hour);
     }
 
@@ -219,11 +221,13 @@ public class Household extends Place {
         people.removeAll(left);
     }
 
-    private void moveShop(int day, int hour) {
+    private void moveShop(int day, int hour, boolean lockdown) {
         List<Person> left = new ArrayList();
 
         double visitProb = PopulationParameters.get().getpGoShopping();
-        //TODO: Handle lockdown probabilities
+        if (lockdown) {
+            visitProb = visitProb * 0.5;
+        }
 
         if (RNG.get().nextUniform(0, 1) < visitProb) {
             Shop s = places.getRandomShop();
@@ -272,10 +276,10 @@ public class Household extends Place {
         people.removeAll(left);
     }
 
-    private void moveShift(int day, int hour) {
+    private void moveShift(int day, int hour, boolean lockdown) {
         List<Person> left = new ArrayList();
         for (Person p : getInhabitants()) {
-            if (p.worksNextHour(p.getPrimaryCommunalPlace(), day, hour)) {
+            if (p.worksNextHour(p.getPrimaryCommunalPlace(), day, hour, lockdown)) {
                 if (!p.getQuarantine()) {
                     p.visitPrimaryPlace();
                     left.add(p);

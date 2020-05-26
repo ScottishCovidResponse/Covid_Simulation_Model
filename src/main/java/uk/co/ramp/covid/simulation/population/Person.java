@@ -139,16 +139,26 @@ public abstract class Person {
     }
 
     public abstract boolean avoidsPhase2(double testP);
-
-    // TODO: Don't think this works for non-workers etc
-    public boolean worksNextHour(CommunalPlace communalPlace, int day, int hour) {
+    
+    public boolean worksNextHour(CommunalPlace communalPlace, int day, int hour, boolean lockdown) {
         if (primaryPlace == null || shifts == null) {
             return false;
         }
 
-        return primaryPlace == communalPlace
+        boolean shouldWork =
+                primaryPlace == communalPlace
                 && hour + 1 >= shifts.getShift(day).getStart()
                 && hour + 1 < shifts.getShift(day).getEnd();
+        
+        if (lockdown) {
+            if (communalPlace.isKeyPremises()) {
+                return shouldWork;
+            } else {
+                return false;
+            }
+        }
+        
+        return shouldWork;
     }
 
     public void visitPrimaryPlace() {

@@ -279,13 +279,13 @@ public class Population {
         places.getAllPlaces().forEach(p -> p.doInfect(dStats));
 
         // There is a potential to introduce parallelism here if required by using parallelStream (see below).
-        // Note we currently cannot parallelise movement as the ArrayLists for caoturing moves are not thread safe
+        // Note we currently cannot parallelise movement as the ArrayLists for capturing moves are not thread safe
         // households.parallelStream().forEach(h -> h.doInfect(dStats));
         // places.getAllPlaces().parallelStream().forEach(p -> p.doInfect(dStats));
 
         // Movement places people in "next" buffers (to avoid people moving twice in an hour)
-        households.forEach(h -> h.doMovement(day, hour));
-        places.getAllPlaces().forEach(p -> p.doMovement(day, hour));
+        households.forEach(h -> h.doMovement(day, hour, lockdown));
+        places.getAllPlaces().forEach(p -> p.doMovement(day, hour, lockdown));
 
         households.forEach(h -> h.stepPeople());
         places.getAllPlaces().forEach(p -> p.stepPeople());

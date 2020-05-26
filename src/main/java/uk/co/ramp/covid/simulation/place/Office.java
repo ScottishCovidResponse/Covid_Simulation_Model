@@ -21,9 +21,4 @@ public class Office extends CommunalPlace {
         s.incInfectionOffice();
     }
 
-    @Override
-    public void doMovement(int day, int hour) {
-        moveShifts(day, hour);
-    }
-
 }

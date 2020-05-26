@@ -85,5 +85,5 @@ public abstract class Place {
     }
 
     /** Handles movement between people in this place */
-    public abstract void doMovement(int day, int hour);
+    public abstract void doMovement(int day, int hour, boolean lockdown);
 }
