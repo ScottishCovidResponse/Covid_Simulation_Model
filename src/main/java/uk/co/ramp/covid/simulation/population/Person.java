@@ -11,6 +11,8 @@ import uk.co.ramp.covid.simulation.place.CommunalPlace;
 import uk.co.ramp.covid.simulation.place.Household;
 import uk.co.ramp.covid.simulation.util.RNG;
 
+import java.util.ArrayList;
+
 public abstract class Person {
     private boolean shopWorker = false;
 
@@ -139,4 +141,20 @@ public abstract class Person {
     }
 
     public abstract boolean avoidsPhase2(double testP);
+
+    public boolean worksNextHour(CommunalPlace communalPlace, int day, int hour) {
+        if (shifts == null) {
+            return false;
+        }
+
+        return primaryPlace == communalPlace
+                && hour + 1 >= shifts.getShift(day).getStart()
+                || hour + 1 < shifts.getShift(day).getEnd();
+    }
+
+    public void visitPrimaryPlace() {
+        if (primaryPlace != null) {
+            primaryPlace.addPerson(this);
+        }
+    }
 }

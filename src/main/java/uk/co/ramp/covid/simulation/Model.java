@@ -16,7 +16,6 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Reader;
-import java.lang.reflect.Field;
 import java.util.*;
 
 /** A uk.co.ramp.covid.simulation.Model represents a particular run of the model with some given parameters
@@ -201,7 +200,7 @@ public class Model {
             if (schoolLockDown != null) {
                 p.setSchoolLockdown(schoolLockDown.start, schoolLockDown.end, schoolLockDown.socialDistance);
             }
-            stats.add(p.timeStep(nDays));
+            stats.add(p.simulate(nDays));
         }
 
         if (!outputDisabled) {

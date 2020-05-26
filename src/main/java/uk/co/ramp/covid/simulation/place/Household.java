@@ -3,6 +3,7 @@ package uk.co.ramp.covid.simulation.place;
 import uk.co.ramp.covid.simulation.DailyStats;
 import uk.co.ramp.covid.simulation.population.CStatus;
 import uk.co.ramp.covid.simulation.population.Person;
+import uk.co.ramp.covid.simulation.population.Places;
 import uk.co.ramp.covid.simulation.population.PopulationParameters;
 import uk.co.ramp.covid.simulation.util.RNG;
 
@@ -32,12 +33,14 @@ public class Household extends Place {
 
     private final HouseholdType hType;
     private final List<Household> neighbours;
+    private final Places places;
     private int householdSize = 0;
 
     // Create household defined by who lives there
-    public Household(HouseholdType hType) {
+    public Household(HouseholdType hType, Places places) {
         this.hType = hType;
         this.neighbours = new ArrayList<>();
+        this.places = places;
     }
 
     public List<Household> getNeighbours() {
@@ -174,6 +177,93 @@ public class Household extends Place {
                 if (visit) {
                     left.add(p);
                 }
+            }
+        }
+        people.removeAll(left);
+    }
+
+    @Override
+    public void doMovement(int day, int hour) {
+       moveShift(day, hour);
+
+       // Implies shopping trips have higher priority than neighbour and restaurant trips
+       moveShop(day, hour);
+
+       moveNeighbour(day, hour);
+       moveRestaurant(day, hour);
+    }
+
+    private void moveNeighbour(int day, int hour) {
+        List<Person> left = new ArrayList();
+
+        for (Household n : getNeighbours()) {
+            if (RNG.get().nextUniform(0, 1) < PopulationParameters.get().getNeighbourVisitFreq()) {
+                // We visit neighbours as a family
+                for (Person p : getInhabitants()) {
+                    if (!p.getQuarantine()) {
+                        n.addPerson(p);
+                    }
+                }
+            }
+        }
+        
+        people.removeAll(left);
+    }
+
+    private void moveShop(int day, int hour) {
+        List<Person> left = new ArrayList();
+
+        //TODO: Make these parameters
+        double visitProb = 3.0 / 7.0 / 24.0; // Based on three visits per week to shops
+        //TODO: Handle lockdown probabilities
+
+        if (RNG.get().nextUniform(0, 1) < visitProb) {
+            Shop s = places.getRandomShop();
+            // We go shopping as a family
+            if (s.isVisitorOpenNextHour(day, hour)) {
+                for (Person p : getInhabitants()) {
+                    if (!p.getQuarantine()) {
+                        s.addPerson(p);
+                    }
+                }
+            }
+            // TODO: Should we keep trying shops till we find one that's open, or just give up if not.
+            // Particularly important for overnight (where there could be some 24h shops open)
+        }
+        people.removeAll(left);
+    }
+
+    private void moveRestaurant(int day, int hour) {
+        List<Person> left = new ArrayList();
+
+        // TODO: Make this a parameter
+        double visitProb = 2.0 / 7.0 / 24.0;
+        //TODO: Handle lockdown probabilities
+
+        if (RNG.get().nextUniform(0, 1) < visitProb) {
+            Restaurant r = places.getRandomRestaurant();
+            // We go to restaurants as a family
+            if (r.isVisitorOpenNextHour(day, hour)) {
+                for (Person p : getInhabitants()) {
+                    if (!p.getQuarantine()) {
+                        r.addPerson(p);
+                    }
+                }
+            }
+            // TODO: Should we keep trying restaurants till we find one that's open, or just give up if not.
+            // Unlike shops, there probably isn't one open 24 hours
+        }
+        people.removeAll(left);
+    }
+
+    private void moveShift(int day, int hour) {
+        List<Person> left = new ArrayList();
+        for (Person p : getInhabitants()) {
+            if (p.worksNextHour(p.getPrimaryCommunalPlace(), day, hour)) {
+                if (!p.getQuarantine()) {
+                    p.visitPrimaryPlace();
+                }
+                left.add(p);
             }
         }
         people.removeAll(left);

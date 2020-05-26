@@ -24,12 +24,12 @@ public class Restaurant extends CommunalPlace {
         people.addAll(vHouse);
     }
 
-    public int sendHome(int hour, int day) {
+    public int sendHome(int day, int hour) {
         ArrayList<Person> left = new ArrayList<>();
         for (Person nPers : people) {
             // TODO: average dining time should be a parameter
             if (!nPers.isShopWorker() && rng.nextUniform(0, 1) < 0.4
-                    || !times.isOpen(hour + 1,day)) {
+                    || !times.isOpen(hour + 1, day)) {
                 left.add(nPers);
                 nPers.returnHome();
             }
@@ -41,6 +41,13 @@ public class Restaurant extends CommunalPlace {
     @Override
     public void reportInfection(DailyStats s) {
         s.incInfectionsRestaurant();
+    }
+
+    // TODO: Specialised handling for restaurants
+    @Override
+    public void doMovement(int day, int hour) {
+        moveShifts(day, hour);
+        //sendHome(day, hour);
     }
 
 }

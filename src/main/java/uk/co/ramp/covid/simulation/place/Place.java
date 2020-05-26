@@ -27,13 +27,18 @@ public abstract class Place {
     public List<Person> getPeople() {
         return people;
     }
+    
+    public void addPerson(Person p) {
+        people.add(p);
+    }
 
     private void registerInfection(DailyStats s, Person p) {
         reportInfection(s);
         p.reportInfection(s);
     }
 
-    protected void doInfect(DailyStats stats) {
+    /** Handles infections between all people in this place */
+    public void doInfect(DailyStats stats) {
         List<Person> deaths = new ArrayList<>();
         for (Person cPers : people) {
             if (cPers.getInfectionStatus() && !cPers.isRecovered()) {
@@ -61,4 +66,7 @@ public abstract class Place {
         }
         people.removeAll(deaths);
     }
+
+    /** Handles movement between people in this place */
+    public abstract void doMovement(int day, int hour);
 }

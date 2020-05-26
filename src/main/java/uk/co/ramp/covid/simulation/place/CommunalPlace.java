@@ -83,4 +83,20 @@ public abstract class CommunalPlace extends Place {
         size = s;
     }
 
+    /** Move everyone based on their shift patterns */
+    public void moveShifts(int day, int hour) {
+        List<Person> left = new ArrayList();
+        for (Person p : people) {
+            if (!p.worksNextHour(this, day, hour)) {
+                p.returnHome();
+            }
+        }
+        people.removeAll(left);
+    }
+    
+    public boolean isVisitorOpenNextHour(int day, int hour) {
+        return hour + 1 >= times.getVisitorOpen() 
+                && hour + 1 < times.getVisitorClose();
+    }
+
 }

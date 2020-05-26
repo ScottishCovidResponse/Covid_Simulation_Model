@@ -247,7 +247,7 @@ public class PopulationTest {
         int nDays = 3;
         p.createMixing();
         p.assignNeighbours();
-        stats = p.timeStep(nDays);
+        stats = p.simulate(nDays);
         assertEquals("Unexpected number of daily stats", nDays, stats.size());
     }
 

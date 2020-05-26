@@ -30,8 +30,8 @@ public class RestaurantTest {
         restaurant = new Restaurant();
         p1 = new Adult();
         p2 = new Pensioner();
-        Household h1 = new Household(Household.HouseholdType.ADULT);
-        Household h2 = new Household(Household.HouseholdType.PENSIONER);
+        Household h1 = new Household(Household.HouseholdType.ADULT, null);
+        Household h2 = new Household(Household.HouseholdType.PENSIONER, null);
         p1.setHome(h1);
         p2.setHome(h2);
         restaurant.people.add(p1);

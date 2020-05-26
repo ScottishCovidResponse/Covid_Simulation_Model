@@ -30,16 +30,16 @@ public class HouseholdTest {
     public void initialise() throws JsonParseException, IOException {
         ParameterReader.readParametersFromFile("src/test/resources/default_params.json");
         RNG.seed(123);
-        household = new Household(Household.HouseholdType.ADULT);
+        household = new Household(Household.HouseholdType.ADULT, null);
         Person p1 = new Adult();
         Person p2 = new Adult();
         Person p3 = new Adult();
         household.addInhabitant(p1);
         household.addInhabitant(p2);
         household.addInhabitant(p3);
-        household2 = new Household(Household.HouseholdType.ADULT);
-        household3 = new Household(Household.HouseholdType.ADULT);
-        household4 = new Household(Household.HouseholdType.ADULT);
+        household2 = new Household(Household.HouseholdType.ADULT, null);
+        household3 = new Household(Household.HouseholdType.ADULT, null);
+        household4 = new Household(Household.HouseholdType.ADULT, null);
 
     }
 
@@ -88,7 +88,7 @@ public class HouseholdTest {
 
     @Test
     public void testWelcomeNeighbours() {
-        Household newHouse = new Household(Household.HouseholdType.ADULT);
+        Household newHouse = new Household(Household.HouseholdType.ADULT, null);
         Person p1 = new Adult();
         Person p2 = new Adult();
         newHouse.addInhabitant(p1);
@@ -101,7 +101,7 @@ public class HouseholdTest {
     
     @Test
     public void testSendNeighboursHome() {
-        Household newHouse = new Household(Household.HouseholdType.ADULT);
+        Household newHouse = new Household(Household.HouseholdType.ADULT, null);
         Person p1 = new Adult();
         newHouse.addInhabitant(p1);
         p1.setHome(newHouse);

@@ -26,7 +26,7 @@ public class Shop extends CommunalPlace {
        people.addAll(vHouse);
     }
 
-    public int sendHome(int hour, int day) {
+    public int sendHome(int day, int hour) {
         ArrayList<Person> left = new ArrayList<>();
         for (Person nPers : people) {
             // TODO: Average shopping time should be a parameter
@@ -43,5 +43,11 @@ public class Shop extends CommunalPlace {
     @Override
     public void reportInfection(DailyStats s) {
         s.incInfectionsShop();
+    }
+
+    @Override
+    public void doMovement(int day, int hour) {
+        moveShifts(day, hour);
+        //sendHome(day, hour);
     }
 }

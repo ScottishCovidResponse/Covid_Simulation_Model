@@ -94,7 +94,7 @@ public class Population {
 
         for (int i = 0; i < nHousehold; i++) {
             Household.HouseholdType t = p.sample();
-           population[i] = new Household(t);
+           population[i] = new Household(t, places);
         }
     }
 
@@ -281,8 +281,27 @@ public class Population {
         }
     }
 
+    // TODO: allPlaces() should also include households
+    public void timeStep(int day, int hour, DailyStats dStats) {
+        for (Place p : population) {
+            p.doInfect(dStats);
+        }
+        
+        for (Place p : places.getAllPlaces()) {
+            p.doInfect(dStats);
+        }
+
+        for (Place p : population) {
+            p.doMovement(day, hour);
+        }
+
+        for (Place p : places.getAllPlaces()) {
+            p.doMovement(day, hour);
+        }
+    }
+
     // Step through nDays in 1 hour time steps
-    public List<DailyStats> timeStep(int nDays) {
+    public List<DailyStats> simulate(int nDays) {
         List<DailyStats> stats = new ArrayList<>(nDays);
         for (int i = 0; i < nDays; i++) {
             DailyStats dStats = new DailyStats(i);
@@ -290,12 +309,7 @@ public class Population {
             this.implementLockdown(i);
             LOGGER.info("Lockdown = {}", this.lockdown);
             for (int k = 0; k < 24; k++) {
-                this.cycleHouseholds(dWeek, k, dStats);
-                this.cyclePlaces(k, dWeek, dStats);
-                this.returnShoppers(k, dWeek);
-                this.returnRestaurant(k, dWeek);
-                this.shoppingTrip(dWeek, k);
-                if (!this.rLockdown) this.restaurantTrip(dWeek, k);
+                timeStep(dWeek, k, dStats);
             }
             stats.add(this.processCases(dStats));
         }
@@ -351,18 +365,6 @@ public class Population {
         return stats;
     }
 
-    // Step through the households to identify individual movements to CommunalPlaces
-    private void cycleHouseholds(int day, int hour, DailyStats stats) {
-        for (Household household : this.population) {
-            household.cycleHouse(stats);
-            household.cycleMovements(day, hour, lockdown);
-            household.sendNeighboursHome();
-            if (!this.lockdown) this.cycleNeighbours(household);
-        }
-    }
-
-
-
     // This sets the schools exempt from lockdown if that is triggered. Somewhat fudged at present by setting the schools to be KeyPremises - not entirely what thta was intended for, but it works
     private void schoolExemption() {
         for (School s : places.getSchools()) {
@@ -373,79 +375,6 @@ public class Population {
         }
     }
 
-    // People returning ome at the end of the day
-    private void cyclePlaces(int hour, int day, DailyStats stats) {
-        places.getAllPlaces().forEach(p -> p.cyclePlace(hour, day, stats));
-    }
-
-    // Go through neighbours and see if they visit anybody
-    private void cycleNeighbours(Household cHouse) {
-        if (cHouse.nNeighbours() > 0 && cHouse.getHouseholdSize() > 0) {
-            // We only welcome one set of visitors at a time
-            for (Household n : cHouse.getNeighbours()) {
-                if (rng.nextUniform(0, 1) < PopulationParameters.get().getNeighbourVisitFreq()) {
-                    n.welcomeNeighbours(cHouse);
-                    break;
-                }
-            }
-        }
-    }
-
-    // People go shopping
-    private void shoppingTrip(int day, int hour) {
-        int openingTime = 9;
-        int closingTime = 17;
-        double visitFrequency = 3.0 / 7.0; // BAsed on three visits per week to shops
-        double visitProb = visitFrequency / 8.0;
-        if (this.lockdown) visitProb = visitProb * 0.5;
-        ArrayList<Person> vNext = null;
-
-        if (hour >= openingTime && hour < closingTime) {
-            for (Household household : this.population) {
-                if (rng.nextUniform(0, 1) < visitProb) {
-                    vNext = household.shoppingTrip();
-                }
-                if (vNext != null) {
-                    Shop s = places.getRandomShop();
-                    s.shoppingTrip(vNext);
-                }
-                vNext = null;
-            }
-        }
-    }
-
-    // People return from shopping
-    private void returnShoppers(int hour, int day) {
-        places.getShops().forEach(s -> s.sendHome(hour, day));
-    }
-
-    // People go out for dinner
-    private void restaurantTrip(int day, int hour) {
-        int openingTime = 10;
-        int closingTime = 22;
-        int startDay = 3;
-        int endDay = 7;
-        double visitFrequency = 2.0 / 7.0; // Based on three visits per week to shops
-        double visitProb = visitFrequency / 12.0;
-
-        if (hour >= openingTime && hour < closingTime && startDay >= day && endDay <= day) {
-            for (Household household : this.population) {
-                ArrayList<Person> vNext = null;
-                if (rng.nextUniform(0, 1) < visitProb) {
-                    vNext = household.shoppingTrip(); // This method is fine for our purposes here
-                }
-                if (vNext != null) {
-                    Restaurant r = places.getRandomRestaurant();
-                    r.shoppingTrip(vNext);
-                }
-            }
-        }
-    }
-
-    // People return from dinner
-    private void returnRestaurant(int hour, int day) {
-        places.getRestaurants().forEach(r -> r.sendHome(hour, day));
-    }
 
     public Household[] getPopulation() {
         return population;

@@ -20,4 +20,9 @@ public class School extends CommunalPlace {
     public void reportInfection(DailyStats s) {
         s.incInfectionsSchool();
     }
+
+    @Override
+    public void doMovement(int day, int hour) {
+        moveShifts(day, hour);
+    }
 }

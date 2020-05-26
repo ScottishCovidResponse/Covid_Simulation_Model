@@ -22,6 +22,14 @@ public class Shifts {
         public void setStart(int start) {
             this.start = start;
         }
+
+        public int getEnd() {
+            return end;
+        }
+
+        public void setEnd(int end) {
+            this.end = end;
+        }
     }
 
     private Map<Integer, Shift> shifts;
@@ -45,7 +53,7 @@ public class Shifts {
             nineFive = new Shifts();
             Shift s = new Shift(9, 17);
             for (int i = 0; i < 7; i++) {
-                nineFive.shifts.put(0, s);
+                nineFive.shifts.put(i, s);
             }
         }
         return nineFive;
@@ -57,7 +65,12 @@ public class Shifts {
             schoolTimes = new Shifts();
             Shift s = new Shift(9, 15);
             for (int i = 0; i < 5; i++) {
-                schoolTimes.shifts.put(0, s);
+                schoolTimes.shifts.put(i, s);
+            }
+
+            s = new Shift(0, 0);
+            for (int i = 5; i < 7; i++) {
+                schoolTimes.shifts.put(i, s);
             }
         }
         return schoolTimes;
@@ -70,7 +83,7 @@ public class Shifts {
             allTimes = new Shifts();
             Shift s = new Shift(0, 23);
             for (int i = 0; i < 7; i++) {
-                allTimes.shifts.put(0, s);
+                allTimes.shifts.put(i, s);
             }
         }
         return allTimes;
