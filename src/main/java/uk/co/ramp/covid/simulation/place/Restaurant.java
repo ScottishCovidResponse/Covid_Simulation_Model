@@ -33,7 +33,8 @@ public class Restaurant extends CommunalPlace {
                 nPers.returnHome();
             }
             // TODO: average dining time should be a parameter
-            else if (rng.nextUniform(0, 1) < 0.4 || !times.isOpen(hour + 1, day)) {
+            else if (rng.nextUniform(0, 1) < PopulationParameters.get().getpLeaveRestaurant()
+                    || !times.isOpen(hour + 1, day)) {
                 left.add(nPers);
                 nPers.returnHome();
             }

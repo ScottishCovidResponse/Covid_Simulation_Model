@@ -235,6 +235,9 @@ public class PopulationParameters {
         public Double pConstructionSiteKey = null;
         public Double pOfficeKey = null;
         public Double pShopKey = null;
+        
+        public Double pLeaveShop = null;
+        public Double pLeaveRestaurant = null;
 
         @Override
         public String toString() {
@@ -251,6 +254,8 @@ public class PopulationParameters {
                     ", pConstructionSiteKey=" + pConstructionSiteKey +
                     ", pOfficeKey=" + pOfficeKey +
                     ", pShopKey=" + pShopKey +
+                    ", pLeaveShop =" + pLeaveShop +
+                    ", pLeaveRestaurant =" + pLeaveRestaurant +
                     '}';
         }
 
@@ -266,7 +271,9 @@ public class PopulationParameters {
                     && isValidProbability(pHospitalKey, "pHospitalKey")
                     && isValidProbability(pConstructionSiteKey, "pConstructionSiteKey")
                     && isValidProbability(pOfficeKey, "pOfficeKey")
-                    && isValidProbability(pShopKey, "pShopKey");
+                    && isValidProbability(pShopKey, "pShopKey")
+                    && isValidProbability(pLeaveShop, "pLeaveShop")
+                    && isValidProbability(pLeaveRestaurant, "pLeaveRestaurant");
         }
     }
 
@@ -310,13 +317,23 @@ public class PopulationParameters {
         public Double neighbourVisitFreq = null;
         public Integer expectedNeighbours = null;
 
+        public Double pGoShopping = null;
+        public Double pGoRestaurant = null;
+
         @Override
         public String toString() {
             return "HouseholdProperties{" +
                     "visitorLeaveRate=" + visitorLeaveRate +
                     ", neighbourVisitFreq=" + neighbourVisitFreq +
                     ", expectedNeighbours=" + expectedNeighbours +
+                    ", pGoShopping=" + pGoShopping +
+                    ", pGoRestaurant=" + pGoRestaurant +
                     '}';
+        }
+
+        public boolean isValid() {
+            return isValidProbability(pGoShopping, "pGoShopping")
+                    && isValidProbability(pGoRestaurant, "pGoRestaurant");
         }
     }
 
@@ -632,6 +649,22 @@ public class PopulationParameters {
         return buildingProperties.pShopKey;
     }
 
+    public double getpLeaveShop () {
+        return buildingProperties.pLeaveShop;
+    }
+
+    public void setpLeaveShop (double p) {
+        buildingProperties.pLeaveShop = p;
+    }
+
+    public double getpLeaveRestaurant () {
+        return buildingProperties.pLeaveRestaurant;
+    }
+
+    public void setpLeaveRestaurant (double p) {
+        buildingProperties.pLeaveRestaurant = p;
+    }
+
     // Infant allocation
     public double getpAttendsNursery() {
         return infantAllocation.pAttendsNursery;
@@ -645,6 +678,13 @@ public class PopulationParameters {
         return householdProperties.expectedNeighbours;
     }
     public double getHouseholdVisitorLeaveRate() { return householdProperties.visitorLeaveRate; }
+
+    public double getpGoShopping() {
+        return householdProperties.pGoShopping;
+    }
+    public double getpGoRestaurant() {
+        return householdProperties.pGoRestaurant;
+    }
 
     // Person Properties
     public double getpQuarantine() {

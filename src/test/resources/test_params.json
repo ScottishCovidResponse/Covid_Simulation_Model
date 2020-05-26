@@ -122,7 +122,9 @@
             "pHospitalKey":0.1,
             "pConstructionSiteKey":0.6,
             "pOfficeKey":0.9,
-            "pShopKey":0.2
+            "pShopKey":0.2,
+            "pLeaveShop": 0.5,
+            "pLeaveRestaurant": 0.4
         },
         "infantAllocation":{
             "pAttendsNursery":0.8
@@ -130,7 +132,9 @@
         "householdProperties":{
             "neighbourVisitFreq":0.05,
             "visitorLeaveRate":0.8,
-            "expectedNeighbours":2
+            "expectedNeighbours":2,
+            "pGoShopping":0.01786,
+            "pGoRestaurant": 0.01190
         },
         "personProperties":{
             "pTransmission":0.9,

@@ -56,6 +56,7 @@ public class RestaurantTest {
 
     @Test
     public void testSendHome() {
+        PopulationParameters.get().setpLeaveRestaurant(1.0);
         int time = restaurant.times.getClose() - 1;
         int left = restaurant.sendHome(time, 0);
         int expPeople = 2;

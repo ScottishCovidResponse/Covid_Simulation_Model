@@ -55,6 +55,7 @@ public class ShopTest {
 
     @Test
     public void testSendHome() {
+        PopulationParameters.get().setpLeaveShop(1.0);
         int time = shop.times.getClose() - 1;
         int left = shop.sendHome(time, 0);
         int expPeople = 2;

@@ -222,8 +222,7 @@ public class Household extends Place {
     private void moveShop(int day, int hour) {
         List<Person> left = new ArrayList();
 
-        //TODO: Make these parameters
-        double visitProb = 3.0 / 7.0 / 24.0; // Based on three visits per week to shops
+        double visitProb = PopulationParameters.get().getpGoShopping();
         //TODO: Handle lockdown probabilities
 
         if (RNG.get().nextUniform(0, 1) < visitProb) {
@@ -249,8 +248,7 @@ public class Household extends Place {
     private void moveRestaurant(int day, int hour) {
         List<Person> left = new ArrayList();
 
-        // TODO: Make this a parameter
-        double visitProb = 2.0 / 7.0 / 24.0;
+        double visitProb = PopulationParameters.get().getpGoRestaurant();
         //TODO: Handle lockdown probabilities
 
         if (RNG.get().nextUniform(0, 1) < visitProb) {

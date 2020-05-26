@@ -15,8 +15,6 @@ public class Shop extends CommunalPlace {
     public Shop(Size s) {
         super(s);
         transProb = PopulationParameters.get().getpBaseTrans() *  PopulationParameters.get().getpShopTrans();
-        //startDay = 1;
-        //endDay = 7;
         keyProb = PopulationParameters.get().getpShopKey();
         if (rng.nextUniform(0, 1) > keyProb) keyPremises = true;
 
@@ -35,7 +33,8 @@ public class Shop extends CommunalPlace {
                 nPers.returnHome();
             }
             // TODO: Average shopping time should be a parameter
-            else if (rng.nextUniform(0, 1) < 0.5 || !times.isOpen(hour + 1, day)) {
+            else if (rng.nextUniform(0, 1) < PopulationParameters.get().getpLeaveShop()
+                    || !times.isOpen(hour + 1, day)) {
                 nPers.returnHome();
                 left.add(nPers);
             }
