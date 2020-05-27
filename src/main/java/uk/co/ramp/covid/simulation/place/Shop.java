@@ -51,15 +51,22 @@ public class Shop extends CommunalPlace {
     public int sendHome(int day, int hour) {
         ArrayList<Person> left = new ArrayList<>();
         for (Person nPers : people) {
+            // People may have already left if their family has
+            if (left.contains(nPers)) {
+                continue;
+            }
+
             // Under certain conditions we must go home, e.g. if there is a shift starting soon
             if (nPers.mustGoHome(day, hour)) {
                 left.add(nPers);
                 nPers.returnHome();
+                left.addAll(sendFamilyHome(nPers));
             }
             else if (rng.nextUniform(0, 1) < PopulationParameters.get().getpLeaveShop()
                     || !times.isOpen(hour + 1, day)) {
                 nPers.returnHome();
                 left.add(nPers);
+                left.addAll(sendFamilyHome(nPers));
             }
         }
         people.removeAll(left);

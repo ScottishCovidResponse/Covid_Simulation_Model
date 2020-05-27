@@ -113,13 +113,20 @@ public class Household extends Place {
         ArrayList<Person> left = new ArrayList<>();
 
         for (Person p : getVisitors()) {
+            // People may have already left if their family has
+            if (left.contains(p)) {
+                continue;
+            }
+
             // Under certain conditions we must go home, e.g. if there is a shift starting soon
             if (p.mustGoHome(day, hour)) {
                 left.add(p);
                 p.returnHome();
+                left.addAll(sendFamilyHome(p));
             }
             else if (RNG.get().nextUniform(0, 1) < PopulationParameters.get().getHouseholdVisitorLeaveRate()) {
                 left.add(p);
+                left.addAll(sendFamilyHome(p));
                 if (p.cStatus() != CStatus.DEAD) {
                    p.returnHome();
                 }
@@ -273,7 +280,7 @@ public class Household extends Place {
             if (r == null) {
                 return;
             }
-            
+
             int retries = 5;
             while (!r.isVisitorOpenNextHour(day, hour)) {
                 r = places.getRandomRestaurant();

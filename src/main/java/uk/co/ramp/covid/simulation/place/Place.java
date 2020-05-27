@@ -78,10 +78,20 @@ public abstract class Place {
     /** Do a timestep by switching to the new set of people */
     public void stepPeople() {
         // Anyone who didn't move should remain.
-        // TODO: might be better to force that they do move even back to the same place.
         nextPeople.addAll(people);
         people = nextPeople;
         nextPeople = new ArrayList();
+    }
+
+    public List<Person> sendFamilyHome(Person p) {
+        List<Person> left = new ArrayList<>();
+        for (Person q : people) {
+            if (p != q && q.getHome() == p.getHome()) {
+                q.returnHome();
+                left.add(q);
+            }
+        }
+        return left;
     }
 
     /** Handles movement between people in this place */
