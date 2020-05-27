@@ -330,4 +330,14 @@ public class PopulationTest {
             assertTrue("Nursery should be a key premises", n.isKeyPremises());
         }
     }
+
+    // TODO: This runs sucessfully if the whole harness is run, but not if only this test is run. It's not cler why.
+    @Test
+    public void allPlacesStaffed() {
+        p.createMixing();
+        p.allocatePeople();
+        for (CommunalPlace q : p.getPlaces().getAllPlaces()) {
+            assertTrue("Place not fully staffed, nStaff: " + q.getnStaff(), q.isFullyStaffed());
+        }
+    }
 }

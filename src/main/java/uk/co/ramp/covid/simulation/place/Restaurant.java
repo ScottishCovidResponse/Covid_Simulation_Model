@@ -43,7 +43,13 @@ public class Restaurant extends CommunalPlace {
 
     @Override
     public Shifts getShifts() {
+        nStaff++;
         return shifts.getNext();
+    }
+
+    @Override
+    public boolean isFullyStaffed() {
+        return nStaff >= 4;
     }
 
     public void shoppingTrip(ArrayList<Person> vHouse) {

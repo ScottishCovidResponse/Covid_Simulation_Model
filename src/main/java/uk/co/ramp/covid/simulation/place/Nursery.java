@@ -22,7 +22,13 @@ public class Nursery extends CommunalPlace {
     }
 
     @Override
+    public boolean isFullyStaffed() {
+        return nStaff > 0;
+    }
+
+    @Override
     public Shifts getShifts() {
+        nStaff++;
         return Shifts.schoolTimes();
     }
 }

@@ -26,6 +26,12 @@ public class Office extends CommunalPlace {
 
     @Override
     public Shifts getShifts() {
+        nStaff++;
         return Shifts.nineFiveFiveDays();
+    }
+
+    @Override
+    public boolean isFullyStaffed() {
+        return nStaff > 0;
     }
 }

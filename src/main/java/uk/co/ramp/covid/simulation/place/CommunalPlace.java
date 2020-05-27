@@ -26,6 +26,8 @@ public abstract class CommunalPlace extends Place {
     protected boolean keyPremises;
     protected double keyProb;
 
+    protected int nStaff = 0;
+
     protected final RandomDataGenerator rng;
     
     public abstract Shifts getShifts();
@@ -76,6 +78,16 @@ public abstract class CommunalPlace extends Place {
                 && hour + 1 < times.getVisitorClose();
     }
 
+    public List<Person> getStaff(int day, int hour) {
+        List<Person> res = new ArrayList<>();
+        for (Person p : people) {
+            if (p.getPrimaryCommunalPlace() == this
+                    && p.worksNextHour(this, day, hour - 1, false)) {
+                res.add(p);
+            }
+        }
+        return res;
+    }
     @Override
     public void doMovement(int day, int hour, boolean lockdown) {
         moveShifts(day, hour, lockdown);
@@ -84,4 +96,10 @@ public abstract class CommunalPlace extends Place {
     public boolean isKeyPremises() {
         return keyPremises;
     }
+
+    public int getnStaff() {
+        return nStaff;
+    }
+    
+    public abstract boolean isFullyStaffed();
 }

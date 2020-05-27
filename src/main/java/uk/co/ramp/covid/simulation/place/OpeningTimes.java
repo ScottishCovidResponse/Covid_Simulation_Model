@@ -81,7 +81,7 @@ public class OpeningTimes {
     public static BitSet getWeekdays() {
         if (weekdays == null) {
             weekdays = new BitSet();
-            weekdays.set(0, 4);
+            weekdays.set(0, 5);
         }
         return weekdays;
     }
@@ -89,7 +89,7 @@ public class OpeningTimes {
     public static BitSet getWeekend() {
         if (weekend == null) {
             weekend = new BitSet();
-            weekend.set(5, 6);
+            weekend.set(5, 7);
         }
         return weekend;
     }
@@ -97,7 +97,7 @@ public class OpeningTimes {
     public static BitSet getAllDays() {
         if (allDays == null) {
             allDays = new BitSet();
-            allDays.set(0, 6);
+            allDays.set(0, 7);
         }
         return allDays;
     }

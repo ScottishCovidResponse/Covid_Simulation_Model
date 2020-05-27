@@ -41,6 +41,7 @@ public class Shop extends CommunalPlace {
 
     @Override
     public Shifts getShifts() {
+        nStaff++;
         return shifts.getNext();
     }
 
@@ -82,5 +83,10 @@ public class Shop extends CommunalPlace {
     public void doMovement(int day, int hour, boolean lockdown) {
         moveShifts(day, hour, lockdown);
         sendHome(day, hour);
+    }
+
+    @Override
+    public boolean isFullyStaffed() {
+        return nStaff >= 4;
     }
 }

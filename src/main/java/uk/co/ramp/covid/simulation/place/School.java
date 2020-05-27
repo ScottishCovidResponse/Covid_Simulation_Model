@@ -24,7 +24,13 @@ public class School extends CommunalPlace {
 
     @Override
     public Shifts getShifts() {
+        nStaff++;
         return Shifts.schoolTimes();
+    }
+
+    @Override
+    public boolean isFullyStaffed() {
+        return nStaff > 0;
     }
 
 }
