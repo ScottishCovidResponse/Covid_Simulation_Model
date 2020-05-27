@@ -53,32 +53,22 @@ public class Population {
     // Creates the population of People based on the probabilities of age groups above
     private void createPopulation(BitSet adultIndex, BitSet pensionerIndex,
                                   BitSet childIndex, BitSet infantIndex) {
-
-        ProbabilityDistribution<Integer> dist = new ProbabilityDistribution<>();
-        dist.add(PopulationParameters.get().getpAdults(), 0);
-        dist.add(PopulationParameters.get().getpPensioners(), 1);
-        dist.add(PopulationParameters.get().getpChildren(), 2);
-        dist.add(PopulationParameters.get().getpInfants(), 3);
-
+        PopulationDistribution dist = new PopulationDistribution();
+        dist.readFromMap(PopulationParameters.get().getPopulation());
         for (int i = 0; i < this.populationSize; i++) {
-            int type = dist.sample();
-            switch(type) {
-                case 0: {
-                    allPeople.add(new Adult());
-                    adultIndex.set(i);
-                } break;
-                case 1: {
-                    allPeople.add(new Pensioner());
-                    pensionerIndex.set(i);
-                } break;
-                case 2:{
-                    allPeople.add(new Child());
-                    childIndex.set(i);
-                } break;
-                case 3:{
-                    allPeople.add(new Infant());
-                    infantIndex.set(i);
-                } break;
+            PopulationDistribution.SexAge t = dist.sample();
+            if (t.getAge() < 5) {
+                allPeople.add(new Infant(t.getAge(), t.getSex()));
+                infantIndex.set(i);
+            } else if (t.getAge() < 18) {
+                allPeople.add(new Child(t.getAge(), t.getSex()));
+                childIndex.set(i);
+            } else if (t.getAge() < 65) {
+                allPeople.add(new Adult(t.getAge(), t.getSex()));
+                adultIndex.set(i);
+            } else {
+                allPeople.add(new Pensioner(t.getAge(), t.getSex()));
+                pensionerIndex.set(i);
             }
         }
     }

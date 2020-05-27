@@ -5,7 +5,8 @@ import uk.co.ramp.covid.simulation.DailyStats;
 
 public class Child extends Person {
 
-    public Child() {
+    public Child(int age, Sex sex) {
+        super(age, sex);
         shifts = Shifts.schoolTimes();
     }
 

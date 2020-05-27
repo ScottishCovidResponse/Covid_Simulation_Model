@@ -148,7 +148,7 @@ public class PopulationTest {
     public void testAllocateConstructionSite() {
         //Test that the primary place of adult construction workers is set to construction site
         p.createMixing();
-        Adult adult = new Adult();
+        Adult adult = new Adult(30, Person.Sex.FEMALE);
         adult.profession = Adult.Professions.CONSTRUCTION;
         p.getHouseholds().get(0).addInhabitant(adult);
         adult.allocateCommunalPlace(p.getPlaces());
@@ -160,7 +160,7 @@ public class PopulationTest {
     public void testAllocateHospital() {
         //Test that the primary place of adult hospital workers is set to hospital
         p.createMixing();
-        Adult adult = new Adult();
+        Adult adult = new Adult(30, Person.Sex.MALE);
         adult.profession = Adult.Professions.HOSPITAL;
         p.getHouseholds().get(0).addInhabitant(adult);
         adult.allocateCommunalPlace(p.getPlaces());
@@ -172,7 +172,7 @@ public class PopulationTest {
     public void testAllocateOffice() {
         //Test that the primary place of adult office workers is set to office
         p.createMixing();
-        Adult adult = new Adult();
+        Adult adult = new Adult(30, Person.Sex.FEMALE);
         adult.profession = Adult.Professions.OFFICE;
         p.getHouseholds().get(0).addInhabitant(adult);
         adult.allocateCommunalPlace(p.getPlaces());
@@ -184,7 +184,7 @@ public class PopulationTest {
     public void testAllocateRestaurant() {
         //Test that the primary place of adult restaurant workers is set to restaurant
         p.createMixing();
-        Adult adult = new Adult();
+        Adult adult = new Adult(30, Person.Sex.MALE);
         adult.profession = Adult.Professions.RESTAURANT;
         p.getHouseholds().get(0).addInhabitant(adult);
         adult.allocateCommunalPlace(p.getPlaces());
@@ -196,7 +196,7 @@ public class PopulationTest {
     public void testAllocateSchool() {
         //Test that the primary place of adult teachers is set to school
         p.createMixing();
-        Adult adult = new Adult();
+        Adult adult = new Adult(30, Person.Sex.FEMALE);
         adult.profession = Adult.Professions.TEACHER;
         p.getHouseholds().get(0).addInhabitant(adult);
         adult.allocateCommunalPlace(p.getPlaces());
@@ -208,7 +208,7 @@ public class PopulationTest {
     public void testAllocateShop() {
         //Test that the primary place of adult shop workers is set to shop
         p.createMixing();
-        Adult adult = new Adult();
+        Adult adult = new Adult(30, Person.Sex.MALE);
         adult.profession = Adult.Professions.SHOP;
         p.getHouseholds().get(0).addInhabitant(adult);
         adult.allocateCommunalPlace(p.getPlaces());

@@ -13,7 +13,8 @@ public class Adult extends Person {
 
     Professions profession;
 
-    public Adult() {
+    public Adult(int age, Sex sex) {
+        super(age, sex);
         setProfession();
     }
 

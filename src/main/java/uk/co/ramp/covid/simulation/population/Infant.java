@@ -7,7 +7,8 @@ public class Infant extends Person {
 
     private boolean goesToNursery;
 
-    public Infant() {
+    public Infant(int age, Sex sex) {
+        super(age, sex);
         setNursery();
         shifts = Shifts.schoolTimes();
     }

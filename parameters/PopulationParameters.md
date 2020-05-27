@@ -32,12 +32,8 @@ all parameters should be 1.
 
 -   Object name: `population`
 
-| Parameter Name | Description                         | Type     | 
-|----------------|-------------------------------------|----------|
-| pInfants       | Probability a person is an infant   | Double   | 
-| pChildren      | Probability a person is a child     | Double   | 
-| pAdults        | Probability a person is an adult    | Double   | 
-| pPensioners    | Probability a person is a pensioner | Double   | 
+Should contain a map of the form `"m_0_4":0.0002` implying that the probability
+of a person being a `m` (or `f`) aged between 0 and 4 is 0.002.
 
 ## Person Properties
 
