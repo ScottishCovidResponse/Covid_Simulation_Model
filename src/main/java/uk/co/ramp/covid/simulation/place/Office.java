@@ -2,6 +2,7 @@ package uk.co.ramp.covid.simulation.place;
 
 import uk.co.ramp.covid.simulation.DailyStats;
 import uk.co.ramp.covid.simulation.population.PopulationParameters;
+import uk.co.ramp.covid.simulation.population.Shifts;
 
 public class Office extends CommunalPlace {
 
@@ -9,11 +10,13 @@ public class Office extends CommunalPlace {
         this(Size.UNKNOWN);
     }
 
+
     public Office(Size s)  {
         super(s);
         transProb = PopulationParameters.get().getpBaseTrans() * PopulationParameters.get().getpOfficeTrans();
         keyProb = PopulationParameters.get().getpOfficeKey();
         if (rng.nextUniform(0, 1) > keyProb) keyPremises = true;
+        times = OpeningTimes.nineFiveWeekdays();
     }
 
     @Override
@@ -21,4 +24,8 @@ public class Office extends CommunalPlace {
         s.incInfectionOffice();
     }
 
+    @Override
+    public Shifts getShifts() {
+        return Shifts.nineFiveFiveDays();
+    }
 }

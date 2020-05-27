@@ -6,7 +6,7 @@ import uk.co.ramp.covid.simulation.DailyStats;
 public class Child extends Person {
 
     public Child() {
-        shifts = Shifts.getSchoolTimes();
+        shifts = Shifts.schoolTimes();
     }
 
     @Override

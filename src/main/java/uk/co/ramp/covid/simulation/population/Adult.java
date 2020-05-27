@@ -2,6 +2,9 @@ package uk.co.ramp.covid.simulation.population;
 
 import uk.co.ramp.covid.simulation.CovidParameters;
 import uk.co.ramp.covid.simulation.DailyStats;
+import uk.co.ramp.covid.simulation.place.Hospital;
+import uk.co.ramp.covid.simulation.place.Restaurant;
+import uk.co.ramp.covid.simulation.place.Shop;
 import uk.co.ramp.covid.simulation.util.ProbabilityDistribution;
 
 public class Adult extends Person {
@@ -14,7 +17,6 @@ public class Adult extends Person {
 
     public Adult() {
         setProfession();
-        shifts = Shifts.getAllTimes();
     }
 
     // Allocates adults to different professions
@@ -29,10 +31,6 @@ public class Adult extends Person {
         p.add(PopulationParameters.get().getpUnemployed(), Professions.NONE);
 
         profession = p.sample();
-        // There is special logic for shop workers returning home
-        if (profession == Professions.SHOP) {
-            super.setShopWorker();
-        }
     }
 
     @Override
@@ -50,21 +48,30 @@ public class Adult extends Person {
         switch(profession) {
             case TEACHER: {
                 setPrimaryPlace(p.getRandomSchool());
+                shifts = Shifts.schoolTimes();
             } break;
             case SHOP: {
-                setPrimaryPlace(p.getRandomShop());
+                Shop s = p.getRandomShop();
+                setPrimaryPlace(s);
+                shifts = s.getShifts();
             } break;
             case CONSTRUCTION: {
                 setPrimaryPlace(p.getRandomConstructionSite());
+                shifts = Shifts.nineFiveFiveDays();
             } break;
             case OFFICE: {
                 setPrimaryPlace(p.getRandomOffice());
+                shifts = Shifts.nineFiveFiveDays();
             } break;
             case HOSPITAL: {
-                setPrimaryPlace(p.getRandomHospital());
+                Hospital h = p.getRandomHospital();
+                setPrimaryPlace(h);
+                shifts = h.getShifts();
             } break;
             case RESTAURANT: {
-                setPrimaryPlace(p.getRandomRestaurant());
+                Restaurant r = p.getRandomRestaurant();
+                setPrimaryPlace(r);
+                shifts = r.getShifts();
             } break;
         }
     }

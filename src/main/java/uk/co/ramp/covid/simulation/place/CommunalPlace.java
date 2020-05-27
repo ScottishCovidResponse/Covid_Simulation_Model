@@ -9,6 +9,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import uk.co.ramp.covid.simulation.DailyStats;
 import uk.co.ramp.covid.simulation.population.Person;
+import uk.co.ramp.covid.simulation.population.Shifts;
 import uk.co.ramp.covid.simulation.util.RNG;
 
 import java.util.ArrayList;
@@ -28,6 +29,8 @@ public abstract class CommunalPlace extends Place {
     protected double keyProb;
 
     protected final RandomDataGenerator rng;
+    
+    public abstract Shifts getShifts();
 
     public CommunalPlace(Size s) {
         this();
@@ -104,7 +107,7 @@ public abstract class CommunalPlace extends Place {
     public void doMovement(int day, int hour, boolean lockdown) {
         moveShifts(day, hour, lockdown);
     }
-
+    
     public boolean isKeyPremises() {
         return keyPremises;
     }

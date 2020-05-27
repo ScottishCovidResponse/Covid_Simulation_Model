@@ -101,4 +101,24 @@ public class OpeningTimes {
         }
         return allDays;
     }
+    
+    public static OpeningTimes nineFiveWeekdays() {
+      return new OpeningTimes(9,17, OpeningTimes.getWeekdays());
+    }
+
+    public static OpeningTimes nineFiveAllWeek() {
+        return new OpeningTimes(9,17, OpeningTimes.getAllDays());
+    }
+
+    public static OpeningTimes eightTenAllWeek() {
+        return new OpeningTimes(8,22, OpeningTimes.getAllDays());
+    }
+
+    public static OpeningTimes tenTenAllWeek() {
+        return new OpeningTimes(10,22, OpeningTimes.getAllDays());
+    }
+
+    public static OpeningTimes twentyfourSeven() {
+        return new OpeningTimes(0,24, OpeningTimes.getAllDays());
+    }
 }

@@ -9,7 +9,7 @@ public class Infant extends Person {
 
     public Infant() {
         setNursery();
-        shifts = Shifts.getSchoolTimes();
+        shifts = Shifts.schoolTimes();
     }
 
     private void setNursery() {

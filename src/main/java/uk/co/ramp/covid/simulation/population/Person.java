@@ -12,8 +12,6 @@ import uk.co.ramp.covid.simulation.place.Household;
 import uk.co.ramp.covid.simulation.util.RNG;
 
 public abstract class Person {
-    private boolean shopWorker = false;
-
     private CommunalPlace primaryPlace = null;
     protected Shifts shifts = null;
 
@@ -36,16 +34,7 @@ public abstract class Person {
         this.quarantineProb = PopulationParameters.get().getpQuarantine();
         this.quarantineVal = rng.nextUniform(0, 1);
     }
-    
-    public void setShopWorker() {
-        shopWorker = true;
-    }
 
-    public boolean isShopWorker() {
-        return shopWorker;
-    }
-
-   
     public boolean isRecovered() {
         return recovered;
     }

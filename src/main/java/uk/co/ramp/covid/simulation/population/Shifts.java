@@ -36,10 +36,16 @@ public class Shifts {
 
     public Shifts() {
         shifts = new HashMap<>();
+        for (int i = 0; i < 7; i++) {
+            shifts.put(i, new Shift(0,0));
+        }
     }
 
-    public Shifts(Map<Integer, Shift> s) {
-        shifts = s;
+    public Shifts(int s, int e, int... days) {
+        this();
+        for (int i = 0; i < days.length; i++) {
+            shifts.put(days[i], new Shift(s, e));
+        }
     }
 
     public Shift getShift(int day) {
@@ -47,45 +53,21 @@ public class Shifts {
     }
 
     // Common shift patterns
-    private static Shifts nineFive;
-    public static Shifts getNineFive () {
-        if (nineFive == null) {
-            nineFive = new Shifts();
-            Shift s = new Shift(9, 17);
-            for (int i = 0; i < 7; i++) {
-                nineFive.shifts.put(i, s);
-            }
+    private static Shifts nineFiveFiveDays;
+    public static Shifts nineFiveFiveDays() {
+        if (nineFiveFiveDays == null) {
+            nineFiveFiveDays = new Shifts(9, 17, 0, 1, 2, 3, 4);
         }
-        return nineFive;
+        return nineFiveFiveDays;
     }
 
     private static Shifts schoolTimes;
-    public static Shifts getSchoolTimes() {
+    public static Shifts schoolTimes() {
         if (schoolTimes == null) {
-            schoolTimes = new Shifts();
-            Shift s = new Shift(9, 15);
-            for (int i = 0; i < 5; i++) {
-                schoolTimes.shifts.put(i, s);
-            }
+            schoolTimes = new Shifts(9,17, 0, 1, 2, 3, 4);
 
-            s = new Shift(0, 0);
-            for (int i = 5; i < 7; i++) {
-                schoolTimes.shifts.put(i, s);
-            }
         }
         return schoolTimes;
     }
-    
-    // For backwards compatibility only
-    private static Shifts allTimes;
-    public static Shifts getAllTimes () {
-        if (allTimes == null) {
-            allTimes = new Shifts();
-            Shift s = new Shift(0, 23);
-            for (int i = 0; i < 7; i++) {
-                allTimes.shifts.put(i, s);
-            }
-        }
-        return allTimes;
-    }
+
 }
