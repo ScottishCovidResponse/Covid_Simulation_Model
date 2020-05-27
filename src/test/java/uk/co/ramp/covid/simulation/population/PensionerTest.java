@@ -29,7 +29,7 @@ public class PensionerTest {
 
         List<DailyStats> stats;
         int nDays = 1;
-        stats = p.timeStep(nDays);
+        stats = p.simulate(nDays);
 
         pensioner.reportInfection(stats.get(0));
         assertEquals("Unexpected number of pensioner infections", 1, stats.get(0).getPensionerInfected());

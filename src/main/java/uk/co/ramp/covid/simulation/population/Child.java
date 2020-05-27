@@ -5,7 +5,9 @@ import uk.co.ramp.covid.simulation.DailyStats;
 
 public class Child extends Person {
 
-    public Child() { }
+    public Child() {
+        shifts = Shifts.schoolTimes();
+    }
 
     @Override
     public void reportInfection(DailyStats s) {

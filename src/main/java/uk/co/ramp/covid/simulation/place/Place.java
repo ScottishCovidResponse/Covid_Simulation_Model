@@ -12,7 +12,11 @@ import java.util.Set;
 
 public abstract class Place {
 
+    // People are managed in 2 lists, those currently in the place "people" and
+    // those who will be in the place in the next hour "nextPeople"
     protected List<Person> people;
+    protected List<Person> nextPeople;
+    
     protected double sDistance;
     protected double transProb;
 
@@ -20,6 +24,7 @@ public abstract class Place {
 
     public Place() {
         this.people = new ArrayList<>();
+        this.nextPeople = new ArrayList<>();
         this.transProb = PopulationParameters.get().getpBaseTrans();
         this.sDistance = 1.0;
     }
@@ -28,12 +33,17 @@ public abstract class Place {
         return people;
     }
 
+    public void addPersonNext(Person p) {
+        nextPeople.add(p);
+    }
+
     private void registerInfection(DailyStats s, Person p) {
         reportInfection(s);
         p.reportInfection(s);
     }
 
-    protected void doInfect(DailyStats stats) {
+    /** Handles infections between all people in this place */
+    public void doInfect(DailyStats stats) {
         List<Person> deaths = new ArrayList<>();
         for (Person cPers : people) {
             if (cPers.getInfectionStatus() && !cPers.isRecovered()) {
@@ -61,4 +71,26 @@ public abstract class Place {
         }
         people.removeAll(deaths);
     }
+    
+    /** Do a timestep by switching to the new set of people */
+    public void stepPeople() {
+        // Anyone who didn't move should remain.
+        nextPeople.addAll(people);
+        people = nextPeople;
+        nextPeople = new ArrayList();
+    }
+
+    public List<Person> sendFamilyHome(Person p, CommunalPlace place, int day, int hour) {
+        List<Person> left = new ArrayList<>();
+        for (Person q : people) {
+            if (p != q && !q.worksNextHour(place, day, hour, false) && q.getHome() == p.getHome()) {
+                q.returnHome();
+                left.add(q);
+            }
+        }
+        return left;
+    }
+
+    /** Handles movement between people in this place */
+    public abstract void doMovement(int day, int hour, boolean lockdown);
 }

@@ -18,6 +18,7 @@ public class PopulationParameters {
     private static PopulationParameters pp = null;
     private static final double EPSILON = 0.001;
 
+
     // Proportions of each type of person in the population
     private static class Population {
         public Double pInfants = null;
@@ -186,6 +187,7 @@ public class PopulationParameters {
         public Double pTeacher = null;
         public Double pRestaurant = null;
         public Double pUnemployed = null;
+        public Double pNursery = null;
 
         public Size sizeAllocation = null;
 
@@ -199,6 +201,8 @@ public class PopulationParameters {
                     ", pTeacher=" + pTeacher +
                     ", pRestaurant=" + pRestaurant +
                     ", pUnemployed=" + pUnemployed +
+                    ", pNursery=" + pNursery +
+                    ", sizeAllocation=" + sizeAllocation +
                     '}';
         }
 
@@ -209,9 +213,10 @@ public class PopulationParameters {
                     && isValidProbability(pConstruction, "pConstruction")
                     && isValidProbability(pTeacher, "pTeacher")
                     && isValidProbability(pRestaurant, "pRestaurant")
+                    && isValidProbability(pNursery, "pNursery")
                     && isValidProbability(pUnemployed, "pUnemployed");
 
-            double totalP = pOffice + pShop + pHospital + pConstruction + pTeacher + pRestaurant + pUnemployed;
+            double totalP = pOffice + pShop + pHospital + pConstruction + pTeacher + pRestaurant + pNursery + pUnemployed;
             if(!(totalP <= 1 + EPSILON && totalP >= 1 - EPSILON)) {
                 LOGGER.error("Worker allocation parameter probabilities do not total one");
                 return false;
@@ -235,6 +240,9 @@ public class PopulationParameters {
         public Double pConstructionSiteKey = null;
         public Double pOfficeKey = null;
         public Double pShopKey = null;
+        
+        public Double pLeaveShop = null;
+        public Double pLeaveRestaurant = null;
 
         @Override
         public String toString() {
@@ -251,6 +259,8 @@ public class PopulationParameters {
                     ", pConstructionSiteKey=" + pConstructionSiteKey +
                     ", pOfficeKey=" + pOfficeKey +
                     ", pShopKey=" + pShopKey +
+                    ", pLeaveShop =" + pLeaveShop +
+                    ", pLeaveRestaurant =" + pLeaveRestaurant +
                     '}';
         }
 
@@ -266,7 +276,9 @@ public class PopulationParameters {
                     && isValidProbability(pHospitalKey, "pHospitalKey")
                     && isValidProbability(pConstructionSiteKey, "pConstructionSiteKey")
                     && isValidProbability(pOfficeKey, "pOfficeKey")
-                    && isValidProbability(pShopKey, "pShopKey");
+                    && isValidProbability(pShopKey, "pShopKey")
+                    && isValidProbability(pLeaveShop, "pLeaveShop")
+                    && isValidProbability(pLeaveRestaurant, "pLeaveRestaurant");
         }
     }
 
@@ -310,13 +322,23 @@ public class PopulationParameters {
         public Double neighbourVisitFreq = null;
         public Integer expectedNeighbours = null;
 
+        public Double pGoShopping = null;
+        public Double pGoRestaurant = null;
+
         @Override
         public String toString() {
             return "HouseholdProperties{" +
                     "visitorLeaveRate=" + visitorLeaveRate +
                     ", neighbourVisitFreq=" + neighbourVisitFreq +
                     ", expectedNeighbours=" + expectedNeighbours +
+                    ", pGoShopping=" + pGoShopping +
+                    ", pGoRestaurant=" + pGoRestaurant +
                     '}';
+        }
+
+        public boolean isValid() {
+            return isValidProbability(pGoShopping, "pGoShopping")
+                    && isValidProbability(pGoRestaurant, "pGoRestaurant");
         }
     }
 
@@ -355,7 +377,7 @@ public class PopulationParameters {
         valid = valid && checker.isValid(buildingProperties) && buildingProperties.isValid();
         valid = valid && checker.isValid(infantAllocation) && infantAllocation.isValid();
         valid = valid && checker.isValid(personProperties) && personProperties.isValid();
-        valid = valid && checker.isValid(householdProperties);
+        valid = valid && checker.isValid(householdProperties) && householdProperties.isValid();
         return valid;
     }
 
@@ -579,6 +601,8 @@ public class PopulationParameters {
         return workerAllocation.pRestaurant;
     }
 
+    public double getpNurseryWorker() { return workerAllocation.pNursery; }
+
     public double getpUnemployed() {
         return workerAllocation.pUnemployed;
     }
@@ -632,6 +656,22 @@ public class PopulationParameters {
         return buildingProperties.pShopKey;
     }
 
+    public double getpLeaveShop () {
+        return buildingProperties.pLeaveShop;
+    }
+
+    public void setpLeaveShop (double p) {
+        buildingProperties.pLeaveShop = p;
+    }
+
+    public double getpLeaveRestaurant () {
+        return buildingProperties.pLeaveRestaurant;
+    }
+
+    public void setpLeaveRestaurant (double p) {
+        buildingProperties.pLeaveRestaurant = p;
+    }
+
     // Infant allocation
     public double getpAttendsNursery() {
         return infantAllocation.pAttendsNursery;
@@ -645,6 +685,14 @@ public class PopulationParameters {
         return householdProperties.expectedNeighbours;
     }
     public double getHouseholdVisitorLeaveRate() { return householdProperties.visitorLeaveRate; }
+    public void setHouseholdVisitorLeaveRate(double p) { householdProperties.visitorLeaveRate = p; }
+
+    public double getpGoShopping() {
+        return householdProperties.pGoShopping;
+    }
+    public double getpGoRestaurant() {
+        return householdProperties.pGoRestaurant;
+    }
 
     // Person Properties
     public double getpQuarantine() {

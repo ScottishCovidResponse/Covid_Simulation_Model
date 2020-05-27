@@ -9,6 +9,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import uk.co.ramp.covid.simulation.DailyStats;
 import uk.co.ramp.covid.simulation.population.Person;
+import uk.co.ramp.covid.simulation.population.Shifts;
 import uk.co.ramp.covid.simulation.util.RNG;
 
 import java.util.ArrayList;
@@ -16,67 +17,38 @@ import java.util.List;
 
 public abstract class CommunalPlace extends Place {
 
-    private static final Logger LOGGER = LogManager.getLogger(CommunalPlace.class);
-
     public enum Size {
         SMALL, MED, LARGE, UNKNOWN
     }
     
     protected Size size;
-
-    protected int startTime;
-    protected int endTime;
-    protected int startDay;
-    protected int endDay;
+    protected OpeningTimes times;
     protected boolean keyPremises;
     protected double keyProb;
 
+    protected int nStaff = 0;
+
     protected final RandomDataGenerator rng;
+    
+    public abstract Shifts getShifts();
 
     public CommunalPlace(Size s) {
         this();
         size = s;
     }
 
+
     public CommunalPlace() {
         super();
         this.rng = RNG.get();
-        this.startTime = 8; // The hour of the day that the Communal Place starts
-        this.endTime = 17; // The hour of the day that it ends
-        this.startDay = 1; // Days of the week that it is active - start
-        this.endDay = 5; // Days of the week that it is active - end
+        this.times = new OpeningTimes(8,17,1,5, OpeningTimes.getAllDays());
+
         this.keyProb = 1.0;
         if (rng.nextUniform(0, 1) > this.keyProb) this.keyPremises = true;
-
     }
 
     public void overrideKeyPremises(boolean overR) {
         this.keyPremises = overR;
-    }
-
-    // Check whether a Person might visit at that hour of the day
-    public boolean checkVisit(Person cPers, int time, int day, boolean clockdown) {
-        boolean cIn = false;
-        if (this.startTime == time && day >= this.startDay && day <= this.endDay && (this.keyPremises || !clockdown)) {
-            cIn = true;
-            people.add(cPers);
-        }
-        return cIn;
-    }
-
-    // Cycle through the People objects in the Place and test their infection status etc
-    public void cyclePlace(int time, DailyStats stats) {
-        doInfect(stats);
-
-        List<Person> left = new ArrayList<>();
-        for (Person cPers : people) {
-            if (time == endTime) {
-                cPers.returnHome();
-                left.add(cPers);
-            }
-        }
-
-        people.removeAll(left);
     }
 
     public void adjustSDist(double sVal) {
@@ -90,7 +62,56 @@ public abstract class CommunalPlace extends Place {
         size = s;
     }
 
+    /** Move everyone based on their shift patterns */
+    public void moveShifts(int day, int hour, boolean lockdown) {
+        List<Person> left = new ArrayList();
+        for (Person p : people) {
+            if (!p.worksNextHour(this, day, hour, lockdown)) {
+                p.returnHome();
+                left.add(p);
+            }
+        }
+        people.removeAll(left);
+    }
+    
+    public boolean isVisitorOpenNextHour(int day, int hour) {
+        return  times.getOpenDays().get(day)
+                && hour + 1 >= times.getVisitorOpen()
+                && hour + 1 < times.getVisitorClose();
+    }
+
+    public boolean isOpen(int day, int hour) {
+        if (!times.getOpenDays().get(day)) {
+            return false;
+        }
+
+        return hour >= times.getOpen()
+                && hour < times.getClose();
+    }
+
+    public List<Person> getStaff(int day, int hour) {
+        List<Person> res = new ArrayList<>();
+        for (Person p : people) {
+            if (p.getPrimaryCommunalPlace() == this
+                    && p.worksNextHour(this, day, hour - 1, false)) {
+                res.add(p);
+            }
+        }
+        return res;
+    }
+
+    @Override
+    public void doMovement(int day, int hour, boolean lockdown) {
+        moveShifts(day, hour, lockdown);
+    }
+    
     public boolean isKeyPremises() {
         return keyPremises;
     }
+
+    public int getnStaff() {
+        return nStaff;
+    }
+    
+    public abstract boolean isFullyStaffed();
 }

@@ -41,7 +41,7 @@ public class InfantTest {
 
         List<DailyStats> stats;
         int nDays = 1;
-        stats = p.timeStep(nDays);
+        stats = p.simulate(nDays);
 
         infant.reportInfection(stats.get(0));
         assertEquals("Unexpected number of infant infections", 1, stats.get(0).getInfantInfected());
