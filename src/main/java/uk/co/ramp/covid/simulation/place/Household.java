@@ -90,11 +90,11 @@ public class Household extends Place {
             if (p.mustGoHome(day, hour)) {
                 left.add(p);
                 p.returnHome();
-                left.addAll(sendFamilyHome(p));
+                left.addAll(sendFamilyHome(p, null, day, hour));
             }
             else if (RNG.get().nextUniform(0, 1) < PopulationParameters.get().getHouseholdVisitorLeaveRate()) {
                 left.add(p);
-                left.addAll(sendFamilyHome(p));
+                left.addAll(sendFamilyHome(p, null, day, hour));
                 if (p.cStatus() != CStatus.DEAD) {
                    p.returnHome();
                 }

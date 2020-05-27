@@ -57,17 +57,21 @@ public class Shop extends CommunalPlace {
                 continue;
             }
 
+            if (nPers.worksNextHour(this, day, hour, false)) {
+                continue;
+            }
+
             // Under certain conditions we must go home, e.g. if there is a shift starting soon
             if (nPers.mustGoHome(day, hour)) {
                 left.add(nPers);
                 nPers.returnHome();
-                left.addAll(sendFamilyHome(nPers));
+                left.addAll(sendFamilyHome(nPers, this, day, hour));
             }
             else if (rng.nextUniform(0, 1) < PopulationParameters.get().getpLeaveShop()
                     || !times.isOpen(hour + 1, day)) {
                 nPers.returnHome();
                 left.add(nPers);
-                left.addAll(sendFamilyHome(nPers));
+                left.addAll(sendFamilyHome(nPers, this, day, hour));
             }
         }
         people.removeAll(left);

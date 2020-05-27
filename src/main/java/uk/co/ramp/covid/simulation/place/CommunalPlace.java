@@ -37,6 +37,7 @@ public abstract class CommunalPlace extends Place {
         size = s;
     }
 
+
     public CommunalPlace() {
         super();
         this.rng = RNG.get();
@@ -74,8 +75,18 @@ public abstract class CommunalPlace extends Place {
     }
     
     public boolean isVisitorOpenNextHour(int day, int hour) {
-        return hour + 1 >= times.getVisitorOpen() 
+        return  times.getOpenDays().get(day)
+                && hour + 1 >= times.getVisitorOpen()
                 && hour + 1 < times.getVisitorClose();
+    }
+
+    public boolean isOpen(int day, int hour) {
+        if (!times.getOpenDays().get(day)) {
+            return false;
+        }
+
+        return hour >= times.getOpen()
+                && hour < times.getClose();
     }
 
     public List<Person> getStaff(int day, int hour) {
@@ -88,6 +99,7 @@ public abstract class CommunalPlace extends Place {
         }
         return res;
     }
+
     @Override
     public void doMovement(int day, int hour, boolean lockdown) {
         moveShifts(day, hour, lockdown);

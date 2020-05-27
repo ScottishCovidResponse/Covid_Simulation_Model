@@ -10,6 +10,7 @@ import uk.co.ramp.covid.simulation.population.*;
 
 import java.io.IOException;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /** Movement tests do not test a particular class, but check basic assumptions around movement throughout a run */
@@ -17,7 +18,7 @@ public class MovementTest {
 
     Population p;
     int populationSize = 10000;
-    int nHouseholds = 3000;
+    int nHouseholds = 2000;
     int nInfections = 10;
 
     @Before
@@ -176,5 +177,22 @@ public class MovementTest {
         }
     }
 
+    @Test
+    public void openPlacesShouldBeStaffed() {
+        int day = 1;
+        DailyStats s = new DailyStats(day);
+        for (int i = 0; i < 24; i++) {
+            p.timeStep(day, i, s);
 
+            int npeople = 0;
+            for (CommunalPlace place : p.getPlaces().getAllPlaces()) {
+                // i + 1 since the ith timestep has already been (so we are in the next state)
+                if (place.isOpen(day, i + 1)) {
+                    List<Person> staff = place.getStaff(day, i + 1);
+                   assertTrue(staff.size() > 0);
+                }
+            }
+
+        }
+    }
 }

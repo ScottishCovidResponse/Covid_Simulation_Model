@@ -139,10 +139,17 @@ public abstract class Person {
             return false;
         }
 
+        // Handle day crossovers
+        int start = shifts.getShift(day).getStart();
+        int end = shifts.getShift(day).getEnd();
+        if (end < start) {
+            end += 24;
+        }
+
         boolean shouldWork =
                 primaryPlace == communalPlace
-                && hour + 1 >= shifts.getShift(day).getStart()
-                && hour + 1 < shifts.getShift(day).getEnd();
+                && hour + 1 >= start
+                && hour + 1 < end;
         
         if (lockdown) {
             if (communalPlace.isKeyPremises()) {

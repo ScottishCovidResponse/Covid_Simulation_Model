@@ -80,10 +80,10 @@ public abstract class Place {
         nextPeople = new ArrayList();
     }
 
-    public List<Person> sendFamilyHome(Person p) {
+    public List<Person> sendFamilyHome(Person p, CommunalPlace place, int day, int hour) {
         List<Person> left = new ArrayList<>();
         for (Person q : people) {
-            if (p != q && q.getHome() == p.getHome()) {
+            if (p != q && !q.worksNextHour(place, day, hour, false) && q.getHome() == p.getHome()) {
                 q.returnHome();
                 left.add(q);
             }
