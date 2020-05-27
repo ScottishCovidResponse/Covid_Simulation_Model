@@ -189,17 +189,23 @@ public class Household extends Place {
 
     @Override
     public void doMovement(int day, int hour, boolean lockdown) {
-       moveShift(day, hour, lockdown);
+        // Ordering here implies work takes highest priority, then shopping trips have higher priority
+        // than neighbour and restaurant trips
+        moveShift(day, hour, lockdown);
 
-       // Implies shopping trips have higher priority than neighbour and restaurant trips
-       moveShop(day, hour, lockdown);
+        // Shops are only open 8-22
+        if (hour + 1 >= 8 && hour + 1 < 22) {
+            moveShop(day, hour, lockdown);
+        }
 
-       moveNeighbour(day, hour);
-       if (!lockdown) {
-           moveRestaurant(day, hour);
-       }
-       
-       sendNeighboursHome(day, hour);
+        moveNeighbour(day, hour);
+
+        // Restaurants are only open 8-22
+        if (!lockdown && hour + 1 >= 8 && hour + 1 < 22) {
+            moveRestaurant(day, hour);
+        }
+
+        sendNeighboursHome(day, hour);
     }
 
     private void moveNeighbour(int day, int hour) {
@@ -234,17 +240,25 @@ public class Household extends Place {
             if (s == null) {
                 return;
             }
-            // We go shopping as a family
-            if (s.isVisitorOpenNextHour(day, hour)) {
-                for (Person p : getInhabitants()) {
-                    if (!p.getQuarantine()) {
-                        s.addPersonNext(p);
-                        left.add(p);
-                    }
+
+            // Sometimes we can get a case where there are only small shops (open 9-5) so we fail to find a shop
+            // In this case we time out the search.
+            int retries = 5;
+            while (!s.isVisitorOpenNextHour(day, hour)) {
+                s = places.getRandomShop();
+                retries--;
+                if (retries == 0) {
+                    return;
                 }
             }
-            // TODO: Should we keep trying shops till we find one that's open, or just give up if not.
-            // Particularly important for overnight (where there could be some 24h shops open)
+
+            // Go to restaurants as a family
+            for (Person p : getInhabitants()) {
+                if (!p.getQuarantine()) {
+                    s.addPersonNext(p);
+                    left.add(p);
+                }
+            }
         }
         people.removeAll(left);
     }
@@ -253,25 +267,29 @@ public class Household extends Place {
         List<Person> left = new ArrayList();
 
         double visitProb = PopulationParameters.get().getpGoRestaurant();
-        //TODO: Handle lockdown probabilities
 
         if (RNG.get().nextUniform(0, 1) < visitProb) {
             Restaurant r = places.getRandomRestaurant();
-            // We go to restaurants as a family
             if (r == null) {
                 return;
             }
-
-            if (r.isVisitorOpenNextHour(day, hour)) {
-                for (Person p : getInhabitants()) {
-                    if (!p.getQuarantine()) {
-                        r.addPersonNext(p);
-                        left.add(p);
-                    }
+            
+            int retries = 5;
+            while (!r.isVisitorOpenNextHour(day, hour)) {
+                r = places.getRandomRestaurant();
+                retries--;
+                if (retries == 0) {
+                    return;
                 }
             }
-            // TODO: Should we keep trying restaurants till we find one that's open, or just give up if not.
-            // Unlike shops, there probably isn't one open 24 hours
+
+            // Go to restaurants as a family
+            for (Person p : getInhabitants()) {
+                if (!p.getQuarantine()) {
+                    r.addPersonNext(p);
+                    left.add(p);
+                }
+            }
         }
         people.removeAll(left);
     }
