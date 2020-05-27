@@ -65,6 +65,7 @@ Distribution should add to 1.
 | pConstruction   | Probability of working in construction                                  | Double |
 | pTeacher        | Probability of being a teacher                                          | Double |
 | pRestaurant     | Probability of working in a restaurant                                  | Double |
+| pNursery        | Probability of working in a nursery                                     | Double |
 | pUnemployed     | Probability of being unemployed                                         | Double |
 | allocationSizes | Probability of being assigned to work in a large/medium/small workplace | Double |
 

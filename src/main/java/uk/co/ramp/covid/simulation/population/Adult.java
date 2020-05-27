@@ -2,15 +2,13 @@ package uk.co.ramp.covid.simulation.population;
 
 import uk.co.ramp.covid.simulation.CovidParameters;
 import uk.co.ramp.covid.simulation.DailyStats;
-import uk.co.ramp.covid.simulation.place.Hospital;
-import uk.co.ramp.covid.simulation.place.Restaurant;
-import uk.co.ramp.covid.simulation.place.Shop;
+import uk.co.ramp.covid.simulation.place.*;
 import uk.co.ramp.covid.simulation.util.ProbabilityDistribution;
 
 public class Adult extends Person {
 
     public enum Professions {
-        OFFICE, SHOP, HOSPITAL, CONSTRUCTION, TEACHER, RESTAURANT, NONE
+        OFFICE, SHOP, HOSPITAL, CONSTRUCTION, TEACHER, RESTAURANT, NURSERY, NONE
     }
 
     Professions profession;
@@ -28,6 +26,7 @@ public class Adult extends Person {
         p.add(PopulationParameters.get().getpConstructionWorker(), Professions.CONSTRUCTION);
         p.add(PopulationParameters.get().getpTeacher(), Professions.TEACHER);
         p.add(PopulationParameters.get().getpRestaurantWorker(), Professions.RESTAURANT);
+        p.add(PopulationParameters.get().getpNurseryWorker(), Professions.NURSERY);
         p.add(PopulationParameters.get().getpUnemployed(), Professions.NONE);
 
         profession = p.sample();
@@ -47,8 +46,14 @@ public class Adult extends Person {
     public void allocateCommunalPlace(Places p) {
         switch(profession) {
             case TEACHER: {
-                setPrimaryPlace(p.getRandomSchool());
-                shifts = Shifts.schoolTimes();
+                School s = p.getRandomSchool();
+                setPrimaryPlace(s);
+                shifts = s.getShifts();
+            } break;
+            case NURSERY: {
+                Nursery s = p.getRandomNursery();
+                setPrimaryPlace(s);
+                shifts = s.getShifts();
             } break;
             case SHOP: {
                 Shop s = p.getRandomShop();
@@ -56,12 +61,14 @@ public class Adult extends Person {
                 shifts = s.getShifts();
             } break;
             case CONSTRUCTION: {
-                setPrimaryPlace(p.getRandomConstructionSite());
-                shifts = Shifts.nineFiveFiveDays();
+                ConstructionSite s = p.getRandomConstructionSite();
+                setPrimaryPlace(s);
+                shifts = s.getShifts();
             } break;
             case OFFICE: {
-                setPrimaryPlace(p.getRandomOffice());
-                shifts = Shifts.nineFiveFiveDays();
+                Office s = p.getRandomOffice();
+                setPrimaryPlace(s);
+                shifts = s.getShifts();
             } break;
             case HOSPITAL: {
                 Hospital h = p.getRandomHospital();

@@ -18,6 +18,7 @@ public class PopulationParameters {
     private static PopulationParameters pp = null;
     private static final double EPSILON = 0.001;
 
+
     // Proportions of each type of person in the population
     private static class Population {
         public Double pInfants = null;
@@ -186,6 +187,7 @@ public class PopulationParameters {
         public Double pTeacher = null;
         public Double pRestaurant = null;
         public Double pUnemployed = null;
+        public Double pNursery = null;
 
         public Size sizeAllocation = null;
 
@@ -199,6 +201,8 @@ public class PopulationParameters {
                     ", pTeacher=" + pTeacher +
                     ", pRestaurant=" + pRestaurant +
                     ", pUnemployed=" + pUnemployed +
+                    ", pNursery=" + pNursery +
+                    ", sizeAllocation=" + sizeAllocation +
                     '}';
         }
 
@@ -209,9 +213,10 @@ public class PopulationParameters {
                     && isValidProbability(pConstruction, "pConstruction")
                     && isValidProbability(pTeacher, "pTeacher")
                     && isValidProbability(pRestaurant, "pRestaurant")
+                    && isValidProbability(pNursery, "pNursery")
                     && isValidProbability(pUnemployed, "pUnemployed");
 
-            double totalP = pOffice + pShop + pHospital + pConstruction + pTeacher + pRestaurant + pUnemployed;
+            double totalP = pOffice + pShop + pHospital + pConstruction + pTeacher + pRestaurant + pNursery + pUnemployed;
             if(!(totalP <= 1 + EPSILON && totalP >= 1 - EPSILON)) {
                 LOGGER.error("Worker allocation parameter probabilities do not total one");
                 return false;
@@ -595,6 +600,8 @@ public class PopulationParameters {
     public double getpRestaurantWorker() {
         return workerAllocation.pRestaurant;
     }
+
+    public double getpNurseryWorker() { return workerAllocation.pNursery; }
 
     public double getpUnemployed() {
         return workerAllocation.pUnemployed;

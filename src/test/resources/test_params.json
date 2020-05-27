@@ -106,9 +106,10 @@
             "pShop":0.2,
             "pHospital":0.2,
             "pConstruction":0.1,
-            "pTeacher":0.1,
+            "pTeacher":0.05,
             "pRestaurant":0.2,
             "pUnemployed":0.1,
+            "pNursery":0.05,
             "sizeAllocation":{
               "pSmall": 0.2,
               "pMed": 0.3,
