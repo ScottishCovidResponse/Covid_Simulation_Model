@@ -9,6 +9,7 @@ import uk.co.ramp.covid.simulation.DailyStats;
 import uk.co.ramp.covid.simulation.io.ParameterReader;
 import uk.co.ramp.covid.simulation.population.Adult;
 import uk.co.ramp.covid.simulation.population.Person;
+import uk.co.ramp.covid.simulation.population.PopulationParameters;
 import uk.co.ramp.covid.simulation.util.RNG;
 
 import static org.junit.Assert.assertEquals;
@@ -79,41 +80,17 @@ public class HouseholdTest {
     }
 
     @Test
-    public void testCycleHouse() {
-        int expSize = 3;
-        DailyStats s = new DailyStats(0);
-        assertEquals("Unexpected household size", expSize, household.cycleHouse(s).size());
-    }
-
-    @Test
-    public void testWelcomeNeighbours() {
-        Household newHouse = new Household(Household.HouseholdType.ADULT, null);
-        Person p1 = new Adult();
-        Person p2 = new Adult();
-        newHouse.addInhabitant(p1);
-        newHouse.addInhabitant(p2);
-        household.welcomeNeighbours(newHouse);
-        int expSize = 2;
-        assertEquals("Unexpected household size", expSize, household.getVisitors().size());
-
-    }
-    
-
-    @Test
     public void testSendNeighboursHome() {
-        Household newHouse = new Household(Household.HouseholdType.ADULT, null);
+        PopulationParameters.get().setHouseholdVisitorLeaveRate(1.0);
+        Household h = new Household(Household.HouseholdType.ADULT, null);
         Person p1 = new Adult();
-        newHouse.addInhabitant(p1);
-        p1.setHome(newHouse);
-        household.welcomeNeighbours(newHouse);
-        int expSize = 1;
-        assertEquals("Unexpected number of visitors", expSize, household.sendNeighboursHome(0,0));
-    }
+        
+        p1.setHome(household);
+        h.addPersonNext(p1);
+        h.stepPeople();
 
-    @Test
-    public void testShoppingTrip() {
-        int expPeople = 3;
-        assertEquals("Unexpected number of people shopping", expPeople, household.shoppingTrip().size());
+        int expSize = 1;
+        assertEquals("Unexpected number of visitors", expSize, h.sendNeighboursHome(0,0));
     }
 
     @Test

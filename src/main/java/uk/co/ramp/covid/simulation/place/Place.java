@@ -32,10 +32,7 @@ public abstract class Place {
     public List<Person> getPeople() {
         return people;
     }
-    
-    public void addPerson(Person p) {
-        people.add(p);
-    }
+
     public void addPersonNext(Person p) {
         nextPeople.add(p);
     }

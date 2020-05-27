@@ -17,8 +17,6 @@ import java.util.List;
 
 public abstract class CommunalPlace extends Place {
 
-    private static final Logger LOGGER = LogManager.getLogger(CommunalPlace.class);
-
     public enum Size {
         SMALL, MED, LARGE, UNKNOWN
     }
@@ -48,31 +46,6 @@ public abstract class CommunalPlace extends Place {
 
     public void overrideKeyPremises(boolean overR) {
         this.keyPremises = overR;
-    }
-
-    // Check whether a Person might visit at that hour of the day
-    public boolean checkVisit(Person cPers, int time, int day, boolean clockdown) {
-        boolean cIn = false;
-        if (times.isOpen(time, day) && (this.keyPremises || !clockdown)) {
-            cIn = true;
-            people.add(cPers);
-        }
-        return cIn;
-    }
-
-    // Cycle through the People objects in the Place and test their infection status etc
-    public void cyclePlace(int time, int day, DailyStats stats) {
-        doInfect(stats);
-
-        List<Person> left = new ArrayList<>();
-        for (Person cPers : people) {
-            if (!times.isOpen(time, day)) {
-                cPers.returnHome();
-                left.add(cPers);
-            }
-        }
-
-        people.removeAll(left);
     }
 
     public void adjustSDist(double sVal) {

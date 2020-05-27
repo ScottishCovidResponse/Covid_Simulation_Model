@@ -372,7 +372,7 @@ public class PopulationParameters {
         valid = valid && checker.isValid(buildingProperties) && buildingProperties.isValid();
         valid = valid && checker.isValid(infantAllocation) && infantAllocation.isValid();
         valid = valid && checker.isValid(personProperties) && personProperties.isValid();
-        valid = valid && checker.isValid(householdProperties);
+        valid = valid && checker.isValid(householdProperties) && householdProperties.isValid();
         return valid;
     }
 
@@ -678,6 +678,7 @@ public class PopulationParameters {
         return householdProperties.expectedNeighbours;
     }
     public double getHouseholdVisitorLeaveRate() { return householdProperties.visitorLeaveRate; }
+    public void setHouseholdVisitorLeaveRate(double p) { householdProperties.visitorLeaveRate = p; }
 
     public double getpGoShopping() {
         return householdProperties.pGoShopping;

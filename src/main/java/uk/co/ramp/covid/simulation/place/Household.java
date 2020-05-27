@@ -77,38 +77,6 @@ public class Household extends Place {
         return cPers.infect();
     }
 
-    // Go through the household at each time step and see what they get up to
-    public List<Person> cycleHouse(DailyStats stats) {
-        doInfect(stats);
-        return people;
-    }
-
-    private ArrayList<Person> neighbourVisit() {
-        ArrayList<Person> visitPeople = new ArrayList<>();
-
-        for (Person p : getInhabitants()) {
-            if (!p.getQuarantine()) {
-                visitPeople.add(p);
-            }
-        }
-
-        if (visitPeople.size() == 0) {
-            return null;
-        }
-
-        people.removeAll(visitPeople);
-
-        return visitPeople;
-    }
-
-    // Neighbours go into a List of their own - we don't copy the list whole because the way multiple neighbour visits can happen concurrently
-    public void welcomeNeighbours(Household visitHouse) {
-        ArrayList<Person> visitVector = visitHouse.neighbourVisit();
-        if (visitVector != null) {
-            this.people.addAll(visitVector);
-        }
-    }
-
     public int sendNeighboursHome(int day, int hour) {
         ArrayList<Person> left = new ArrayList<>();
 
@@ -135,20 +103,6 @@ public class Household extends Place {
 
         people.removeAll(left);
         return left.size();
-    }
-
-    // Get a vector of people to go to the shops.
-    public ArrayList<Person> shoppingTrip() {
-        ArrayList<Person> shopping = new ArrayList<>();
-
-        for (Person p : getInhabitants()) {
-            if (!p.getQuarantine()) {
-                shopping.add(p);
-            }
-        }
-        people.removeAll(shopping);
-
-        return shopping;
     }
     
     private boolean isVisitor(Person p) {
@@ -178,20 +132,6 @@ public class Household extends Place {
     @Override
     public void reportInfection(DailyStats s) {
         s.incInfectionsHome();
-    }
-
-    // For each household processes any movements to Communal Places that are relevant
-    public void cycleMovements(int day, int hour, boolean lockdown) {
-        List<Person> left = new ArrayList<>();
-        for (Person p : getInhabitants()) {
-            if (p.hasPrimaryCommunalPlace() && !p.getQuarantine()) {
-                boolean visit = p.getPrimaryCommunalPlace().checkVisit(p, hour, day, lockdown);
-                if (visit) {
-                    left.add(p);
-                }
-            }
-        }
-        people.removeAll(left);
     }
 
     @Override
