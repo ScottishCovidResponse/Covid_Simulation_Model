@@ -19,6 +19,8 @@ public abstract class Place {
     
     protected double sDistance;
     protected double transProb;
+    
+    protected double transAdjustment;
 
     abstract public void reportInfection(DailyStats s);
 
@@ -27,6 +29,7 @@ public abstract class Place {
         this.nextPeople = new ArrayList<>();
         this.transProb = PopulationParameters.get().getpBaseTrans();
         this.sDistance = 1.0;
+        this.transAdjustment = 1.0;
     }
 
     public List<Person> getPeople() {
@@ -41,6 +44,14 @@ public abstract class Place {
         reportInfection(s);
         p.reportInfection(s);
     }
+    
+    private double getTransProb() {
+    	double cTransProb = 0.0;
+    	if(people.size() == 0) cTransProb = 0.0;
+    	else if(people.size() > 0 && people.size() <= transAdjustment) cTransProb = transProb;
+    	else if(people.size() > 0 && people.size() > transAdjustment) cTransProb = transProb * transAdjustment / people.size();
+    	return cTransProb;
+    }
 
     /** Handles infections between all people in this place */
     public void doInfect(DailyStats stats) {
@@ -52,7 +63,7 @@ public abstract class Place {
                     for (Person nPers : people) {
                         if (cPers != nPers) {
                             if (!nPers.getInfectionStatus()) {
-                                boolean infected = nPers.infChallenge(this.transProb * this.sDistance * cPers.getTransAdjustment());
+                                boolean infected = nPers.infChallenge(this.getTransProb() * this.sDistance * cPers.getTransAdjustment());
                                 if (infected) {
                                     registerInfection(stats, nPers);
                                 }

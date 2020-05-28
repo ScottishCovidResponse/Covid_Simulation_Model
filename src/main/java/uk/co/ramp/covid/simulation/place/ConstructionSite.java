@@ -12,7 +12,7 @@ public class ConstructionSite extends CommunalPlace {
     
     public ConstructionSite(Size s) {
         super(s);
-        transProb = PopulationParameters.get().getpBaseTrans() * PopulationParameters.get().getpConstructionSiteTrans();
+        transAdjustment = PopulationParameters.get().getpConstructionSiteTrans();
         keyProb = PopulationParameters.get().getpConstructionSiteKey();
         if (rng.nextUniform(0, 1) > keyProb) keyPremises = true;
         times = OpeningTimes.nineFiveWeekdays();
@@ -32,6 +32,10 @@ public class ConstructionSite extends CommunalPlace {
     @Override
     public boolean isFullyStaffed() {
         return nStaff > 0;
+    }
+    
+    public void updateTransProb() {
+        transProb = PopulationParameters.get().getpBaseTrans() * PopulationParameters.get().getpConstructionSiteTrans() / super.people.size();    	
     }
 
 }

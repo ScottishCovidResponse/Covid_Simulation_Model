@@ -41,6 +41,7 @@ public class Household extends Place {
         this.hType = hType;
         this.neighbours = new ArrayList<>();
         this.places = places;
+        transAdjustment = Double.MAX_VALUE;
     }
 
     public List<Household> getNeighbours() {

@@ -13,7 +13,7 @@ public class Office extends CommunalPlace {
 
     public Office(Size s)  {
         super(s);
-        transProb = PopulationParameters.get().getpBaseTrans() * PopulationParameters.get().getpOfficeTrans();
+        transAdjustment = PopulationParameters.get().getpOfficeTrans();
         keyProb = PopulationParameters.get().getpOfficeKey();
         if (rng.nextUniform(0, 1) > keyProb) keyPremises = true;
         times = OpeningTimes.nineFiveWeekdays();

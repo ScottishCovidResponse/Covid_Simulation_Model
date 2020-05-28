@@ -232,7 +232,7 @@ public class PopulationParameters {
 
         public boolean isValid() {
             return isValidProbability(pBaseTrans, "pBaseTrans")
-                    && isValidProbability(pHospitalTrans, "pHospitalTrans")
+                 /*   && isValidProbability(pHospitalTrans, "pHospitalTrans")
                     && isValidProbability(pConstructionSiteTrans, "pConstructionSiteTrans")
                     && isValidProbability(pNurseryTrans, "pNurseryTrans")
                     && isValidProbability(pOfficeTrans, "pOfficeTrans")
@@ -244,7 +244,7 @@ public class PopulationParameters {
                     && isValidProbability(pOfficeKey, "pOfficeKey")
                     && isValidProbability(pShopKey, "pShopKey")
                     && isValidProbability(pLeaveShop, "pLeaveShop")
-                    && isValidProbability(pLeaveRestaurant, "pLeaveRestaurant");
+                    && isValidProbability(pLeaveRestaurant, "pLeaveRestaurant")*/;
         }
     }
 
