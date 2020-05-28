@@ -292,6 +292,7 @@ public class Population {
             for (int k = 0; k < 24; k++) {
                 timeStep(dWeek, k, dStats);
             }
+            households.forEach(h -> h.dayEnd());
             stats.add(this.processCases(dStats));
         }
         return stats;
