@@ -49,11 +49,16 @@ public class PopulationDistribution {
             } else if (k[0].equals("f")) {
                 s = Person.Sex.FEMALE;
             } else {
-                throw new InvalidParametersException("Population data format is invalid");
+                throw new InvalidParametersException("Population data format is invalid. Expected sex = m/f");
             }
             
             int age_l = Integer.parseInt(k[1]);
             int age_r = Integer.parseInt(k[2]);
+
+            if (age_l > age_r) {
+                throw new InvalidParametersException("Population data format is invalid. age range start > end");
+            }
+
             int range = age_r - age_l + 1; // Inclusive range
             
             for (int i = 0; i < range; i++) {
