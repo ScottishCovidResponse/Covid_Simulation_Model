@@ -47,7 +47,7 @@ public class RestaurantTest {
     @Test
     public void testShoppingTrip() {
         ArrayList<Person> personList = new ArrayList<>();
-        personList.add(new Child(3, Person.Sex.MALE));
+        personList.add(new Child(6, Person.Sex.MALE));
         restaurant.shoppingTrip(personList);
         int expPeople = 3;
         assertEquals("Unexpected number of people in restaurant", expPeople, restaurant.people.size());

@@ -77,7 +77,7 @@ public class CovidTest {
     public void testStepInfectionAsymptomatic() throws IOException {
         RNG.seed(321);
         ParameterReader.readParametersFromFile("src/test/resources/default_params.json");
-        Person child = new Child(4, Person.Sex.FEMALE);
+        Person child = new Child(5, Person.Sex.FEMALE);
         Covid virus = new Covid(child);
         virus.forceSymptomatic(false);
 

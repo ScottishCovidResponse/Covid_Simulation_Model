@@ -9,6 +9,9 @@ public class Infant extends Person {
 
     public Infant(int age, Sex sex) {
         super(age, sex);
+        if (age >= 5) {
+            throw new InvalidAgeException("Trying to create an infant outside the correct age range (0-4)");
+        }
         setNursery();
         shifts = Shifts.schoolTimes();
     }
