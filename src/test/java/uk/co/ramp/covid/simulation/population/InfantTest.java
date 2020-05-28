@@ -19,7 +19,7 @@ public class InfantTest {
         int nNursery = 0;
         //Test 50% of infants go to nursery
         for (int i = 0; i < 1000; i++) {
-            Infant infant = new Infant();
+            Infant infant = new Infant(2, Person.Sex.MALE);
             if (infant.isGoesToNursery()) nNursery++;
         }
         assertEquals("Unexpected number of infants at nursery", 500, nNursery, 10);
@@ -37,7 +37,7 @@ public class InfantTest {
         }
         p.createMixing();
         p.assignNeighbours();
-        Infant infant = new Infant();
+        Infant infant = new Infant(3, Person.Sex.FEMALE);
 
         List<DailyStats> stats;
         int nDays = 1;

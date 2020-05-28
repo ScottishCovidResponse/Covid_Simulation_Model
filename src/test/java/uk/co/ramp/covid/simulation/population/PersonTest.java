@@ -1,8 +1,10 @@
 package uk.co.ramp.covid.simulation.population;
 
 import com.google.gson.JsonParseException;
+import com.sun.org.apache.bcel.internal.generic.FADD;
 import org.junit.Before;
 import org.junit.Test;
+import sun.security.pkcs11.wrapper.CK_SSL3_MASTER_KEY_DERIVE_PARAMS;
 import uk.co.ramp.covid.simulation.io.ParameterReader;
 import uk.co.ramp.covid.simulation.util.RNG;
 import java.io.IOException;
@@ -18,14 +20,14 @@ public class PersonTest {
     @Test
     public void testInfect() {
         //Test that the infect() method returns true
-        Person person = new Adult();
+        Person person = new Adult(30, Person.Sex.FEMALE);
         assertTrue("Person unexpectedly not infected", person.infect());
     }
 
     @Test
     public void testInfectionStatus() {
         //Test that an infected person's infection status is true
-        Person person = new Adult();
+        Person person = new Adult(30, Person.Sex.MALE);
         boolean inf = person.infect();
         assertTrue("Person unexpectedly not infected", person.getInfectionStatus());
     }
@@ -33,7 +35,7 @@ public class PersonTest {
     @Test
     public void testStepInfection() {
         //Test that stepInfection returns a valid status
-        Person person = new Adult();
+        Person person = new Adult(30, Person.Sex.FEMALE);
         person.infChallenge(100.0);
         assertNotNull("Invalid CStatus", person.stepInfection());
     }
@@ -41,7 +43,7 @@ public class PersonTest {
     @Test
     public void testCStatus() {
         //Test the status of a new person is healthy
-        Person person = new Adult();
+        Person person = new Adult(30, Person.Sex.MALE);
         assertSame("Person not healthy", CStatus.HEALTHY, person.cStatus());
 
         //Test the status of an infected person is not healthy
