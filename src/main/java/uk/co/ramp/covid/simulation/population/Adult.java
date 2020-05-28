@@ -48,37 +48,58 @@ public class Adult extends Person {
             case TEACHER: {
                 School s = p.getRandomSchool();
                 setPrimaryPlace(s);
-                shifts = s.getShifts();
+                if (s == null) {
+                } else {
+                    shifts = s.getShifts();
+                }
             } break;
             case NURSERY: {
                 Nursery s = p.getRandomNursery();
                 setPrimaryPlace(s);
-                shifts = s.getShifts();
+                if (s == null) {
+                } else {
+                    shifts = s.getShifts();
+                }
             } break;
             case SHOP: {
                 Shop s = p.getRandomShop();
                 setPrimaryPlace(s);
-                shifts = s.getShifts();
+                if (s == null) {
+                } else {
+                    shifts = s.getShifts();
+                }
             } break;
             case CONSTRUCTION: {
                 ConstructionSite s = p.getRandomConstructionSite();
                 setPrimaryPlace(s);
-                shifts = s.getShifts();
+                if (s == null) {
+                } else {
+                    shifts = s.getShifts();
+                }
             } break;
             case OFFICE: {
                 Office s = p.getRandomOffice();
                 setPrimaryPlace(s);
-                shifts = s.getShifts();
+                if (s == null) {
+                } else {
+                    shifts = s.getShifts();
+                }
             } break;
             case HOSPITAL: {
                 Hospital h = p.getRandomHospital();
                 setPrimaryPlace(h);
-                shifts = h.getShifts();
+                if (h == null) {
+                } else {
+                    shifts = h.getShifts();
+                }
             } break;
             case RESTAURANT: {
                 Restaurant r = p.getRandomRestaurant();
                 setPrimaryPlace(r);
-                shifts = r.getShifts();
+                if (r == null) {
+                } else {
+                    shifts = r.getShifts();
+                }
             } break;
         }
     }

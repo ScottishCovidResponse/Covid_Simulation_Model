@@ -13,6 +13,7 @@ import uk.co.ramp.covid.simulation.population.*;
 import uk.co.ramp.covid.simulation.util.RNG;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -46,7 +47,7 @@ public class ConstructionSiteTest {
         }
         p.createMixing();
 
-        Person[] allPeople = p.getAllPeople();
+        ArrayList<Person> allPeople = p.getAllPeople();
         for (Person allPerson : allPeople) {
             allPerson.allocateCommunalPlace(p.getPlaces());
             assertFalse("Primary communal place cannot be a construction site", allPerson.getPrimaryCommunalPlace() instanceof ConstructionSite);
