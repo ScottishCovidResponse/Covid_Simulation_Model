@@ -26,8 +26,8 @@ public class RestaurantTest {
         RNG.seed(123);
         //Setup a restaurant with 2 people
         restaurant = new Restaurant();
-        p1 = new Adult();
-        p2 = new Pensioner();
+        p1 = new Adult(30, Person.Sex.MALE);
+        p2 = new Pensioner(67, Person.Sex.FEMALE);
         Household h1 = new Household(Household.HouseholdType.ADULT, null);
         Household h2 = new Household(Household.HouseholdType.PENSIONER, null);
         p1.setHome(h1);
@@ -46,7 +46,7 @@ public class RestaurantTest {
     @Test
     public void testShoppingTrip() {
         ArrayList<Person> personList = new ArrayList<>();
-        personList.add(new Child());
+        personList.add(new Child(6, Person.Sex.MALE));
         restaurant.shoppingTrip(personList);
         int expPeople = 3;
         assertEquals("Unexpected number of people in restaurant", expPeople, restaurant.people.size());

@@ -30,9 +30,9 @@ public class HouseholdTest {
     public void initialise() throws JsonParseException, IOException {
         ParameterReader.readParametersFromFile("src/test/resources/default_params.json");
         household = new Household(Household.HouseholdType.ADULT, null);
-        Person p1 = new Adult();
-        Person p2 = new Adult();
-        Person p3 = new Adult();
+        Person p1 = new Adult(30, Person.Sex.MALE);
+        Person p2 = new Adult(32, Person.Sex.FEMALE);
+        Person p3 = new Adult(30, Person.Sex.MALE);
         household.addInhabitant(p1);
         household.addInhabitant(p2);
         household.addInhabitant(p3);
@@ -59,7 +59,7 @@ public class HouseholdTest {
 
     @Test
     public void testAddPerson() {
-        Person p4 = new Adult();
+        Person p4 = new Adult(40, Person.Sex.FEMALE);
         household.addInhabitant(p4);
         int expSize = 4;
         assertEquals("Unexpected household size", expSize, household.getInhabitants().size());
@@ -67,7 +67,7 @@ public class HouseholdTest {
 
     @Test
     public void testGetHouseholdSize() {
-        Person p1 = new Adult();
+        Person p1 = new Adult(50, Person.Sex.MALE);
         household.addInhabitant(p1);
         int expSize = 4;
         assertEquals("Unexpected household size", expSize, household.getHouseholdSize());
@@ -82,7 +82,7 @@ public class HouseholdTest {
     public void testSendNeighboursHome() {
         PopulationParameters.get().setHouseholdVisitorLeaveRate(1.0);
         Household h = new Household(Household.HouseholdType.ADULT, null);
-        Person p1 = new Adult();
+        Person p1 = new Adult(22, Person.Sex.FEMALE);
         
         p1.setHome(household);
         h.addPersonNext(p1);

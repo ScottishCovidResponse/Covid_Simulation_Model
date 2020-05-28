@@ -5,6 +5,7 @@ import org.apache.logging.log4j.Logger;
 import uk.co.ramp.covid.simulation.util.InvalidParametersException;
 
 import java.lang.reflect.Field;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -17,41 +18,6 @@ public class PopulationParameters {
     private static final Logger LOGGER = LogManager.getLogger(PopulationParameters.class);
     private static PopulationParameters pp = null;
     private static final double EPSILON = 0.001;
-
-
-    // Proportions of each type of person in the population
-    private static class Population {
-        public Double pInfants = null;
-        public Double pChildren = null;
-        public Double pAdults = null;
-        public Double pPensioners = null;
-
-        @Override
-        public String toString() {
-            return "Population{" +
-                    "pInfants=" + pInfants +
-                    ", pChildren=" + pChildren +
-                    ", pAdults=" + pAdults +
-                    ", pPensioners=" + pPensioners +
-                    '}';
-        }
-
-        public boolean isValid() {
-            boolean probabilitiesValid = isValidProbability(pInfants, "pInfants")
-                    && isValidProbability(pChildren, "pChildren")
-                    && isValidProbability(pAdults, "pAdults")
-                    && isValidProbability(pPensioners, "pPensioners");
-
-            double totalP = pAdults + pChildren + pInfants + pPensioners;
-            if(!(totalP <= 1 + EPSILON && totalP >= 1 - EPSILON)) {
-                LOGGER.error("Population parameter probabilities do not total one");
-                return false;
-            }
-
-            return probabilitiesValid;
-        }
-
-    }
 
     // Household populations
     // These values define the probability of a household being an adult only, adult and child household etc
@@ -343,7 +309,7 @@ public class PopulationParameters {
         }
     }
 
-    private final Population population;
+    private final Map<String,Double> population;
     private final Households households;
     private final AdditionalMembersDistributions additionalMembersDistributions;
     private BuildingDistribution buildingDistribution;
@@ -354,7 +320,7 @@ public class PopulationParameters {
     private HouseholdProperties householdProperties;
 
     private PopulationParameters() {
-        population = new Population();
+        population = new HashMap<>();
         households = new Households();
         additionalMembersDistributions = new AdditionalMembersDistributions();
         buildingDistribution = new BuildingDistribution();
@@ -370,7 +336,7 @@ public class PopulationParameters {
         boolean valid = true;
         // We don't do this in a single statement to ensure that all the "uninitalised" parameter warnings are printed
         // in one go instead of being short circuited
-        valid = valid && checker.isValid(population) && population.isValid();
+        valid = valid && checker.isValid(population);
         valid = valid && checker.isValid(households) && households.isValid();
         valid = valid && checker.isValid(additionalMembersDistributions);
         valid = valid && checker.isValid(buildingDistribution) && buildingDistribution.isValid();
@@ -395,23 +361,8 @@ public class PopulationParameters {
     public static void clearParameters() {
         pp = null;
     }
-
-    // Population distribution
-    public double getpInfants() {
-        return population.pInfants;
-    }
-
-    public double getpChildren() {
-        return population.pChildren;
-    }
-
-    public double getpAdults() {
-        return population.pAdults;
-    }
-
-    public double getpPensioners() {
-        return population.pPensioners;
-    }
+    
+    public Map<String, Double> getPopulation() { return population; }
 
     // Household allocation parameters
     public double getpAdultOnly() {

@@ -26,7 +26,7 @@ public class PensionerTest {
         }
         p.createMixing();
         p.assignNeighbours();
-        Pensioner pensioner = new Pensioner();
+        Pensioner pensioner = new Pensioner(70, Person.Sex.MALE);
 
         List<DailyStats> stats;
         int nDays = 1;

@@ -4,6 +4,13 @@ import uk.co.ramp.covid.simulation.CovidParameters;
 import uk.co.ramp.covid.simulation.DailyStats;
 
 public class Pensioner extends Person {
+    
+    public Pensioner(int age, Sex sex) {
+        super(age, sex);
+        if (age < 65) {
+            throw new InvalidAgeException("Trying to create a pensioner outside the correct age range (65+)");
+        }
+    }
 
     @Override
     public void reportInfection(DailyStats s) {

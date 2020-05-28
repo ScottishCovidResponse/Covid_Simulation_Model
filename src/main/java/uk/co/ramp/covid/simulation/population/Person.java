@@ -12,8 +12,16 @@ import uk.co.ramp.covid.simulation.place.Household;
 import uk.co.ramp.covid.simulation.util.RNG;
 
 public abstract class Person {
+    
+    public enum Sex {
+        MALE, FEMALE
+    }
+    
     private CommunalPlace primaryPlace = null;
     protected Shifts shifts = null;
+    
+    private Sex sex;
+    private int age;
 
     private Household home;
     private boolean recovered;
@@ -28,7 +36,9 @@ public abstract class Person {
     public abstract void reportDeath (DailyStats s);
     public abstract void allocateCommunalPlace(Places p);
 
-    public Person() {
+    public Person(int age, Sex sex) {
+        this.age = age;
+        this.sex = sex;
         this.rng = RNG.get();
         this.transmissionProb = PopulationParameters.get().getpTransmission();
         this.quarantineProb = PopulationParameters.get().getpQuarantine();
@@ -175,5 +185,13 @@ public abstract class Person {
             return hour + 2 >= shifts.getShift(day).getStart();
         }
         return false;
+    }
+
+    public Sex getSex() {
+        return sex;
+    }
+
+    public int getAge() {
+        return age;
     }
 }

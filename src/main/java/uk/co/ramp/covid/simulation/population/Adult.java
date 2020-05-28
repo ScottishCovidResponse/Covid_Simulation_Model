@@ -13,7 +13,11 @@ public class Adult extends Person {
 
     Professions profession;
 
-    public Adult() {
+    public Adult(int age, Sex sex) {
+        super(age, sex);
+        if (age >= 65 || age < 18) {
+            throw new InvalidAgeException("Trying to create an adult outside the correct age range (18-64)");
+        }
         setProfession();
     }
 
@@ -48,7 +52,6 @@ public class Adult extends Person {
         switch(profession) {
             case TEACHER: {
                 primaryPlace = p.getRandomSchool();
-//                setPrimaryPlace(primaryPlace);
             } break;
             case NURSERY: {
                 primaryPlace = p.getRandomNursery();

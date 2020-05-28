@@ -14,23 +14,21 @@ public class InfantTest {
 
     @Test
     public void testInfant() throws JsonParseException, IOException {
+        RNG.seed(0); // This test is sensitive to random numbers
         ParameterReader.readParametersFromFile("src/test/resources/default_params.json");
-        RNG.seed(100);
         int nNursery = 0;
-        PopulationParameters.get().setAttendsNursery(1.0);
-        //Test 100% of infants go to nursery
-        for (int i = 0; i < 100; i++) {
-            Infant infant = new Infant();
+        //Test 50% of infants go to nursery
+        for (int i = 0; i < 1000; i++) {
+            Infant infant = new Infant(2, Person.Sex.MALE);
             if (infant.isGoesToNursery()) nNursery++;
         }
-        assertEquals("Unexpected number of infants at nursery", 100, nNursery);
+        assertEquals("Unexpected number of infants at nursery", 500, nNursery, 10);
     }
 
     @Test
     public void testInfantReports() throws IOException {
         //Test Infant methods reportInfection() and reportDeath()
         ParameterReader.readParametersFromFile("src/test/resources/default_params.json");
-        RNG.seed(123);
         Population p = new Population(500,60);
         try {
             p.populateHouseholds();
@@ -39,7 +37,7 @@ public class InfantTest {
         }
         p.createMixing();
         p.assignNeighbours();
-        Infant infant = new Infant();
+        Infant infant = new Infant(3, Person.Sex.FEMALE);
 
         List<DailyStats> stats;
         int nDays = 1;

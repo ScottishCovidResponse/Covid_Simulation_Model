@@ -23,7 +23,7 @@ public class ChildTest {
             Assert.fail("Could not populate households in test");
         }
         p.createMixing();
-        Child child = new Child();
+        Child child = new Child(10, Person.Sex.MALE);
         child.allocateCommunalPlace(p.getPlaces());
         assertTrue("Child not at school", child.getPrimaryCommunalPlace() instanceof School);
     }
