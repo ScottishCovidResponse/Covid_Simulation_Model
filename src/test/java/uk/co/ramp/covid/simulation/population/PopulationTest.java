@@ -6,7 +6,6 @@ import org.junit.Test;
 import uk.co.ramp.covid.simulation.DailyStats;
 import uk.co.ramp.covid.simulation.io.ParameterReader;
 import uk.co.ramp.covid.simulation.place.*;
-import uk.co.ramp.covid.simulation.util.RNG;
 
 import java.io.IOException;
 import java.util.List;
@@ -15,16 +14,16 @@ import static org.junit.Assert.*;
 
 public class PopulationTest {
 
-    Population p;
+    Population pop;
     int populationSize;
 
     @Before
     public void setupParams() throws IOException {
         ParameterReader.readParametersFromFile("src/test/resources/default_params.json");
         populationSize = 10000;
-        p = new Population(populationSize,1000);
+        pop = new Population(populationSize,1000);
         try {
-            p.populateHouseholds();
+            pop.populateHouseholds();
         } catch (ImpossibleAllocationException e) {
             Assert.fail("Could not populate households in test");
         }
@@ -32,7 +31,7 @@ public class PopulationTest {
 
     @Test
     public void testPopulationSize() {
-        assertEquals("Unexpected population size", populationSize, p.getPopulationSize());
+        assertEquals("Unexpected population size", populationSize, pop.getPopulationSize());
     }
 
     @Test
@@ -140,18 +139,18 @@ public class PopulationTest {
     @Test (expected = ImpossibleAllocationException.class )
     public void testImpossibleAllocationException() throws ImpossibleAllocationException {
         populationSize = 10;
-        p = new Population(populationSize,1000);
-        p.populateHouseholds();
+        pop = new Population(populationSize,1000);
+        pop.populateHouseholds();
     }
 
     @Test
     public void testAllocateConstructionSite() {
         //Test that the primary place of adult construction workers is set to construction site
-        p.createMixing();
+        pop.createMixing();
         Adult adult = new Adult(30, Person.Sex.FEMALE);
         adult.profession = Adult.Professions.CONSTRUCTION;
-        p.getHouseholds().get(0).addInhabitant(adult);
-        adult.allocateCommunalPlace(p.getPlaces());
+        pop.getHouseholds().get(0).addInhabitant(adult);
+        adult.allocateCommunalPlace(pop.getPlaces());
         CommunalPlace cp = adult.getPrimaryCommunalPlace();
         assertTrue("Unexpected primary communal place", cp instanceof ConstructionSite);
     }
@@ -159,11 +158,11 @@ public class PopulationTest {
     @Test
     public void testAllocateHospital() {
         //Test that the primary place of adult hospital workers is set to hospital
-        p.createMixing();
+        pop.createMixing();
         Adult adult = new Adult(30, Person.Sex.MALE);
         adult.profession = Adult.Professions.HOSPITAL;
-        p.getHouseholds().get(0).addInhabitant(adult);
-        adult.allocateCommunalPlace(p.getPlaces());
+        pop.getHouseholds().get(0).addInhabitant(adult);
+        adult.allocateCommunalPlace(pop.getPlaces());
         CommunalPlace cp = adult.getPrimaryCommunalPlace();
         assertTrue("Unexpected primary communal place", cp instanceof Hospital);
     }
@@ -171,11 +170,11 @@ public class PopulationTest {
     @Test
     public void testAllocateOffice() {
         //Test that the primary place of adult office workers is set to office
-        p.createMixing();
+        pop.createMixing();
         Adult adult = new Adult(30, Person.Sex.FEMALE);
         adult.profession = Adult.Professions.OFFICE;
-        p.getHouseholds().get(0).addInhabitant(adult);
-        adult.allocateCommunalPlace(p.getPlaces());
+        pop.getHouseholds().get(0).addInhabitant(adult);
+        adult.allocateCommunalPlace(pop.getPlaces());
         CommunalPlace cp = adult.getPrimaryCommunalPlace();
         assertTrue("Unexpected primary communal place", cp instanceof Office);
     }
@@ -183,11 +182,11 @@ public class PopulationTest {
     @Test
     public void testAllocateRestaurant() {
         //Test that the primary place of adult restaurant workers is set to restaurant
-        p.createMixing();
+        pop.createMixing();
         Adult adult = new Adult(30, Person.Sex.MALE);
         adult.profession = Adult.Professions.RESTAURANT;
-        p.getHouseholds().get(0).addInhabitant(adult);
-        adult.allocateCommunalPlace(p.getPlaces());
+        pop.getHouseholds().get(0).addInhabitant(adult);
+        adult.allocateCommunalPlace(pop.getPlaces());
         CommunalPlace cp = adult.getPrimaryCommunalPlace();
         assertTrue("Unexpected primary communal place", cp instanceof Restaurant);
     }
@@ -195,11 +194,11 @@ public class PopulationTest {
     @Test
     public void testAllocateSchool() {
         //Test that the primary place of adult teachers is set to school
-        p.createMixing();
+        pop.createMixing();
         Adult adult = new Adult(30, Person.Sex.FEMALE);
         adult.profession = Adult.Professions.TEACHER;
-        p.getHouseholds().get(0).addInhabitant(adult);
-        adult.allocateCommunalPlace(p.getPlaces());
+        pop.getHouseholds().get(0).addInhabitant(adult);
+        adult.allocateCommunalPlace(pop.getPlaces());
         CommunalPlace cp = adult.getPrimaryCommunalPlace();
         assertTrue("Unexpected primary communal place", cp instanceof School);
     }
@@ -207,11 +206,11 @@ public class PopulationTest {
     @Test
     public void testAllocateShop() {
         //Test that the primary place of adult shop workers is set to shop
-        p.createMixing();
+        pop.createMixing();
         Adult adult = new Adult(30, Person.Sex.MALE);
         adult.profession = Adult.Professions.SHOP;
-        p.getHouseholds().get(0).addInhabitant(adult);
-        adult.allocateCommunalPlace(p.getPlaces());
+        pop.getHouseholds().get(0).addInhabitant(adult);
+        adult.allocateCommunalPlace(pop.getPlaces());
         CommunalPlace cp = adult.getPrimaryCommunalPlace();
         assertTrue("Unexpected primary communal place", cp instanceof Shop);
     }
@@ -220,10 +219,10 @@ public class PopulationTest {
     public void testSeedVirus() {
         int nInfections = 10;
         int nInfected = 0;
-        p.seedVirus(nInfections);
+        pop.seedVirus(nInfections);
 
         //Check that there are just 10 infections amongst the population
-        for (Person p : p.getAllPeople()) {
+        for (Person p : pop.getAllPeople()) {
             if (p.getInfectionStatus()) {
                 nInfected++;
             }
@@ -234,18 +233,18 @@ public class PopulationTest {
 
     @Test
     public void testAssignNeighbours() {
-        p.createMixing();
-        p.assignNeighbours();
+        pop.createMixing();
+        pop.assignNeighbours();
         int totalNeighbours = 0;
 
         //loop for each household and check neighbour list is not null
-        for (int i = 0; i < p.getnHousehold(); i++) {
-            assertNotNull("Null neighbour list", p.getHouseholds().get(i).nNeighbours());
-            totalNeighbours += p.getHouseholds().get(i).nNeighbours();
+        for (int i = 0; i < pop.getnHousehold(); i++) {
+            assertNotNull("Null neighbour list", pop.getHouseholds().get(i).nNeighbours());
+            totalNeighbours += pop.getHouseholds().get(i).nNeighbours();
         }
 
         //Get the mean number of neighbours per household and compare against the expected
-        double meanNeighbours = (double)totalNeighbours / (double)p.getnHousehold();
+        double meanNeighbours = (double)totalNeighbours / (double) pop.getnHousehold();
         int expectedNeighbours = PopulationParameters.get().getExpectedNeighbours();
         assertEquals("Unexpected mean number of neighbours", meanNeighbours, expectedNeighbours, 0.5);
     }
@@ -254,9 +253,9 @@ public class PopulationTest {
     public void testTimestep() {
         List<DailyStats> stats;
         int nDays = 3;
-        p.createMixing();
-        p.assignNeighbours();
-        stats = p.simulate(nDays);
+        pop.createMixing();
+        pop.assignNeighbours();
+        stats = pop.simulate(nDays);
         assertEquals("Unexpected number of daily stats", nDays, stats.size());
     }
 
@@ -265,10 +264,10 @@ public class PopulationTest {
         int start = 1;
         int end = 2;
         double socialDist = 2.0;
-        p.setLockdown(start, end, socialDist);
-        assertEquals("Unexpected lockdown start", start, p.getLockdownStart());
-        assertEquals("Unexpected lockdown end", end, p.getLockdownEnd());
-        assertEquals("Unexpected social distance", socialDist, p.getSocialDist(), 0.01);
+        pop.setLockdown(start, end, socialDist);
+        assertEquals("Unexpected lockdown start", start, pop.getLockdownStart());
+        assertEquals("Unexpected lockdown end", end, pop.getLockdownEnd());
+        assertEquals("Unexpected social distance", socialDist, pop.getSocialDist(), 0.01);
     }
 
     @Test
@@ -278,11 +277,11 @@ public class PopulationTest {
         int startLockdown = 2;
         int endLockdown = 4;
         double socialDist = 2.0;
-        p.createMixing();
-        p.assignNeighbours();
-        p.setLockdown(startLockdown, endLockdown, socialDist);
-        stats = p.simulate(nDays);
-        assertFalse("Unexpectedly still in lockdown", p.isLockdown());
+        pop.createMixing();
+        pop.assignNeighbours();
+        pop.setLockdown(startLockdown, endLockdown, socialDist);
+        stats = pop.simulate(nDays);
+        assertFalse("Unexpectedly still in lockdown", pop.isLockdown());
     }
 
     @Test
@@ -292,12 +291,12 @@ public class PopulationTest {
         int start = 3;
         int end = 6;
         double socialDist = 2.0;
-        p.createMixing();
-        p.assignNeighbours();
-        p.setLockdown(start, end, socialDist);
-        stats = p.simulate(nDays);
-        assertTrue("Unexpectedly not in lockdown", p.isLockdown());
-        assertTrue("Restaurants not in lockdown", p.isrLockdown());
+        pop.createMixing();
+        pop.assignNeighbours();
+        pop.setLockdown(start, end, socialDist);
+        stats = pop.simulate(nDays);
+        assertTrue("Unexpectedly not in lockdown", pop.isLockdown());
+        assertTrue("Restaurants not in lockdown", pop.isrLockdown());
     }
 
     @Test
@@ -305,10 +304,10 @@ public class PopulationTest {
         int start = 1;
         int end = 2;
         double socialDist = 2.0;
-        p.setSchoolLockdown(start, end, socialDist);
-        assertEquals("Unexpected school lockdown start", start, p.getLockdownStart());
-        assertEquals("Unexpected school lockdown end", end, p.getLockdownEnd());
-        assertTrue("Unexpected school lockdown", p.isSchoolL());
+        pop.setSchoolLockdown(start, end, socialDist);
+        assertEquals("Unexpected school lockdown start", start, pop.getLockdownStart());
+        assertEquals("Unexpected school lockdown end", end, pop.getLockdownEnd());
+        assertTrue("Unexpected school lockdown", pop.isSchoolL());
     }
 
     @Test
@@ -318,15 +317,15 @@ public class PopulationTest {
         int startLockdown = 1;
         int endLockdown = 5;
         double socialDist = 2.0;
-        p.createMixing();
-        p.assignNeighbours();
-        p.setLockdown(startLockdown, endLockdown, socialDist);
-        p.setSchoolLockdown(startLockdown, endLockdown - 2, socialDist);
-        stats = p.simulate(nDays);
-        for (School s : p.getPlaces().getSchools()) {
+        pop.createMixing();
+        pop.assignNeighbours();
+        pop.setLockdown(startLockdown, endLockdown, socialDist);
+        pop.setSchoolLockdown(startLockdown, endLockdown - 2, socialDist);
+        stats = pop.simulate(nDays);
+        for (School s : pop.getPlaces().getSchools()) {
             assertTrue("School should be a key premises", s.isKeyPremises());
         }
-        for (Nursery n : p.getPlaces().getNurseries()) {
+        for (Nursery n : pop.getPlaces().getNurseries()) {
             assertTrue("Nursery should be a key premises", n.isKeyPremises());
         }
     }
@@ -334,10 +333,63 @@ public class PopulationTest {
     // TODO: This runs sucessfully if the whole harness is run, but not if only this test is run. It's not cler why.
     @Test
     public void allPlacesStaffed() {
-        p.createMixing();
-        p.allocatePeople();
-        for (CommunalPlace q : p.getPlaces().getAllPlaces()) {
+        pop.createMixing();
+        pop.allocatePeople();
+        for (CommunalPlace q : pop.getPlaces().getAllPlaces()) {
             assertTrue("Place not fully staffed, nStaff: " + q.getnStaff(), q.isFullyStaffed());
         }
+    }
+    
+    @Test
+    public void populationIsValid() {
+        // Ages from 0-100
+        for (Person p : pop.getAllPeople()) {
+            assertTrue(p.getAge() >= 0 && p.getAge() <= 100);
+        }
+        
+        // Roughly (with 5% tolerance) a 50-50 m/f split
+        int m = 0;
+        int f = 0;
+        for (Person p : pop.getAllPeople()) {
+            if (p.getSex() == Person.Sex.MALE) {
+                m++;
+            } else {
+                f++;
+            }
+        }
+
+        assertEquals(0, Math.abs(m-f), populationSize * 0.05);
+        
+        // Proportions of people type make sense
+        int adult = 0;
+        int child = 0;
+        int infant = 0;
+        int pensioner = 0;
+        
+        for (Person p : pop.getAllPeople()) {
+            if (p instanceof Infant) {
+                infant++;
+            }
+            else if (p instanceof Adult) {
+                adult++;
+            }
+            else if (p instanceof Child) {
+                child++;
+            }
+            else if (p instanceof Pensioner) {
+                pensioner++;
+            }
+        }
+
+        // Most people are adults
+        assertTrue(adult > child);
+        assertTrue(adult > infant);
+        assertTrue(adult > pensioner);
+
+        // There's a lot of pensioners too
+        assertTrue(pensioner > child);
+        assertTrue(pensioner > infant);
+
+        assertTrue(child > infant);
     }
 }
