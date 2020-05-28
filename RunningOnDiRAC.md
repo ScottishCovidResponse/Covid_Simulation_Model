@@ -1,6 +1,6 @@
 # Running On DiRAC
 
-Follow these instructinos to get an account (for the SCRC Project):
+Follow these instructions to get an account (for the SCRC Project):
 
     https://github.com/ScottishCovidResponse/SCRCIssueTracking/wiki/DiRAC-Access
 
@@ -23,7 +23,16 @@ Get the source code from GitHub, and build it with:
     cd Covid_Simulation_Model
     gradle install
 
+(Or use `git pull` instead of `clone` if you have already cloned the repository.)
+
 Then have a look at the "TODO"s in the example `slurm_submit` file, which can be run with the command:
 
     sbatch slurm_submit
 
+You can check the status of your job using:
+
+    squeue -n covid-sim-model
+
+And combine the output from multiple jobs into a single csv file using (replacing jobID, lastArrayIndex and outputFileName with the relevant values):
+
+    combineArrayJobOutputs.sh jobID lastArrayIndex outputFileName

@@ -32,7 +32,6 @@ public class Places {
         shops = new ProbabilityDistribution<>();
         all = new ArrayList<>();
     }
-    
 
     public Office getRandomOffice() {
         return offices.sample();

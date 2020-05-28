@@ -87,6 +87,11 @@ public class ParameterReaderTest {
         assertEquals(0.25, PopulationParameters.get().getpOfficeSmall(), EPSILON);
         assertEquals(0.4, PopulationParameters.get().getpOfficeMed(), EPSILON);
         assertEquals(0.35, PopulationParameters.get().getpOfficeLarge(), EPSILON);
+
+        assertEquals(0.4, PopulationParameters.get().getpLeaveRestaurant(), EPSILON);
+        assertEquals(0.5, PopulationParameters.get().getpLeaveShop(), EPSILON);
+        assertEquals(0.01786, PopulationParameters.get().getpGoShopping(), EPSILON);
+        assertEquals(0.01190, PopulationParameters.get().getpGoRestaurant(), EPSILON);
     }
 
     @After

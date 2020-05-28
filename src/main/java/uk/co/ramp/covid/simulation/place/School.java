@@ -2,16 +2,17 @@ package uk.co.ramp.covid.simulation.place;
 
 import uk.co.ramp.covid.simulation.DailyStats;
 import uk.co.ramp.covid.simulation.population.PopulationParameters;
+import uk.co.ramp.covid.simulation.population.Shifts;
 
 public class School extends CommunalPlace {
     public School() {
         this(Size.UNKNOWN);
     }
 
+
     public School(Size s) {
         super(s);
-        int startTime = 9; // TODO. Not used at the moment, but may be used in the future. LEave them in for completeness
-        int endTime = 15;
+        times = OpeningTimes.nineFiveWeekdays();
         transProb = PopulationParameters.get().getpBaseTrans() * PopulationParameters.get().getpSchoolTrans();
     }
 
@@ -19,4 +20,17 @@ public class School extends CommunalPlace {
     public void reportInfection(DailyStats s) {
         s.incInfectionsSchool();
     }
+
+
+    @Override
+    public Shifts getShifts() {
+        nStaff++;
+        return Shifts.schoolTimes();
+    }
+
+    @Override
+    public boolean isFullyStaffed() {
+        return nStaff > 0;
+    }
+
 }

@@ -49,13 +49,13 @@ public class PopulationTest {
 
         // Final population size = initial population size (all people allocated)
         int pop = 0;
-        for (Household h : p.getPopulation()) {
+        for (Household h : p.getHouseholds()) {
            pop += h.getHouseholdSize();
         }
         assertEquals("Sum total household size should equal population size",  populationSize, pop);
 
         // Sanity check households
-        for (Household h : p.getPopulation()){
+        for (Household h : p.getHouseholds()){
             assertTrue("Each household must be assigned at least 1 person", h.getHouseholdSize() > 0);
             switch (h.gethType()) {
                 // Adults only
@@ -151,7 +151,7 @@ public class PopulationTest {
         p.createMixing();
         Adult adult = new Adult();
         adult.profession = Adult.Professions.CONSTRUCTION;
-        p.getPopulation()[0].addInhabitant(adult);
+        p.getHouseholds().get(0).addInhabitant(adult);
         adult.allocateCommunalPlace(p.getPlaces());
         CommunalPlace cp = adult.getPrimaryCommunalPlace();
         assertTrue("Unexpected primary communal place", cp instanceof ConstructionSite);
@@ -163,7 +163,7 @@ public class PopulationTest {
         p.createMixing();
         Adult adult = new Adult();
         adult.profession = Adult.Professions.HOSPITAL;
-        p.getPopulation()[0].addInhabitant(adult);
+        p.getHouseholds().get(0).addInhabitant(adult);
         adult.allocateCommunalPlace(p.getPlaces());
         CommunalPlace cp = adult.getPrimaryCommunalPlace();
         assertTrue("Unexpected primary communal place", cp instanceof Hospital);
@@ -175,7 +175,7 @@ public class PopulationTest {
         p.createMixing();
         Adult adult = new Adult();
         adult.profession = Adult.Professions.OFFICE;
-        p.getPopulation()[0].addInhabitant(adult);
+        p.getHouseholds().get(0).addInhabitant(adult);
         adult.allocateCommunalPlace(p.getPlaces());
         CommunalPlace cp = adult.getPrimaryCommunalPlace();
         assertTrue("Unexpected primary communal place", cp instanceof Office);
@@ -187,7 +187,7 @@ public class PopulationTest {
         p.createMixing();
         Adult adult = new Adult();
         adult.profession = Adult.Professions.RESTAURANT;
-        p.getPopulation()[0].addInhabitant(adult);
+        p.getHouseholds().get(0).addInhabitant(adult);
         adult.allocateCommunalPlace(p.getPlaces());
         CommunalPlace cp = adult.getPrimaryCommunalPlace();
         assertTrue("Unexpected primary communal place", cp instanceof Restaurant);
@@ -199,7 +199,7 @@ public class PopulationTest {
         p.createMixing();
         Adult adult = new Adult();
         adult.profession = Adult.Professions.TEACHER;
-        p.getPopulation()[0].addInhabitant(adult);
+        p.getHouseholds().get(0).addInhabitant(adult);
         adult.allocateCommunalPlace(p.getPlaces());
         CommunalPlace cp = adult.getPrimaryCommunalPlace();
         assertTrue("Unexpected primary communal place", cp instanceof School);
@@ -211,7 +211,7 @@ public class PopulationTest {
         p.createMixing();
         Adult adult = new Adult();
         adult.profession = Adult.Professions.SHOP;
-        p.getPopulation()[0].addInhabitant(adult);
+        p.getHouseholds().get(0).addInhabitant(adult);
         adult.allocateCommunalPlace(p.getPlaces());
         CommunalPlace cp = adult.getPrimaryCommunalPlace();
         assertTrue("Unexpected primary communal place", cp instanceof Shop);
@@ -241,8 +241,8 @@ public class PopulationTest {
 
         //loop for each household and check neighbour list is not null
         for (int i = 0; i < p.getnHousehold(); i++) {
-            assertNotNull("Null neighbour list", p.getPopulation()[i].nNeighbours());
-            totalNeighbours += p.getPopulation()[i].nNeighbours();
+            assertNotNull("Null neighbour list", p.getHouseholds().get(i).nNeighbours());
+            totalNeighbours += p.getHouseholds().get(i).nNeighbours();
         }
 
         //Get the mean number of neighbours per household and compare against the expected
@@ -257,7 +257,7 @@ public class PopulationTest {
         int nDays = 3;
         p.createMixing();
         p.assignNeighbours();
-        stats = p.timeStep(nDays);
+        stats = p.simulate(nDays);
         assertEquals("Unexpected number of daily stats", nDays, stats.size());
     }
 
@@ -282,7 +282,7 @@ public class PopulationTest {
         p.createMixing();
         p.assignNeighbours();
         p.setLockdown(startLockdown, endLockdown, socialDist);
-        stats = p.timeStep(nDays);
+        stats = p.simulate(nDays);
         assertFalse("Unexpectedly still in lockdown", p.isLockdown());
     }
 
@@ -296,7 +296,7 @@ public class PopulationTest {
         p.createMixing();
         p.assignNeighbours();
         p.setLockdown(start, end, socialDist);
-        stats = p.timeStep(nDays);
+        stats = p.simulate(nDays);
         assertTrue("Unexpectedly not in lockdown", p.isLockdown());
         assertTrue("Restaurants not in lockdown", p.isrLockdown());
     }
@@ -323,12 +323,22 @@ public class PopulationTest {
         p.assignNeighbours();
         p.setLockdown(startLockdown, endLockdown, socialDist);
         p.setSchoolLockdown(startLockdown, endLockdown - 2, socialDist);
-        stats = p.timeStep(nDays);
+        stats = p.simulate(nDays);
         for (School s : p.getPlaces().getSchools()) {
             assertTrue("School should be a key premises", s.isKeyPremises());
         }
         for (Nursery n : p.getPlaces().getNurseries()) {
             assertTrue("Nursery should be a key premises", n.isKeyPremises());
+        }
+    }
+
+    // TODO: This runs sucessfully if the whole harness is run, but not if only this test is run. It's not cler why.
+    @Test
+    public void allPlacesStaffed() {
+        p.createMixing();
+        p.allocatePeople();
+        for (CommunalPlace q : p.getPlaces().getAllPlaces()) {
+            assertTrue("Place not fully staffed, nStaff: " + q.getnStaff(), q.isFullyStaffed());
         }
     }
 }

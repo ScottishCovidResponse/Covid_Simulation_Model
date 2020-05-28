@@ -19,7 +19,7 @@ public class AdultTest {
         boolean professionSet = false;
         professionSet = professionSet
                      || adult.profession == Adult.Professions.CONSTRUCTION
-                     || adult.isShopWorker()
+                     || adult.profession == Adult.Professions.SHOP
                      || adult.profession == Adult.Professions.HOSPITAL
                      || adult.profession == Adult.Professions.OFFICE
                      || adult.profession == Adult.Professions.RESTAURANT

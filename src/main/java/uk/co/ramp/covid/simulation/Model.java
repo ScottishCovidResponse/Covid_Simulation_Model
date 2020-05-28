@@ -191,7 +191,6 @@ public class Model {
                 break;
             }
 
-            p.summarisePop();
             p.createMixing();
             p.allocatePeople();
             p.seedVirus(nInfections);
@@ -201,7 +200,7 @@ public class Model {
             if (schoolLockDown != null) {
                 p.setSchoolLockdown(schoolLockDown.start, schoolLockDown.end, schoolLockDown.socialDistance);
             }
-            stats.add(p.timeStep(nDays));
+            stats.add(p.simulate(nDays));
         }
 
         if (!outputDisabled) {
