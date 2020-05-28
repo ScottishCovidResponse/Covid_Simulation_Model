@@ -146,7 +146,7 @@
             "expectedNeighbours":3
         },
         "personProperties":{
-            "pTransmission":0.45,
+            "pTransmission":0.5,
             "pQuarantine":0.9
         }
     }
