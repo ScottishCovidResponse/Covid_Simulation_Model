@@ -39,15 +39,15 @@ public class CovidTest {
             cStatus = virus.stepInfection();
         }
         assertEquals(CStatus.PHASE1, cStatus);
-        assertTrue(virus.getIsSymptomatic());
 
 
         //Test that the person becomes dead after the phase1 period       
         double p2Period = virus.getP2();
-        for (int i = 0; i < p2Period; i++) {
+        for (int i = 0; i < p2Period - 1; i++) {
             if(!virus.isDead()) cStatus = virus.stepInfection();
         }
-
+        assertTrue(virus.getIsSymptomatic());
+        virus.stepInfection();
         assertEquals(CStatus.DEAD, cStatus);
     }
 
