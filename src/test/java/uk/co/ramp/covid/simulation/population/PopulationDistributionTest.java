@@ -1,8 +1,10 @@
 package uk.co.ramp.covid.simulation.population;
 
 import org.junit.Test;
+import uk.co.ramp.covid.simulation.io.ParameterReader;
 import uk.co.ramp.covid.simulation.util.InvalidParametersException;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -58,4 +60,24 @@ public class PopulationDistributionTest {
         assertEquals(30, s.getAge());
         assertEquals(Person.Sex.MALE, s.getSex());
     }
+
+    @Test
+    public void seeAllAgesInALargeSample() throws IOException {
+        ParameterReader.readParametersFromFile("src/test/resources/default_params.json");
+        PopulationDistribution dist = new PopulationDistribution();
+        dist.readFromMap(PopulationParameters.get().getPopulation());
+
+        int SAMPLES = 1000000;
+        int[] seen = new int[101];
+
+        for (int i = 0; i < SAMPLES; i++) {
+            PopulationDistribution.SexAge s = dist.sample();
+            seen[s.getAge()]++;
+        }
+
+        for (int i = 0; i < 101; i++) {
+            assertTrue(seen[i] > 0);
+        }
+    }
+
 }
