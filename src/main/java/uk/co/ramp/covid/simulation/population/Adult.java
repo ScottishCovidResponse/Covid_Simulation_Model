@@ -44,63 +44,39 @@ public class Adult extends Person {
 
     @Override
     public void allocateCommunalPlace(Places p) {
+        CommunalPlace primaryPlace = null;
         switch(profession) {
             case TEACHER: {
-                School s = p.getRandomSchool();
-                setPrimaryPlace(s);
-                if (s == null) {
-                } else {
-                    shifts = s.getShifts();
-                }
+                primaryPlace = p.getRandomSchool();
+                setPrimaryPlace(primaryPlace);
             } break;
             case NURSERY: {
-                Nursery s = p.getRandomNursery();
-                setPrimaryPlace(s);
-                if (s == null) {
-                } else {
-                    shifts = s.getShifts();
-                }
+                primaryPlace = p.getRandomNursery();
+                setPrimaryPlace(primaryPlace);
             } break;
             case SHOP: {
-                Shop s = p.getRandomShop();
-                setPrimaryPlace(s);
-                if (s == null) {
-                } else {
-                    shifts = s.getShifts();
-                }
+                primaryPlace = p.getRandomShop();
+                setPrimaryPlace(primaryPlace);
             } break;
             case CONSTRUCTION: {
-                ConstructionSite s = p.getRandomConstructionSite();
-                setPrimaryPlace(s);
-                if (s == null) {
-                } else {
-                    shifts = s.getShifts();
-                }
+                primaryPlace = p.getRandomConstructionSite();
+                setPrimaryPlace(primaryPlace);
             } break;
             case OFFICE: {
-                Office s = p.getRandomOffice();
-                setPrimaryPlace(s);
-                if (s == null) {
-                } else {
-                    shifts = s.getShifts();
-                }
+                primaryPlace = p.getRandomOffice();
+                setPrimaryPlace(primaryPlace);
             } break;
             case HOSPITAL: {
-                Hospital h = p.getRandomHospital();
-                setPrimaryPlace(h);
-                if (h == null) {
-                } else {
-                    shifts = h.getShifts();
-                }
+                primaryPlace = p.getRandomHospital();
+                setPrimaryPlace(primaryPlace);
             } break;
             case RESTAURANT: {
-                Restaurant r = p.getRandomRestaurant();
-                setPrimaryPlace(r);
-                if (r == null) {
-                } else {
-                    shifts = r.getShifts();
-                }
+                primaryPlace = p.getRandomRestaurant();
+                setPrimaryPlace(primaryPlace);
             } break;
+        }
+        if (primaryPlace != null) {
+            shifts = primaryPlace.getShifts();
         }
     }
 
