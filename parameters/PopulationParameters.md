@@ -32,12 +32,8 @@ all parameters should be 1.
 
 -   Object name: `population`
 
-| Parameter Name | Description                         | Type     | 
-|----------------|-------------------------------------|----------|
-| pInfants       | Probability a person is an infant   | Double   | 
-| pChildren      | Probability a person is a child     | Double   | 
-| pAdults        | Probability a person is an adult    | Double   | 
-| pPensioners    | Probability a person is a pensioner | Double   | 
+Should contain a map of the form `"m_0_4":0.0002` implying that the probability
+of a person being a `m` (or `f`) aged between 0 and 4 is 0.002.
 
 ## Person Properties
 
@@ -65,6 +61,7 @@ Distribution should add to 1.
 | pConstruction   | Probability of working in construction                                  | Double |
 | pTeacher        | Probability of being a teacher                                          | Double |
 | pRestaurant     | Probability of working in a restaurant                                  | Double |
+| pNursery        | Probability of working in a nursery                                     | Double |
 | pUnemployed     | Probability of being unemployed                                         | Double |
 | allocationSizes | Probability of being assigned to work in a large/medium/small workplace | Double |
 
@@ -94,14 +91,16 @@ households may include either/both children or infants.
 
 -   Object name: `households`
 
-| Parameter Name          | Description                                       | Type   |
-|-------------------------|---------------------------------------------------|--------|
-| pAdultOnly              | Probability of an adult only household            | Double |
-| pPensionerOnly          | Probability of a pensioner only household         | Double |
-| pPensionerAdult         | Probability of an adult/pensioner household       | Double |
-| AdultChildren           | Probability of an adult/child household           | Double |
-| pPnsionerChildren       | Probability of an pensioner/child household       | Double |
-| pAdultPensionerChildren | Probability of an adult/pensioner/child household | Double |
+| Parameter Name          | Description                                                       | Type   |
+|-------------------------|-------------------------------------------------------------------|--------|
+| pAdultOnly              | Probability of an adult only household                            | Double |
+| pPensionerOnly          | Probability of a pensioner only household                         | Double |
+| pPensionerAdult         | Probability of an adult/pensioner household                       | Double |
+| AdultChildren           | Probability of an adult/child household                           | Double |
+| pPnsionerChildren       | Probability of an pensioner/child household                       | Double |
+| pAdultPensionerChildren | Probability of an adult/pensioner/child household                 | Double |
+| pGoShopping             | Probability the households tries to go shopping in an hour        | Double |
+| pGoRestaurant           | Probability the households tries to go to a restaurant in an hour | Double |
 
 ## Household Size Distributions
 
@@ -174,17 +173,19 @@ an essential service).
 
 -   Object name: `buildingProperties`
 
-| Parameter Name         | Description                                             | Type   |
-|------------------------|---------------------------------------------------------|--------|
-| pBaseTrans             | Base disease transmission probability for all places    | Double |
-| pHospitalTrans         | Disease transmission probability in a hospital          | Double |
-| pConstructionSiteTrans | Disease transmission probability on a construction site | Double |
-| pNurseryTrans          | Disease transmission probability in a nursery           | Double |
-| pOfficeTrans           | Disease transmission probability in an office           | Double |
-| pRestaurantTrans       | Disease transmission probability in a restaurant        | Double |
-| pSchoolTrans           | Disease transmission probability in a school            | Double |
-| pShopTrans             | Disease transmission probability in a shop              | Double |
-| pHospitalKey           | Probability a hospital closes in a lockdown             | Double |
-| pConstructionSiteKey   | Probability a construction site closes in a lockdown    | Double |
-| pOfficeKey             | Probability an office closes in a lockdown              | Double |
-| pShopKey               | Probability a shop closes in a lockdown                 | Double |
+| Parameter Name         | Description                                                    | Type   |
+|------------------------|----------------------------------------------------------------|--------|
+| pBaseTrans             | Base disease transmission probability for all places           | Double |
+| pHospitalTrans         | Disease transmission probability in a hospital                 | Double |
+| pConstructionSiteTrans | Disease transmission probability on a construction site        | Double |
+| pNurseryTrans          | Disease transmission probability in a nursery                  | Double |
+| pOfficeTrans           | Disease transmission probability in an office                  | Double |
+| pRestaurantTrans       | Disease transmission probability in a restaurant               | Double |
+| pSchoolTrans           | Disease transmission probability in a school                   | Double |
+| pShopTrans             | Disease transmission probability in a shop                     | Double |
+| pHospitalKey           | Probability a hospital closes in a lockdown                    | Double |
+| pConstructionSiteKey   | Probability a construction site closes in a lockdown           | Double |
+| pOfficeKey             | Probability an office closes in a lockdown                     | Double |
+| pShopKey               | Probability a shop closes in a lockdown                        | Double |
+| pLeaveShop             | Probability a shopper decides to leave a shop in an hour       | Double |
+| pLeaveRestaurant       | Probability a shopper decides to leave a restaurant in an hour | Double |

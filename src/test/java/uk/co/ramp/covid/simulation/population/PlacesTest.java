@@ -19,8 +19,7 @@ public class PlacesTest {
     @Before
     public void setupParams() throws IOException {
         ParameterReader.readParametersFromFile("src/test/resources/default_params.json");
-        // NOTE: This test is no guarenteed to pass with a different seed due to randomness
-        RNG.seed(42);
+        // NOTE: This test is not guaranteed to pass with a different seed due to randomness
     }
 
 

@@ -17,7 +17,6 @@ public class PensionerTest {
     public void testPensionerReports() throws IOException {
         //Test Pensioner methods reportInfection() and reportDeath()
         ParameterReader.readParametersFromFile("src/test/resources/default_params.json");
-        RNG.seed(123);
         Population p = new Population(500,60);
         try {
             p.populateHouseholds();
@@ -26,11 +25,11 @@ public class PensionerTest {
         }
         p.createMixing();
         p.assignNeighbours();
-        Pensioner pensioner = new Pensioner();
+        Pensioner pensioner = new Pensioner(70, Person.Sex.MALE);
 
         List<DailyStats> stats;
         int nDays = 1;
-        stats = p.timeStep(nDays);
+        stats = p.simulate(nDays);
 
         pensioner.reportInfection(stats.get(0));
         assertEquals("Unexpected number of pensioner infections", 1, stats.get(0).getPensionerInfected());

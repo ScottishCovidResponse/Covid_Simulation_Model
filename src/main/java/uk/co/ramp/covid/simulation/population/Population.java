@@ -22,8 +22,8 @@ public class Population {
 
     private final int populationSize;
     private final int nHousehold;
-    private final Household[] population;
-    private final Person[] aPopulation;
+    private final ArrayList<Household> households;
+    private final ArrayList<Person> allPeople;
     private Places places;
     private boolean lockdown;
     private boolean rLockdown;
@@ -37,10 +37,12 @@ public class Population {
         this.rng = RNG.get();
         this.populationSize = populationSize;
         this.nHousehold = nHousehold;
-        if (this.nHousehold > this.populationSize) LOGGER.warn("More households than population");
+        if (this.nHousehold > this.populationSize) {
+            LOGGER.warn("More households than population");
+        }
 
-        this.population = new Household[this.nHousehold];
-        this.aPopulation = new Person[this.populationSize];
+        this.households = new ArrayList<>(nHousehold);
+        this.allPeople = new ArrayList<>(populationSize);
         this.places = new Places();
         this.lockdownStart = (-1);
         this.lockdownEnd = (-1);
@@ -51,32 +53,22 @@ public class Population {
     // Creates the population of People based on the probabilities of age groups above
     private void createPopulation(BitSet adultIndex, BitSet pensionerIndex,
                                   BitSet childIndex, BitSet infantIndex) {
-
-        ProbabilityDistribution<Integer> dist = new ProbabilityDistribution<>();
-        dist.add(PopulationParameters.get().getpAdults(), 0);
-        dist.add(PopulationParameters.get().getpPensioners(), 1);
-        dist.add(PopulationParameters.get().getpChildren(), 2);
-        dist.add(PopulationParameters.get().getpInfants(), 3);
-
+        PopulationDistribution dist = new PopulationDistribution();
+        dist.readFromMap(PopulationParameters.get().getPopulation());
         for (int i = 0; i < this.populationSize; i++) {
-            int type = dist.sample();
-            switch(type) {
-                case 0: {
-                    this.aPopulation[i] = new Adult();
-                    adultIndex.set(i);
-                } break;
-                case 1: {
-                    this.aPopulation[i] = new Pensioner();
-                    pensionerIndex.set(i);
-                } break;
-                case 2:{
-                    this.aPopulation[i] = new Child();
-                    childIndex.set(i);
-                } break;
-                case 3:{
-                    this.aPopulation[i] = new Infant();
-                    infantIndex.set(i);
-                } break;
+            PopulationDistribution.SexAge t = dist.sample();
+            if (t.getAge() < 5) {
+                allPeople.add(new Infant(t.getAge(), t.getSex()));
+                infantIndex.set(i);
+            } else if (t.getAge() < 18) {
+                allPeople.add(new Child(t.getAge(), t.getSex()));
+                childIndex.set(i);
+            } else if (t.getAge() < 65) {
+                allPeople.add(new Adult(t.getAge(), t.getSex()));
+                adultIndex.set(i);
+            } else {
+                allPeople.add(new Pensioner(t.getAge(), t.getSex()));
+                pensionerIndex.set(i);
             }
         }
     }
@@ -94,7 +86,7 @@ public class Population {
 
         for (int i = 0; i < nHousehold; i++) {
             Household.HouseholdType t = p.sample();
-           population[i] = new Household(t);
+            households.add(new Household(t, places));
         }
     }
 
@@ -103,7 +95,7 @@ public class Population {
                                                 BitSet childIndex, BitSet infantIndex) {
         int adult = 0; int pensioner = 0; int adultPensioner = 0; int adultChild = 0;
         int pensionerChild = 0; int adultPensionerChild = 0;
-        for (Household h : population) {
+        for (Household h : households) {
             switch(h.gethType()) {
                 case ADULT: adult++; break;
                 case PENSIONER: pensioner++; break;
@@ -122,15 +114,15 @@ public class Population {
     // Cycles over all bits of remainingPeople and ensures they are allocated to a household in a greedy fashion
     private void greedyAllocate(BitSet remainingPeople, Set<Household.HouseholdType> types) {
         int i = 0; // Pointer into remaining
-        for (int h = 0; h < population.length; h++) {
-            Household.HouseholdType htype = population[h].gethType();
+        for (Household h : households) {
+            Household.HouseholdType htype = h.gethType();
             if (types.contains(htype)) {
                 i = remainingPeople.nextSetBit(i);
                 if (i < 0) {
                     break;
                 }
                 remainingPeople.clear(i);
-                population[h].addInhabitant(aPopulation[i]);
+                h.addInhabitant(allPeople.get(i));
             }
         }
     }
@@ -140,17 +132,17 @@ public class Population {
                               Map<Integer, Double> probabilities) {
         int i = 0; // Pointer into remaining
         while (!remainingPeople.isEmpty()) {
-            for (int h = 0; h < population.length; h++) {
-                Household.HouseholdType htype = population[h].gethType();
+            for (Household h : households) {
+                Household.HouseholdType htype = h.gethType();
                 if (types.contains(htype)) {
                     double rand = rng.nextUniform(0, 1);
-                    double prob_to_add = probabilities.getOrDefault(population[h].getHouseholdSize(), 1.0);
+                    double prob_to_add = probabilities.getOrDefault(h.getHouseholdSize(), 1.0);
                     if (rand < prob_to_add) {
                         i = remainingPeople.nextSetBit(i);
                         if (i < 0) {
                             break;
                         }
-                        population[h].addInhabitant(aPopulation[i]);
+                        h.addInhabitant(allPeople.get(i));
                         remainingPeople.clear(i);
                     }
                 }
@@ -203,15 +195,6 @@ public class Population {
                 PopulationParameters.get().getInfantAllocationPMap());
     }
 
-    // Used for diagnosing problems with the algorithm for creating households
-    public void summarisePop() {
-        int total = 0;
-        for (int i = 0; i < this.nHousehold; i++) {
-            total += this.population[i].getHouseholdSize();
-        }
-    }
-
-
     // This creates the Communal places of different types where people mix
     public void createMixing() {
         int nHospitals = populationSize / PopulationParameters.get().getHospitalRatio();
@@ -235,7 +218,7 @@ public class Population {
 
     // Allocates people to communal places - work environments
     public void allocatePeople() {
-        for (Household h : population) {
+        for (Household h : households) {
             for (Person p : h.getPeople() ) {
                 p.allocateCommunalPlace(places);
             }
@@ -245,12 +228,12 @@ public class Population {
 
     // This method assigns a random number of neighbours to each Household
     public void assignNeighbours() {
-        for (Household cHouse : population) {
+        for (Household cHouse : households) {
             int expectedNeighbours = PopulationParameters.get().getExpectedNeighbours();
             int nneighbours = (int) rng.nextPoisson(expectedNeighbours);
             for (int k = 0; k < nneighbours; k++) {
 
-                Household neighbour = population[rng.nextInt(0, population.length - 1)];
+                Household neighbour = households.get(rng.nextInt(0, households.size() - 1));
 
                 // Cannot be a neighbour of ourselves
                 if (neighbour == cHouse) {
@@ -274,28 +257,40 @@ public class Population {
     public void seedVirus(int nInfections) {
         for (int i = 1; i <= nInfections; i++) {
             int nInt = rng.nextInt(0, this.nHousehold - 1);
-            if (this.population[nInt].getHouseholdSize() > 0) {
-                if (!population[nInt].seedInfection()) i--;
+            if (households.get(nInt).getHouseholdSize() > 0) {
+                if (!households.get(nInt).seedInfection()) i--;
             }
-            if (this.population[nInt].getHouseholdSize() == 0) i--;
+            if (households.get(nInt).getHouseholdSize() == 0) i--;
         }
+    }
+    
+    public void timeStep(int day, int hour, DailyStats dStats) {
+        households.forEach(h -> h.doInfect(dStats));
+        places.getAllPlaces().forEach(p -> p.doInfect(dStats));
+
+        // There is a potential to introduce parallelism here if required by using parallelStream (see below).
+        // Note we currently cannot parallelise movement as the ArrayLists for capturing moves are not thread safe
+        // households.parallelStream().forEach(h -> h.doInfect(dStats));
+        // places.getAllPlaces().parallelStream().forEach(p -> p.doInfect(dStats));
+
+        // Movement places people in "next" buffers (to avoid people moving twice in an hour)
+        households.forEach(h -> h.doMovement(day, hour, lockdown));
+        places.getAllPlaces().forEach(p -> p.doMovement(day, hour, lockdown));
+
+        households.forEach(h -> h.stepPeople());
+        places.getAllPlaces().forEach(p -> p.stepPeople());
     }
 
     // Step through nDays in 1 hour time steps
-    public List<DailyStats> timeStep(int nDays) {
+    public List<DailyStats> simulate(int nDays) {
         List<DailyStats> stats = new ArrayList<>(nDays);
         for (int i = 0; i < nDays; i++) {
             DailyStats dStats = new DailyStats(i);
-            int dWeek = (i + 1) % 7;
+            int dWeek = i % 7;
             this.implementLockdown(i);
             LOGGER.info("Lockdown = {}", this.lockdown);
             for (int k = 0; k < 24; k++) {
-                this.cycleHouseholds(dWeek, k, dStats);
-                this.cyclePlaces(k, dStats);
-                this.returnShoppers(k);
-                this.returnRestaurant(k);
-                this.shoppingTrip(dWeek, k);
-                if (!this.rLockdown) this.restaurantTrip(dWeek, k);
+                timeStep(dWeek, k, dStats);
             }
             stats.add(this.processCases(dStats));
         }
@@ -344,24 +339,12 @@ public class Population {
 
     // This method generates output at the end of each day
     private DailyStats processCases(DailyStats stats) {
-        for (Person p : aPopulation) {
+        for (Person p : allPeople) {
             stats.processPerson(p);
         }
         stats.log();
         return stats;
     }
-
-    // Step through the households to identify individual movements to CommunalPlaces
-    private void cycleHouseholds(int day, int hour, DailyStats stats) {
-        for (Household household : this.population) {
-            household.cycleHouse(stats);
-            household.cycleMovements(day, hour, lockdown);
-            household.sendNeighboursHome();
-            if (!this.lockdown) this.cycleNeighbours(household);
-        }
-    }
-
-
 
     // This sets the schools exempt from lockdown if that is triggered. Somewhat fudged at present by setting the schools to be KeyPremises - not entirely what thta was intended for, but it works
     private void schoolExemption() {
@@ -373,82 +356,8 @@ public class Population {
         }
     }
 
-    // People returning ome at the end of the day
-    private void cyclePlaces(int hour, DailyStats stats) {
-        places.getAllPlaces().forEach(p -> p.cyclePlace(hour,stats));
-    }
-
-    // Go through neighbours and see if they visit anybody
-    private void cycleNeighbours(Household cHouse) {
-        if (cHouse.nNeighbours() > 0 && cHouse.getHouseholdSize() > 0) {
-            // We only welcome one set of visitors at a time
-            for (Household n : cHouse.getNeighbours()) {
-                if (rng.nextUniform(0, 1) < PopulationParameters.get().getNeighbourVisitFreq()) {
-                    n.welcomeNeighbours(cHouse);
-                    break;
-                }
-            }
-        }
-    }
-
-    // People go shopping
-    private void shoppingTrip(int day, int hour) {
-        int openingTime = 9;
-        int closingTime = 17;
-        double visitFrequency = 3.0 / 7.0; // BAsed on three visits per week to shops
-        double visitProb = visitFrequency / 8.0;
-        if (this.lockdown) visitProb = visitProb * 0.5;
-        ArrayList<Person> vNext = null;
-
-        if (hour >= openingTime && hour < closingTime) {
-            for (Household household : this.population) {
-                if (rng.nextUniform(0, 1) < visitProb) {
-                    vNext = household.shoppingTrip();
-                }
-                if (vNext != null) {
-                    Shop s = places.getRandomShop();
-                    s.shoppingTrip(vNext);
-                }
-                vNext = null;
-            }
-        }
-    }
-
-    // People return from shopping
-    private void returnShoppers(int hour) {
-        places.getShops().forEach(s -> s.sendHome(hour));
-    }
-
-    // People go out for dinner
-    private void restaurantTrip(int day, int hour) {
-        int openingTime = 10;
-        int closingTime = 22;
-        int startDay = 3;
-        int endDay = 7;
-        double visitFrequency = 2.0 / 7.0; // Based on three visits per week to shops
-        double visitProb = visitFrequency / 12.0;
-
-        if (hour >= openingTime && hour < closingTime && day >= startDay && day <= endDay) {
-            for (Household household : this.population) {
-                ArrayList<Person> vNext = null;
-                if (rng.nextUniform(0, 1) < visitProb) {
-                    vNext = household.shoppingTrip(); // This method is fine for our purposes here
-                }
-                if (vNext != null) {
-                    Restaurant r = places.getRandomRestaurant();
-                    r.shoppingTrip(vNext);
-                }
-            }
-        }
-    }
-
-    // People return from dinner
-    private void returnRestaurant(int hour) {
-        places.getRestaurants().forEach(r -> r.sendHome(hour));
-    }
-
-    public Household[] getPopulation() {
-        return population;
+    public ArrayList<Household> getHouseholds() {
+        return households;
     }
 
     public int getPopulationSize() {
@@ -459,8 +368,8 @@ public class Population {
         return nHousehold;
     }
 
-    public Person[] getAllPeople() {
-        return aPopulation;
+    public ArrayList<Person> getAllPeople() {
+        return allPeople;
     }
 
     public boolean isLockdown() {

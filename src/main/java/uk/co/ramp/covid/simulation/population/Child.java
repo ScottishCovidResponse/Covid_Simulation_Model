@@ -5,7 +5,13 @@ import uk.co.ramp.covid.simulation.DailyStats;
 
 public class Child extends Person {
 
-    public Child() { }
+    public Child(int age, Sex sex) {
+        super(age, sex);
+        if (age >= 18 || age < 5) {
+            throw new InvalidAgeException("Trying to create a child outside the correct age range (5-17)");
+        }
+        shifts = Shifts.schoolTimes();
+    }
 
     @Override
     public void reportInfection(DailyStats s) {

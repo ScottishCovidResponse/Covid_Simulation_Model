@@ -30,10 +30,7 @@ public class ParameterReaderTest {
         assertEquals(1.0, CovidParameters.get().getPensionerProgressionPhase2(), EPSILON);
 
         // Population Parameters
-        assertEquals(0.1, PopulationParameters.get().getpInfants(), EPSILON);
-        assertEquals(0.3, PopulationParameters.get().getpChildren(), EPSILON);
-        assertEquals(0.4, PopulationParameters.get().getpAdults(), EPSILON);
-        assertEquals(0.2, PopulationParameters.get().getpPensioners(), EPSILON);
+        assertEquals(42, PopulationParameters.get().getPopulation().size());
 
         assertEquals(0.2, PopulationParameters.get().getpAdultOnly(), EPSILON);
         assertEquals(0.1, PopulationParameters.get().getpPensionerOnly(), EPSILON);
@@ -90,6 +87,11 @@ public class ParameterReaderTest {
         assertEquals(0.25, PopulationParameters.get().getpOfficeSmall(), EPSILON);
         assertEquals(0.4, PopulationParameters.get().getpOfficeMed(), EPSILON);
         assertEquals(0.35, PopulationParameters.get().getpOfficeLarge(), EPSILON);
+
+        assertEquals(0.4, PopulationParameters.get().getpLeaveRestaurant(), EPSILON);
+        assertEquals(0.5, PopulationParameters.get().getpLeaveShop(), EPSILON);
+        assertEquals(0.01786, PopulationParameters.get().getpGoShopping(), EPSILON);
+        assertEquals(0.01190, PopulationParameters.get().getpGoRestaurant(), EPSILON);
     }
 
     @After

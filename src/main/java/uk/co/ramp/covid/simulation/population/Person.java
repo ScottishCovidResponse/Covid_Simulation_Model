@@ -12,8 +12,17 @@ import uk.co.ramp.covid.simulation.place.Household;
 import uk.co.ramp.covid.simulation.util.RNG;
 
 public abstract class Person {
-    private boolean shopWorker = false;
+    
+    public enum Sex {
+        MALE, FEMALE
+    }
+    
     private CommunalPlace primaryPlace = null;
+    protected Shifts shifts = null;
+    
+    private Sex sex;
+    private int age;
+
     private Household home;
     private boolean recovered;
     private Covid cVirus;
@@ -27,22 +36,15 @@ public abstract class Person {
     public abstract void reportDeath (DailyStats s);
     public abstract void allocateCommunalPlace(Places p);
 
-    public Person() {
+    public Person(int age, Sex sex) {
+        this.age = age;
+        this.sex = sex;
         this.rng = RNG.get();
         this.transmissionProb = PopulationParameters.get().getpTransmission();
         this.quarantineProb = PopulationParameters.get().getpQuarantine();
         this.quarantineVal = rng.nextUniform(0, 1);
     }
-    
-    public void setShopWorker() {
-        shopWorker = true;
-    }
 
-    public boolean isShopWorker() {
-        return shopWorker;
-    }
-
-   
     public boolean isRecovered() {
         return recovered;
     }
@@ -68,7 +70,7 @@ public abstract class Person {
     }
     
     public void returnHome() {
-        home.addInhabitant(this);
+        home.addPersonNext(this);
     }
 
     public boolean getQuarantine() {
@@ -141,4 +143,55 @@ public abstract class Person {
     }
 
     public abstract boolean avoidsPhase2(double testP);
+    
+    public boolean worksNextHour(CommunalPlace communalPlace, int day, int hour, boolean lockdown) {
+        if (primaryPlace == null || shifts == null) {
+            return false;
+        }
+
+        // Handle day crossovers
+        int start = shifts.getShift(day).getStart();
+        int end = shifts.getShift(day).getEnd();
+        if (end < start) {
+            end += 24;
+        }
+
+        boolean shouldWork =
+                primaryPlace == communalPlace
+                && hour + 1 >= start
+                && hour + 1 < end;
+        
+        if (lockdown) {
+            if (communalPlace.isKeyPremises()) {
+                return shouldWork;
+            } else {
+                return false;
+            }
+        }
+        
+        return shouldWork;
+    }
+
+    public void visitPrimaryPlace() {
+        if (primaryPlace != null) {
+            primaryPlace.addPersonNext(this);
+        }
+    }
+
+    // People need to leave early if they have a shift starting in 2 hours time
+    // 1 hour travels home, 1 travels to work; There is currently no direct travel to work.
+    public boolean mustGoHome(int day, int hour) {
+        if (primaryPlace != null && shifts != null) {
+            return hour + 2 >= shifts.getShift(day).getStart();
+        }
+        return false;
+    }
+
+    public Sex getSex() {
+        return sex;
+    }
+
+    public int getAge() {
+        return age;
+    }
 }

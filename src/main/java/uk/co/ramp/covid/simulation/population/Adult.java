@@ -2,19 +2,24 @@ package uk.co.ramp.covid.simulation.population;
 
 import uk.co.ramp.covid.simulation.CovidParameters;
 import uk.co.ramp.covid.simulation.DailyStats;
+import uk.co.ramp.covid.simulation.place.*;
 import uk.co.ramp.covid.simulation.util.ProbabilityDistribution;
 
 public class Adult extends Person {
 
     public enum Professions {
-        OFFICE, SHOP, HOSPITAL, CONSTRUCTION, TEACHER, RESTAURANT, NONE
+        OFFICE, SHOP, HOSPITAL, CONSTRUCTION, TEACHER, RESTAURANT, NURSERY, NONE
     }
 
     Professions profession;
 
-    public Adult() { setProfession(); }
-
-
+    public Adult(int age, Sex sex) {
+        super(age, sex);
+        if (age >= 65 || age < 18) {
+            throw new InvalidAgeException("Trying to create an adult outside the correct age range (18-64)");
+        }
+        setProfession();
+    }
 
     // Allocates adults to different professions
     public void setProfession() {
@@ -25,13 +30,10 @@ public class Adult extends Person {
         p.add(PopulationParameters.get().getpConstructionWorker(), Professions.CONSTRUCTION);
         p.add(PopulationParameters.get().getpTeacher(), Professions.TEACHER);
         p.add(PopulationParameters.get().getpRestaurantWorker(), Professions.RESTAURANT);
+        p.add(PopulationParameters.get().getpNurseryWorker(), Professions.NURSERY);
         p.add(PopulationParameters.get().getpUnemployed(), Professions.NONE);
 
         profession = p.sample();
-        // There is special logic for shop workers returning home
-        if (profession == Professions.SHOP) {
-            super.setShopWorker();
-        }
     }
 
     @Override
@@ -48,22 +50,39 @@ public class Adult extends Person {
     public void allocateCommunalPlace(Places p) {
         switch(profession) {
             case TEACHER: {
-                setPrimaryPlace(p.getRandomSchool());
+                School s = p.getRandomSchool();
+                setPrimaryPlace(s);
+                shifts = s.getShifts();
+            } break;
+            case NURSERY: {
+                Nursery s = p.getRandomNursery();
+                setPrimaryPlace(s);
+                shifts = s.getShifts();
             } break;
             case SHOP: {
-                setPrimaryPlace(p.getRandomShop());
+                Shop s = p.getRandomShop();
+                setPrimaryPlace(s);
+                shifts = s.getShifts();
             } break;
             case CONSTRUCTION: {
-                setPrimaryPlace(p.getRandomConstructionSite());
+                ConstructionSite s = p.getRandomConstructionSite();
+                setPrimaryPlace(s);
+                shifts = s.getShifts();
             } break;
             case OFFICE: {
-                setPrimaryPlace(p.getRandomOffice());
+                Office s = p.getRandomOffice();
+                setPrimaryPlace(s);
+                shifts = s.getShifts();
             } break;
             case HOSPITAL: {
-                setPrimaryPlace(p.getRandomHospital());
+                Hospital h = p.getRandomHospital();
+                setPrimaryPlace(h);
+                shifts = h.getShifts();
             } break;
             case RESTAURANT: {
-                setPrimaryPlace(p.getRandomRestaurant());
+                Restaurant r = p.getRandomRestaurant();
+                setPrimaryPlace(r);
+                shifts = r.getShifts();
             } break;
         }
     }
