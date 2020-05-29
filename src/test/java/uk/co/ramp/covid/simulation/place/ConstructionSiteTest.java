@@ -78,4 +78,46 @@ public class ConstructionSiteTest {
         }
     }
 
+    @Test
+    public void testConstructionSiteWorkers() throws ImpossibleAllocationException {
+        int populationSize = 10000;
+        int nHouseholds = 2000;
+        int nInfections = 10;
+
+        Population p = new Population(populationSize, nHouseholds);
+        p.populateHouseholds();
+        p.createMixing();
+        p.allocatePeople();
+        p.seedVirus(nInfections);
+        List<Person> staff;
+        //Run for a whole week
+        for (int day = 0; day < 7; day++) {
+            int totStaff;
+            int startTime = Shifts.nineFiveFiveDays().getShift(day).getStart();
+            int endTime = Shifts.nineFiveFiveDays().getShift(day).getEnd();
+            DailyStats s = new DailyStats(day);
+            for (int i = 0; i < 24; i++) {
+                p.timeStep(day, i, s);
+                totStaff = 0;
+                for (ConstructionSite place : p.getPlaces().getConstructionSites()) {
+                    staff = place.getStaff(day, i);
+                    totStaff += staff.size();
+                }
+
+                if (day < 5) {
+
+                    //Staff should be at construction sites during working hours only
+                    if (i < startTime || i >= endTime - 1) {
+                        assertEquals("Unexpected staff at construction site", 0, totStaff);
+                    } else {
+                        assertTrue("Unexpectedly no staff at construction site", totStaff > 0);
+                    }
+                } else {
+                    //Staff should not be at construction sites on weekends
+                    assertEquals("Unexpected staff at construction site", 0, totStaff);
+                }
+            }
+
+        }
+    }
 }

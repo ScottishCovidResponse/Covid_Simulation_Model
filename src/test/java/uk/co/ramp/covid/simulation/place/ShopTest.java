@@ -4,14 +4,17 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.google.gson.JsonParseException;
+import uk.co.ramp.covid.simulation.DailyStats;
 import uk.co.ramp.covid.simulation.io.ParameterReader;
 import uk.co.ramp.covid.simulation.population.*;
 import uk.co.ramp.covid.simulation.util.RNG;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class ShopTest {
 
@@ -59,4 +62,38 @@ public class ShopTest {
         int expPeople = 2;
         assertEquals("Unexpected number of people sent home", expPeople, left);
     }
+
+    @Test
+    public void testShopWorkers() throws ImpossibleAllocationException {
+        int populationSize = 10000;
+        int nHouseholds = 2000;
+        int nInfections = 10;
+
+        Population p = new Population(populationSize, nHouseholds);
+        p.populateHouseholds();
+        p.createMixing();
+        p.allocatePeople();
+        p.seedVirus(nInfections);
+        List<Person> staff;
+        //Run for a whole week
+        for (int day = 0; day < 7; day++) {
+            DailyStats s = new DailyStats(day);
+            for (int i = 0; i < 24; i++) {
+                p.timeStep(day, i, s);
+                for (Shop place : p.getPlaces().getShops()) {
+                    staff = place.getStaff(day, i);
+                    int open = place.getShifts().getShift(day).getStart();
+                    int close = place.getShifts().getShift(day).getEnd();
+                    if (i < open || i >= close - 1) {
+                        assertEquals("Day "+day+" time "+ i + " Unexpected staff at shop", 0, staff.size());
+                    } else {
+                        assertTrue("Day "+day+" time "+ i + " No staff at shop", staff.size() > 0);
+                    }
+                }
+            }
+        }
+    }
+
+
+
 }
