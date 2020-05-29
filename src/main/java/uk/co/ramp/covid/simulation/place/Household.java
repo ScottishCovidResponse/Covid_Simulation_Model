@@ -35,12 +35,22 @@ public class Household extends Place {
     private final List<Household> neighbours;
     private final Places places;
     private int householdSize = 0;
+    
+    private boolean willIsolate = false;
+    private int isolationTimer = 0;
 
     // Create household defined by who lives there
     public Household(HouseholdType hType, Places places) {
         this.hType = hType;
         this.neighbours = new ArrayList<>();
         this.places = places;
+        if (RNG.get().nextUniform(0,1) < PopulationParameters.get().getpHouseholdWillIsolate()) {
+            willIsolate = true;
+        }
+    }
+    
+    public void forceIsolationtimer(int time) {
+        isolationTimer = time;
     }
 
     public List<Household> getNeighbours() {
@@ -70,6 +80,16 @@ public class Household extends Place {
     }
 
     public boolean isNeighbour(Household n) { return neighbours.contains(n); }
+    
+    public void isolate() {
+        if (willIsolate) {
+            isolationTimer = PopulationParameters.get().getHouseholdIsolationPeriod();
+        }
+    }
+    
+    public boolean isIsolating() {
+        return isolationTimer > 0;
+    }
 
     public boolean seedInfection() {
         List<Person> inhabitants = getInhabitants();
@@ -136,22 +156,26 @@ public class Household extends Place {
 
     @Override
     public void doMovement(int day, int hour, boolean lockdown) {
-        // Ordering here implies work takes highest priority, then shopping trips have higher priority
-        // than neighbour and restaurant trips
-        moveShift(day, hour, lockdown);
+        if (!isIsolating()) {
+            // Ordering here implies work takes highest priority, then shopping trips have higher priority
+            // than neighbour and restaurant trips
+            moveShift(day, hour, lockdown);
 
-        // Shops are only open 8-22
-        if (hour + 1 >= 8 && hour + 1 < 22) {
-            moveShop(day, hour, lockdown);
+            // Shops are only open 8-22
+            if (hour + 1 >= 8 && hour + 1 < 22) {
+                moveShop(day, hour, lockdown);
+            }
+
+            moveNeighbour(day, hour);
+
+            // Restaurants are only open 8-22
+            if (!lockdown && hour + 1 >= 8 && hour + 1 < 22) {
+                moveRestaurant(day, hour);
+            }
         }
 
-        moveNeighbour(day, hour);
-
-        // Restaurants are only open 8-22
-        if (!lockdown && hour + 1 >= 8 && hour + 1 < 22) {
-            moveRestaurant(day, hour);
-        }
-
+        // We always send neighbours home outside the isIsolating condition to ensure
+        // they aren't stuck when we start isolating
         sendNeighboursHome(day, hour);
     }
 
@@ -159,6 +183,10 @@ public class Household extends Place {
         List<Person> left = new ArrayList();
 
         for (Household n : getNeighbours()) {
+            if (n.isIsolating()) {
+                continue;
+            }
+
             if (RNG.get().nextUniform(0, 1) < PopulationParameters.get().getNeighbourVisitFreq()) {
                 // We visit neighbours as a family
                 for (Person p : getInhabitants()) {
@@ -252,5 +280,11 @@ public class Household extends Place {
             }
         }
         people.removeAll(left);
+    }
+    
+    public void dayEnd() {
+        if (isIsolating()) {
+            isolationTimer--;
+        }
     }
 }

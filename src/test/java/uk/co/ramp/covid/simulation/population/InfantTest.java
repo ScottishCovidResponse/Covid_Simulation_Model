@@ -26,17 +26,10 @@ public class InfantTest {
     }
 
     @Test
-    public void testInfantReports() throws IOException {
+    public void testInfantReports() throws IOException, ImpossibleAllocationException, ImpossibleWorkerDistributionException {
         //Test Infant methods reportInfection() and reportDeath()
         ParameterReader.readParametersFromFile("src/test/resources/default_params.json");
         Population p = new Population(500,60);
-        try {
-            p.populateHouseholds();
-        } catch (ImpossibleAllocationException e) {
-            Assert.fail("Could not populate households in test");
-        }
-        p.createMixing();
-        p.assignNeighbours();
         Infant infant = new Infant(3, Person.Sex.FEMALE);
 
         List<DailyStats> stats;

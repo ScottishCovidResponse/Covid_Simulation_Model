@@ -13,15 +13,9 @@ import static org.junit.Assert.assertTrue;
 public class ChildTest {
 
     @Test
-    public void testChildAtSchool() throws JsonParseException, IOException {
+    public void testChildAtSchool() throws JsonParseException, IOException, ImpossibleAllocationException, ImpossibleWorkerDistributionException {
         ParameterReader.readParametersFromFile("src/test/resources/default_params.json");
         Population p = new Population(5000,600);
-        try {
-            p.populateHouseholds();
-        } catch (ImpossibleAllocationException e) {
-            Assert.fail("Could not populate households in test");
-        }
-        p.createMixing();
         Child child = new Child(10, Person.Sex.MALE);
         child.allocateCommunalPlace(p.getPlaces());
         assertTrue("Child not at school", child.getPrimaryCommunalPlace() instanceof School);

@@ -101,6 +101,8 @@ households may include either/both children or infants.
 | pAdultPensionerChildren | Probability of an adult/pensioner/child household                 | Double |
 | pGoShopping             | Probability the households tries to go shopping in an hour        | Double |
 | pGoRestaurant           | Probability the households tries to go to a restaurant in an hour | Double |
+| pWillIsolate | Probability the household isolates if symptoms appear | Double |
+| householdIsolationPeriod | Period a household isolates when a symptomatic case appears | Int |
 
 ## Household Size Distributions
 

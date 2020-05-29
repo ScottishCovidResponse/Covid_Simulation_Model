@@ -50,40 +50,37 @@ public class Adult extends Person {
     public void allocateCommunalPlace(Places p) {
         switch(profession) {
             case TEACHER: {
-                School s = p.getRandomSchool();
+                School s = p.getNextSchoolJob();
                 setPrimaryPlace(s);
-                shifts = s.getShifts();
             } break;
             case NURSERY: {
-                Nursery s = p.getRandomNursery();
+                Nursery s = p.getNextNurseryJob();
                 setPrimaryPlace(s);
-                shifts = s.getShifts();
             } break;
             case SHOP: {
-                Shop s = p.getRandomShop();
+                Shop s = p.getNextShopJob();
                 setPrimaryPlace(s);
-                shifts = s.getShifts();
             } break;
             case CONSTRUCTION: {
-                ConstructionSite s = p.getRandomConstructionSite();
+                ConstructionSite s = p.getNextConstructionSiteJob();
                 setPrimaryPlace(s);
-                shifts = s.getShifts();
             } break;
             case OFFICE: {
-                Office s = p.getRandomOffice();
+                Office s = p.getNextOfficeJob();
                 setPrimaryPlace(s);
-                shifts = s.getShifts();
             } break;
             case HOSPITAL: {
-                Hospital h = p.getRandomHospital();
+                Hospital h = p.getNextHospitalJob();
                 setPrimaryPlace(h);
-                shifts = h.getShifts();
             } break;
             case RESTAURANT: {
-                Restaurant r = p.getRandomRestaurant();
+                Restaurant r = p.getNextRestaurantJob();
                 setPrimaryPlace(r);
-                shifts = r.getShifts();
             } break;
+        }
+        
+        if (getPrimaryCommunalPlace() != null) {
+            shifts = getPrimaryCommunalPlace().getShifts();
         }
     }
 

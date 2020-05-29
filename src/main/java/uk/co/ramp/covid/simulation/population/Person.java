@@ -104,6 +104,10 @@ public abstract class Person {
         return false;
     }
 
+    public Covid getcVirus() {
+        return cVirus;
+    }
+
     // This method is pretty important, it returns the Covid infection status
     public CStatus cStatus() {
         CStatus cStatus = CStatus.HEALTHY;
