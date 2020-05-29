@@ -50,4 +50,8 @@ public class Infant extends Person {
     public boolean avoidsPhase2(double testP) {
         return testP > CovidParameters.get().getChildProgressionPhase2();
     }
+
+    // Infants don't get tested
+    @Override
+    public void getTested() { }
 }

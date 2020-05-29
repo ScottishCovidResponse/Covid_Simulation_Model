@@ -22,6 +22,14 @@ public class CovidParameters {
         return cparams;
     }
 
+    private static class TestParameters {
+        public Double diagnosticTestSensitivity = null;
+        
+        public boolean isValid() {
+            return isValidProbability(diagnosticTestSensitivity, "diagnosticTestSensitivity");
+        }
+    }
+
     private static class DiseaseParameters {
         public Double meanLatentPeriod = null;
         public Double meanAsymptomaticPeriod = null;
@@ -59,9 +67,11 @@ public class CovidParameters {
     }
 
     private final DiseaseParameters diseaseParameters;
+    private final TestParameters testParameters;
 
     public CovidParameters() {
         diseaseParameters = new DiseaseParameters();
+        testParameters = new TestParameters();
     }
 
     public static void setParameters(CovidParameters p) {
@@ -124,6 +134,8 @@ public class CovidParameters {
         return diseaseParameters.pensionerProgressionPhase2;
     }
 
+    public double getDiagnosticTestSensitivity() { return testParameters.diagnosticTestSensitivity; }
+
     @Override
     public String toString() {
         return "CovidParameters{" + "\n" +
@@ -133,7 +145,7 @@ public class CovidParameters {
 
     public boolean isValid() {
         ParameterInitialisedChecker checker = new ParameterInitialisedChecker();
-        return checker.isValid(diseaseParameters);
+        return checker.isValid(diseaseParameters) && checker.isValid(testParameters);
     }
 
     public static class ParameterInitialisedChecker {
@@ -157,5 +169,13 @@ public class CovidParameters {
             }
             return res;
         }
+    }
+
+    private static boolean isValidProbability(Double val, String name) {
+        if(val < 0 || val > 1) {
+            LOGGER.error(name + " is not a valid probability");
+            return false;
+        }
+        return true;
     }
 }

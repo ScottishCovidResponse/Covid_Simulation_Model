@@ -6,10 +6,13 @@ package uk.co.ramp.covid.simulation.population;
 
 import org.apache.commons.math3.random.RandomDataGenerator;
 import uk.co.ramp.covid.simulation.Covid;
+import uk.co.ramp.covid.simulation.CovidParameters;
 import uk.co.ramp.covid.simulation.DailyStats;
 import uk.co.ramp.covid.simulation.place.CommunalPlace;
 import uk.co.ramp.covid.simulation.place.Household;
 import uk.co.ramp.covid.simulation.util.RNG;
+
+import java.util.Optional;
 
 public abstract class Person {
     
@@ -30,11 +33,13 @@ public abstract class Person {
     private boolean quarantine;
     private final double quarantineProb; // Needs more thought. The probability that the person will go into quarantine
     private final double quarantineVal;
+    private Optional<Boolean> testOutcome;
     protected final RandomDataGenerator rng;
     
     public abstract void reportInfection(DailyStats s);
     public abstract void reportDeath (DailyStats s);
     public abstract void allocateCommunalPlace(Places p);
+
 
     public Person(int age, Sex sex) {
         this.age = age;
@@ -114,7 +119,7 @@ public abstract class Person {
         if (this.getInfectionStatus()) {
             if (this.cVirus.isLatent()) cStatus = CStatus.LATENT;
             if (this.cVirus.isAsymptomatic()) cStatus = CStatus.ASYMPTOMATIC;
-            if (this.cVirus.getIsSymptomatic()) this.quarantine = this.quarantineProb > this.quarantineVal;
+            if (this.cVirus.isSymptomatic()) this.quarantine = this.quarantineProb > this.quarantineVal;
             if (this.cVirus.isPhase1()) {
                 cStatus = CStatus.PHASE1;
           //      this.quarantine = this.quarantineProb > this.quarantineVal;
@@ -197,5 +202,23 @@ public abstract class Person {
 
     public int getAge() {
         return age;
+    }
+
+    public boolean wasTested() {
+        return testOutcome.isPresent();
+    }
+
+    public void getTested() {
+        if (cVirus == null || !wasTested() || !cVirus.isSymptomatic()) {
+            return;
+        }
+
+        // Negative test
+        if (RNG.get().nextUniform(0,1) >= CovidParameters.get().getDiagnosticTestSensitivity()) {
+            home.stopIsolating();
+            testOutcome = Optional.of(false);
+        } else {
+            testOutcome = Optional.of(true);
+        }
     }
 }

@@ -181,7 +181,7 @@ public class Covid {
         return asymptomaticPeriod;
     }
     
-    public boolean getIsSymptomatic() {
+    public boolean isSymptomatic() {
     	return isSymptomatic;
     }
 
@@ -200,9 +200,9 @@ public class Covid {
     public double getTransAdjustment() {
     	double transAdjustment = 0.0;
     	if(asymptomatic) transAdjustment = this.asymptomaticTransAdjustment;
-    	else if(phase1 && !this.getIsSymptomatic()) transAdjustment = this.asymptomaticTransAdjustment;
-    	else if(phase1 && this.getIsSymptomatic()) transAdjustment = this.symptomaticTransAdjustment;
-    	else if(phase2 && this.getIsSymptomatic()) transAdjustment = this.symptomaticTransAdjustment;
+    	else if(phase1 && !this.isSymptomatic()) transAdjustment = this.asymptomaticTransAdjustment;
+    	else if(phase1 && this.isSymptomatic()) transAdjustment = this.symptomaticTransAdjustment;
+    	else if(phase2 && this.isSymptomatic()) transAdjustment = this.symptomaticTransAdjustment;
     	
     	return transAdjustment;
     	

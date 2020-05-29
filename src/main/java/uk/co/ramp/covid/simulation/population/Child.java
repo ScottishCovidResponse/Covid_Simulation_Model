@@ -33,4 +33,8 @@ public class Child extends Person {
     public boolean avoidsPhase2(double testP) {
         return testP > CovidParameters.get().getChildProgressionPhase2();
     }
+
+    // Children don't get tested
+    @Override
+    public void getTested() { }
 }

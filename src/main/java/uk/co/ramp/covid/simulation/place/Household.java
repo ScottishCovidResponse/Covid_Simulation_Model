@@ -87,6 +87,10 @@ public class Household extends Place {
         }
     }
     
+    public void stopIsolating() {
+        isolationTimer = 0;
+    }
+    
     public boolean isIsolating() {
         return isolationTimer > 0;
     }

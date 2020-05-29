@@ -42,7 +42,7 @@ public class CovidTest {
             cStatus = virus.stepInfection();
         }
         assertEquals(CStatus.PHASE1, cStatus);
-        assertTrue(virus.getIsSymptomatic());
+        assertTrue(virus.isSymptomatic());
 
 
         //Test that the person becomes dead after the phase1 period       
@@ -74,7 +74,7 @@ public class CovidTest {
         }
       //  cStatus = virus.stepInfection();
         assertEquals(CStatus.RECOVERED, cStatus);
-        assertFalse(virus.getIsSymptomatic());
+        assertFalse(virus.isSymptomatic());
     }
 
     //Test that a child steps through the infection from latent to recovered
@@ -94,18 +94,18 @@ public class CovidTest {
         //Test that the person becomes recovered after the total infection period
         for (int i = 1; i < latentPeriod; i++) {
             assertEquals(CStatus.LATENT, cStatus);
-            assertFalse(virus.getIsSymptomatic());
+            assertFalse(virus.isSymptomatic());
         	cStatus = virus.stepInfection();
         }
         
         for (int i = 0; i < asymptomaticPeriod; i++) {
             assertEquals(CStatus.ASYMPTOMATIC, cStatus);
-            assertFalse(virus.getIsSymptomatic());
+            assertFalse(virus.isSymptomatic());
         	cStatus = virus.stepInfection();
         }
         
         assertEquals(CStatus.RECOVERED, cStatus);
-        assertFalse(virus.getIsSymptomatic());
+        assertFalse(virus.isSymptomatic());
     }
 
     @After
