@@ -1,5 +1,6 @@
 package uk.co.ramp.covid.simulation.place;
 
+import com.google.gson.JsonParseException;
 import org.junit.Before;
 import org.junit.Test;
 import uk.co.ramp.covid.simulation.RunModel;
@@ -20,11 +21,12 @@ public class SchoolTest {
     }
 
     @Test
-    public void testSchoolTransProb() {
+    public void testSchoolTransProb() throws JsonParseException, IOException {
         School school = new School();
-        double expProb = PopulationParameters.get().getpBaseTrans() * 30d / (34000d / 50d);
+        double expProb = PopulationParameters.get().getpBaseTrans();
         double delta = 0.01;
-    //    assertEquals("Unexpected school TransProb", expProb, school.transProb, delta);
+        assertEquals("Unexpected school TransProb", expProb, school.transProb, delta);
     }
+
 
 }

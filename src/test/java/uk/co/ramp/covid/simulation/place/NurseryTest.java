@@ -22,10 +22,10 @@ public class NurseryTest {
     }
 
     @Test
-    public void testNurseryTransProb() throws JsonParseException, IOException {
+    public void testNurseryTransProb() throws JsonParseException {
         Nursery nursery = new Nursery();
-        double expProb = PopulationParameters.get().getpBaseTrans() * 30d / (34000d / 50d);
+        double expProb = PopulationParameters.get().getpBaseTrans();
         double delta = 0.01;
-   //     assertEquals("Unexpected nursery TransProb", expProb, nursery.transProb, delta);
+        assertEquals("Unexpected nursery TransProb", expProb, nursery.transProb, delta);
     }
 }

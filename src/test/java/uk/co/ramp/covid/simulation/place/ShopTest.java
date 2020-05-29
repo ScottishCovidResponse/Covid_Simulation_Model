@@ -37,10 +37,11 @@ public class ShopTest {
     }
 
     @Test
-    public void testShopTransProb() {
-        double expProb = PopulationParameters.get().getpBaseTrans() * 5d / (5000d / 200d);
+    public void testShopTransProb() throws JsonParseException {
+        Shop shop = new Shop();
+        double expProb = PopulationParameters.get().getpBaseTrans();
         double delta = 0.01;
-    //    assertEquals("Unexpected shop TransProb", expProb, shop.transProb, delta);
+        assertEquals("Unexpected shop TransProb", expProb, shop.transProb, delta);
     }
 
     @Test

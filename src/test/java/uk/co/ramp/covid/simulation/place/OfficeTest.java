@@ -22,10 +22,10 @@ public class OfficeTest {
     }
 
     @Test
-    public void testOfficeTransProb() throws JsonParseException, IOException {
+    public void testOfficeTransProb() throws JsonParseException {
         Office office = new Office();
-        double expProb = PopulationParameters.get().getpBaseTrans() * 10d / (10000d / 400d);
+        double expProb = PopulationParameters.get().getpBaseTrans();
         double delta = 0.01;
-   //     assertEquals("Unexpected office TransProb", expProb, office.transProb, delta);
+        assertEquals("Unexpected office TransProb", expProb, office.transProb, delta);
     }
 }
