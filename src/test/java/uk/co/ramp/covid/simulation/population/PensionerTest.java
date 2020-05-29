@@ -14,17 +14,10 @@ import static org.junit.Assert.assertEquals;
 public class PensionerTest {
 
     @Test
-    public void testPensionerReports() throws IOException {
+    public void testPensionerReports() throws IOException, ImpossibleAllocationException, ImpossibleWorkerDistributionException {
         //Test Pensioner methods reportInfection() and reportDeath()
         ParameterReader.readParametersFromFile("src/test/resources/default_params.json");
         Population p = new Population(500,60);
-        try {
-            p.populateHouseholds();
-        } catch (ImpossibleAllocationException e) {
-            Assert.fail("Could not populate households in test");
-        }
-        p.createMixing();
-        p.assignNeighbours();
         Pensioner pensioner = new Pensioner(70, Person.Sex.MALE);
 
         List<DailyStats> stats;

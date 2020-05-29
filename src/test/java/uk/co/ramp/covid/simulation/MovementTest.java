@@ -7,6 +7,7 @@ import static org.junit.Assert.*;
 import uk.co.ramp.covid.simulation.io.ParameterReader;
 import uk.co.ramp.covid.simulation.place.*;
 import uk.co.ramp.covid.simulation.population.*;
+import uk.co.ramp.covid.simulation.testutil.PopulationGenerator;
 
 import java.io.IOException;
 import java.util.HashSet;
@@ -22,14 +23,11 @@ public class MovementTest {
     int nInfections = 10;
 
     @Before
-    public void initialiseTestModel() throws ImpossibleAllocationException, IOException {
+    public void initialiseTestModel() throws IOException {
         ParameterReader.readParametersFromFile("src/test/resources/default_params.json");
         PopulationParameters.get().setpHouseholdWillIsolate(100.0);
 
-        p = new Population(populationSize, nHouseholds);
-        p.populateHouseholds();
-        p.createMixing();
-        p.allocatePeople();
+        p = PopulationGenerator.genValidPopulation(populationSize, nHouseholds);
         p.seedVirus(nInfections);
     }
 
@@ -190,7 +188,7 @@ public class MovementTest {
                 // i + 1 since the ith timestep has already been (so we are in the next state)
                 if (place.isOpen(day, i + 1)) {
                     List<Person> staff = place.getStaff(day, i + 1);
-                   assertTrue(staff.size() > 0);
+                    assertTrue(staff.size() > 0);
                 }
             }
 

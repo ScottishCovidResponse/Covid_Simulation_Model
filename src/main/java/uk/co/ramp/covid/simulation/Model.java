@@ -7,6 +7,7 @@ import org.apache.commons.csv.CSVPrinter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import uk.co.ramp.covid.simulation.population.ImpossibleAllocationException;
+import uk.co.ramp.covid.simulation.population.ImpossibleWorkerDistributionException;
 import uk.co.ramp.covid.simulation.population.Population;
 import uk.co.ramp.covid.simulation.util.InvalidParametersException;
 import uk.co.ramp.covid.simulation.util.RNG;
@@ -175,21 +176,22 @@ public class Model {
 
         List<List<DailyStats>> stats = new ArrayList<>(nIters);
         for (int i = 0; i < nIters; i++) {
-            Population p = new Population(populationSize, nHouseholds);
-
             // As households/person types are determined probabilistically in some cases it can be
             // impossible to populate all houseolds, e.g. 50 ADULT households and only 49 ADULTS.
             // He we return an empty run to indicate that the parameters etc are okay, but we used an unlucky random
             // seed (this can be accounted for when processing the output).
+            Population p;
             try {
-                p.populateHouseholds();
+                p = new Population(populationSize, nHouseholds);
             } catch (ImpossibleAllocationException e) {
+                LOGGER.error(e);
+                break;
+            } catch (ImpossibleWorkerDistributionException e) {
                 LOGGER.error(e);
                 break;
             }
 
-            p.createMixing();
-            p.allocatePeople();
+
             p.seedVirus(nInfections);
             if (lockDown != null) {
                 p.setLockdown(lockDown.start, lockDown.end, lockDown.socialDistance);

@@ -33,7 +33,7 @@ public class Population {
     private boolean schoolL;
     private final RandomDataGenerator rng;
 
-    public Population(int populationSize, int nHousehold) {
+    public Population(int populationSize, int nHousehold) throws ImpossibleAllocationException, ImpossibleWorkerDistributionException {
         this.rng = RNG.get();
         this.populationSize = populationSize;
         this.nHousehold = nHousehold;
@@ -48,6 +48,15 @@ public class Population {
         this.lockdownEnd = (-1);
         this.socialDist = 1.0;
         this.schoolL = false;
+
+        allocatePopulation();
+    }
+    
+    private void allocatePopulation() throws ImpossibleAllocationException, ImpossibleWorkerDistributionException {
+        populateHouseholds();
+        createMixing();
+        allocatePeople();
+        assignNeighbours();
     }
 
     // Creates the population of People based on the probabilities of age groups above
@@ -151,7 +160,7 @@ public class Population {
     }
 
     // We populate houseHolds greedily.
-    public void populateHouseholds() throws ImpossibleAllocationException {
+    private void populateHouseholds() throws ImpossibleAllocationException {
         createHouseholds();
 
         BitSet infantIndex = new BitSet(populationSize);
@@ -196,7 +205,7 @@ public class Population {
     }
 
     // This creates the Communal places of different types where people mix
-    public void createMixing() {
+    private void createMixing() {
         int nHospitals = populationSize / PopulationParameters.get().getHospitalRatio();
         int nSchools = populationSize / PopulationParameters.get().getSchoolsRatio();
         int nShops = populationSize / PopulationParameters.get().getShopsRatio();
@@ -217,13 +226,19 @@ public class Population {
     }
 
     // Allocates people to communal places - work environments
-    public void allocatePeople() {
+    public void allocatePeople() throws ImpossibleWorkerDistributionException {
         for (Household h : households) {
             for (Person p : h.getPeople() ) {
                 p.allocateCommunalPlace(places);
             }
         }
-        this.assignNeighbours();
+
+        // Sometimes given parameters/randomness it's not possible to staff everywhere. In this case we throw an error.
+        for (CommunalPlace p : places.getAllPlaces()) {
+            if (!p.isFullyStaffed()) {
+                throw new ImpossibleWorkerDistributionException("Not enough workers to fill required positions");
+            }
+        }
     }
 
     // This method assigns a random number of neighbours to each Household
