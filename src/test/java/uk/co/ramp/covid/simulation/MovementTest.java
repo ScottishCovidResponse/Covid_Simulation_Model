@@ -256,7 +256,6 @@ public class MovementTest {
         for (int i = 0; i < 24; i++) {
             p.timeStep(day + 2, i, s);
             
-            int npeople = 0;
             for (CommunalPlace place : p.getPlaces().getAllPlaces()) {
                 for (Person per : isolating) {
                    if (place.getPeople().contains(per)) {
