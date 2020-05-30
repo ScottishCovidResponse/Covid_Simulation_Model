@@ -39,7 +39,6 @@ public class HouseholdTest {
         household2 = new Household(Household.HouseholdType.ADULT, null);
         household3 = new Household(Household.HouseholdType.ADULT, null);
         household4 = new Household(Household.HouseholdType.ADULT, null);
-
     }
 
     @Test

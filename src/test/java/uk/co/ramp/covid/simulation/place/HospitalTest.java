@@ -26,7 +26,6 @@ public class HospitalTest {
 
     @Test
     public void testHospitalTransProb() throws JsonParseException {
-        RNG.seed(123);
         Hospital hospital = new Hospital();
         double expProb = PopulationParameters.get().getpBaseTrans() * 15d / (5000d / 10d);
         double delta = 0.01;

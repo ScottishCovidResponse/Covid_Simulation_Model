@@ -15,7 +15,6 @@ public class ChildTest {
     @Test
     public void testChildAtSchool() throws JsonParseException, IOException {
         ParameterReader.readParametersFromFile("src/test/resources/default_params.json");
-        RNG.seed(123);
         Population p = new Population(5000,600);
         try {
             p.populateHouseholds();
