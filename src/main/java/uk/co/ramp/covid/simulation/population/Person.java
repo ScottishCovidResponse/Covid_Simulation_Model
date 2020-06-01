@@ -149,7 +149,6 @@ public abstract class Person {
 
     public abstract boolean avoidsPhase2(double testP);
 
-
     public boolean isWorking(CommunalPlace communalPlace, Time t) {
         if (primaryPlace == null || shifts == null) {
             return false;

@@ -1,6 +1,8 @@
 package uk.co.ramp.covid.simulation.place;
 
 import uk.co.ramp.covid.simulation.DailyStats;
+import uk.co.ramp.covid.simulation.Time;
+import uk.co.ramp.covid.simulation.population.Person;
 import uk.co.ramp.covid.simulation.population.PopulationParameters;
 import uk.co.ramp.covid.simulation.population.Shifts;
 
@@ -20,8 +22,12 @@ public class Office extends CommunalPlace {
     }
 
     @Override
-    public void reportInfection(DailyStats s) {
-        s.incInfectionOffice();
+    public void reportInfection(Time t, Person p, DailyStats s) {
+        if (p.isWorking(this, t)) {
+            s.incInfectionOfficeWorker();
+        } else {
+            s.incInfectionsOfficeVisitor();
+        }
     }
 
     @Override

@@ -8,11 +8,11 @@ public class PopulationGenerator {
     
     private static final int RETRIES = 20;
 
-    public static Population genValidPopulation(int populationsize, int nHouseholds) {
+    public static Population genValidPopulation(int populationsize) {
         Population p = null;
         for (int i = 0; i < RETRIES; i++) {
             try {
-                p = new Population(populationsize, nHouseholds);
+                p = new Population(populationsize);
             } catch (ImpossibleAllocationException | ImpossibleWorkerDistributionException e2) {
                 continue;
             }

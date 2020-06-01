@@ -1,6 +1,5 @@
 {
     "populationSize":10000,
-    "nHouseholds":3000,
     "nInfections":10,
     "nDays":365,
     "nIters":1,

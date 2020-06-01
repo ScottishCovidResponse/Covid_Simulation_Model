@@ -80,8 +80,12 @@ public class Shop extends CommunalPlace {
     }
 
     @Override
-    public void reportInfection(DailyStats s) {
-        s.incInfectionsShop();
+    public void reportInfection(Time t, Person p, DailyStats s) {
+        if (p.isWorking(this, t)) {
+            s.incInfectionsShopWorker();
+        } else {
+            s.incInfectionsShopVisitor();
+        }
     }
 
     @Override

@@ -87,8 +87,12 @@ public class Restaurant extends CommunalPlace {
     }
 
     @Override
-    public void reportInfection(DailyStats s) {
-        s.incInfectionsRestaurant();
+    public void reportInfection(Time t, Person p, DailyStats s) {
+        if (p.isWorking(this, t)) {
+            s.incInfectionsRestaurantWorker();
+        } else {
+            s.incInfectionsRestaurantVisitor();
+        }
     }
 
     @Override

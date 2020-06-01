@@ -54,7 +54,6 @@ public class Model {
 
     private boolean outputDisabled;
     private Integer populationSize = null;
-    private Integer nHouseholds = null;
     private Integer nInfections = null;
     private Integer nDays = null;
     private Integer nIters = null;
@@ -68,11 +67,6 @@ public class Model {
     // Builder style interface
     public Model setPopulationSize(int populationSize) {
         this.populationSize = populationSize;
-        return this;
-    }
-
-    public Model setnHouseholds(int nHouseholds) {
-        this.nHouseholds = nHouseholds;
         return this;
     }
 
@@ -127,10 +121,6 @@ public class Model {
             LOGGER.warn("Uninitialised model parameter: nIters");
             valid = false;
         }
-        if (nHouseholds == null) {
-            LOGGER.warn("Uninitialised model parameter: nHouseholds");
-            valid = false;
-        }
         if (nInfections == null) {
             LOGGER.warn("Uninitialised model parameter: nInfections");
             valid = false;
@@ -182,7 +172,7 @@ public class Model {
             // seed (this can be accounted for when processing the output).
             Population p;
             try {
-                p = new Population(populationSize, nHouseholds);
+                p = new Population(populationSize);
             } catch (ImpossibleAllocationException e) {
                 LOGGER.error(e);
                 break;
@@ -213,9 +203,10 @@ public class Model {
 
     public void outputCSV(int startIterID, List<List<DailyStats>> stats) {
     final String[] headers = {"iter", "day", "H", "L", "A", "P1", "P2", "D", "R",
-                              "ICs", "IHos","INur","IOff","IRes","ISch","ISho","IHome",
-                              "IAdu","IPen","IChi","Iinf",
-                              "DAdul","DPen","Dchi","Dinf"  };
+                              "ICs_W","IHos_W","INur_W","IOff_W","IRes_W","ISch_W","ISho_W","IHome_I",
+                              "ICs_V","IHos_V","INur_V","IOff_V","IRes_V","ISch_V","ISho_V","IHome_V",
+                              "IAdu","IPen","IChi","IInf",
+                              "DAdul","DPen","DChi","DInf" };
         try {
             FileWriter out = new FileWriter(outputFile);
             CSVPrinter printer = new CSVPrinter(out, CSVFormat.DEFAULT.withHeader(headers));

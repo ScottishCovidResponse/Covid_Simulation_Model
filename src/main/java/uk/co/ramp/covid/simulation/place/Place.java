@@ -19,7 +19,7 @@ public abstract class Place {
     protected double sDistance;
     protected double transProb;
 
-    abstract public void reportInfection(DailyStats s);
+    abstract public void reportInfection(Time t, Person p, DailyStats s);
 
     public Place() {
         this.people = new ArrayList<>();
@@ -36,10 +36,10 @@ public abstract class Place {
         nextPeople.add(p);
     }
 
-    private void registerInfection(DailyStats s, Person p) {
-        reportInfection(s);
+    private void registerInfection(Time t, Person p, DailyStats s) {
+        reportInfection(t, p, s);
         p.reportInfection(s);
-    }
+    } 
 
     /** Handles infections between all people in this place */
     public void doInfect(Time t, DailyStats stats) {
@@ -53,7 +53,7 @@ public abstract class Place {
                             if (!nPers.getInfectionStatus()) {
                                 boolean infected = nPers.infChallenge(this.transProb * this.sDistance * cPers.getTransAdjustment());
                                 if (infected) {
-                                    registerInfection(stats, nPers);
+                                    registerInfection(t, nPers, stats);
                                     nPers.getcVirus().getInfectionLog().registerInfected(t);
                                     cPers.getcVirus().getInfectionLog().registerSecondaryInfection(t, nPers);
                                 }
