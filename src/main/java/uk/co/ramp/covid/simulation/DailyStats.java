@@ -82,6 +82,10 @@ public class DailyStats {
         return exposed + asymptomatic + phase1 + phase2;
     }
 
+    public int getConstructionSiteInfectionsWorker() {
+        return constructionSiteInfectionsWorker;
+    }
+
     public void log(){
         LOGGER.info("Day = {} Healthy = {} Latent = {} Asymptomatic = {} Phase 1 = {} Phase 2 = {} Dead = {} Recovered = {}",
                 day, healthy, exposed, asymptomatic,phase1, phase2, dead, recovered);
