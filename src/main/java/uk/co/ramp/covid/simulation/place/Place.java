@@ -1,6 +1,7 @@
 package uk.co.ramp.covid.simulation.place;
 
 import uk.co.ramp.covid.simulation.DailyStats;
+import uk.co.ramp.covid.simulation.Time;
 import uk.co.ramp.covid.simulation.population.CStatus;
 import uk.co.ramp.covid.simulation.population.Person;
 import uk.co.ramp.covid.simulation.population.PopulationParameters;
@@ -80,10 +81,10 @@ public abstract class Place {
         nextPeople = new ArrayList();
     }
 
-    public List<Person> sendFamilyHome(Person p, CommunalPlace place, int day, int hour) {
+    public List<Person> sendFamilyHome(Person p, CommunalPlace place, Time t) {
         List<Person> left = new ArrayList<>();
         for (Person q : people) {
-            if (p != q && !q.worksNextHour(place, day, hour, false) && q.getHome() == p.getHome()) {
+            if (p != q && !q.worksNextHour(place, t, false) && q.getHome() == p.getHome()) {
                 q.returnHome();
                 left.add(q);
             }
@@ -92,5 +93,5 @@ public abstract class Place {
     }
 
     /** Handles movement between people in this place */
-    public abstract void doMovement(int day, int hour, boolean lockdown);
+    public abstract void doMovement(Time t, boolean lockdown);
 }

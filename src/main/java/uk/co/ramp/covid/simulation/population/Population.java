@@ -280,7 +280,7 @@ public class Population {
         }
     }
     
-    public void timeStep(int day, int hour, DailyStats dStats) {
+    public void timeStep(Time t, DailyStats dStats) {
         households.forEach(h -> h.doInfect(dStats));
         places.getAllPlaces().forEach(p -> p.doInfect(dStats));
 
@@ -290,8 +290,8 @@ public class Population {
         // places.getAllPlaces().parallelStream().forEach(p -> p.doInfect(dStats));
 
         // Movement places people in "next" buffers (to avoid people moving twice in an hour)
-        households.forEach(h -> h.doMovement(day, hour, lockdown));
-        places.getAllPlaces().forEach(p -> p.doMovement(day, hour, lockdown));
+        households.forEach(h -> h.doMovement(t, lockdown));
+        places.getAllPlaces().forEach(p -> p.doMovement(t, lockdown));
 
         households.forEach(h -> h.stepPeople());
         places.getAllPlaces().forEach(p -> p.stepPeople());
@@ -306,11 +306,12 @@ public class Population {
             implementLockdown(t);
             LOGGER.info("Lockdown = {}", this.lockdown);
             for (int k = 0; k < 24; k++) {
-                timeStep(t.getDay(), t.getHour(), dStats);
+                timeStep(t, dStats);
+                t = t.advance();
             }
             households.forEach(h -> h.dayEnd());
             stats.add(this.processCases(dStats));
-            t = t.advance();
+
         }
         return stats;
     }
@@ -337,12 +338,13 @@ public class Population {
 
     // Tests on each daily time step whether to do anything with the lockdown
     private void implementLockdown(Time t) {
-        if (t.getAbsDay() == this.lockdownStart) {
+        int day = t.getAbsDay();
+        if (day == this.lockdownStart) {
             this.lockdown = true;
             this.rLockdown = true;
             this.socialDistancing();
         }
-        if (t.getAbsDay() == this.lockdownEnd) {
+        if (day == this.lockdownEnd) {
             if (!this.schoolL) this.lockdown = false;
             if (this.schoolL) this.schoolExemption();
         }

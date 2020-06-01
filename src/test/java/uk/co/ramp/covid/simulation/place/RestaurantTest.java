@@ -6,6 +6,7 @@ import org.junit.Test;
 import com.google.gson.JsonParseException;
 
 import uk.co.ramp.covid.simulation.RunModel;
+import uk.co.ramp.covid.simulation.Time;
 import uk.co.ramp.covid.simulation.io.ParameterReader;
 import uk.co.ramp.covid.simulation.population.*;
 import uk.co.ramp.covid.simulation.util.RNG;
@@ -57,7 +58,7 @@ public class RestaurantTest {
     public void testSendHome() {
         PopulationParameters.get().setpLeaveRestaurant(1.0);
         int time = restaurant.times.getClose() - 1;
-        int left = restaurant.sendHome(time, 0);
+        int left = restaurant.sendHome(new Time(time));
         int expPeople = 2;
         assertEquals("Unexpected number of people sent home from restaurant", expPeople, left);
     }
