@@ -15,7 +15,7 @@ import java.util.List;
 public abstract class CommunalPlace extends Place {
 
     public enum Size {
-        SMALL, MED, LARGE, UNKNOWN
+        SMALL, MED, LARGE
     }
     
     protected Size size;

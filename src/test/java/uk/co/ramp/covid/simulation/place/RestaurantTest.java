@@ -27,7 +27,7 @@ public class RestaurantTest {
         ParameterReader.readParametersFromFile("src/test/resources/default_params.json");
 
         //Setup a restaurant with 2 people
-        restaurant = new Restaurant();
+        restaurant = new Restaurant(CommunalPlace.Size.MED);
         p1 = new Adult(30, Person.Sex.MALE);
         p2 = new Pensioner(67, Person.Sex.FEMALE);
         Household h1 = new Household(Household.HouseholdType.ADULT, null);

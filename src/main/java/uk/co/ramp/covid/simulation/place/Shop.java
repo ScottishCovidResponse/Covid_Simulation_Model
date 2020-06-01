@@ -12,10 +12,6 @@ public class Shop extends CommunalPlace {
     
     private RoundRobinAllocator<Shifts> shifts;
 
-    public Shop() {
-        this(Size.UNKNOWN);
-    }
-
     public Shop(Size s) {
         super(s);
         transProb = PopulationParameters.get().getpBaseTrans() *  PopulationParameters.get().getpShopTrans();

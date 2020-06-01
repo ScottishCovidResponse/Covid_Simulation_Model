@@ -7,11 +7,6 @@ import uk.co.ramp.covid.simulation.population.Shifts;
 
 public class Office extends CommunalPlace {
 
-    public Office() {
-        this(Size.UNKNOWN);
-    }
-
-
     public Office(Size s)  {
         super(s);
         transProb = PopulationParameters.get().getpBaseTrans() * PopulationParameters.get().getpOfficeTrans();

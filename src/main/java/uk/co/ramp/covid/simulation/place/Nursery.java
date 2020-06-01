@@ -7,10 +7,6 @@ import uk.co.ramp.covid.simulation.population.Shifts;
 
 public class Nursery extends CommunalPlace {
 
-    public Nursery() {
-        this(Size.UNKNOWN);
-    }
-
     public Nursery(Size s) {
         super(s);
         transProb = PopulationParameters.get().getpBaseTrans() * PopulationParameters.get().getpNurseryTrans();

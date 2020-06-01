@@ -23,7 +23,7 @@ public class SchoolTest {
 
     @Test
     public void testSchoolTransProb() {
-        School school = new School();
+        School school = new School(CommunalPlace.Size.MED);
         double expProb = PopulationParameters.get().getpBaseTrans() * 30d / (34000d / 50d);
         double delta = 0.01;
         assertEquals("Unexpected school TransProb", expProb, school.transProb, delta);
