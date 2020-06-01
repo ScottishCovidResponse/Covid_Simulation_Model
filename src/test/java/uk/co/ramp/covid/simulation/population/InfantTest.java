@@ -5,6 +5,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import uk.co.ramp.covid.simulation.DailyStats;
 import uk.co.ramp.covid.simulation.io.ParameterReader;
+import uk.co.ramp.covid.simulation.testutil.PopulationGenerator;
 import uk.co.ramp.covid.simulation.util.RNG;
 import java.io.IOException;
 import java.util.List;
@@ -29,7 +30,7 @@ public class InfantTest {
     public void testInfantReports() throws IOException, ImpossibleAllocationException, ImpossibleWorkerDistributionException {
         //Test Infant methods reportInfection() and reportDeath()
         ParameterReader.readParametersFromFile("src/test/resources/default_params.json");
-        Population p = new Population(500,60);
+        Population p = PopulationGenerator.genValidPopulation(500);
         Infant infant = new Infant(3, Person.Sex.FEMALE);
 
         List<DailyStats> stats;

@@ -1,13 +1,11 @@
 package uk.co.ramp.covid.simulation.population;
 
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import uk.co.ramp.covid.simulation.DailyStats;
 import uk.co.ramp.covid.simulation.io.ParameterReader;
 import uk.co.ramp.covid.simulation.place.*;
 import uk.co.ramp.covid.simulation.testutil.PopulationGenerator;
-import uk.co.ramp.covid.simulation.util.RNG;
 
 import java.io.IOException;
 import java.util.List;
@@ -23,7 +21,7 @@ public class PopulationTest {
     @Before
     public void setupParams() throws IOException {
         ParameterReader.readParametersFromFile("src/test/resources/default_params.json");
-        pop = PopulationGenerator.genValidPopulation(populationSize, nHouseholds);
+        pop = PopulationGenerator.genValidPopulation(populationSize);
     }
 
     @Test
@@ -127,7 +125,14 @@ public class PopulationTest {
 
     @Test (expected = ImpossibleAllocationException.class )
     public void testImpossibleAllocationException() throws ImpossibleAllocationException, ImpossibleWorkerDistributionException {
-        new Population(10,1000);
+        PopulationParameters.get().setHouseholdRatio(10.0);
+        new Population(10);
+    }
+
+    @Test (expected = ImpossibleAllocationException.class )
+    public void testBadHouseholdRatioExceptional() throws ImpossibleAllocationException, ImpossibleWorkerDistributionException {
+        PopulationParameters.get().setHouseholdRatio(50.0);
+        new Population(10);
     }
 
     @Test
@@ -217,13 +222,13 @@ public class PopulationTest {
         int totalNeighbours = 0;
 
         //loop for each household and check neighbour list is not null
-        for (int i = 0; i < pop.getnHousehold(); i++) {
+        for (int i = 0; i < pop.getNumHouseholds(); i++) {
             assertNotNull("Null neighbour list", pop.getHouseholds().get(i).nNeighbours());
             totalNeighbours += pop.getHouseholds().get(i).nNeighbours();
         }
 
         //Get the mean number of neighbours per household and compare against the expected
-        double meanNeighbours = (double)totalNeighbours / (double) pop.getnHousehold();
+        double meanNeighbours = (double)totalNeighbours / (double) pop.getNumHouseholds();
         int expectedNeighbours = PopulationParameters.get().getExpectedNeighbours();
         assertEquals("Unexpected mean number of neighbours", meanNeighbours, expectedNeighbours, 0.5);
     }
