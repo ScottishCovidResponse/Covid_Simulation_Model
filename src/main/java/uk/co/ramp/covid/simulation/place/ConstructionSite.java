@@ -1,6 +1,7 @@
 package uk.co.ramp.covid.simulation.place;
 
 import uk.co.ramp.covid.simulation.DailyStats;
+import uk.co.ramp.covid.simulation.population.Person;
 import uk.co.ramp.covid.simulation.population.PopulationParameters;
 import uk.co.ramp.covid.simulation.population.Shifts;
 
@@ -18,9 +19,14 @@ public class ConstructionSite extends CommunalPlace {
         times = OpeningTimes.nineFiveWeekdays();
     }
 
+
     @Override
-    public void reportInfection(DailyStats s) {
-        s.incInfectionConstructionSite();
+    public void reportInfection(int day, int hour, Person p, DailyStats s) {
+        if (p.isWorking(this, day, hour)) {
+            s.incInfectionConstructionSiteWorker();
+        } else {
+            s.incInfectionsConstructionSiteVisitor();
+        }
     }
 
     @Override

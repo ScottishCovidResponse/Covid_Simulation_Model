@@ -213,9 +213,10 @@ public class Model {
 
     public void outputCSV(int startIterID, List<List<DailyStats>> stats) {
     final String[] headers = {"iter", "day", "H", "L", "A", "P1", "P2", "D", "R",
-                              "ICs", "IHos","INur","IOff","IRes","ISch","ISho","IHome",
-                              "IAdu","IPen","IChi","Iinf",
-                              "DAdul","DPen","Dchi","Dinf"  };
+                              "ICs_W","IHos_W","INur_W","IOff_W","IRes_W","ISch_W","ISho_W","IHome_I",
+                              "ICs_V","IHos_V","INur_V","IOff_V","IRes_V","ISch_V","ISho_V","IHome_V",
+                              "IAdu","IPen","IChi","IInf",
+                              "DAdul","DPen","DChi","DInf" };
         try {
             FileWriter out = new FileWriter(outputFile);
             CSVPrinter printer = new CSVPrinter(out, CSVFormat.DEFAULT.withHeader(headers));

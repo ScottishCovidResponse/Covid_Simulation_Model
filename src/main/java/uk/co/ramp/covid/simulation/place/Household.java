@@ -148,10 +148,14 @@ public class Household extends Place {
         }
         return ret;
     }
-    
+
     @Override
-    public void reportInfection(DailyStats s) {
-        s.incInfectionsHome();
+    public void reportInfection(int day, int hour, Person p, DailyStats s) {
+        if (getInhabitants().contains(p)) {
+            s.incInfectionsHomeInhabitant();
+        } else {
+            s.incInfectionsHomeVisitor();
+        }
     }
 
     @Override
