@@ -184,7 +184,6 @@ public class MovementTest {
         for (int i = 0; i < 24; i++) {
             p.timeStep(day, i, s);
 
-            int npeople = 0;
             for (CommunalPlace place : p.getPlaces().getAllPlaces()) {
                 // i + 1 since the ith timestep has already been (so we are in the next state)
                 if (place.isOpen(day, i + 1)) {
@@ -197,7 +196,6 @@ public class MovementTest {
     }
     
     private void doesNotGoOut(Household iso, List<Person> isolating) {
-        int npeople = 0;
         for (CommunalPlace place : p.getPlaces().getAllPlaces()) {
             for (Person per : isolating) {
                 assertFalse(place.getPeople().contains(per));

@@ -26,6 +26,7 @@ public class PersonTest {
         //Test that an infected person's infection status is true
         Person person = new Adult(30, Person.Sex.MALE);
         boolean inf = person.infect();
+        assertTrue("Unexpected value returned by infect()", inf);
         assertTrue("Person unexpectedly not infected", person.getInfectionStatus());
     }
 
