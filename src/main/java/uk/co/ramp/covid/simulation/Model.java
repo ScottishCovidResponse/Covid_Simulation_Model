@@ -189,7 +189,15 @@ public class Model {
             if (schoolLockDown != null) {
                 p.setSchoolLockdown(schoolLockDown.start, schoolLockDown.end, schoolLockDown.socialDistance);
             }
-            stats.add(p.simulate(nDays));
+
+            List<DailyStats> iterStats = p.simulate(nDays);
+            for (DailyStats s : iterStats) {
+                s.determineRValues(p);
+            }
+
+            
+            stats.add(iterStats);
+
         }
 
         if (!outputDisabled) {
@@ -206,7 +214,7 @@ public class Model {
                               "ICs_W","IHos_W","INur_W","IOff_W","IRes_W","ISch_W","ISho_W","IHome_I",
                               "ICs_V","IHos_V","INur_V","IOff_V","IRes_V","ISch_V","ISho_V","IHome_V",
                               "IAdu","IPen","IChi","IInf",
-                              "DAdul","DPen","DChi","DInf" };
+                              "DAdul","DPen","DChi","DInf", "R0", "GenerationTime" };
         try {
             FileWriter out = new FileWriter(outputFile);
             CSVPrinter printer = new CSVPrinter(out, CSVFormat.DEFAULT.withHeader(headers));

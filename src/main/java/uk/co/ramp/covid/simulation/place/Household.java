@@ -95,7 +95,13 @@ public class Household extends Place {
     public boolean seedInfection() {
         List<Person> inhabitants = getInhabitants();
         Person cPers = inhabitants.get(RNG.get().nextInt(0, inhabitants.size() - 1));
-        return cPers.infect();
+        if (cPers.infect()) {
+            // Seeding happens at the start so we use the default time here.
+            // This will need to be altered to allow seeds during a run if required.
+            cPers.getcVirus().getInfectionLog().registerInfected(new Time());
+            return true;
+        }
+        return false;
     }
 
     public int sendNeighboursHome(Time t) {
