@@ -147,6 +147,16 @@ public abstract class Person {
     }
 
     public abstract boolean avoidsPhase2(double testP);
+
+    public boolean isWorking(CommunalPlace p, int day, int hour) {
+        if (primaryPlace == null || shifts == null) {
+            return false;
+        }
+
+        return primaryPlace == p
+                && hour >= shifts.getShift(day).getStart()
+                && hour < shifts.getShift(day).getEnd();
+    }
     
     public boolean worksNextHour(CommunalPlace communalPlace, int day, int hour, boolean lockdown) {
         if (primaryPlace == null || shifts == null) {
