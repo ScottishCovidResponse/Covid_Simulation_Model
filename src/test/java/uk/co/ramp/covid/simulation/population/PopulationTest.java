@@ -4,6 +4,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import uk.co.ramp.covid.simulation.DailyStats;
+import uk.co.ramp.covid.simulation.covid.CovidParameters;
 import uk.co.ramp.covid.simulation.io.ParameterReader;
 import uk.co.ramp.covid.simulation.place.*;
 import uk.co.ramp.covid.simulation.testutil.PopulationGenerator;
@@ -360,5 +361,36 @@ public class PopulationTest {
         assertTrue(pensioner > infant);
 
         assertTrue(child > infant);
+    }
+
+    @Test
+    public void secondaryInfectionsAreLogged() {
+        pop.seedVirus(10);
+        pop.simulate(20);
+        int totalSecondary = 0;
+        for (Person p : pop.getAllPeople()) {
+            if (p.getcVirus() != null) {
+                totalSecondary += p.getcVirus().getInfectionLog().getSecondaryInfections().size();
+            }
+        }
+        assertTrue(totalSecondary > 0);
+    }
+
+    @Test
+    public void symptomaticCasesAreLogged() {
+        pop.seedVirus(1);
+
+        Person infected = null;
+        for (Person p : pop.getAllPeople()) {
+            if (p.getcVirus() != null) {
+                infected = p;
+            }
+        }
+        
+        infected.getcVirus().forceSymptomatic(true);
+        
+        pop.simulate(20);
+        
+        assertNotNull(infected.getcVirus().getInfectionLog().getSymptomaticTime());
     }
 }

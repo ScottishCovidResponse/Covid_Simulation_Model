@@ -55,6 +55,7 @@ public abstract class Place {
                                 if (infected) {
                                     registerInfection(stats, nPers);
                                     nPers.getcVirus().getInfectionLog().registerInfected(t);
+                                    cPers.getcVirus().getInfectionLog().registerSecondaryInfection(t, nPers);
                                 }
                             }
                         }

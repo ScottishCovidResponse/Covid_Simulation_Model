@@ -1,5 +1,7 @@
 package uk.co.ramp.covid.simulation;
 
+import java.util.Objects;
+
 /** Time tracks the current simulation time */
 public class Time {
 
@@ -34,8 +36,21 @@ public class Time {
         return hour;
     }
 
-
     public Time advance() {
         return new Time(absTime + 1);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Time time = (Time) o;
+        return absTime == time.absTime;
+
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(absTime);
     }
 }
