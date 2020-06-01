@@ -4,6 +4,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import uk.co.ramp.covid.simulation.DailyStats;
 import uk.co.ramp.covid.simulation.io.ParameterReader;
+import uk.co.ramp.covid.simulation.testutil.PopulationGenerator;
 import uk.co.ramp.covid.simulation.util.RNG;
 
 import java.io.IOException;
@@ -17,7 +18,7 @@ public class PensionerTest {
     public void testPensionerReports() throws IOException, ImpossibleAllocationException, ImpossibleWorkerDistributionException {
         //Test Pensioner methods reportInfection() and reportDeath()
         ParameterReader.readParametersFromFile("src/test/resources/default_params.json");
-        Population p = new Population(500);
+        Population p = PopulationGenerator.genValidPopulation(500);
         Pensioner pensioner = new Pensioner(70, Person.Sex.MALE);
 
         List<DailyStats> stats;
