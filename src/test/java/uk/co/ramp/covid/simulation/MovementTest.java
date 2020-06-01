@@ -34,7 +34,7 @@ public class MovementTest {
     @Test
     public void allChildrenGoToSchool() {
         int day = 1;
-        Set<Child> schooled = new HashSet();
+        Set<Child> schooled = new HashSet<>();
         DailyStats s = new DailyStats(day);
         for (int i = 0; i < 24; i++) {
             p.timeStep(day, i, s);
@@ -61,7 +61,7 @@ public class MovementTest {
     @Test
     public void someInfantsGoToNursery() {
         int day = 1;
-        Set<Infant> nursed = new HashSet();
+        Set<Infant> nursed = new HashSet<>();
         DailyStats s = new DailyStats(day);
         for (int i = 0; i < 24; i++) {
             p.timeStep(day, i, s);
@@ -83,7 +83,7 @@ public class MovementTest {
     @Test
     public void someAdultsGoToWork() {
         int day = 1;
-        Set<Adult> working = new HashSet();
+        Set<Adult> working = new HashSet<>();
         DailyStats s = new DailyStats(day);
         for (int i = 0; i < 24; i++) {
             p.timeStep(day, i, s);
@@ -103,7 +103,7 @@ public class MovementTest {
     @Test
     public void someNonWorkersGoShopping() {
         int day = 1;
-        Set<Person> shopping = new HashSet();
+        Set<Person> shopping = new HashSet<>();
         DailyStats s = new DailyStats(day);
         for (int i = 0; i < 24; i++) {
             p.timeStep(day, i, s);
@@ -124,7 +124,7 @@ public class MovementTest {
     @Test
     public void someNonWorkersGoSToRestaurants() {
         int day = 1;
-        Set<Person> eating = new HashSet();
+        Set<Person> eating = new HashSet<>();
         DailyStats s = new DailyStats(day);
         for (int i = 0; i < 24; i++) {
             p.timeStep(day, i, s);
@@ -145,7 +145,7 @@ public class MovementTest {
     @Test
     public void somePeopleVisitNeighbours() {
         int day = 1;
-        Set<Person> visiting = new HashSet();
+        Set<Person> visiting = new HashSet<>();
         DailyStats s = new DailyStats(day);
         for (int i = 0; i < 24; i++) {
             p.timeStep(day, i, s);

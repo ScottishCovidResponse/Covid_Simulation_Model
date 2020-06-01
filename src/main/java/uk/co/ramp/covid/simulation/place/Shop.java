@@ -25,7 +25,7 @@ public class Shop extends CommunalPlace {
     }
     
     private void setOpeningHours() {
-        shifts = new RoundRobinAllocator();
+        shifts = new RoundRobinAllocator<>();
         if (size == Size.SMALL) {
             times = OpeningTimes.nineFiveAllWeek();
             shifts.put(new Shifts(9,17, 0, 1, 2));

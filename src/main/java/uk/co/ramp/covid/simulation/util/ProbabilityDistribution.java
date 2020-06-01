@@ -30,7 +30,7 @@ public class ProbabilityDistribution<T> {
     private final RandomDataGenerator rng;
 
     public ProbabilityDistribution() {
-        pmap = new ArrayList();
+        pmap = new ArrayList<>();
         totalProb = 0.0;
         this.rng = RNG.get();
     }

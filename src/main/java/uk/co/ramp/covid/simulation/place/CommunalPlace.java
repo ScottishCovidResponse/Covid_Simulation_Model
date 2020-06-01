@@ -61,7 +61,7 @@ public abstract class CommunalPlace extends Place {
 
     /** Move everyone based on their shift patterns */
     public void moveShifts(int day, int hour, boolean lockdown) {
-        List<Person> left = new ArrayList();
+        List<Person> left = new ArrayList<>();
         for (Person p : people) {
             if (!p.worksNextHour(this, day, hour, lockdown)) {
                 p.returnHome();
