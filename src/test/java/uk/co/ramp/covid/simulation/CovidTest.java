@@ -54,7 +54,6 @@ public class CovidTest {
     //Test that a child steps through the infection from latent to recovered
     @Test
     public void testStepInfectionRecover() throws IOException {
-        RNG.seed(321);
         ParameterReader.readParametersFromFile("src/test/resources/default_params.json");
         CStatus cStatus = null;
         Person child = new Child(6, Person.Sex.FEMALE);

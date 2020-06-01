@@ -24,7 +24,6 @@ public class NurseryTest {
 
     @Test
     public void testNurseryTransProb() throws JsonParseException {
-        RNG.seed(123);
         Nursery nursery = new Nursery();
         double expProb = PopulationParameters.get().getpBaseTrans() * 30d / (34000d / 50d);
         double delta = 0.01;
