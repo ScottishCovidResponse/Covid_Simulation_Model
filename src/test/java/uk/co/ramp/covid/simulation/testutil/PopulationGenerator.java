@@ -12,7 +12,7 @@ public class PopulationGenerator {
         Population p = null;
         for (int i = 0; i < RETRIES; i++) {
             try {
-                p = new Population(populationsize, nHouseholds);
+                p = new Population(populationsize);
             } catch (ImpossibleAllocationException | ImpossibleWorkerDistributionException e2) {
                 continue;
             }

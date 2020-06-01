@@ -29,7 +29,7 @@ public class InfantTest {
     public void testInfantReports() throws IOException, ImpossibleAllocationException, ImpossibleWorkerDistributionException {
         //Test Infant methods reportInfection() and reportDeath()
         ParameterReader.readParametersFromFile("src/test/resources/default_params.json");
-        Population p = new Population(500,60);
+        Population p = new Population(500);
         Infant infant = new Infant(3, Person.Sex.FEMALE);
 
         List<DailyStats> stats;

@@ -20,10 +20,11 @@ public class PopulationParameters {
     private static PopulationParameters pp = null;
     private static final double EPSILON = 0.001;
 
-
     // Household populations
     // These values define the probability of a household being an adult only, adult and child household etc
     private static class Households {
+        public Double householdRatio = null;
+
         public Double pAdultOnly = null;
         public Double pPensionerOnly = null;
         public Double pPensionerAdult = null;
@@ -34,7 +35,8 @@ public class PopulationParameters {
         @Override
         public String toString() {
             return "Households{" +
-                    "pAdultOnly=" + pAdultOnly +
+                    "householdRatio=" + householdRatio +
+                    ", pAdultOnly=" + pAdultOnly +
                     ", pPensionerOnly=" + pPensionerOnly +
                     ", pPensionerAdult=" + pPensionerAdult +
                     ", pAdultChildren=" + pAdultChildren +
@@ -50,6 +52,8 @@ public class PopulationParameters {
                     && isValidProbability(pAdultPensionerChildren, "pAdultPensionerChildren")
                     && isValidProbability(pPensionerChildren, "pPensionerChildren")
                     && isValidProbability(pPensionerAdult, "pPensionerAdult");
+
+            probabilitiesValid = probabilitiesValid && (householdRatio > 0);
 
             double totalP = pAdultOnly + pPensionerAdult + pPensionerOnly + pAdultChildren
                     + pPensionerChildren + pAdultPensionerChildren;
@@ -371,6 +375,11 @@ public class PopulationParameters {
     public Map<String, Double> getPopulation() { return population; }
 
     // Household allocation parameters
+
+    public double getHouseholdRatio() { return households.householdRatio; }
+
+    public void setHouseholdRatio(double r) { households.householdRatio = r; }
+
     public double getpAdultOnly() {
         return households.pAdultOnly;
     }

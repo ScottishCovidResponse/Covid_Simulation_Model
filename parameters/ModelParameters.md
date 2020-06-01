@@ -6,7 +6,6 @@ An example parameters file is in `example_model_params.json`
 | Parameter Name | Description                                      | Type         |
 |----------------|--------------------------------------------------|--------------|
 | populationSize | Number of people in the population               | Int          |
-| nHouseholds    | Number of households in the population           | Int          |
 | nInfections    | Number of initial infections                     | Int          |
 | nDays          | Number of days to simulate                       | Int          |
 | nIters         | Number of simulation iterations                  | Int          |

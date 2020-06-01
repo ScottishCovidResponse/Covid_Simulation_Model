@@ -17,7 +17,7 @@ public class PensionerTest {
     public void testPensionerReports() throws IOException, ImpossibleAllocationException, ImpossibleWorkerDistributionException {
         //Test Pensioner methods reportInfection() and reportDeath()
         ParameterReader.readParametersFromFile("src/test/resources/default_params.json");
-        Population p = new Population(500,60);
+        Population p = new Population(500);
         Pensioner pensioner = new Pensioner(70, Person.Sex.MALE);
 
         List<DailyStats> stats;
