@@ -20,7 +20,7 @@ public abstract class Place {
     protected double sDistance;
     protected double transProb;
 
-    abstract public void reportInfection(DailyStats s);
+    abstract public void reportInfection(int day, int hour, Person p, DailyStats s);
 
     public Place() {
         this.people = new ArrayList<>();
@@ -37,13 +37,13 @@ public abstract class Place {
         nextPeople.add(p);
     }
 
-    private void registerInfection(DailyStats s, Person p) {
-        reportInfection(s);
+    private void registerInfection(int day, int hour, Person p, DailyStats s) {
+        reportInfection(day, hour, p, s);
         p.reportInfection(s);
-    }
+    } 
 
     /** Handles infections between all people in this place */
-    public void doInfect(DailyStats stats) {
+    public void doInfect(int day, int hour, DailyStats stats) {
         List<Person> deaths = new ArrayList<>();
         for (Person cPers : people) {
             if (cPers.getInfectionStatus() && !cPers.isRecovered()) {
@@ -54,7 +54,7 @@ public abstract class Place {
                             if (!nPers.getInfectionStatus()) {
                                 boolean infected = nPers.infChallenge(this.transProb * this.sDistance * cPers.getTransAdjustment());
                                 if (infected) {
-                                    registerInfection(stats, nPers);
+                                    registerInfection(day, hour, nPers, stats);
                                 }
                             }
                         }

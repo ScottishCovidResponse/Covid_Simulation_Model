@@ -7,6 +7,7 @@ import static org.junit.Assert.*;
 import uk.co.ramp.covid.simulation.io.ParameterReader;
 import uk.co.ramp.covid.simulation.place.*;
 import uk.co.ramp.covid.simulation.population.*;
+import uk.co.ramp.covid.simulation.testutil.PopulationGenerator;
 
 import java.io.IOException;
 import java.util.HashSet;
@@ -18,17 +19,14 @@ public class MovementTest {
 
     Population p;
     int populationSize = 10000;
-    int nHouseholds = 2000;
     int nInfections = 10;
 
     @Before
-    public void initialiseTestModel() throws ImpossibleAllocationException, IOException {
+    public void initialiseTestModel() throws IOException {
         ParameterReader.readParametersFromFile("src/test/resources/default_params.json");
+        PopulationParameters.get().setpHouseholdWillIsolate(100.0);
 
-        p = new Population(populationSize, nHouseholds);
-        p.populateHouseholds();
-        p.createMixing();
-        p.allocatePeople();
+        p = PopulationGenerator.genValidPopulation(populationSize);
         p.seedVirus(nInfections);
     }
 
@@ -189,10 +187,129 @@ public class MovementTest {
                 // i + 1 since the ith timestep has already been (so we are in the next state)
                 if (place.isOpen(day, i + 1)) {
                     List<Person> staff = place.getStaff(day, i + 1);
-                   assertTrue(staff.size() > 0);
+                    assertTrue(staff.size() > 0);
                 }
             }
 
         }
+    }
+    
+    private void doesNotGoOut(Household iso, List<Person> isolating) {
+        int npeople = 0;
+        for (CommunalPlace place : p.getPlaces().getAllPlaces()) {
+            for (Person per : isolating) {
+                assertFalse(place.getPeople().contains(per));
+            }
+        }
+
+        for (Household h : p.getHouseholds()) {
+            if (h != iso) {
+                for (Person per : isolating) {
+                    assertFalse(h.getPeople().contains(per));
+                }
+            }
+        }
+    }
+
+    @Test
+    public void isolatingHouseholdsDontMove() {
+        int day = 1;
+        DailyStats s = new DailyStats(day);
+        Household iso = p.getHouseholds().get(0);
+        iso.forceIsolationtimer(14);
+        List<Person> isolating = iso.getInhabitants();
+
+        for (int i = 0; i < 24; i++) {
+            p.timeStep(day, i, s);
+            doesNotGoOut(iso, isolating);
+        }
+    }
+
+    @Test
+    public void stopIsolatingAfterTimerExpires() {
+        int day = 1;
+        int daysIsolated = 2;
+        DailyStats s = new DailyStats(day);
+        Household iso = p.getHouseholds().get(0);
+        iso.forceIsolationtimer(daysIsolated);
+        List<Person> isolating = iso.getInhabitants();
+
+        // Handle the first isolation day
+        for (int i = 0; i < 24; i++) {
+            p.timeStep(day, i, s);
+            doesNotGoOut(iso, isolating);
+        }
+        p.getHouseholds().forEach(h -> h.dayEnd());
+
+        // Second day isolating
+        for (int i = 0; i < 24; i++) {
+            p.timeStep(day + 1, i, s);
+            doesNotGoOut(iso, isolating);
+        }
+        p.getHouseholds().forEach(h -> h.dayEnd());
+
+        // Now we can go out again
+        int excursions = 0;
+        for (int i = 0; i < 24; i++) {
+            p.timeStep(day + 2, i, s);
+            
+            for (CommunalPlace place : p.getPlaces().getAllPlaces()) {
+                for (Person per : isolating) {
+                   if (place.getPeople().contains(per)) {
+                       excursions++;
+                   }
+                }
+            }
+
+            for (Household h : p.getHouseholds()) {
+                if (h != iso) {
+                    for (Person per : isolating) {
+                        if (h.getPeople().contains(per)) {
+                            excursions++;
+                        }
+                    }
+                }
+            }
+        }
+        assertTrue(excursions > 0);
+    }
+
+    @Test
+    public void newInfectionsResetIsolationTimer() {
+        int day = 1;
+        int daysIsolated = 2;
+
+        DailyStats s = new DailyStats(day);
+        Household iso = p.getHouseholds().get(0);
+        iso.forceIsolationtimer(daysIsolated);
+        List<Person> isolating = iso.getInhabitants();
+
+        // Handle the first isolation day
+        for (int i = 0; i < 24; i++) {
+            p.timeStep(day, i, s);
+            doesNotGoOut(iso, isolating);
+        }
+        p.getHouseholds().forEach(h -> h.dayEnd());
+
+        // Second day isolating
+        for (int i = 0; i < 24; i++) {
+            p.timeStep(day + 1, i, s);
+            if (i == 5) {
+                Person per = isolating.get(0);
+                per.infect();
+                per.getcVirus().forceSymptomatic(true);
+                // Usually there's a delay before symptonms but we just force it here
+                double t = per.getcVirus().getSymptomDelay() + 1;
+                for (int j = 0; j < t; j++) {
+                    per.getcVirus().stepInfection();
+                }
+                per.cStatus();
+            }
+            doesNotGoOut(iso, isolating);
+        }
+        p.getHouseholds().forEach(h -> h.dayEnd());
+
+        // Initial 2 days are over but we should still be isolating since there's a new case
+        assertTrue(iso.isIsolating());
     }
 }

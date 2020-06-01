@@ -3,6 +3,9 @@ package uk.co.ramp.covid.simulation;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+
+import com.google.gson.JsonParseException;
+
 import uk.co.ramp.covid.simulation.io.ParameterReader;
 import uk.co.ramp.covid.simulation.population.PopulationParameters;
 
@@ -102,7 +105,7 @@ public class ModelTest {
                 .setRNGSeed(RNGSeed)
                 .setNoOutput();
 
-        List<List<DailyStats>> run1res = run1.run();
+        List<List<DailyStats>> run1res = run1.run(0);
 
         Model run2 = new Model()
                 .setPopulationSize(population)
@@ -113,7 +116,7 @@ public class ModelTest {
                 .setRNGSeed(RNGSeed)
                 .setNoOutput();
 
-        List<List<DailyStats>> run2res = run2.run();
+        List<List<DailyStats>> run2res = run2.run(0);
 
         assertEquals(run1res.size(), run2res.size());
         assertEquals(run1res.get(0).size(), run2res.get(0).size());
@@ -125,7 +128,14 @@ public class ModelTest {
         }
     }
 
-    @Ignore("Failing Test")
+    @Test
+    public void testReadModelFromFile() throws JsonParseException, IOException {
+        Model m  = Model.readModelFromFile("src/test/resources/test_model_params.json");
+        m.setNoOutput();
+        assertTrue(m.isValid());
+        m.run();
+    }
+
     @Test
     public void testLockdown() {
 

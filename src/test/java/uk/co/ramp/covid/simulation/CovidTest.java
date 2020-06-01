@@ -3,6 +3,7 @@ package uk.co.ramp.covid.simulation;
 import org.junit.After;
 import org.junit.Test;
 import uk.co.ramp.covid.simulation.io.ParameterReader;
+import uk.co.ramp.covid.simulation.place.Household;
 import uk.co.ramp.covid.simulation.population.*;
 import uk.co.ramp.covid.simulation.util.RNG;
 
@@ -22,6 +23,8 @@ public class CovidTest {
         ParameterReader.readParametersFromFile("src/test/resources/test_params.json");
         CStatus cStatus = null;
         Person pensioner = new Pensioner(65, Person.Sex.MALE);
+        Household h = new Household(Household.HouseholdType.PENSIONER, null);
+        pensioner.setHome(h);
         Covid virus = new Covid(pensioner);
         virus.forceSymptomatic(true);
         //Test that the person is latent at the end of the latent period
@@ -58,6 +61,8 @@ public class CovidTest {
         ParameterReader.readParametersFromFile("src/test/resources/default_params.json");
         CStatus cStatus = null;
         Person child = new Child(6, Person.Sex.FEMALE);
+        Household h = new Household(Household.HouseholdType.PENSIONER, null);
+        child.setHome(h);
         Covid virus = new Covid(child);
         virus.forceSymptomatic(true);
 

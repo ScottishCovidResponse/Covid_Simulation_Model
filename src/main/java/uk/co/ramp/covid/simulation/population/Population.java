@@ -21,7 +21,8 @@ public class Population {
     private static final Logger LOGGER = LogManager.getLogger(Population.class);
 
     private final int populationSize;
-    private final int nHousehold;
+    private final int numHouseholds;
+
     private final ArrayList<Household> households;
     private final ArrayList<Person> allPeople;
     private Places places;
@@ -33,21 +34,35 @@ public class Population {
     private boolean schoolL;
     private final RandomDataGenerator rng;
 
-    public Population(int populationSize, int nHousehold) {
+    public Population(int populationSize) throws ImpossibleAllocationException, ImpossibleWorkerDistributionException {
         this.rng = RNG.get();
         this.populationSize = populationSize;
-        this.nHousehold = nHousehold;
-        if (this.nHousehold > this.populationSize) {
-            LOGGER.warn("More households than population");
+
+        this.numHouseholds = (int) (populationSize / PopulationParameters.get().getHouseholdRatio());
+
+        if (numHouseholds == 0) {
+            throw new ImpossibleAllocationException("No households requested");
+        }
+        if (numHouseholds > populationSize) {
+            throw new ImpossibleAllocationException("More households than people requested");
         }
 
-        this.households = new ArrayList<>(nHousehold);
+        this.households = new ArrayList<>(numHouseholds);
         this.allPeople = new ArrayList<>(populationSize);
         this.places = new Places();
         this.lockdownStart = (-1);
         this.lockdownEnd = (-1);
         this.socialDist = 1.0;
         this.schoolL = false;
+
+        allocatePopulation();
+    }
+    
+    private void allocatePopulation() throws ImpossibleAllocationException, ImpossibleWorkerDistributionException {
+        populateHouseholds();
+        createMixing();
+        allocatePeople();
+        assignNeighbours();
     }
 
     // Creates the population of People based on the probabilities of age groups above
@@ -84,7 +99,7 @@ public class Population {
         p.add(PopulationParameters.get().getpAdultPensionerChildren(), Household.HouseholdType.ADULTPENSIONERCHILD);
 
 
-        for (int i = 0; i < nHousehold; i++) {
+        for (int i = 0; i < numHouseholds; i++) {
             Household.HouseholdType t = p.sample();
             households.add(new Household(t, places));
         }
@@ -105,9 +120,19 @@ public class Population {
                 case ADULTPENSIONERCHILD: adultPensionerChild++; break;
             }
         }
-        boolean possible = adultIndex.cardinality() > adult + adultPensioner + adultChild + adultPensionerChild
-                && pensionerIndex.cardinality() > adultPensioner + pensioner + pensionerChild + adultPensionerChild
-                && childIndex.cardinality() + infantIndex.cardinality() > adultChild + pensionerChild + adultPensionerChild;
+
+        int adultHouseholds = adult + adultPensioner + adultChild + adultPensionerChild;
+        int pensionerHouseholds = adultPensioner + pensioner + pensionerChild + adultPensionerChild;
+        int childHouseholds = adultChild + pensionerChild + adultPensionerChild;
+        
+        boolean possible = adultIndex.cardinality() > adultHouseholds
+                && pensionerIndex.cardinality() > pensionerHouseholds
+                && childIndex.cardinality() + infantIndex.cardinality() > childHouseholds
+                // We need to ensure everyone has somewhere to go
+                && (adultIndex.cardinality() > 0 ? adultHouseholds > 0 : true)
+                && (pensionerIndex.cardinality() > 0 ? pensionerHouseholds > 0 : true)
+                && (childIndex.cardinality() > 0 ? childHouseholds > 0 : true);
+
         return  possible;
     }
 
@@ -151,7 +176,7 @@ public class Population {
     }
 
     // We populate houseHolds greedily.
-    public void populateHouseholds() throws ImpossibleAllocationException {
+    private void populateHouseholds() throws ImpossibleAllocationException {
         createHouseholds();
 
         BitSet infantIndex = new BitSet(populationSize);
@@ -196,7 +221,7 @@ public class Population {
     }
 
     // This creates the Communal places of different types where people mix
-    public void createMixing() {
+    private void createMixing() {
         int nHospitals = populationSize / PopulationParameters.get().getHospitalRatio();
         int nSchools = populationSize / PopulationParameters.get().getSchoolsRatio();
         int nShops = populationSize / PopulationParameters.get().getShopsRatio();
@@ -217,13 +242,19 @@ public class Population {
     }
 
     // Allocates people to communal places - work environments
-    public void allocatePeople() {
+    public void allocatePeople() throws ImpossibleWorkerDistributionException {
         for (Household h : households) {
             for (Person p : h.getPeople() ) {
                 p.allocateCommunalPlace(places);
             }
         }
-        this.assignNeighbours();
+
+        // Sometimes given parameters/randomness it's not possible to staff everywhere. In this case we throw an error.
+        for (CommunalPlace p : places.getAllPlaces()) {
+            if (!p.isFullyStaffed()) {
+                throw new ImpossibleWorkerDistributionException("Not enough workers to fill required positions");
+            }
+        }
     }
 
     // This method assigns a random number of neighbours to each Household
@@ -256,7 +287,7 @@ public class Population {
     // Force infections into a defined number of people
     public void seedVirus(int nInfections) {
         for (int i = 1; i <= nInfections; i++) {
-            int nInt = rng.nextInt(0, this.nHousehold - 1);
+            int nInt = rng.nextInt(0, numHouseholds - 1);
             if (households.get(nInt).getHouseholdSize() > 0) {
                 if (!households.get(nInt).seedInfection()) i--;
             }
@@ -265,8 +296,8 @@ public class Population {
     }
     
     public void timeStep(int day, int hour, DailyStats dStats) {
-        households.forEach(h -> h.doInfect(dStats));
-        places.getAllPlaces().forEach(p -> p.doInfect(dStats));
+        households.forEach(h -> h.doInfect(day, hour, dStats));
+        places.getAllPlaces().forEach(p -> p.doInfect(day, hour, dStats));
 
         // There is a potential to introduce parallelism here if required by using parallelStream (see below).
         // Note we currently cannot parallelise movement as the ArrayLists for capturing moves are not thread safe
@@ -292,6 +323,7 @@ public class Population {
             for (int k = 0; k < 24; k++) {
                 timeStep(dWeek, k, dStats);
             }
+            households.forEach(h -> h.dayEnd());
             stats.add(this.processCases(dStats));
         }
         return stats;
@@ -364,8 +396,8 @@ public class Population {
         return populationSize;
     }
 
-    public int getnHousehold() {
-        return nHousehold;
+    public int getNumHouseholds() {
+        return numHouseholds;
     }
 
     public ArrayList<Person> getAllPeople() {

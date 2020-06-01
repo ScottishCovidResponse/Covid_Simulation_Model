@@ -1,7 +1,7 @@
 {
     "populationSize":10000,
     "nInfections":10,
-    "nDays":365,
+    "nDays":10,
     "nIters":1,
     "rngSeed":42,
     "outputFile":"./example.csv"
