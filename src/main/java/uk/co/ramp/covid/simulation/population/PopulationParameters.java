@@ -1,5 +1,6 @@
 package uk.co.ramp.covid.simulation.population;
 
+import org.apache.commons.math3.random.RandomDataGenerator;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import uk.co.ramp.covid.simulation.util.InvalidParametersException;
@@ -18,6 +19,7 @@ public class PopulationParameters {
     private static final Logger LOGGER = LogManager.getLogger(PopulationParameters.class);
     private static PopulationParameters pp = null;
     private static final double EPSILON = 0.001;
+
 
     // Household populations
     // These values define the probability of a household being an adult only, adult and child household etc
@@ -291,6 +293,8 @@ public class PopulationParameters {
 
         public Double pGoShopping = null;
         public Double pGoRestaurant = null;
+        public Integer householdIsolationPeriod = null;
+        public Double pWillIsolate = null;
 
         @Override
         public String toString() {
@@ -300,12 +304,15 @@ public class PopulationParameters {
                     ", expectedNeighbours=" + expectedNeighbours +
                     ", pGoShopping=" + pGoShopping +
                     ", pGoRestaurant=" + pGoRestaurant +
+                    ", householdIsolationPeriod=" + householdIsolationPeriod +
+                    ", pWillIsolate=" + pWillIsolate +
                     '}';
         }
 
         public boolean isValid() {
             return isValidProbability(pGoShopping, "pGoShopping")
-                    && isValidProbability(pGoRestaurant, "pGoRestaurant");
+                    && isValidProbability(pGoRestaurant, "pGoRestaurant")
+                    && isValidProbability(pWillIsolate, "pWillIsolate");
         }
     }
 
@@ -652,6 +659,12 @@ public class PopulationParameters {
     public double getpGoRestaurant() {
         return householdProperties.pGoRestaurant;
     }
+    
+    public int getHouseholdIsolationPeriod() { return householdProperties.householdIsolationPeriod; }
+    public Double getpHouseholdWillIsolate() { return householdProperties.pWillIsolate; }
+    public void setpHouseholdWillIsolate(Double p) { householdProperties.pWillIsolate = p; }
+
+
 
     // Person Properties
     public double getpQuarantine() {

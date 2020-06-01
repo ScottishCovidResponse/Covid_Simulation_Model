@@ -6,6 +6,8 @@ import org.junit.Test;
 import uk.co.ramp.covid.simulation.DailyStats;
 import uk.co.ramp.covid.simulation.io.ParameterReader;
 import uk.co.ramp.covid.simulation.place.*;
+import uk.co.ramp.covid.simulation.testutil.PopulationGenerator;
+import uk.co.ramp.covid.simulation.util.RNG;
 
 import java.io.IOException;
 import java.util.List;
@@ -14,19 +16,14 @@ import static org.junit.Assert.*;
 
 public class PopulationTest {
 
-    Population pop;
-    int populationSize;
+    private Population pop;
+    private final int populationSize = 10000;
+    private final int nHouseholds = 3000;
 
     @Before
     public void setupParams() throws IOException {
         ParameterReader.readParametersFromFile("src/test/resources/default_params.json");
-        populationSize = 10000;
-        pop = new Population(populationSize,1000);
-        try {
-            pop.populateHouseholds();
-        } catch (ImpossibleAllocationException e) {
-            Assert.fail("Could not populate households in test");
-        }
+        pop = PopulationGenerator.genValidPopulation(populationSize, nHouseholds);
     }
 
     @Test
@@ -36,24 +33,16 @@ public class PopulationTest {
 
     @Test
     public void populateHouseholds() {
-        int populationSize = 500;
-        Population p = new Population(populationSize,60);
-
-        try {
-            p.populateHouseholds();
-        } catch (ImpossibleAllocationException e) {
-            fail("Could not allocate households in test");
-        }
 
         // Final population size = initial population size (all people allocated)
-        int pop = 0;
-        for (Household h : p.getHouseholds()) {
-           pop += h.getHouseholdSize();
+        int p = 0;
+        for (Household h : pop.getHouseholds()) {
+           p += h.getHouseholdSize();
         }
-        assertEquals("Sum total household size should equal population size",  populationSize, pop);
+        assertEquals("Sum total household size should equal population size",  populationSize, p);
 
         // Sanity check households
-        for (Household h : p.getHouseholds()){
+        for (Household h : pop.getHouseholds()){
             assertTrue("Each household must be assigned at least 1 person", h.getHouseholdSize() > 0);
             switch (h.gethType()) {
                 // Adults only
@@ -137,16 +126,13 @@ public class PopulationTest {
     }
 
     @Test (expected = ImpossibleAllocationException.class )
-    public void testImpossibleAllocationException() throws ImpossibleAllocationException {
-        populationSize = 10;
-        pop = new Population(populationSize,1000);
-        pop.populateHouseholds();
+    public void testImpossibleAllocationException() throws ImpossibleAllocationException, ImpossibleWorkerDistributionException {
+        new Population(10,1000);
     }
 
     @Test
     public void testAllocateConstructionSite() {
         //Test that the primary place of adult construction workers is set to construction site
-        pop.createMixing();
         Adult adult = new Adult(30, Person.Sex.FEMALE);
         adult.profession = Adult.Professions.CONSTRUCTION;
         pop.getHouseholds().get(0).addInhabitant(adult);
@@ -158,7 +144,6 @@ public class PopulationTest {
     @Test
     public void testAllocateHospital() {
         //Test that the primary place of adult hospital workers is set to hospital
-        pop.createMixing();
         Adult adult = new Adult(30, Person.Sex.MALE);
         adult.profession = Adult.Professions.HOSPITAL;
         pop.getHouseholds().get(0).addInhabitant(adult);
@@ -170,7 +155,6 @@ public class PopulationTest {
     @Test
     public void testAllocateOffice() {
         //Test that the primary place of adult office workers is set to office
-        pop.createMixing();
         Adult adult = new Adult(30, Person.Sex.FEMALE);
         adult.profession = Adult.Professions.OFFICE;
         pop.getHouseholds().get(0).addInhabitant(adult);
@@ -182,7 +166,6 @@ public class PopulationTest {
     @Test
     public void testAllocateRestaurant() {
         //Test that the primary place of adult restaurant workers is set to restaurant
-        pop.createMixing();
         Adult adult = new Adult(30, Person.Sex.MALE);
         adult.profession = Adult.Professions.RESTAURANT;
         pop.getHouseholds().get(0).addInhabitant(adult);
@@ -194,7 +177,6 @@ public class PopulationTest {
     @Test
     public void testAllocateSchool() {
         //Test that the primary place of adult teachers is set to school
-        pop.createMixing();
         Adult adult = new Adult(30, Person.Sex.FEMALE);
         adult.profession = Adult.Professions.TEACHER;
         pop.getHouseholds().get(0).addInhabitant(adult);
@@ -206,7 +188,6 @@ public class PopulationTest {
     @Test
     public void testAllocateShop() {
         //Test that the primary place of adult shop workers is set to shop
-        pop.createMixing();
         Adult adult = new Adult(30, Person.Sex.MALE);
         adult.profession = Adult.Professions.SHOP;
         pop.getHouseholds().get(0).addInhabitant(adult);
@@ -233,8 +214,6 @@ public class PopulationTest {
 
     @Test
     public void testAssignNeighbours() {
-        pop.createMixing();
-        pop.assignNeighbours();
         int totalNeighbours = 0;
 
         //loop for each household and check neighbour list is not null
@@ -253,8 +232,6 @@ public class PopulationTest {
     public void testTimestep() {
         List<DailyStats> stats;
         int nDays = 3;
-        pop.createMixing();
-        pop.assignNeighbours();
         stats = pop.simulate(nDays);
         assertEquals("Unexpected number of daily stats", nDays, stats.size());
     }
@@ -277,8 +254,6 @@ public class PopulationTest {
         int startLockdown = 2;
         int endLockdown = 4;
         double socialDist = 2.0;
-        pop.createMixing();
-        pop.assignNeighbours();
         pop.setLockdown(startLockdown, endLockdown, socialDist);
         stats = pop.simulate(nDays);
         assertFalse("Unexpectedly still in lockdown", pop.isLockdown());
@@ -291,8 +266,6 @@ public class PopulationTest {
         int start = 3;
         int end = 6;
         double socialDist = 2.0;
-        pop.createMixing();
-        pop.assignNeighbours();
         pop.setLockdown(start, end, socialDist);
         stats = pop.simulate(nDays);
         assertTrue("Unexpectedly not in lockdown", pop.isLockdown());
@@ -317,8 +290,6 @@ public class PopulationTest {
         int startLockdown = 1;
         int endLockdown = 5;
         double socialDist = 2.0;
-        pop.createMixing();
-        pop.assignNeighbours();
         pop.setLockdown(startLockdown, endLockdown, socialDist);
         pop.setSchoolLockdown(startLockdown, endLockdown - 2, socialDist);
         stats = pop.simulate(nDays);
@@ -330,14 +301,12 @@ public class PopulationTest {
         }
     }
 
-    // TODO: This runs sucessfully if the whole harness is run, but not if only this test is run. It's not cler why.
     @Test
-    public void allPlacesStaffed() {
-        pop.createMixing();
-        pop.allocatePeople();
+    public void allPlacesStaffed() throws ImpossibleAllocationException, IOException {
         for (CommunalPlace q : pop.getPlaces().getAllPlaces()) {
             assertTrue("Place not fully staffed, nStaff: " + q.getnStaff(), q.isFullyStaffed());
         }
+
     }
     
     @Test
@@ -358,7 +327,7 @@ public class PopulationTest {
             }
         }
 
-        assertEquals(0, Math.abs(m-f), populationSize * 0.05);
+        assertEquals(0, Math.abs(m-f), populationSize * 0.10);
         
         // Proportions of people type make sense
         int adult = 0;

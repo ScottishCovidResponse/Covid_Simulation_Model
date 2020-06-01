@@ -178,7 +178,9 @@
             "visitorLeaveRate":0.8,
             "expectedNeighbours":2,
             "pGoShopping":0.01786,
-            "pGoRestaurant": 0.01190
+            "pGoRestaurant": 0.01190,
+            "pWillIsolate": 0.5,
+            "householdIsolationPeriod": 14
         },
         "personProperties":{
             "pTransmission":0.9,
