@@ -19,7 +19,6 @@ public class MovementTest {
 
     Population p;
     int populationSize = 10000;
-    int nHouseholds = 2000;
     int nInfections = 10;
 
     @Before
@@ -27,7 +26,7 @@ public class MovementTest {
         ParameterReader.readParametersFromFile("src/test/resources/default_params.json");
         PopulationParameters.get().setpHouseholdWillIsolate(100.0);
 
-        p = PopulationGenerator.genValidPopulation(populationSize, nHouseholds);
+        p = PopulationGenerator.genValidPopulation(populationSize);
         p.seedVirus(nInfections);
     }
 

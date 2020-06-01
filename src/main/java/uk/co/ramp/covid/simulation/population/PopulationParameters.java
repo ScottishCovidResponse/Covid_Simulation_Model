@@ -53,7 +53,7 @@ public class PopulationParameters {
                     && isValidProbability(pPensionerChildren, "pPensionerChildren")
                     && isValidProbability(pPensionerAdult, "pPensionerAdult");
 
-            probabilitiesValid = probabilitiesValid && (householdRatio > 0);
+            probabilitiesValid = probabilitiesValid && (householdRatio >= 1);
 
             double totalP = pAdultOnly + pPensionerAdult + pPensionerOnly + pAdultChildren
                     + pPensionerChildren + pAdultPensionerChildren;

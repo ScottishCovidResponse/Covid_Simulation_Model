@@ -8,7 +8,7 @@ public class PopulationGenerator {
     
     private static final int RETRIES = 20;
 
-    public static Population genValidPopulation(int populationsize, int nHouseholds) {
+    public static Population genValidPopulation(int populationsize) {
         Population p = null;
         for (int i = 0; i < RETRIES; i++) {
             try {

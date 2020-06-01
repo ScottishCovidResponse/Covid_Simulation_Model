@@ -21,7 +21,7 @@ public class PopulationTest {
     @Before
     public void setupParams() throws IOException {
         ParameterReader.readParametersFromFile("src/test/resources/default_params.json");
-        pop = PopulationGenerator.genValidPopulation(populationSize, nHouseholds);
+        pop = PopulationGenerator.genValidPopulation(populationSize);
     }
 
     @Test

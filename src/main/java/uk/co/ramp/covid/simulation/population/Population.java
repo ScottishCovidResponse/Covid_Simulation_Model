@@ -40,6 +40,13 @@ public class Population {
 
         this.numHouseholds = (int) (populationSize / PopulationParameters.get().getHouseholdRatio());
 
+        if (numHouseholds == 0) {
+            throw new ImpossibleAllocationException("No households requested");
+        }
+        if (numHouseholds > populationSize) {
+            throw new ImpossibleAllocationException("More households than people requested");
+        }
+
         this.households = new ArrayList<>(numHouseholds);
         this.allPeople = new ArrayList<>(populationSize);
         this.places = new Places();
@@ -113,9 +120,19 @@ public class Population {
                 case ADULTPENSIONERCHILD: adultPensionerChild++; break;
             }
         }
-        boolean possible = adultIndex.cardinality() > adult + adultPensioner + adultChild + adultPensionerChild
-                && pensionerIndex.cardinality() > adultPensioner + pensioner + pensionerChild + adultPensionerChild
-                && childIndex.cardinality() + infantIndex.cardinality() > adultChild + pensionerChild + adultPensionerChild;
+
+        int adultHouseholds = adult + adultPensioner + adultChild + adultPensionerChild;
+        int pensionerHouseholds = adultPensioner + pensioner + pensionerChild + adultPensionerChild;
+        int childHouseholds = adultChild + pensionerChild + adultPensionerChild;
+        
+        boolean possible = adultIndex.cardinality() > adultHouseholds
+                && pensionerIndex.cardinality() > pensionerHouseholds
+                && childIndex.cardinality() + infantIndex.cardinality() > childHouseholds
+                // We need to ensure everyone has somewhere to go
+                && (adultIndex.cardinality() > 0 ? adultHouseholds > 0 : true)
+                && (pensionerIndex.cardinality() > 0 ? pensionerHouseholds > 0 : true)
+                && (childIndex.cardinality() > 0 ? childHouseholds > 0 : true);
+
         return  possible;
     }
 
@@ -160,11 +177,6 @@ public class Population {
 
     // We populate houseHolds greedily.
     private void populateHouseholds() throws ImpossibleAllocationException {
-
-        if (numHouseholds > populationSize) {
-            throw new ImpossibleAllocationException("More households than people requested");
-        }
-
         createHouseholds();
 
         BitSet infantIndex = new BitSet(populationSize);
