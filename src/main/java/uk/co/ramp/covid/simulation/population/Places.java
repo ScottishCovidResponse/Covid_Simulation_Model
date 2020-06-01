@@ -2,11 +2,9 @@ package uk.co.ramp.covid.simulation.population;
 
 import uk.co.ramp.covid.simulation.place.*;
 import uk.co.ramp.covid.simulation.util.ProbabilityDistribution;
-import uk.co.ramp.covid.simulation.util.RNG;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;

@@ -1,9 +1,6 @@
 package uk.co.ramp.covid.simulation.util;
 
 import org.apache.commons.math3.random.RandomDataGenerator;
-import uk.co.ramp.covid.simulation.RunModel;
-import uk.co.ramp.covid.simulation.place.Household;
-import uk.co.ramp.covid.simulation.population.PopulationParameters;
 
 import java.util.ArrayList;
 import java.util.Collections;
