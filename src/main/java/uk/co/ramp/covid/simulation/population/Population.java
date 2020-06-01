@@ -10,6 +10,7 @@ import org.apache.commons.math3.random.RandomDataGenerator;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import uk.co.ramp.covid.simulation.DailyStats;
+import uk.co.ramp.covid.simulation.Time;
 import uk.co.ramp.covid.simulation.place.*;
 import uk.co.ramp.covid.simulation.util.ProbabilityDistribution;
 import uk.co.ramp.covid.simulation.util.RNG;
@@ -299,16 +300,17 @@ public class Population {
     // Step through nDays in 1 hour time steps
     public List<DailyStats> simulate(int nDays) {
         List<DailyStats> stats = new ArrayList<>(nDays);
+        Time t = new Time();
         for (int i = 0; i < nDays; i++) {
-            DailyStats dStats = new DailyStats(i);
-            int dWeek = i % 7;
-            this.implementLockdown(i);
+            DailyStats dStats = new DailyStats(t);
+            implementLockdown(t);
             LOGGER.info("Lockdown = {}", this.lockdown);
             for (int k = 0; k < 24; k++) {
-                timeStep(dWeek, k, dStats);
+                timeStep(t.getDay(), t.getHour(), dStats);
             }
             households.forEach(h -> h.dayEnd());
             stats.add(this.processCases(dStats));
+            t = t.advance();
         }
         return stats;
     }
@@ -334,13 +336,13 @@ public class Population {
     }
 
     // Tests on each daily time step whether to do anything with the lockdown
-    private void implementLockdown(int day) {
-        if (day == this.lockdownStart) {
+    private void implementLockdown(Time t) {
+        if (t.getAbsDay() == this.lockdownStart) {
             this.lockdown = true;
             this.rLockdown = true;
             this.socialDistancing();
         }
-        if (day == this.lockdownEnd) {
+        if (t.getAbsDay() == this.lockdownEnd) {
             if (!this.schoolL) this.lockdown = false;
             if (this.schoolL) this.schoolExemption();
         }

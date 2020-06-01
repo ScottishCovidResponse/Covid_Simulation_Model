@@ -35,7 +35,7 @@ public class MovementTest {
     public void allChildrenGoToSchool() {
         int day = 1;
         Set<Child> schooled = new HashSet();
-        DailyStats s = new DailyStats(day);
+        DailyStats s = new DailyStats(new Time(24));
         for (int i = 0; i < 24; i++) {
             p.timeStep(day, i, s);
             
@@ -62,7 +62,7 @@ public class MovementTest {
     public void someInfantsGoToNursery() {
         int day = 1;
         Set<Infant> nursed = new HashSet();
-        DailyStats s = new DailyStats(day);
+        DailyStats s = new DailyStats(new Time(24));
         for (int i = 0; i < 24; i++) {
             p.timeStep(day, i, s);
 
@@ -84,7 +84,7 @@ public class MovementTest {
     public void someAdultsGoToWork() {
         int day = 1;
         Set<Adult> working = new HashSet();
-        DailyStats s = new DailyStats(day);
+        DailyStats s = new DailyStats(new Time(24));
         for (int i = 0; i < 24; i++) {
             p.timeStep(day, i, s);
 
@@ -104,7 +104,7 @@ public class MovementTest {
     public void someNonWorkersGoShopping() {
         int day = 1;
         Set<Person> shopping = new HashSet();
-        DailyStats s = new DailyStats(day);
+        DailyStats s = new DailyStats(new Time(24));
         for (int i = 0; i < 24; i++) {
             p.timeStep(day, i, s);
 
@@ -125,7 +125,7 @@ public class MovementTest {
     public void someNonWorkersGoSToRestaurants() {
         int day = 1;
         Set<Person> eating = new HashSet();
-        DailyStats s = new DailyStats(day);
+        DailyStats s = new DailyStats(new Time(24));
         for (int i = 0; i < 24; i++) {
             p.timeStep(day, i, s);
 
@@ -146,7 +146,7 @@ public class MovementTest {
     public void somePeopleVisitNeighbours() {
         int day = 1;
         Set<Person> visiting = new HashSet();
-        DailyStats s = new DailyStats(day);
+        DailyStats s = new DailyStats(new Time(24));
         for (int i = 0; i < 24; i++) {
             p.timeStep(day, i, s);
 
@@ -160,7 +160,7 @@ public class MovementTest {
     @Test
     public void weDontLosePeople() {
         int day = 1;
-        DailyStats s = new DailyStats(day);
+        DailyStats s = new DailyStats(new Time(24));
         for (int i = 0; i < 24; i++) {
             p.timeStep(day, i, s);
 
@@ -179,7 +179,7 @@ public class MovementTest {
     @Test
     public void openPlacesShouldBeStaffed() {
         int day = 1;
-        DailyStats s = new DailyStats(day);
+        DailyStats s = new DailyStats(new Time(24));
         for (int i = 0; i < 24; i++) {
             p.timeStep(day, i, s);
 
@@ -215,7 +215,7 @@ public class MovementTest {
     @Test
     public void isolatingHouseholdsDontMove() {
         int day = 1;
-        DailyStats s = new DailyStats(day);
+        DailyStats s = new DailyStats(new Time(24));
         Household iso = p.getHouseholds().get(0);
         iso.forceIsolationtimer(14);
         List<Person> isolating = iso.getInhabitants();
@@ -230,7 +230,7 @@ public class MovementTest {
     public void stopIsolatingAfterTimerExpires() {
         int day = 1;
         int daysIsolated = 2;
-        DailyStats s = new DailyStats(day);
+        DailyStats s = new DailyStats(new Time(24));
         Household iso = p.getHouseholds().get(0);
         iso.forceIsolationtimer(daysIsolated);
         List<Person> isolating = iso.getInhabitants();
@@ -280,7 +280,7 @@ public class MovementTest {
         int day = 1;
         int daysIsolated = 2;
 
-        DailyStats s = new DailyStats(day);
+        DailyStats s = new DailyStats(new Time(24));
         Household iso = p.getHouseholds().get(0);
         iso.forceIsolationtimer(daysIsolated);
         List<Person> isolating = iso.getInhabitants();

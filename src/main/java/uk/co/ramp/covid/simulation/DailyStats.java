@@ -46,8 +46,8 @@ public class DailyStats {
     private int childDeaths = 0;
     private int infantDeaths = 0;
 
-    public DailyStats(int day) {
-        this.day = day;
+    public DailyStats(Time t) {
+        this.day = t.getDay();
     }
 
     public void processPerson(Person p) {
