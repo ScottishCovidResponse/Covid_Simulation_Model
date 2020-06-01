@@ -281,8 +281,8 @@ public class Population {
     }
     
     public void timeStep(Time t, DailyStats dStats) {
-        households.forEach(h -> h.doInfect(dStats));
-        places.getAllPlaces().forEach(p -> p.doInfect(dStats));
+        households.forEach(h -> h.doInfect(t, dStats));
+        places.getAllPlaces().forEach(p -> p.doInfect(t, dStats));
 
         // There is a potential to introduce parallelism here if required by using parallelStream (see below).
         // Note we currently cannot parallelise movement as the ArrayLists for capturing moves are not thread safe

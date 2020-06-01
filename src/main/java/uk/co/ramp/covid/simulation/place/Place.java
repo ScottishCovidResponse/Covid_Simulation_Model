@@ -7,9 +7,7 @@ import uk.co.ramp.covid.simulation.population.Person;
 import uk.co.ramp.covid.simulation.population.PopulationParameters;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 public abstract class Place {
 
@@ -44,11 +42,11 @@ public abstract class Place {
     }
 
     /** Handles infections between all people in this place */
-    public void doInfect(DailyStats stats) {
+    public void doInfect(Time t, DailyStats stats) {
         List<Person> deaths = new ArrayList<>();
         for (Person cPers : people) {
             if (cPers.getInfectionStatus() && !cPers.isRecovered()) {
-                cPers.stepInfection();
+                cPers.stepInfection(t);
                 if (cPers.isInfectious()) {
                     for (Person nPers : people) {
                         if (cPers != nPers) {
@@ -56,6 +54,7 @@ public abstract class Place {
                                 boolean infected = nPers.infChallenge(this.transProb * this.sDistance * cPers.getTransAdjustment());
                                 if (infected) {
                                     registerInfection(stats, nPers);
+                                    nPers.getcVirus().getInfectionLog().registerInfected(t);
                                 }
                             }
                         }

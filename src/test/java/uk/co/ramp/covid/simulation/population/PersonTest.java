@@ -5,6 +5,7 @@ import com.sun.org.apache.bcel.internal.generic.FADD;
 import org.junit.Before;
 import org.junit.Test;
 import sun.security.pkcs11.wrapper.CK_SSL3_MASTER_KEY_DERIVE_PARAMS;
+import uk.co.ramp.covid.simulation.Time;
 import uk.co.ramp.covid.simulation.io.ParameterReader;
 import uk.co.ramp.covid.simulation.util.RNG;
 import java.io.IOException;
@@ -37,7 +38,7 @@ public class PersonTest {
         //Test that stepInfection returns a valid status
         Person person = new Adult(30, Person.Sex.FEMALE);
         person.infChallenge(100.0);
-        assertNotNull("Invalid CStatus", person.stepInfection());
+        assertNotNull("Invalid CStatus", person.stepInfection(new Time()));
     }
 
     @Test
@@ -48,7 +49,7 @@ public class PersonTest {
 
         //Test the status of an infected person is not healthy
         person.infChallenge(100.0);
-        person.stepInfection();
+        person.stepInfection(new Time());
         assertNotSame("Person unexpectedly healthy", CStatus.HEALTHY, person.cStatus());
 
     }

@@ -320,7 +320,7 @@ public class MovementTest {
                 // Usually there's a delay before symptonms but we just force it here
                 double time = per.getcVirus().getSymptomDelay() + 1;
                 for (int j = 0; j < time; j++) {
-                    per.getcVirus().stepInfection();
+                    per.getcVirus().stepInfection(t);
                 }
                 per.cStatus();
             }

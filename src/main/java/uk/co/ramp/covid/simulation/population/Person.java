@@ -5,7 +5,7 @@
 package uk.co.ramp.covid.simulation.population;
 
 import org.apache.commons.math3.random.RandomDataGenerator;
-import uk.co.ramp.covid.simulation.Covid;
+import uk.co.ramp.covid.simulation.covid.Covid;
 import uk.co.ramp.covid.simulation.DailyStats;
 import uk.co.ramp.covid.simulation.Time;
 import uk.co.ramp.covid.simulation.place.CommunalPlace;
@@ -93,8 +93,8 @@ public abstract class Person {
         return !(this.cVirus == null);
     }
 
-    public CStatus stepInfection() {
-        return this.cVirus.stepInfection();
+    public CStatus stepInfection(Time t) {
+        return this.cVirus.stepInfection(t);
     }
 
     public boolean infChallenge(double challengeProb) {
