@@ -239,7 +239,7 @@ public class MovementTest {
 
     @Test
     public void stopIsolatingAfterTimerExpires() {
-        RNG.seed(0);
+        RNG.seed(1);
         int daysIsolated = 2;
         Time t = new Time(24);
         DailyStats s = new DailyStats(t);
