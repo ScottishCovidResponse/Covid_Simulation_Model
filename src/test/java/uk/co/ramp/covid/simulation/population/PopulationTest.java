@@ -4,7 +4,6 @@ import org.junit.Before;
 import org.junit.Test;
 import uk.co.ramp.covid.simulation.DailyStats;
 import uk.co.ramp.covid.simulation.RStats;
-import uk.co.ramp.covid.simulation.covid.CovidParameters;
 import uk.co.ramp.covid.simulation.io.ParameterReader;
 import uk.co.ramp.covid.simulation.place.*;
 import uk.co.ramp.covid.simulation.testutil.PopulationGenerator;
