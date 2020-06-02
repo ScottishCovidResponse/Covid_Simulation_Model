@@ -9,7 +9,6 @@ import com.google.gson.JsonParseException;
 import uk.co.ramp.covid.simulation.DailyStats;
 import uk.co.ramp.covid.simulation.io.ParameterReader;
 import uk.co.ramp.covid.simulation.population.*;
-import uk.co.ramp.covid.simulation.util.RNG;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -26,7 +25,7 @@ public class HospitalTest {
 
     @Test
     public void testHospitalTransProb() throws JsonParseException {
-        Hospital hospital = new Hospital();
+        Hospital hospital = new Hospital(CommunalPlace.Size.MED);
         double expProb = PopulationParameters.get().getpBaseTrans() * 15d / (5000d / 10d);
         double delta = 0.01;
         assertEquals("Unexpected hospital TransProb", expProb, hospital.transProb, delta);
@@ -36,7 +35,6 @@ public class HospitalTest {
     @Test
     public void testHospitalWorkers() throws ImpossibleAllocationException, ImpossibleWorkerDistributionException {
         int populationSize = 10000;
-        int nHouseholds = 2000;
         int nInfections = 10;
 
         Population p = new Population(populationSize);

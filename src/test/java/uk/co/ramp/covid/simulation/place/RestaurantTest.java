@@ -8,13 +8,10 @@ import com.google.gson.JsonParseException;
 import uk.co.ramp.covid.simulation.DailyStats;
 import uk.co.ramp.covid.simulation.io.ParameterReader;
 import uk.co.ramp.covid.simulation.population.*;
-import uk.co.ramp.covid.simulation.util.RNG;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -30,7 +27,7 @@ public class RestaurantTest {
         ParameterReader.readParametersFromFile("src/test/resources/default_params.json");
 
         //Setup a restaurant with 2 people
-        restaurant = new Restaurant();
+        restaurant = new Restaurant(CommunalPlace.Size.MED);
         p1 = new Adult(30, Person.Sex.MALE);
         p2 = new Pensioner(67, Person.Sex.FEMALE);
         Household h1 = new Household(Household.HouseholdType.ADULT, null);
@@ -70,7 +67,6 @@ public class RestaurantTest {
     @Test
     public void testRestaurantWorkers() throws ImpossibleAllocationException, ImpossibleWorkerDistributionException {
         int populationSize = 10000;
-        int nHouseholds = 2000;
         int nInfections = 10;
 
         Population p = new Population(populationSize);

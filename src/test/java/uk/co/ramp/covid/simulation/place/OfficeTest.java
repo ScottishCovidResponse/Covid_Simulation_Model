@@ -8,7 +8,6 @@ import com.google.gson.JsonParseException;
 import uk.co.ramp.covid.simulation.DailyStats;
 import uk.co.ramp.covid.simulation.io.ParameterReader;
 import uk.co.ramp.covid.simulation.population.*;
-import uk.co.ramp.covid.simulation.util.RNG;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -25,7 +24,7 @@ public class OfficeTest {
 
     @Test
     public void testOfficeTransProb() throws JsonParseException {
-        Office office = new Office();
+        Office office = new Office(CommunalPlace.Size.MED);
         double expProb = PopulationParameters.get().getpBaseTrans() * 10d / (10000d / 400d);
         double delta = 0.01;
         assertEquals("Unexpected office TransProb", expProb, office.transProb, delta);
@@ -35,7 +34,6 @@ public class OfficeTest {
     @Test
     public void testOfficeWorkers() throws ImpossibleAllocationException, ImpossibleWorkerDistributionException {
         int populationSize = 10000;
-        int nHouseholds = 2000;
         int nInfections = 10;
 
         Population p = new Population(populationSize);

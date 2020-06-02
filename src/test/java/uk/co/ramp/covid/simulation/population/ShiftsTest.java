@@ -6,11 +6,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 import uk.co.ramp.covid.simulation.io.ParameterReader;
 import uk.co.ramp.covid.simulation.place.CommunalPlace;
-import uk.co.ramp.covid.simulation.place.OpeningTimes;
-import uk.co.ramp.covid.simulation.place.Restaurant;
 import uk.co.ramp.covid.simulation.place.Shop;
-import uk.co.ramp.covid.simulation.util.RNG;
-import uk.co.ramp.covid.simulation.util.RoundRobinAllocator;
 
 import java.io.IOException;
 

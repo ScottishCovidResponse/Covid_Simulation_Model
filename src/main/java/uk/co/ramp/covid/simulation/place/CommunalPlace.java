@@ -5,9 +5,6 @@
 package uk.co.ramp.covid.simulation.place;
 
 import org.apache.commons.math3.random.RandomDataGenerator;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import uk.co.ramp.covid.simulation.DailyStats;
 import uk.co.ramp.covid.simulation.population.Person;
 import uk.co.ramp.covid.simulation.population.Shifts;
 import uk.co.ramp.covid.simulation.util.RNG;
@@ -18,7 +15,7 @@ import java.util.List;
 public abstract class CommunalPlace extends Place {
 
     public enum Size {
-        SMALL, MED, LARGE, UNKNOWN
+        SMALL, MED, LARGE
     }
     
     protected Size size;
@@ -64,7 +61,7 @@ public abstract class CommunalPlace extends Place {
 
     /** Move everyone based on their shift patterns */
     public void moveShifts(int day, int hour, boolean lockdown) {
-        List<Person> left = new ArrayList();
+        List<Person> left = new ArrayList<>();
         for (Person p : people) {
             if (!p.worksNextHour(this, day, hour, lockdown)) {
                 p.returnHome();

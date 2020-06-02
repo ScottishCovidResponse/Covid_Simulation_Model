@@ -8,7 +8,6 @@ import com.google.gson.JsonParseException;
 import uk.co.ramp.covid.simulation.DailyStats;
 import uk.co.ramp.covid.simulation.io.ParameterReader;
 import uk.co.ramp.covid.simulation.population.*;
-import uk.co.ramp.covid.simulation.util.RNG;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -25,7 +24,7 @@ public class NurseryTest {
 
     @Test
     public void testNurseryTransProb() throws JsonParseException {
-        Nursery nursery = new Nursery();
+        Nursery nursery = new Nursery(CommunalPlace.Size.MED);
         double expProb = PopulationParameters.get().getpBaseTrans() * 30d / (34000d / 50d);
         double delta = 0.01;
         assertEquals("Unexpected nursery TransProb", expProb, nursery.transProb, delta);
@@ -35,7 +34,6 @@ public class NurseryTest {
     @Test
     public void testNurseryWorkers() throws ImpossibleAllocationException, ImpossibleWorkerDistributionException {
         int populationSize = 10000;
-        int nHouseholds = 2000;
         int nInfections = 10;
 
         Population p = new Population(populationSize);

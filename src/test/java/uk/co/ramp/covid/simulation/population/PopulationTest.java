@@ -16,7 +16,6 @@ public class PopulationTest {
 
     private Population pop;
     private final int populationSize = 10000;
-    private final int nHouseholds = 3000;
 
     @Before
     public void setupParams() throws IOException {
@@ -254,25 +253,23 @@ public class PopulationTest {
 
     @Test
     public void testLockdownOver() {
-        List<DailyStats> stats;
         int nDays = 5;
         int startLockdown = 2;
         int endLockdown = 4;
         double socialDist = 2.0;
         pop.setLockdown(startLockdown, endLockdown, socialDist);
-        stats = pop.simulate(nDays);
+        pop.simulate(nDays);
         assertFalse("Unexpectedly still in lockdown", pop.isLockdown());
     }
 
     @Test
     public void testInLockdown() {
-        List<DailyStats> stats;
         int nDays = 5;
         int start = 3;
         int end = 6;
         double socialDist = 2.0;
         pop.setLockdown(start, end, socialDist);
-        stats = pop.simulate(nDays);
+        pop.simulate(nDays);
         assertTrue("Unexpectedly not in lockdown", pop.isLockdown());
         assertTrue("Restaurants not in lockdown", pop.isrLockdown());
     }
@@ -290,14 +287,13 @@ public class PopulationTest {
 
     @Test
     public void testSchoolExemption() {
-        List<DailyStats> stats;
         int nDays = 5;
         int startLockdown = 1;
         int endLockdown = 5;
         double socialDist = 2.0;
         pop.setLockdown(startLockdown, endLockdown, socialDist);
         pop.setSchoolLockdown(startLockdown, endLockdown - 2, socialDist);
-        stats = pop.simulate(nDays);
+        pop.simulate(nDays);
         for (School s : pop.getPlaces().getSchools()) {
             assertTrue("School should be a key premises", s.isKeyPremises());
         }

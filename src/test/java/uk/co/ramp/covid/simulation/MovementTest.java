@@ -9,6 +9,7 @@ import uk.co.ramp.covid.simulation.io.ParameterReader;
 import uk.co.ramp.covid.simulation.place.*;
 import uk.co.ramp.covid.simulation.population.*;
 import uk.co.ramp.covid.simulation.testutil.PopulationGenerator;
+import uk.co.ramp.covid.simulation.util.RNG;
 
 import java.io.IOException;
 import java.util.HashSet;
@@ -33,8 +34,9 @@ public class MovementTest {
 
     @Test
     public void allChildrenGoToSchool() {
+        RNG.seed(0);
         int day = 1;
-        Set<Child> schooled = new HashSet();
+        Set<Child> schooled = new HashSet<>();
         DailyStats s = new DailyStats(day);
         for (int i = 0; i < 24; i++) {
             p.timeStep(day, i, s);
@@ -61,7 +63,7 @@ public class MovementTest {
     @Test
     public void someInfantsGoToNursery() {
         int day = 1;
-        Set<Infant> nursed = new HashSet();
+        Set<Infant> nursed = new HashSet<>();
         DailyStats s = new DailyStats(day);
         for (int i = 0; i < 24; i++) {
             p.timeStep(day, i, s);
@@ -83,7 +85,7 @@ public class MovementTest {
     @Test
     public void someAdultsGoToWork() {
         int day = 1;
-        Set<Adult> working = new HashSet();
+        Set<Adult> working = new HashSet<>();
         DailyStats s = new DailyStats(day);
         for (int i = 0; i < 24; i++) {
             p.timeStep(day, i, s);
@@ -103,7 +105,7 @@ public class MovementTest {
     @Test
     public void someNonWorkersGoShopping() {
         int day = 1;
-        Set<Person> shopping = new HashSet();
+        Set<Person> shopping = new HashSet<>();
         DailyStats s = new DailyStats(day);
         for (int i = 0; i < 24; i++) {
             p.timeStep(day, i, s);
@@ -124,7 +126,7 @@ public class MovementTest {
     @Test
     public void someNonWorkersGoSToRestaurants() {
         int day = 1;
-        Set<Person> eating = new HashSet();
+        Set<Person> eating = new HashSet<>();
         DailyStats s = new DailyStats(day);
         for (int i = 0; i < 24; i++) {
             p.timeStep(day, i, s);
@@ -145,7 +147,7 @@ public class MovementTest {
     @Test
     public void somePeopleVisitNeighbours() {
         int day = 1;
-        Set<Person> visiting = new HashSet();
+        Set<Person> visiting = new HashSet<>();
         DailyStats s = new DailyStats(day);
         for (int i = 0; i < 24; i++) {
             p.timeStep(day, i, s);
@@ -184,7 +186,6 @@ public class MovementTest {
         for (int i = 0; i < 24; i++) {
             p.timeStep(day, i, s);
 
-            int npeople = 0;
             for (CommunalPlace place : p.getPlaces().getAllPlaces()) {
                 // i + 1 since the ith timestep has already been (so we are in the next state)
                 if (place.isOpen(day, i + 1)) {
@@ -197,7 +198,6 @@ public class MovementTest {
     }
     
     private void doesNotGoOut(Household iso, List<Person> isolating) {
-        int npeople = 0;
         for (CommunalPlace place : p.getPlaces().getAllPlaces()) {
             for (Person per : isolating) {
                 assertFalse(place.getPeople().contains(per));
@@ -229,6 +229,7 @@ public class MovementTest {
 
     @Test
     public void stopIsolatingAfterTimerExpires() {
+        RNG.seed(0);
         int day = 1;
         int daysIsolated = 2;
         DailyStats s = new DailyStats(day);
