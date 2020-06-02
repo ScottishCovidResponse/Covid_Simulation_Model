@@ -32,7 +32,6 @@ public class HospitalTest {
         assertEquals("Unexpected hospital TransProb", expProb, hospital.transProb, delta);
     }
 
-    @Ignore("Failing Test")
     @Test
     public void testHospitalWorkers() throws ImpossibleAllocationException, ImpossibleWorkerDistributionException {
         int populationSize = 10000;
@@ -44,17 +43,23 @@ public class HospitalTest {
         List<Person> staff;
         Time t = new Time(0);
         //Run for a whole week
+        boolean firstSkipped = false;
         for (int day = 0; day < 7; day++) {
             DailyStats s = new DailyStats(t);
             for (int i = 0; i < 24; i++) {
-                p.timeStep(t, s);
-                //There should always be staff in hospitals
-                for (Hospital place : p.getPlaces().getHospitals()) {
-                    staff = place.getStaff(t);
-                    assertTrue("Day " + day + " Time " + i +" Unexpectedly no staff in hospital", staff.size() > 0);
+                // Since movement puts people in place for the *next* hour, it's easiest to check this before the timestep
+                // First check is skipped to give workers time to move to work
+                if (firstSkipped) {
+                    for (Hospital place : p.getPlaces().getHospitals()) {
+                        staff = place.getStaff(t);
+                        assertTrue("Day " + day + " Time " + i  + " Unexpectedly no staff in hospital",
+                                staff.size() > 0);
+                    }
                 }
+                firstSkipped = true;
+                p.timeStep(t, s);
+                t.advance();
             }
-            t.advance();
         }
     }
 

@@ -9,6 +9,7 @@ import uk.co.ramp.covid.simulation.DailyStats;
 import uk.co.ramp.covid.simulation.Time;
 import uk.co.ramp.covid.simulation.io.ParameterReader;
 import uk.co.ramp.covid.simulation.population.*;
+import uk.co.ramp.covid.simulation.testutil.PopulationGenerator;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -31,13 +32,12 @@ public class OfficeTest {
         assertEquals("Unexpected office TransProb", expProb, office.transProb, delta);
     }
 
-    @Ignore("Failing Test")
     @Test
-    public void testOfficeWorkers() throws ImpossibleAllocationException, ImpossibleWorkerDistributionException {
+    public void testOfficeWorkers() throws ImpossibleWorkerDistributionException {
         int populationSize = 10000;
         int nInfections = 10;
 
-        Population p = new Population(populationSize);
+        Population p = PopulationGenerator.genValidPopulation(populationSize);
         p.allocatePeople();
         p.seedVirus(nInfections);
         List<Person> staff;
@@ -50,6 +50,7 @@ public class OfficeTest {
             DailyStats s = new DailyStats(t);
             for (int i = 0; i < 24; i++) {
                 p.timeStep(t, s);
+                t = t.advance();
                 totStaff = 0;
                 for (Office place : p.getPlaces().getOffices()) {
                     staff = place.getStaff(t);
@@ -59,7 +60,7 @@ public class OfficeTest {
                 if (day < 5) {
 
                     //Staff should be in offices during working hours only
-                    if (i < startTime || i >= endTime - 1) {
+                    if (i + 1< startTime || i + 1 >= endTime) {
                         assertEquals("Unexpected staff in office", 0, totStaff);
                     } else {
                         assertTrue("Unexpectedly no staff in office", totStaff > 0);
@@ -68,7 +69,6 @@ public class OfficeTest {
                     //Staff should not be in offices on weekends
                     assertEquals("Unexpected staff in office", 0, totStaff);
                 }
-                t.advance();
             }
 
         }
