@@ -19,6 +19,8 @@ import uk.co.ramp.covid.simulation.util.RNG;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 public class Population {
 
@@ -237,6 +239,35 @@ public class Population {
 
      */
 
+    private void allocateRequired(Household h, BitSet remaining, Supplier<Boolean> required, Consumer<Object> add)
+            throws ImpossibleAllocationException {
+        int i = 0;
+        while (required.get()) {
+            i = remaining.nextSetBit(i);
+            if (i < 0) {
+                throw new ImpossibleAllocationException("Population distribution cannot populate household distribution");
+            }
+            remaining.clear(i);
+            h.addInhabitant(allPeople.get(i));
+            // For type inference, Java 8 doesn't have void lambda functions so we just pass a trivial object and ignore it
+            add.accept(new Object());
+        }
+    }
+
+    private void allocateAllowed(Household h, BitSet remaining, Supplier<Boolean> allowed, Consumer<Object> add)
+            throws ImpossibleAllocationException {
+        int i = 0;
+        if (allowed.get()) {
+            i = remaining.nextSetBit(i);
+            if (i >= 0) {
+                remaining.clear(i);
+                h.addInhabitant(allPeople.get(i));
+                // For type inference, Java 8 doesn't have void lambda functions so we just pass a trivial object and ignore it
+                add.accept(new Object());
+            }
+        }
+    }
+
     private void populateHouseholds() throws ImpossibleAllocationException {
         createHouseholds();
 
@@ -254,64 +285,18 @@ public class Population {
         // Fill requirements first
         for (Household h : households) {
             HouseholdType htype = h.getHouseholdType();
-            while (htype.adultRequired()) {
-                int i = adultIndex.nextSetBit(0);
-                if (i < 0) {
-                    throw new ImpossibleAllocationException("Population distribution cannot populate household distribution");
-                }
-                adultIndex.clear(i);
-                h.addInhabitant(allPeople.get(i));
-                htype.addAdult();
-            }
-            while (htype.childRequired()) {
-                int i = childOrInfant.nextSetBit(0);
-                if (i < 0) {
-                    throw new ImpossibleAllocationException("Population distribution cannot populate household distribution");
-                }
-                childOrInfant.clear(i);
-                h.addInhabitant(allPeople.get(i));
-                htype.addChild();
-            }
-            while (htype.pensionerRequired()) {
-                int i = pensionerIndex.nextSetBit(0);
-                if (i < 0) {
-                    throw new ImpossibleAllocationException("Population distribution cannot populate household distribution");
-                }
-                pensionerIndex.clear(i);
-                h.addInhabitant(allPeople.get(i));
-                htype.addPensioner();
-            }
+            allocateRequired(h, adultIndex, () -> htype.adultRequired(), v -> htype.addAdult());
+            allocateRequired(h, pensionerIndex, () -> htype.pensionerRequired(), v -> htype.addPensioner());
+            allocateRequired(h, childOrInfant, () -> htype.childRequired(), v -> htype.addChild());
         }
 
         // Now fill in anyone who is missing
         while (!adultIndex.isEmpty() || !pensionerIndex.isEmpty() || !childOrInfant.isEmpty()) {
             for (Household h : households) {
                 HouseholdType htype = h.getHouseholdType();
-                if (htype.adultAllowed()) {
-                    int i = adultIndex.nextSetBit(0);
-                    if (i >= 0) {
-                        adultIndex.clear(i);
-                        h.addInhabitant(allPeople.get(i));
-                        htype.addAdult();
-                    }
-                }
-                if (htype.childAllowed()) {
-                    int i = childOrInfant.nextSetBit(0);
-                    if (i >= 0) {
-                        childOrInfant.clear(i);
-                        h.addInhabitant(allPeople.get(i));
-                        htype.addChild();
-                    }
-                
-                }
-                if (htype.pensionerAllowed()) {
-                    int i = pensionerIndex.nextSetBit(0);
-                    if (i >= 0) {
-                        pensionerIndex.clear(i);
-                        h.addInhabitant(allPeople.get(i));
-                        htype.addPensioner();
-                    }
-                }
+                allocateAllowed(h, adultIndex, () -> htype.adultAllowed(), v -> htype.addAdult());
+                allocateAllowed(h, pensionerIndex, () -> htype.pensionerAllowed(), v -> htype.addPensioner());
+                allocateAllowed(h, childOrInfant, () -> htype.childAllowed(), v -> htype.addChild());
             }
         }
     }
