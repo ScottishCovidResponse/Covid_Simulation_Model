@@ -7,6 +7,7 @@ import org.junit.Test;
 import com.google.gson.JsonParseException;
 
 import uk.co.ramp.covid.simulation.DailyStats;
+import uk.co.ramp.covid.simulation.Time;
 import uk.co.ramp.covid.simulation.io.ParameterReader;
 import uk.co.ramp.covid.simulation.population.*;
 
@@ -40,23 +41,24 @@ public class HospitalTest {
         p.allocatePeople();
         p.seedVirus(nInfections);
         List<Person> staff;
+        Time t = new Time(0);
         //Run for a whole week
         boolean firstSkipped = false;
         for (int day = 0; day < 7; day++) {
-            DailyStats s = new DailyStats(day);
+            DailyStats s = new DailyStats(t);
             for (int i = 0; i < 24; i++) {
                 // Since movement puts people in place for the *next* hour, it's easiest to check this before the timestep
                 // First check is skipped to give workers time to move to work
                 if (firstSkipped) {
                     for (Hospital place : p.getPlaces().getHospitals()) {
-                        staff = place.getStaff(day, i);
+                        staff = place.getStaff(t);
                         assertTrue("Day " + day + " Time " + i  + " Unexpectedly no staff in hospital",
                                 staff.size() > 0);
                     }
-                   
                 }
-                p.timeStep(day, i, s);
                 firstSkipped = true;
+                p.timeStep(t, s);
+                t.advance();
             }
         }
     }

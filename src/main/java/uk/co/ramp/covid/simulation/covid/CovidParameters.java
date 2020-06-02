@@ -1,4 +1,4 @@
-package uk.co.ramp.covid.simulation;
+package uk.co.ramp.covid.simulation.covid;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

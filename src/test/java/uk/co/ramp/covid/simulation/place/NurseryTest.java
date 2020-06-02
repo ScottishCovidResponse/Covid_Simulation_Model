@@ -6,6 +6,7 @@ import org.junit.Test;
 
 import com.google.gson.JsonParseException;
 import uk.co.ramp.covid.simulation.DailyStats;
+import uk.co.ramp.covid.simulation.Time;
 import uk.co.ramp.covid.simulation.io.ParameterReader;
 import uk.co.ramp.covid.simulation.population.*;
 import uk.co.ramp.covid.simulation.testutil.PopulationGenerator;
@@ -40,23 +41,25 @@ public class NurseryTest {
         p.allocatePeople();
         p.seedVirus(nInfections);
         List<Person> staff;
+        Time t = new Time(0);
         //Run for a whole week
         for (int day = 0; day < 7; day++) {
             int totStaff;
             int startTime = Shifts.schoolTimes().getShift(day).getStart();
             int endTime = Shifts.schoolTimes().getShift(day).getEnd();
-            DailyStats s = new DailyStats(day);
+            DailyStats s = new DailyStats(t);
             for (int i = 0; i < 24; i++) {
-                p.timeStep(day, i, s);
+                p.timeStep(t, s);
+                t = t.advance();
                 totStaff = 0;
                 for (Nursery place : p.getPlaces().getNurseries()) {
-                    staff = place.getStaff(day, i + 1);
+                    staff = place.getStaff(t);
                     totStaff += staff.size();
                 }
 
                 if (day < 5) {
                     //Staff should be at nursery during school times only
-                    if (i + 1 < startTime || i +1 >= endTime) {
+                    if (i + 1 < startTime || i + 1 >= endTime) {
                         assertEquals("Unexpected staff at nursery", 0, totStaff);
                     } else {
                         assertTrue("No staff at nursery", totStaff > 0);
