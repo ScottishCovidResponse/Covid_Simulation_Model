@@ -33,10 +33,13 @@ public class TimeTest {
     @Test
     public void weekRolleroverWorks() {
         Time t = new Time(168);
-        Time t2 = t.advance();
         assertEquals(0, t.getDay());
         assertEquals(7, t.getAbsDay());
         assertEquals(0, t.getHour());
+        Time t2 = t.advance();
+        assertEquals(0, t2.getDay());
+        assertEquals(7, t2.getAbsDay());
+        assertEquals(1, t2.getHour());
     }
 
 
