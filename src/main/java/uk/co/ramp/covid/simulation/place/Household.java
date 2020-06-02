@@ -184,7 +184,7 @@ public class Household extends Place {
     }
 
     private void moveNeighbour(int day, int hour) {
-        List<Person> left = new ArrayList();
+        List<Person> left = new ArrayList<>();
 
         for (Household n : getNeighbours()) {
             if (n.isIsolating()) {
@@ -207,7 +207,7 @@ public class Household extends Place {
     }
 
     private void moveShop(int day, int hour, boolean lockdown) {
-        List<Person> left = new ArrayList();
+        List<Person> left = new ArrayList<>();
 
         double visitProb = PopulationParameters.get().getpGoShopping();
         if (lockdown) {
@@ -243,7 +243,7 @@ public class Household extends Place {
     }
 
     private void moveRestaurant(int day, int hour) {
-        List<Person> left = new ArrayList();
+        List<Person> left = new ArrayList<>();
 
         double visitProb = PopulationParameters.get().getpGoRestaurant();
 
@@ -274,7 +274,7 @@ public class Household extends Place {
     }
 
     private void moveShift(int day, int hour, boolean lockdown) {
-        List<Person> left = new ArrayList();
+        List<Person> left = new ArrayList<>();
         for (Person p : getInhabitants()) {
             if (p.worksNextHour(p.getPrimaryCommunalPlace(), day, hour, lockdown)) {
                 if (!p.getQuarantine()) {

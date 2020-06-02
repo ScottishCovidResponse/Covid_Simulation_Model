@@ -3,11 +3,9 @@ package uk.co.ramp.covid.simulation.population;
 import com.google.gson.JsonParseException;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.junit.Assert;
 import uk.co.ramp.covid.simulation.io.ParameterReader;
 import uk.co.ramp.covid.simulation.place.School;
 import uk.co.ramp.covid.simulation.testutil.PopulationGenerator;
-import uk.co.ramp.covid.simulation.util.RNG;
 
 import java.io.IOException;
 import static org.junit.Assert.assertTrue;

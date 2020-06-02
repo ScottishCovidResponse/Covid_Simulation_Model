@@ -7,10 +7,6 @@ import uk.co.ramp.covid.simulation.population.Shifts;
 
 public class ConstructionSite extends CommunalPlace {
 
-    public ConstructionSite() {
-        this(Size.UNKNOWN);
-    }
-    
     public ConstructionSite(Size s) {
         super(s);
         transProb = PopulationParameters.get().getpBaseTrans() * PopulationParameters.get().getpConstructionSiteTrans();

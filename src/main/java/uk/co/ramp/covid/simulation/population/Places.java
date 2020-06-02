@@ -2,11 +2,9 @@ package uk.co.ramp.covid.simulation.population;
 
 import uk.co.ramp.covid.simulation.place.*;
 import uk.co.ramp.covid.simulation.util.ProbabilityDistribution;
-import uk.co.ramp.covid.simulation.util.RNG;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -203,7 +201,7 @@ public class Places {
     }
 
     public void createNOffices(int n) {
-        ProbabilityDistribution<CommunalPlace.Size> p = new ProbabilityDistribution();
+        ProbabilityDistribution<CommunalPlace.Size> p = new ProbabilityDistribution<>();
         p.add(PopulationParameters.get().getpOfficeSmall(), CommunalPlace.Size.SMALL);
         p.add(PopulationParameters.get().getpOfficeMed(), CommunalPlace.Size.MED);
         p.add(PopulationParameters.get().getpOfficeLarge(), CommunalPlace.Size.LARGE);
@@ -211,7 +209,7 @@ public class Places {
     }
 
     public void createNHospitals(int n) {
-        ProbabilityDistribution<CommunalPlace.Size> p = new ProbabilityDistribution();
+        ProbabilityDistribution<CommunalPlace.Size> p = new ProbabilityDistribution<>();
         p.add(PopulationParameters.get().getpHospitalSmall(), CommunalPlace.Size.SMALL);
         p.add(PopulationParameters.get().getpHospitalMed(), CommunalPlace.Size.MED);
         p.add(PopulationParameters.get().getpHospitalLarge(), CommunalPlace.Size.LARGE);
@@ -219,14 +217,14 @@ public class Places {
     }
 
     public void createNSchools(int n) {
-        ProbabilityDistribution<CommunalPlace.Size> p = new ProbabilityDistribution();
+        ProbabilityDistribution<CommunalPlace.Size> p = new ProbabilityDistribution<>();
         p.add(PopulationParameters.get().getpSchoolSmall(), CommunalPlace.Size.SMALL);
         p.add(PopulationParameters.get().getpSchoolMed(), CommunalPlace.Size.MED);
         p.add(PopulationParameters.get().getpSchoolLarge(), CommunalPlace.Size.LARGE);
         createNGeneric(s -> new School(s), n, p, schools);
     }
     public void createNNurseries(int n) {
-        ProbabilityDistribution<CommunalPlace.Size> p = new ProbabilityDistribution();
+        ProbabilityDistribution<CommunalPlace.Size> p = new ProbabilityDistribution<>();
         p.add(PopulationParameters.get().getpNurserySmall(), CommunalPlace.Size.SMALL);
         p.add(PopulationParameters.get().getpNurseryMed(), CommunalPlace.Size.MED);
         p.add(PopulationParameters.get().getpNurseryLarge(), CommunalPlace.Size.LARGE);
@@ -234,7 +232,7 @@ public class Places {
     }
 
     public void createNRestaurants(int n) {
-        ProbabilityDistribution<CommunalPlace.Size> p = new ProbabilityDistribution();
+        ProbabilityDistribution<CommunalPlace.Size> p = new ProbabilityDistribution<>();
         p.add(PopulationParameters.get().getpRestaurantSmall(), CommunalPlace.Size.SMALL);
         p.add(PopulationParameters.get().getpRestaurantMed(), CommunalPlace.Size.MED);
         p.add(PopulationParameters.get().getpRestaurantLarge(), CommunalPlace.Size.LARGE);
@@ -242,7 +240,7 @@ public class Places {
     }
 
     public void createNShops(int n) {
-        ProbabilityDistribution<CommunalPlace.Size> p = new ProbabilityDistribution();
+        ProbabilityDistribution<CommunalPlace.Size> p = new ProbabilityDistribution<>();
         p.add(PopulationParameters.get().getpShopSmall(), CommunalPlace.Size.SMALL);
         p.add(PopulationParameters.get().getpShopMed(), CommunalPlace.Size.MED);
         p.add(PopulationParameters.get().getpShopLarge(), CommunalPlace.Size.LARGE);
@@ -250,7 +248,7 @@ public class Places {
     }
 
     public void createNConstructionSites(int n) {
-        ProbabilityDistribution<CommunalPlace.Size> p = new ProbabilityDistribution();
+        ProbabilityDistribution<CommunalPlace.Size> p = new ProbabilityDistribution<>();
         p.add(PopulationParameters.get().getpConstructionSiteSmall(), CommunalPlace.Size.SMALL);
         p.add(PopulationParameters.get().getpConstructionSiteMed(), CommunalPlace.Size.MED);
         p.add(PopulationParameters.get().getpConstructionSiteLarge(), CommunalPlace.Size.LARGE);

@@ -6,9 +6,7 @@ import uk.co.ramp.covid.simulation.population.Person;
 import uk.co.ramp.covid.simulation.population.PopulationParameters;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 public abstract class Place {
 
@@ -77,7 +75,7 @@ public abstract class Place {
         // Anyone who didn't move should remain.
         nextPeople.addAll(people);
         people = nextPeople;
-        nextPeople = new ArrayList();
+        nextPeople = new ArrayList<>();
     }
 
     public List<Person> sendFamilyHome(Person p, CommunalPlace place, int day, int hour) {

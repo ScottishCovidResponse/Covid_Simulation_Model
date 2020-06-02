@@ -7,7 +7,6 @@ import uk.co.ramp.covid.simulation.DailyStats;
 import uk.co.ramp.covid.simulation.io.ParameterReader;
 import uk.co.ramp.covid.simulation.population.*;
 import uk.co.ramp.covid.simulation.testutil.PopulationGenerator;
-import uk.co.ramp.covid.simulation.util.RNG;
 
 import java.io.IOException;
 import java.util.List;
@@ -25,7 +24,7 @@ public class SchoolTest {
 
     @Test
     public void testSchoolTransProb() {
-        School school = new School();
+        School school = new School(CommunalPlace.Size.MED);
         double expProb = PopulationParameters.get().getpBaseTrans() * 30d / (34000d / 50d);
         double delta = 0.01;
         assertEquals("Unexpected school TransProb", expProb, school.transProb, delta);

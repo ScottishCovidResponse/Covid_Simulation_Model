@@ -1,18 +1,15 @@
 package uk.co.ramp.covid.simulation;
 
 import org.junit.After;
-import org.junit.Ignore;
 import org.junit.Test;
 import uk.co.ramp.covid.simulation.io.ParameterReader;
 import uk.co.ramp.covid.simulation.place.Household;
 import uk.co.ramp.covid.simulation.population.*;
-import uk.co.ramp.covid.simulation.util.RNG;
 
 import java.io.IOException;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
 public class CovidTest {
 

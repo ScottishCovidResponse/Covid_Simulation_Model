@@ -13,10 +13,6 @@ public class Restaurant extends CommunalPlace {
 
     private RoundRobinAllocator<Shifts> shifts;
 
-    public Restaurant() {
-        this(Size.UNKNOWN);
-    }
-    
     public Restaurant(Size s) {
         super(s);
         transProb = PopulationParameters.get().getpBaseTrans() * PopulationParameters.get().getpRestaurantTrans();

@@ -1,7 +1,6 @@
 package uk.co.ramp.covid.simulation.population;
 
 import com.google.gson.JsonParseException;
-import org.junit.Assert;
 import org.junit.Test;
 import uk.co.ramp.covid.simulation.DailyStats;
 import uk.co.ramp.covid.simulation.io.ParameterReader;

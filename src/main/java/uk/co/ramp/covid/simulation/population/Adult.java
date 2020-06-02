@@ -71,6 +71,9 @@ public class Adult extends Person {
             case RESTAURANT: {
                 primaryPlace = p.getRandomRestaurant();
             } break;
+            case NONE: {
+                // do nothing
+            }
         }
         if (primaryPlace != null) {
             setPrimaryPlace(primaryPlace);
