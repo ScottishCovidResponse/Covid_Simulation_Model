@@ -5,6 +5,7 @@
 package uk.co.ramp.covid.simulation.place;
 
 import org.apache.commons.math3.random.RandomDataGenerator;
+import uk.co.ramp.covid.simulation.Time;
 import uk.co.ramp.covid.simulation.population.Person;
 import uk.co.ramp.covid.simulation.population.Shifts;
 import uk.co.ramp.covid.simulation.util.RNG;
@@ -60,10 +61,10 @@ public abstract class CommunalPlace extends Place {
     }
 
     /** Move everyone based on their shift patterns */
-    public void moveShifts(int day, int hour, boolean lockdown) {
+    public void moveShifts(Time t, boolean lockdown) {
         List<Person> left = new ArrayList<>();
         for (Person p : people) {
-            if (!p.worksNextHour(this, day, hour, lockdown)) {
+            if (!p.worksNextHour(this, t, lockdown)) {
                 p.returnHome();
                 left.add(p);
             }
@@ -71,10 +72,10 @@ public abstract class CommunalPlace extends Place {
         people.removeAll(left);
     }
     
-    public boolean isVisitorOpenNextHour(int day, int hour) {
-        return  times.getOpenDays().get(day)
-                && hour + 1 >= times.getVisitorOpen()
-                && hour + 1 < times.getVisitorClose();
+    public boolean isVisitorOpenNextHour(Time t) {
+        return  times.getOpenDays().get(t.getDay())
+                && t.getHour() + 1 >= times.getVisitorOpen()
+                && t.getHour() + 1 < times.getVisitorClose();
     }
 
     public boolean isOpen(int day, int hour) {
@@ -86,11 +87,11 @@ public abstract class CommunalPlace extends Place {
                 && hour < times.getClose();
     }
 
-    public List<Person> getStaff(int day, int hour) {
+    public List<Person> getStaff(Time t) {
         List<Person> res = new ArrayList<>();
         for (Person p : people) {
             if (p.getPrimaryCommunalPlace() == this
-                    && p.worksNextHour(this, day, hour - 1, false)) {
+                    && p.isWorking(this, t)) {
                 res.add(p);
             }
         }
@@ -98,10 +99,10 @@ public abstract class CommunalPlace extends Place {
     }
 
     @Override
-    public void doMovement(int day, int hour, boolean lockdown) {
-        moveShifts(day, hour, lockdown);
+    public void doMovement(Time t, boolean lockdown) {
+        moveShifts(t, lockdown);
     }
-    
+
     public boolean isKeyPremises() {
         return keyPremises;
     }

@@ -4,6 +4,7 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import uk.co.ramp.covid.simulation.DailyStats;
+import uk.co.ramp.covid.simulation.Time;
 import uk.co.ramp.covid.simulation.io.ParameterReader;
 import uk.co.ramp.covid.simulation.population.*;
 
@@ -39,17 +40,18 @@ public class SchoolTest {
         p.allocatePeople();
         p.seedVirus(nInfections);
         List<Person> staff;
+        Time t = new Time(0);
         //Run for a whole week
         for (int day = 0; day < 7; day++) {
             int totStaff;
             int startTime = Shifts.schoolTimes().getShift(day).getStart();
             int endTime = Shifts.schoolTimes().getShift(day).getEnd();
-            DailyStats s = new DailyStats(day);
+            DailyStats s = new DailyStats(t);
             for (int i = 0; i < 24; i++) {
-                p.timeStep(day, i, s);
+                p.timeStep(t, s);
                 totStaff = 0;
                 for (School place : p.getPlaces().getSchools()) {
-                    staff = place.getStaff(day, i);
+                    staff = place.getStaff(t);
                     totStaff += staff.size();
                 }
 
@@ -65,6 +67,8 @@ public class SchoolTest {
                     //Staff should not be at school on weekends
                     assertEquals("Unexpected staff at school", 0, totStaff);
                 }
+                
+                t.advance();
             }
 
         }

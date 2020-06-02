@@ -7,6 +7,7 @@ import org.junit.Test;
 import com.google.gson.JsonParseException;
 
 import uk.co.ramp.covid.simulation.DailyStats;
+import uk.co.ramp.covid.simulation.Time;
 import uk.co.ramp.covid.simulation.io.ParameterReader;
 import uk.co.ramp.covid.simulation.population.*;
 
@@ -41,17 +42,19 @@ public class HospitalTest {
         p.allocatePeople();
         p.seedVirus(nInfections);
         List<Person> staff;
+        Time t = new Time(0);
         //Run for a whole week
         for (int day = 0; day < 7; day++) {
-            DailyStats s = new DailyStats(day);
+            DailyStats s = new DailyStats(t);
             for (int i = 0; i < 24; i++) {
-                p.timeStep(day, i, s);
+                p.timeStep(t, s);
                 //There should always be staff in hospitals
                 for (Hospital place : p.getPlaces().getHospitals()) {
-                    staff = place.getStaff(day, i);
+                    staff = place.getStaff(t);
                     assertTrue("Day " + day + " Time " + i +" Unexpectedly no staff in hospital", staff.size() > 0);
                 }
             }
+            t.advance();
         }
     }
 

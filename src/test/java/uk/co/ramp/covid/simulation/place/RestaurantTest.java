@@ -6,6 +6,7 @@ import org.junit.Test;
 
 import com.google.gson.JsonParseException;
 import uk.co.ramp.covid.simulation.DailyStats;
+import uk.co.ramp.covid.simulation.Time;
 import uk.co.ramp.covid.simulation.io.ParameterReader;
 import uk.co.ramp.covid.simulation.population.*;
 
@@ -58,7 +59,7 @@ public class RestaurantTest {
     public void testSendHome() {
         PopulationParameters.get().setpLeaveRestaurant(1.0);
         int time = restaurant.times.getClose() - 1;
-        int left = restaurant.sendHome(time, 0);
+        int left = restaurant.sendHome(new Time(time));
         int expPeople = 2;
         assertEquals("Unexpected number of people sent home from restaurant", expPeople, left);
     }
@@ -73,13 +74,14 @@ public class RestaurantTest {
         p.allocatePeople();
         p.seedVirus(nInfections);
         List<Person> staff;
+        Time t = new Time(0);
         //Run for a whole week
         for (int day = 0; day < 7; day++) {
-            DailyStats s = new DailyStats(day);
+            DailyStats s = new DailyStats(t);
             for (int i = 0; i < 24; i++) {
-                p.timeStep(day, i, s);
+                p.timeStep(t, s);
                 for (Restaurant place : p.getPlaces().getRestaurants()) {
-                    staff = place.getStaff(day, i);
+                    staff = place.getStaff(t);
                     int open = place.getShifts().getShift(day).getStart();
                     int close = place.getShifts().getShift(day).getEnd();
                     if (i < open || i >= close - 1) {
