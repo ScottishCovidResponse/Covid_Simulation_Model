@@ -78,7 +78,7 @@ public abstract class Place {
         // Anyone who didn't move should remain.
         nextPeople.addAll(people);
         people = nextPeople;
-        nextPeople = new ArrayList();
+        nextPeople = new ArrayList<>();
     }
 
     public List<Person> sendFamilyHome(Person p, CommunalPlace place, Time t) {

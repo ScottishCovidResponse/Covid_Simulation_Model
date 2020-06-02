@@ -3,7 +3,6 @@ package uk.co.ramp.covid.simulation;
 import org.apache.commons.csv.CSVPrinter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import uk.co.ramp.covid.simulation.place.*;
 import uk.co.ramp.covid.simulation.population.*;
 
 /** DailyStatis accumluates statistics, e.g. healthy/dead, for a particular day */
@@ -84,6 +83,10 @@ public class DailyStats {
 
     public int getTotalInfected() {
         return exposed + asymptomatic + phase1 + phase2;
+    }
+
+    public int getConstructionSiteInfectionsWorker() {
+        return constructionSiteInfectionsWorker;
     }
 
     public void log(){

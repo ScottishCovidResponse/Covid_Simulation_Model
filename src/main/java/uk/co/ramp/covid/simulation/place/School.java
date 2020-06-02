@@ -7,9 +7,6 @@ import uk.co.ramp.covid.simulation.population.PopulationParameters;
 import uk.co.ramp.covid.simulation.population.Shifts;
 
 public class School extends CommunalPlace {
-    public School() {
-        this(Size.UNKNOWN);
-    }
 
     public School(Size s) {
         super(s);

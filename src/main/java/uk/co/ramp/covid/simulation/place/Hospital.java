@@ -11,10 +11,6 @@ public class Hospital extends CommunalPlace {
     
     private RoundRobinAllocator<Shifts> shifts;
 
-    public Hospital() {
-        this(Size.UNKNOWN);
-    }
-
     public Hospital(Size s) {
         super(s);
         transProb = PopulationParameters.get().getpBaseTrans() * PopulationParameters.get().getpHospitalTrans();
