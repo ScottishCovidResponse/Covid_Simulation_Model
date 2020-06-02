@@ -9,6 +9,7 @@ import uk.co.ramp.covid.simulation.io.ParameterReader;
 import uk.co.ramp.covid.simulation.place.*;
 import uk.co.ramp.covid.simulation.population.*;
 import uk.co.ramp.covid.simulation.testutil.PopulationGenerator;
+import uk.co.ramp.covid.simulation.util.RNG;
 
 import java.io.IOException;
 import java.util.HashSet;
@@ -33,6 +34,7 @@ public class MovementTest {
 
     @Test
     public void allChildrenGoToSchool() {
+        RNG.seed(0);
         int day = 1;
         Set<Child> schooled = new HashSet<>();
         DailyStats s = new DailyStats(day);
@@ -227,6 +229,7 @@ public class MovementTest {
 
     @Test
     public void stopIsolatingAfterTimerExpires() {
+        RNG.seed(0);
         int day = 1;
         int daysIsolated = 2;
         DailyStats s = new DailyStats(day);
