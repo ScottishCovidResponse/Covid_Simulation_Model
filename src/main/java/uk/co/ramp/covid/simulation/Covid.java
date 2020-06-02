@@ -163,7 +163,13 @@ public class Covid {
             status = CStatus.RECOVERED;
 
         }
-        if((symptomDelay) < infCounter && !recovered) isSymptomatic = true;
+        if((symptomDelay) < infCounter && !recovered) {
+            // This check ensures we don't isolate twice with the same case
+            if (!isSymptomatic) {
+                isSymptomatic = true;
+                ccase.getHome().isolate();
+            }
+        }
         return status;
     }
 
@@ -186,7 +192,11 @@ public class Covid {
     public double getP2() {
         return p2;
     }
-    
+
+    public double getSymptomDelay() {
+        return symptomDelay;
+    }
+
     public double getTransAdjustment() {
     	double transAdjustment = 0.0;
     	if(asymptomatic) transAdjustment = this.asymptomaticTransAdjustment;

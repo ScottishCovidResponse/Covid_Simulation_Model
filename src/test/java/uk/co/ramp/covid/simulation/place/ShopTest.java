@@ -65,14 +65,12 @@ public class ShopTest {
 
     @Ignore("Failing Test")
     @Test
-    public void testShopWorkers() throws ImpossibleAllocationException {
+    public void testShopWorkers() throws ImpossibleAllocationException, ImpossibleWorkerDistributionException {
         int populationSize = 10000;
         int nHouseholds = 2000;
         int nInfections = 10;
 
-        Population p = new Population(populationSize, nHouseholds);
-        p.populateHouseholds();
-        p.createMixing();
+        Population p = new Population(populationSize);
         p.allocatePeople();
         p.seedVirus(nInfections);
         List<Person> staff;

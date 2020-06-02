@@ -23,6 +23,7 @@ public class AdultTest {
                      || adult.profession == Adult.Professions.HOSPITAL
                      || adult.profession == Adult.Professions.OFFICE
                      || adult.profession == Adult.Professions.RESTAURANT
+                     || adult.profession == Adult.Professions.NURSERY
                      || adult.profession == Adult.Professions.TEACHER
                      || adult.profession == Adult.Professions.NONE;
 

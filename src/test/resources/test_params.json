@@ -62,6 +62,7 @@
             "f_100_100":0.000125963
         },
         "households":{
+            "householdRatio": 2.18,
             "pAdultOnly":0.2,
             "pPensionerOnly":0.1,
             "pPensionerAdult":0.2,
@@ -178,7 +179,9 @@
             "visitorLeaveRate":0.8,
             "expectedNeighbours":2,
             "pGoShopping":0.01786,
-            "pGoRestaurant": 0.01190
+            "pGoRestaurant": 0.01190,
+            "pWillIsolate": 0.5,
+            "householdIsolationPeriod": 14
         },
         "personProperties":{
             "pTransmission":0.9,

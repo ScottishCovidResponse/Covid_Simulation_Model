@@ -3,6 +3,9 @@ package uk.co.ramp.covid.simulation;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+
+import com.google.gson.JsonParseException;
+
 import uk.co.ramp.covid.simulation.io.ParameterReader;
 import uk.co.ramp.covid.simulation.population.PopulationParameters;
 
@@ -38,7 +41,6 @@ public class ModelTest {
         Model m = new Model()
                 .setPopulationSize(population)
                 .setnInfections(nInfections)
-                .setnHouseholds(nHouseholds)
                 .setIters(nIter)
                 .setnDays(nDays)
                 .setRNGSeed(RNGSeed)
@@ -96,7 +98,6 @@ public class ModelTest {
         Model run1 = new Model()
                 .setPopulationSize(population)
                 .setnInfections(nInfections)
-                .setnHouseholds(nHouseholds)
                 .setIters(nIter)
                 .setnDays(nDays)
                 .setRNGSeed(RNGSeed)
@@ -107,7 +108,6 @@ public class ModelTest {
         Model run2 = new Model()
                 .setPopulationSize(population)
                 .setnInfections(nInfections)
-                .setnHouseholds(nHouseholds)
                 .setIters(nIter)
                 .setnDays(nDays)
                 .setRNGSeed(RNGSeed)
@@ -127,6 +127,15 @@ public class ModelTest {
 
     @Ignore("Failing Test")
     @Test
+    public void testReadModelFromFile() throws JsonParseException, IOException {
+        Model m  = Model.readModelFromFile("src/test/resources/test_model_params.json");
+        m.setNoOutput();
+        assertTrue(m.isValid());
+        m.run();
+    }
+
+    @Ignore("Failing Test")
+    @Test
     public void testLockdown() {
 
         int startLock = 30;
@@ -136,7 +145,6 @@ public class ModelTest {
         Model m1 = new Model()
                 .setPopulationSize(population)
                 .setnInfections(nInfections)
-                .setnHouseholds(nHouseholds)
                 .setIters(nIter)
                 .setnDays(nDays)
                 .setRNGSeed(RNGSeed)
@@ -148,7 +156,6 @@ public class ModelTest {
         Model m2 = new Model()
                 .setPopulationSize(population)
                 .setnInfections(nInfections)
-                .setnHouseholds(nHouseholds)
                 .setIters(nIter)
                 .setnDays(nDays)
                 .setRNGSeed(RNGSeed)
@@ -201,7 +208,6 @@ public class ModelTest {
         Model m1 = new Model()
                 .setPopulationSize(population)
                 .setnInfections(nInfections)
-                .setnHouseholds(nHouseholds)
                 .setIters(nIter)
                 .setnDays(nDays)
                 .setRNGSeed(RNGSeed)

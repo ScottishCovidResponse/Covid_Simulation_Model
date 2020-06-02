@@ -1,5 +1,6 @@
 package uk.co.ramp.covid.simulation.population;
 
+import org.apache.commons.math3.random.RandomDataGenerator;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import uk.co.ramp.covid.simulation.util.InvalidParametersException;
@@ -22,6 +23,8 @@ public class PopulationParameters {
     // Household populations
     // These values define the probability of a household being an adult only, adult and child household etc
     private static class Households {
+        public Double householdRatio = null;
+
         public Double pAdultOnly = null;
         public Double pPensionerOnly = null;
         public Double pPensionerAdult = null;
@@ -32,7 +35,8 @@ public class PopulationParameters {
         @Override
         public String toString() {
             return "Households{" +
-                    "pAdultOnly=" + pAdultOnly +
+                    "householdRatio=" + householdRatio +
+                    ", pAdultOnly=" + pAdultOnly +
                     ", pPensionerOnly=" + pPensionerOnly +
                     ", pPensionerAdult=" + pPensionerAdult +
                     ", pAdultChildren=" + pAdultChildren +
@@ -48,6 +52,8 @@ public class PopulationParameters {
                     && isValidProbability(pAdultPensionerChildren, "pAdultPensionerChildren")
                     && isValidProbability(pPensionerChildren, "pPensionerChildren")
                     && isValidProbability(pPensionerAdult, "pPensionerAdult");
+
+            probabilitiesValid = probabilitiesValid && (householdRatio >= 1);
 
             double totalP = pAdultOnly + pPensionerAdult + pPensionerOnly + pAdultChildren
                     + pPensionerChildren + pAdultPensionerChildren;
@@ -291,6 +297,8 @@ public class PopulationParameters {
 
         public Double pGoShopping = null;
         public Double pGoRestaurant = null;
+        public Integer householdIsolationPeriod = null;
+        public Double pWillIsolate = null;
 
         @Override
         public String toString() {
@@ -300,12 +308,15 @@ public class PopulationParameters {
                     ", expectedNeighbours=" + expectedNeighbours +
                     ", pGoShopping=" + pGoShopping +
                     ", pGoRestaurant=" + pGoRestaurant +
+                    ", householdIsolationPeriod=" + householdIsolationPeriod +
+                    ", pWillIsolate=" + pWillIsolate +
                     '}';
         }
 
         public boolean isValid() {
             return isValidProbability(pGoShopping, "pGoShopping")
-                    && isValidProbability(pGoRestaurant, "pGoRestaurant");
+                    && isValidProbability(pGoRestaurant, "pGoRestaurant")
+                    && isValidProbability(pWillIsolate, "pWillIsolate");
         }
     }
 
@@ -365,6 +376,11 @@ public class PopulationParameters {
     public Map<String, Double> getPopulation() { return population; }
 
     // Household allocation parameters
+
+    public double getHouseholdRatio() { return households.householdRatio; }
+
+    public void setHouseholdRatio(double r) { households.householdRatio = r; }
+
     public double getpAdultOnly() {
         return households.pAdultOnly;
     }
@@ -652,6 +668,12 @@ public class PopulationParameters {
     public double getpGoRestaurant() {
         return householdProperties.pGoRestaurant;
     }
+    
+    public int getHouseholdIsolationPeriod() { return householdProperties.householdIsolationPeriod; }
+    public Double getpHouseholdWillIsolate() { return householdProperties.pWillIsolate; }
+    public void setpHouseholdWillIsolate(Double p) { householdProperties.pWillIsolate = p; }
+
+
 
     // Person Properties
     public double getpQuarantine() {

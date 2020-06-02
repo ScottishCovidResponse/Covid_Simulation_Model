@@ -7,7 +7,9 @@ import uk.co.ramp.covid.simulation.util.RNG;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 /** Helper class to manage communal places of particular types */
 public class Places {
@@ -19,6 +21,14 @@ public class Places {
     private ProbabilityDistribution<Restaurant> restaurants;
     private ProbabilityDistribution<School> schools;
     private ProbabilityDistribution<Shop> shops;
+    
+    private boolean officesUnallocated = false;
+    private boolean constructionSitesUnallocated = false;
+    private boolean hospitalsUnallocated = false;
+    private boolean nurseriesUnallocated = false;
+    private boolean restaurantsUnallocated = false;
+    private boolean schoolsUnallocated = false;
+    private boolean shopsUnallocated = false;
 
     private List<CommunalPlace> all;
 
@@ -59,6 +69,56 @@ public class Places {
 
     public Shop getRandomShop() {
         return shops.sample();
+    }
+    
+    private <T extends CommunalPlace> T getNextWorkplace(ProbabilityDistribution<T> places,
+                                           Supplier<Boolean> getUnallocated,
+                                           Consumer<Boolean> setAllocated,
+                                           Supplier<T> rand) {
+        if (getUnallocated.get()) {
+            for (T p : places.toList()) {
+                if (!p.isFullyStaffed()) {
+                    return p;
+                }
+            }
+            setAllocated.accept(true);
+        }
+        return rand.get();
+    }
+    
+    public Office getNextOfficeJob() {
+        return getNextWorkplace(offices, () -> officesUnallocated,
+                o -> officesUnallocated = o, this::getRandomOffice);
+    }
+
+    public School getNextSchoolJob() {
+        return getNextWorkplace(schools, () -> schoolsUnallocated,
+                o -> schoolsUnallocated = o, this::getRandomSchool);
+    }
+
+    public ConstructionSite getNextConstructionSiteJob() {
+        return getNextWorkplace(constructionSites, () -> constructionSitesUnallocated,
+                o -> constructionSitesUnallocated = o, this::getRandomConstructionSite);
+    }
+
+    public Nursery getNextNurseryJob() {
+        return getNextWorkplace(nurseries, () -> nurseriesUnallocated,
+                o -> nurseriesUnallocated = o, this::getRandomNursery);
+    }
+
+    public Shop getNextShopJob() {
+        return getNextWorkplace(shops, () -> shopsUnallocated,
+                o -> shopsUnallocated = o, this::getRandomShop);
+    }
+
+    public Hospital getNextHospitalJob() {
+        return getNextWorkplace(hospitals, () -> hospitalsUnallocated,
+                o -> hospitalsUnallocated = o, this::getRandomHospital);
+    }
+
+    public Restaurant getNextRestaurantJob() {
+        return getNextWorkplace(restaurants, () -> restaurantsUnallocated,
+                o -> restaurantsUnallocated = o, this::getRandomRestaurant);
     }
 
     private <T extends CommunalPlace> void createNGeneric(
