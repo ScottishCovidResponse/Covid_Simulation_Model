@@ -10,6 +10,8 @@ import org.apache.commons.math3.random.RandomDataGenerator;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import uk.co.ramp.covid.simulation.DailyStats;
+import uk.co.ramp.covid.simulation.RStats;
+import uk.co.ramp.covid.simulation.Time;
 import uk.co.ramp.covid.simulation.place.*;
 import uk.co.ramp.covid.simulation.util.ProbabilityDistribution;
 import uk.co.ramp.covid.simulation.util.RNG;
@@ -295,9 +297,9 @@ public class Population {
         }
     }
     
-    public void timeStep(int day, int hour, DailyStats dStats) {
-        households.forEach(h -> h.doInfect(day, hour, dStats));
-        places.getAllPlaces().forEach(p -> p.doInfect(day, hour, dStats));
+    public void timeStep(Time t, DailyStats dStats) {
+        households.forEach(h -> h.doInfect(t, dStats));
+        places.getAllPlaces().forEach(p -> p.doInfect(t, dStats));
 
         // There is a potential to introduce parallelism here if required by using parallelStream (see below).
         // Note we currently cannot parallelise movement as the ArrayLists for capturing moves are not thread safe
@@ -305,8 +307,8 @@ public class Population {
         // places.getAllPlaces().parallelStream().forEach(p -> p.doInfect(dStats));
 
         // Movement places people in "next" buffers (to avoid people moving twice in an hour)
-        households.forEach(h -> h.doMovement(day, hour, lockdown));
-        places.getAllPlaces().forEach(p -> p.doMovement(day, hour, lockdown));
+        households.forEach(h -> h.doMovement(t, lockdown));
+        places.getAllPlaces().forEach(p -> p.doMovement(t, lockdown));
 
         households.forEach(h -> h.stepPeople());
         places.getAllPlaces().forEach(p -> p.stepPeople());
@@ -315,18 +317,35 @@ public class Population {
     // Step through nDays in 1 hour time steps
     public List<DailyStats> simulate(int nDays) {
         List<DailyStats> stats = new ArrayList<>(nDays);
+        Time t = new Time();
+        boolean rprinted = false;
         for (int i = 0; i < nDays; i++) {
-            DailyStats dStats = new DailyStats(i);
-            int dWeek = i % 7;
-            this.implementLockdown(i);
-            LOGGER.info("Lockdown = {}", this.lockdown);
+            DailyStats dStats = new DailyStats(t);
+            implementLockdown(t);
+            LOGGER.info("Day = {}, Lockdown = {}", t.getAbsDay(), lockdown);
             for (int k = 0; k < 24; k++) {
-                timeStep(dWeek, k, dStats);
+                timeStep(t, dStats);
+                t = t.advance();
             }
             households.forEach(h -> h.dayEnd());
             stats.add(this.processCases(dStats));
+
+            if (!rprinted) {
+                rprinted = handleR(dStats, t.getAbsDay());
+            }
+
         }
         return stats;
+    }
+
+    /** Log the R value for the first 5% of recoveries or lockdown */
+    private boolean handleR(DailyStats s, int absDay) {
+        if (s.getRecovered() >= populationSize * 0.05 || isLockdown()) {
+            RStats rs = new RStats(this);
+            LOGGER.info("R0 in initial stage: " + rs.getMeanRBefore(absDay));
+            return true;
+        }
+        return false;
     }
 
     // Basically a method to set the instance variables. Could also do this through an overloaded constructor, but I rather prefer this way of doing things
@@ -350,7 +369,8 @@ public class Population {
     }
 
     // Tests on each daily time step whether to do anything with the lockdown
-    private void implementLockdown(int day) {
+    private void implementLockdown(Time t) {
+        int day = t.getAbsDay();
         if (day == this.lockdownStart) {
             this.lockdown = true;
             this.rLockdown = true;

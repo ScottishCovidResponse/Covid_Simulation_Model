@@ -1,6 +1,6 @@
 package uk.co.ramp.covid.simulation.population;
 
-import uk.co.ramp.covid.simulation.CovidParameters;
+import uk.co.ramp.covid.simulation.covid.CovidParameters;
 import uk.co.ramp.covid.simulation.DailyStats;
 import uk.co.ramp.covid.simulation.place.*;
 import uk.co.ramp.covid.simulation.util.ProbabilityDistribution;
@@ -71,6 +71,9 @@ public class Adult extends Person {
             case RESTAURANT: {
                 primaryPlace = p.getRandomRestaurant();
             } break;
+            case NONE: {
+                // do nothing
+            }
         }
         if (primaryPlace != null) {
             setPrimaryPlace(primaryPlace);

@@ -1,6 +1,5 @@
 package uk.co.ramp.covid.simulation.population;
 
-import org.apache.commons.math3.random.RandomDataGenerator;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import uk.co.ramp.covid.simulation.util.InvalidParametersException;

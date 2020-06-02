@@ -1,15 +1,12 @@
 package uk.co.ramp.covid.simulation.place;
 
 import uk.co.ramp.covid.simulation.DailyStats;
+import uk.co.ramp.covid.simulation.Time;
 import uk.co.ramp.covid.simulation.population.Person;
 import uk.co.ramp.covid.simulation.population.PopulationParameters;
 import uk.co.ramp.covid.simulation.population.Shifts;
 
 public class Nursery extends CommunalPlace {
-
-    public Nursery() {
-        this(Size.UNKNOWN);
-    }
 
     public Nursery(Size s) {
         super(s);
@@ -18,8 +15,8 @@ public class Nursery extends CommunalPlace {
     }
 
     @Override
-    public void reportInfection(int day, int hour, Person p, DailyStats s) {
-        if (p.isWorking(this, day, hour)) {
+    public void reportInfection(Time t, Person p, DailyStats s) {
+        if (p.isWorking(this, t)) {
             s.incInfectionsNurseryWorker();
         } else {
             s.incInfectionsNurseryVisitor();

@@ -6,9 +6,9 @@ import org.junit.Test;
 
 import com.google.gson.JsonParseException;
 import uk.co.ramp.covid.simulation.DailyStats;
+import uk.co.ramp.covid.simulation.Time;
 import uk.co.ramp.covid.simulation.io.ParameterReader;
 import uk.co.ramp.covid.simulation.population.*;
-import uk.co.ramp.covid.simulation.util.RNG;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -25,7 +25,7 @@ public class NurseryTest {
 
     @Test
     public void testNurseryTransProb() throws JsonParseException {
-        Nursery nursery = new Nursery();
+        Nursery nursery = new Nursery(CommunalPlace.Size.MED);
         double expProb = PopulationParameters.get().getpBaseTrans() * 30d / (34000d / 50d);
         double delta = 0.01;
         assertEquals("Unexpected nursery TransProb", expProb, nursery.transProb, delta);
@@ -41,17 +41,18 @@ public class NurseryTest {
         p.allocatePeople();
         p.seedVirus(nInfections);
         List<Person> staff;
+        Time t = new Time(0);
         //Run for a whole week
         for (int day = 0; day < 7; day++) {
             int totStaff;
             int startTime = Shifts.schoolTimes().getShift(day).getStart();
             int endTime = Shifts.schoolTimes().getShift(day).getEnd();
-            DailyStats s = new DailyStats(day);
+            DailyStats s = new DailyStats(t);
             for (int i = 0; i < 24; i++) {
-                p.timeStep(day, i, s);
+                p.timeStep(t, s);
                 totStaff = 0;
                 for (Nursery place : p.getPlaces().getNurseries()) {
-                    staff = place.getStaff(day, i);
+                    staff = place.getStaff(t);
                     totStaff += staff.size();
                 }
 
@@ -66,6 +67,7 @@ public class NurseryTest {
                     //Staff should not be at nursery on weekends
                     assertEquals("Unexpected staff at nursery", 0, totStaff);
                 }
+                t.advance();
             }
 
         }

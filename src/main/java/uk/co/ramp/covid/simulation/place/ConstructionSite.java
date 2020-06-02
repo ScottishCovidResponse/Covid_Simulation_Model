@@ -1,16 +1,13 @@
 package uk.co.ramp.covid.simulation.place;
 
 import uk.co.ramp.covid.simulation.DailyStats;
+import uk.co.ramp.covid.simulation.Time;
 import uk.co.ramp.covid.simulation.population.Person;
 import uk.co.ramp.covid.simulation.population.PopulationParameters;
 import uk.co.ramp.covid.simulation.population.Shifts;
 
 public class ConstructionSite extends CommunalPlace {
 
-    public ConstructionSite() {
-        this(Size.UNKNOWN);
-    }
-    
     public ConstructionSite(Size s) {
         super(s);
         transProb = PopulationParameters.get().getpBaseTrans() * PopulationParameters.get().getpConstructionSiteTrans();
@@ -21,8 +18,8 @@ public class ConstructionSite extends CommunalPlace {
 
 
     @Override
-    public void reportInfection(int day, int hour, Person p, DailyStats s) {
-        if (p.isWorking(this, day, hour)) {
+    public void reportInfection(Time t, Person p, DailyStats s) {
+        if (p.isWorking(this, t)) {
             s.incInfectionConstructionSiteWorker();
         } else {
             s.incInfectionsConstructionSiteVisitor();

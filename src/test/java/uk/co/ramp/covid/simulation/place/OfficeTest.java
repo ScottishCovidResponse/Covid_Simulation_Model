@@ -6,6 +6,7 @@ import org.junit.Test;
 
 import com.google.gson.JsonParseException;
 import uk.co.ramp.covid.simulation.DailyStats;
+import uk.co.ramp.covid.simulation.Time;
 import uk.co.ramp.covid.simulation.io.ParameterReader;
 import uk.co.ramp.covid.simulation.population.*;
 
@@ -24,7 +25,7 @@ public class OfficeTest {
 
     @Test
     public void testOfficeTransProb() throws JsonParseException {
-        Office office = new Office();
+        Office office = new Office(CommunalPlace.Size.MED);
         double expProb = PopulationParameters.get().getpBaseTrans() * 10d / (10000d / 400d);
         double delta = 0.01;
         assertEquals("Unexpected office TransProb", expProb, office.transProb, delta);
@@ -40,17 +41,18 @@ public class OfficeTest {
         p.allocatePeople();
         p.seedVirus(nInfections);
         List<Person> staff;
+        Time t = new Time(0);
         //Run for a whole week
         for (int day = 0; day < 7; day++) {
             int totStaff;
             int startTime = Shifts.nineFiveFiveDays().getShift(day).getStart();
             int endTime = Shifts.nineFiveFiveDays().getShift(day).getEnd();
-            DailyStats s = new DailyStats(day);
+            DailyStats s = new DailyStats(t);
             for (int i = 0; i < 24; i++) {
-                p.timeStep(day, i, s);
+                p.timeStep(t, s);
                 totStaff = 0;
                 for (Office place : p.getPlaces().getOffices()) {
-                    staff = place.getStaff(day, i);
+                    staff = place.getStaff(t);
                     totStaff += staff.size();
                 }
 
@@ -66,6 +68,7 @@ public class OfficeTest {
                     //Staff should not be in offices on weekends
                     assertEquals("Unexpected staff in office", 0, totStaff);
                 }
+                t.advance();
             }
 
         }

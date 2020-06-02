@@ -4,7 +4,6 @@ import org.junit.Before;
 import org.junit.Test;
 import uk.co.ramp.covid.simulation.io.ParameterReader;
 import uk.co.ramp.covid.simulation.place.*;
-import uk.co.ramp.covid.simulation.util.RNG;
 
 import java.io.IOException;
 import java.util.ArrayList;

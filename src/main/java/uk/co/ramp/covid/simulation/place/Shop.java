@@ -1,6 +1,7 @@
 package uk.co.ramp.covid.simulation.place;
 
 import uk.co.ramp.covid.simulation.DailyStats;
+import uk.co.ramp.covid.simulation.Time;
 import uk.co.ramp.covid.simulation.population.Person;
 import uk.co.ramp.covid.simulation.population.PopulationParameters;
 import uk.co.ramp.covid.simulation.population.Shifts;
@@ -12,10 +13,6 @@ public class Shop extends CommunalPlace {
     
     private RoundRobinAllocator<Shifts> shifts;
 
-    public Shop() {
-        this(Size.UNKNOWN);
-    }
-
     public Shop(Size s) {
         super(s);
         transProb = PopulationParameters.get().getpBaseTrans() *  PopulationParameters.get().getpShopTrans();
@@ -25,7 +22,7 @@ public class Shop extends CommunalPlace {
     }
     
     private void setOpeningHours() {
-        shifts = new RoundRobinAllocator();
+        shifts = new RoundRobinAllocator<>();
         if (size == Size.SMALL) {
             times = OpeningTimes.nineFiveAllWeek();
             shifts.put(new Shifts(9,17, 0, 1, 2));
@@ -49,7 +46,7 @@ public class Shop extends CommunalPlace {
        people.addAll(vHouse);
     }
 
-    public int sendHome(int day, int hour) {
+    public int sendHome(Time t) {
         ArrayList<Person> left = new ArrayList<>();
         for (Person nPers : people) {
             // People may have already left if their family has
@@ -57,21 +54,21 @@ public class Shop extends CommunalPlace {
                 continue;
             }
 
-            if (nPers.worksNextHour(this, day, hour, false)) {
+            if (nPers.worksNextHour(this, t, false)) {
                 continue;
             }
 
             // Under certain conditions we must go home, e.g. if there is a shift starting soon
-            if (nPers.mustGoHome(day, hour)) {
+            if (nPers.mustGoHome(t)) {
                 left.add(nPers);
                 nPers.returnHome();
-                left.addAll(sendFamilyHome(nPers, this, day, hour));
+                left.addAll(sendFamilyHome(nPers, this, t));
             }
             else if (rng.nextUniform(0, 1) < PopulationParameters.get().getpLeaveShop()
-                    || !times.isOpen(hour + 1, day)) {
+                    || !times.isOpenNextHour(t)) {
                 nPers.returnHome();
                 left.add(nPers);
-                left.addAll(sendFamilyHome(nPers, this, day, hour));
+                left.addAll(sendFamilyHome(nPers, this, t));
             }
         }
         people.removeAll(left);
@@ -79,8 +76,8 @@ public class Shop extends CommunalPlace {
     }
 
     @Override
-    public void reportInfection(int day, int hour, Person p, DailyStats s) {
-        if (p.isWorking(this, day, hour)) {
+    public void reportInfection(Time t, Person p, DailyStats s) {
+        if (p.isWorking(this, t)) {
             s.incInfectionsShopWorker();
         } else {
             s.incInfectionsShopVisitor();
@@ -88,9 +85,9 @@ public class Shop extends CommunalPlace {
     }
 
     @Override
-    public void doMovement(int day, int hour, boolean lockdown) {
-        moveShifts(day, hour, lockdown);
-        sendHome(day, hour);
+    public void doMovement(Time t, boolean lockdown) {
+        moveShifts(t, lockdown);
+        sendHome(t);
     }
 
     @Override

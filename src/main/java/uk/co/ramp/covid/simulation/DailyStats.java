@@ -3,7 +3,6 @@ package uk.co.ramp.covid.simulation;
 import org.apache.commons.csv.CSVPrinter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import uk.co.ramp.covid.simulation.place.*;
 import uk.co.ramp.covid.simulation.population.*;
 
 /** DailyStatis accumluates statistics, e.g. healthy/dead, for a particular day */
@@ -54,8 +53,12 @@ public class DailyStats {
     private int childDeaths = 0;
     private int infantDeaths = 0;
 
-    public DailyStats(int day) {
-        this.day = day;
+    // Infection rate stats
+    private Double R = null;
+    private Double generationTime = null;
+
+    public DailyStats(Time t) {
+        this.day = t.getAbsDay();
     }
 
     public void processPerson(Person p) {
@@ -100,7 +103,7 @@ public class DailyStats {
                 constructionSiteInfectionsVisitor, hospitalInfectionsVisitor, nurseryInfectionsVisitor, 
                 officeInfectionsVisitor, restaurantInfectionsVisitor, schoolInfectionsVisitor, shopInfectionsVisitor,
                 homeInfectionsVisitor, adultInfected, pensionerInfected, childInfected, infantInfected, adultDeaths,
-                pensionerDeaths, childDeaths, infantDeaths);
+                pensionerDeaths, childDeaths, infantDeaths, R, generationTime);
     }
 
     public int getTotalDailyInfections () {
@@ -316,4 +319,9 @@ public class DailyStats {
         homeInfectionsInhabitant++;
     }
 
+    public void determineRValues(Population p) {
+        RStats rs = new RStats(p);
+        R = rs.getMeanR(day);
+        generationTime = rs.getMeanGenerationTime(day);
+    }
 }
