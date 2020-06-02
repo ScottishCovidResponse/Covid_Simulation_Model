@@ -25,7 +25,6 @@ public class HouseholdTest {
     Household household2;
     Household household3;
     Household household4;
-    int nneighbours = 3;
 
     @Before
     public void initialise() throws JsonParseException, IOException {
@@ -40,7 +39,6 @@ public class HouseholdTest {
         household2 = new Household(Household.HouseholdType.ADULT, null);
         household3 = new Household(Household.HouseholdType.ADULT, null);
         household4 = new Household(Household.HouseholdType.ADULT, null);
-
     }
 
     @Test

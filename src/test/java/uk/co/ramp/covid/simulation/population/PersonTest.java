@@ -1,12 +1,9 @@
 package uk.co.ramp.covid.simulation.population;
 
 import com.google.gson.JsonParseException;
-import com.sun.org.apache.bcel.internal.generic.FADD;
 import org.junit.Before;
 import org.junit.Test;
-import sun.security.pkcs11.wrapper.CK_SSL3_MASTER_KEY_DERIVE_PARAMS;
 import uk.co.ramp.covid.simulation.io.ParameterReader;
-import uk.co.ramp.covid.simulation.util.RNG;
 import java.io.IOException;
 import static org.junit.Assert.*;
 

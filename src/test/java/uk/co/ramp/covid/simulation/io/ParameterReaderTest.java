@@ -4,10 +4,7 @@ import org.junit.After;
 import org.junit.Test;
 import uk.co.ramp.covid.simulation.CovidParameters;
 import uk.co.ramp.covid.simulation.population.PopulationParameters;
-
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Path;
 
 import static org.junit.Assert.*;
 
