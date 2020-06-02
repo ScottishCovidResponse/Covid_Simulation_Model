@@ -2,6 +2,7 @@ package uk.co.ramp.covid.simulation.place;
 
 import uk.co.ramp.covid.simulation.DailyStats;
 import uk.co.ramp.covid.simulation.Time;
+import uk.co.ramp.covid.simulation.place.householdtypes.HouseholdType;
 import uk.co.ramp.covid.simulation.population.CStatus;
 import uk.co.ramp.covid.simulation.population.Person;
 import uk.co.ramp.covid.simulation.population.Places;
@@ -11,26 +12,6 @@ import uk.co.ramp.covid.simulation.util.RNG;
 import java.util.*;
 
 public class Household extends Place {
-
-    public enum HouseholdType {
-       ADULT               { public String toString() {return "Adult only";                   } },
-       PENSIONER           { public String toString() {return "Pensioner only";               } },
-       ADULTPENSIONER      { public String toString() {return "Adult & pensioner";            } },
-       ADULTCHILD          { public String toString() {return "Adult & children";             } },
-       PENSIONERCHILD      { public String toString() {return "Pensioner & children";         } },
-       ADULTPENSIONERCHILD { public String toString() {return "Adult & pensioner & children"; } }
-    }
-
-    public static final Set<HouseholdType> adultHouseholds = new HashSet<>(Arrays.asList(
-            HouseholdType.ADULT, HouseholdType.ADULTPENSIONERCHILD,
-            HouseholdType.ADULTPENSIONER, HouseholdType.ADULTCHILD));
-
-    public static final Set<HouseholdType> pensionerHouseholds = new HashSet<>(Arrays.asList(
-            HouseholdType.PENSIONER, HouseholdType.ADULTPENSIONERCHILD,
-            HouseholdType.PENSIONERCHILD, HouseholdType.ADULTPENSIONER));
-
-    public static final Set<HouseholdType> childHouseholds = new HashSet<>(Arrays.asList(
-            HouseholdType.ADULTCHILD, HouseholdType.ADULTPENSIONERCHILD, HouseholdType.PENSIONERCHILD));
 
     private final HouseholdType hType;
     private final List<Household> neighbours;
@@ -62,7 +43,7 @@ public class Household extends Place {
         return neighbours.size();
     }
 
-    public HouseholdType gethType() {
+    public HouseholdType getHouseholdType() {
         return this.hType;
     }
 

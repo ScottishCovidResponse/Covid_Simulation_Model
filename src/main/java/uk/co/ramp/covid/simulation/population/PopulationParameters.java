@@ -3,6 +3,7 @@ package uk.co.ramp.covid.simulation.population;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import uk.co.ramp.covid.simulation.util.InvalidParametersException;
+import uk.co.ramp.covid.simulation.util.ProbabilityDistribution;
 
 import java.lang.reflect.Field;
 import java.util.HashMap;
@@ -24,38 +25,44 @@ public class PopulationParameters {
     private static class Households {
         public Double householdRatio = null;
 
-        public Double pAdultOnly = null;
-        public Double pPensionerOnly = null;
-        public Double pPensionerAdult = null;
-        public Double pAdultChildren = null;
-        public Double pPensionerChildren = null;
-        public Double pAdultPensionerChildren = null;
+        public Double pSingleAdult = null;
+        public Double pSmallAdult = null;
+        public Double pSingleParent = null;
+        public Double pSmallFamily = null;
+        public Double pLargeFamily = null;
+        public Double pLargeAdult = null;
+        public Double pOlderSmaller = null;
+        public Double pSingleOlder = null;
 
         @Override
         public String toString() {
             return "Households{" +
                     "householdRatio=" + householdRatio +
-                    ", pAdultOnly=" + pAdultOnly +
-                    ", pPensionerOnly=" + pPensionerOnly +
-                    ", pPensionerAdult=" + pPensionerAdult +
-                    ", pAdultChildren=" + pAdultChildren +
-                    ", pPensionerChildren=" + pPensionerChildren +
-                    ", pAdultPensionerChildren=" + pAdultPensionerChildren +
+                    ", pSingleAdult=" + pSingleAdult +
+                    ", pSmallAdult=" + pSmallAdult +
+                    ", pSingleParent=" + pSingleParent +
+                    ", pSmallFamily=" + pSmallFamily +
+                    ", pLargeFamily=" + pLargeFamily +
+                    ", pLargeAdult=" + pLargeAdult +
+                    ", pOlderSmaller=" + pOlderSmaller +
+                    ", pSingleOlder=" + pSingleOlder +
                     '}';
         }
 
         public boolean isValid() {
-            boolean probabilitiesValid = isValidProbability(pAdultOnly, "pAdultOnly")
-                    && isValidProbability(pPensionerOnly, "pPensionerOnly")
-                    && isValidProbability(pAdultChildren, "pAdultChildren")
-                    && isValidProbability(pAdultPensionerChildren, "pAdultPensionerChildren")
-                    && isValidProbability(pPensionerChildren, "pPensionerChildren")
-                    && isValidProbability(pPensionerAdult, "pPensionerAdult");
+            boolean probabilitiesValid = isValidProbability(pSingleAdult, "pSingleAdult")
+                    && isValidProbability(pSmallAdult, "pSmallAdult")
+                    && isValidProbability(pSingleParent, "pSingleParent")
+                    && isValidProbability(pSmallFamily, "pSmallFamily")
+                    && isValidProbability(pLargeFamily, "pLargeFamily")
+                    && isValidProbability(pLargeAdult, "pLargeAdult")
+                    && isValidProbability(pOlderSmaller, "pOlderSmaller")
+                    && isValidProbability(pSingleOlder, "pSingleOlder");
 
             probabilitiesValid = probabilitiesValid && (householdRatio >= 1);
 
-            double totalP = pAdultOnly + pPensionerAdult + pPensionerOnly + pAdultChildren
-                    + pPensionerChildren + pAdultPensionerChildren;
+            double totalP = pSingleAdult + pSmallAdult + pSingleParent + pSmallFamily + pLargeFamily
+                    + pLargeAdult + pOlderSmaller + pSingleOlder;
             if(!(totalP <= 1 + EPSILON && totalP >= 1 - EPSILON)) {
                 LOGGER.error("Household parameter probabilities do not total one");
                 return false;
@@ -380,28 +387,36 @@ public class PopulationParameters {
 
     public void setHouseholdRatio(double r) { households.householdRatio = r; }
 
-    public double getpAdultOnly() {
-        return households.pAdultOnly;
+    public double getpSingleAdult() {
+        return households.pSingleAdult;
+    }
+    
+    public double getpSmallAdult() {
+        return households.pSmallAdult;
     }
 
-    public double getpPensionerOnly() {
-        return households.pPensionerOnly;
+    public double getpSingleParent() {
+        return households.pSingleParent;
     }
 
-    public double getpPensionerAdult() {
-        return households.pPensionerAdult;
+    public double getpSmallFamily() {
+        return households.pSmallFamily;
     }
 
-    public double getpAdultChildren() {
-        return households.pAdultChildren;
+    public double getpLargeFamily() {
+        return households.pLargeFamily;
     }
 
-    public double getpPensionerChildren() {
-        return households.pPensionerChildren;
+    public double getpLargeAdult() {
+        return households.pLargeAdult;
     }
 
-    public double getpAdultPensionerChildren() {
-        return households.pAdultPensionerChildren;
+    public double getpOlderSmaller() {
+        return households.pOlderSmaller;
+    }
+
+    public double getpSingleOlder() {
+        return households.pSingleOlder;
     }
 
     public Map<Integer, Double> getAdultAllocationPMap() {

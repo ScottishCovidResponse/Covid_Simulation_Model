@@ -1,5 +1,6 @@
 package uk.co.ramp.covid.simulation.place.householdtypes;
 
+/** SingleAdult: A single non-pensioner Adult */
 public class SingleAdult extends HouseholdType {
     @Override
     public boolean adultRequired() {

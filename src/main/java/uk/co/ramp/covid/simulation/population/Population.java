@@ -13,9 +13,11 @@ import uk.co.ramp.covid.simulation.DailyStats;
 import uk.co.ramp.covid.simulation.RStats;
 import uk.co.ramp.covid.simulation.Time;
 import uk.co.ramp.covid.simulation.place.*;
+import uk.co.ramp.covid.simulation.place.householdtypes.*;
 import uk.co.ramp.covid.simulation.util.ProbabilityDistribution;
 import uk.co.ramp.covid.simulation.util.RNG;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
 public class Population {
@@ -92,22 +94,31 @@ public class Population {
 
     // Creates households based on probability of different household types
     private void createHouseholds() {
-        ProbabilityDistribution<Household.HouseholdType> p = new ProbabilityDistribution<>();
-        p.add(PopulationParameters.get().getpAdultOnly(), Household.HouseholdType.ADULT);
-        p.add(PopulationParameters.get().getpPensionerOnly(), Household.HouseholdType.PENSIONER);
-        p.add(PopulationParameters.get().getpPensionerAdult(), Household.HouseholdType.ADULTPENSIONER);
-        p.add(PopulationParameters.get().getpAdultChildren(), Household.HouseholdType.ADULTCHILD);
-        p.add(PopulationParameters.get().getpPensionerChildren(), Household.HouseholdType.PENSIONERCHILD);
-        p.add(PopulationParameters.get().getpAdultPensionerChildren(), Household.HouseholdType.ADULTPENSIONERCHILD);
-
+        ProbabilityDistribution<Class> p = new ProbabilityDistribution<>();
+        p.add(PopulationParameters.get().getpSingleAdult(), SingleAdult.class);
+        p.add(PopulationParameters.get().getpSmallAdult(), SmallAdult.class);
+        p.add(PopulationParameters.get().getpSingleParent(), SingleParent.class);
+        p.add(PopulationParameters.get().getpSmallFamily(), SmallFamily.class);
+        p.add(PopulationParameters.get().getpLargeFamily(), LargeFamily.class);
+        p.add(PopulationParameters.get().getpLargeAdult(), LargeAdult.class);
+        p.add(PopulationParameters.get().getpOlderSmaller(), OlderSmaller.class);
+        p.add(PopulationParameters.get().getpSingleOlder(), SingleOlder.class);
 
         for (int i = 0; i < numHouseholds; i++) {
-            Household.HouseholdType t = p.sample();
+            Class htype = p.sample();
+            HouseholdType t = null;
+            try {
+                t = (HouseholdType) htype.getDeclaredConstructor().newInstance();
+            } catch (NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
+                
+            }
+
             households.add(new Household(t, places));
         }
     }
 
     // Checks we have enough people of the right types to perform a household allocation
+    /*
     private boolean householdAllocationPossible(BitSet adultIndex, BitSet pensionerIndex,
                                                 BitSet childIndex, BitSet infantIndex) {
         int adult = 0; int pensioner = 0; int adultPensioner = 0; int adultChild = 0;
@@ -136,13 +147,15 @@ public class Population {
                 && (childIndex.cardinality() > 0 ? childHouseholds > 0 : true);
 
         return  possible;
-    }
+    } */
 
     // Cycles over all bits of remainingPeople and ensures they are allocated to a household in a greedy fashion
-    private void greedyAllocate(BitSet remainingPeople, Set<Household.HouseholdType> types) {
+
+    /*
+    private void greedyAllocate(BitSet remainingPeople) {
         int i = 0; // Pointer into remaining
         for (Household h : households) {
-            Household.HouseholdType htype = h.gethType();
+            HouseholdType htype = h.getHouseholdType();
             if (types.contains(htype)) {
                 i = remainingPeople.nextSetBit(i);
                 if (i < 0) {
@@ -220,6 +233,87 @@ public class Population {
         probAllocate(infantIndex,
                 Household.childHouseholds,
                 PopulationParameters.get().getInfantAllocationPMap());
+    }
+
+     */
+
+    private void populateHouseholds() throws ImpossibleAllocationException {
+        createHouseholds();
+
+        BitSet infantIndex = new BitSet(populationSize);
+        BitSet childIndex = new BitSet(populationSize);
+        BitSet adultIndex = new BitSet(populationSize);
+        BitSet pensionerIndex = new BitSet(populationSize);
+
+        createPopulation(adultIndex, pensionerIndex, childIndex, infantIndex);
+
+        BitSet childOrInfant = new BitSet(populationSize);
+        childOrInfant.or(childIndex);
+        childOrInfant.or(infantIndex);
+
+        // Fill requirements first
+        for (Household h : households) {
+            HouseholdType htype = h.getHouseholdType();
+            while (htype.adultRequired()) {
+                int i = adultIndex.nextSetBit(0);
+                if (i < 0) {
+                    throw new ImpossibleAllocationException("Population distribution cannot populate household distribution");
+                }
+                adultIndex.clear(i);
+                h.addInhabitant(allPeople.get(i));
+                htype.addAdult();
+            }
+            while (htype.childRequired()) {
+                int i = childOrInfant.nextSetBit(0);
+                if (i < 0) {
+                    throw new ImpossibleAllocationException("Population distribution cannot populate household distribution");
+                }
+                childOrInfant.clear(i);
+                h.addInhabitant(allPeople.get(i));
+                htype.addChild();
+            }
+            while (htype.pensionerRequired()) {
+                int i = pensionerIndex.nextSetBit(0);
+                if (i < 0) {
+                    throw new ImpossibleAllocationException("Population distribution cannot populate household distribution");
+                }
+                pensionerIndex.clear(i);
+                h.addInhabitant(allPeople.get(i));
+                htype.addPensioner();
+            }
+        }
+
+        // Now fill in anyone who is missing
+        while (!adultIndex.isEmpty() || !pensionerIndex.isEmpty() || !childOrInfant.isEmpty()) {
+            for (Household h : households) {
+                HouseholdType htype = h.getHouseholdType();
+                if (htype.adultAllowed()) {
+                    int i = adultIndex.nextSetBit(0);
+                    if (i >= 0) {
+                        adultIndex.clear(i);
+                        h.addInhabitant(allPeople.get(i));
+                        htype.addAdult();
+                    }
+                }
+                if (htype.childAllowed()) {
+                    int i = childOrInfant.nextSetBit(0);
+                    if (i >= 0) {
+                        childOrInfant.clear(i);
+                        h.addInhabitant(allPeople.get(i));
+                        htype.addChild();
+                    }
+                
+                }
+                if (htype.pensionerAllowed()) {
+                    int i = pensionerIndex.nextSetBit(0);
+                    if (i >= 0) {
+                        pensionerIndex.clear(i);
+                        h.addInhabitant(allPeople.get(i));
+                        htype.addPensioner();
+                    }
+                }
+            }
+        }
     }
 
     // This creates the Communal places of different types where people mix

@@ -1,20 +1,20 @@
 package uk.co.ramp.covid.simulation.place.householdtypes;
 
 public abstract class HouseholdType {
-    int nadults = 0;
-    int nchildren = 0;
-    int npensioners = 0;
+    protected int adults = 0;
+    protected int children = 0;
+    protected int pensioners = 0;
     
     public void addAdult() {
-        nadults++;
+        adults++;
     }
     
     public void addChild() {
-        nchildren++;
+        children++;
     }
     
     public void addPensioner() {
-        npensioners++;
+        pensioners++;
     }
     
     public abstract boolean adultRequired();

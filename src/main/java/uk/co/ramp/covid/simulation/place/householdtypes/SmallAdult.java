@@ -1,5 +1,6 @@
 package uk.co.ramp.covid.simulation.place.householdtypes;
 
+/** SmallAdult: Two non-pensioner adults and no children */
 public class SmallAdult extends HouseholdType {
     @Override
     public boolean adultRequired() {

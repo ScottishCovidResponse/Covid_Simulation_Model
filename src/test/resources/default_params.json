@@ -64,12 +64,14 @@
         },
         "households":{
             "householdRatio": 2.18,
-            "pAdultOnly":0.4,
-            "pPensionerOnly":0.12,
-            "pPensionerAdult":0.07,
-            "pAdultChildren":0.28,
-            "pPensionerChildren":0.05,
-            "pAdultPensionerChildren":0.08
+            "pSingleAdult":0.22,
+            "pSmallAdult":0.2,
+            "pSingleParent":0.05,
+            "pSmallFamily":0.12,
+            "pLargeFamily":0.05,
+            "pLargeAdult":0.09,
+            "pOlderSmaller":0.14,
+            "pSingleOlder":0.13
         },
         "additionalMembersDistributions":{
             "adultAllocationPMap":{
