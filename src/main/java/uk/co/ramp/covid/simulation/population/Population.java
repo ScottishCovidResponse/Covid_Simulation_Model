@@ -21,7 +21,8 @@ public class Population {
     private static final Logger LOGGER = LogManager.getLogger(Population.class);
 
     private final int populationSize;
-    private final int nHousehold;
+    private final int numHouseholds;
+
     private final ArrayList<Household> households;
     private final ArrayList<Person> allPeople;
     private Places places;
@@ -33,15 +34,20 @@ public class Population {
     private boolean schoolL;
     private final RandomDataGenerator rng;
 
-    public Population(int populationSize, int nHousehold) throws ImpossibleAllocationException, ImpossibleWorkerDistributionException {
+    public Population(int populationSize) throws ImpossibleAllocationException, ImpossibleWorkerDistributionException {
         this.rng = RNG.get();
         this.populationSize = populationSize;
-        this.nHousehold = nHousehold;
-        if (this.nHousehold > this.populationSize) {
-            LOGGER.warn("More households than population");
+
+        this.numHouseholds = (int) (populationSize / PopulationParameters.get().getHouseholdRatio());
+
+        if (numHouseholds == 0) {
+            throw new ImpossibleAllocationException("No households requested");
+        }
+        if (numHouseholds > populationSize) {
+            throw new ImpossibleAllocationException("More households than people requested");
         }
 
-        this.households = new ArrayList<>(nHousehold);
+        this.households = new ArrayList<>(numHouseholds);
         this.allPeople = new ArrayList<>(populationSize);
         this.places = new Places();
         this.lockdownStart = (-1);
@@ -93,7 +99,7 @@ public class Population {
         p.add(PopulationParameters.get().getpAdultPensionerChildren(), Household.HouseholdType.ADULTPENSIONERCHILD);
 
 
-        for (int i = 0; i < nHousehold; i++) {
+        for (int i = 0; i < numHouseholds; i++) {
             Household.HouseholdType t = p.sample();
             households.add(new Household(t, places));
         }
@@ -114,9 +120,19 @@ public class Population {
                 case ADULTPENSIONERCHILD: adultPensionerChild++; break;
             }
         }
-        boolean possible = adultIndex.cardinality() > adult + adultPensioner + adultChild + adultPensionerChild
-                && pensionerIndex.cardinality() > adultPensioner + pensioner + pensionerChild + adultPensionerChild
-                && childIndex.cardinality() + infantIndex.cardinality() > adultChild + pensionerChild + adultPensionerChild;
+
+        int adultHouseholds = adult + adultPensioner + adultChild + adultPensionerChild;
+        int pensionerHouseholds = adultPensioner + pensioner + pensionerChild + adultPensionerChild;
+        int childHouseholds = adultChild + pensionerChild + adultPensionerChild;
+        
+        boolean possible = adultIndex.cardinality() > adultHouseholds
+                && pensionerIndex.cardinality() > pensionerHouseholds
+                && childIndex.cardinality() + infantIndex.cardinality() > childHouseholds
+                // We need to ensure everyone has somewhere to go
+                && (adultIndex.cardinality() > 0 ? adultHouseholds > 0 : true)
+                && (pensionerIndex.cardinality() > 0 ? pensionerHouseholds > 0 : true)
+                && (childIndex.cardinality() > 0 ? childHouseholds > 0 : true);
+
         return  possible;
     }
 
@@ -271,7 +287,7 @@ public class Population {
     // Force infections into a defined number of people
     public void seedVirus(int nInfections) {
         for (int i = 1; i <= nInfections; i++) {
-            int nInt = rng.nextInt(0, this.nHousehold - 1);
+            int nInt = rng.nextInt(0, numHouseholds - 1);
             if (households.get(nInt).getHouseholdSize() > 0) {
                 if (!households.get(nInt).seedInfection()) i--;
             }
@@ -380,8 +396,8 @@ public class Population {
         return populationSize;
     }
 
-    public int getnHousehold() {
-        return nHousehold;
+    public int getNumHouseholds() {
+        return numHouseholds;
     }
 
     public ArrayList<Person> getAllPeople() {
