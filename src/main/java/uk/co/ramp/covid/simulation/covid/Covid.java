@@ -117,12 +117,12 @@ public class Covid {
     public CStatus stepInfection(Time t) {
     	CStatus status = null;
     	if(symptomaticCase) status = this.stepInfectionSymptomatic(t);
-    	else if(!symptomaticCase) status = this.stepInfectionAsymptomatic(t);
+    	else if(!symptomaticCase) status = this.stepInfectionAsymptomatic();
     	return status;
     }
     
     // Cycle through the infection for that timestep
-    public CStatus stepInfectionAsymptomatic(Time t) {
+    public CStatus stepInfectionAsymptomatic() {
         infCounter++;
         CStatus status = CStatus.LATENT;
         if ((latentPeriod) > infCounter) {

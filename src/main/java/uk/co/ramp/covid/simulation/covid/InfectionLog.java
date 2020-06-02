@@ -6,7 +6,7 @@ import uk.co.ramp.covid.simulation.population.Person;
 import java.util.HashSet;
 import java.util.Set;
 
-/** InfectionLog matains information about a particular COVID case, such as when it became
+/** InfectionLog maintains information about a particular COVID case, such as when it became
  * symptomatic and who it infected */
 public class InfectionLog {
 
