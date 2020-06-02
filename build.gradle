@@ -62,10 +62,3 @@ sonarqube {
     }
 }
 
-task copyFilesToInstall ( type: Copy){
-    from "contacts.csv", "population.json", "runSettings.json"
-    into "$buildDir/install/ContactTracing/bin/"
-
-}
-
-tasks.getByName("installDist").finalizedBy(copyFilesToInstall)
