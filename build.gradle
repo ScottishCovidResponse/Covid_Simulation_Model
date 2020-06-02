@@ -18,6 +18,12 @@ java {
     sourceCompatibility = JavaVersion.VERSION_1_8
 }
 
+tasks.withType(JavaCompile).all {
+    options.compilerArgs.add("-Xlint:all")
+    options.compilerArgs.add("-Xlint:-serial")
+    options.compilerArgs.add("-Werror")
+}
+
 run {
     enableAssertions = true
 }
