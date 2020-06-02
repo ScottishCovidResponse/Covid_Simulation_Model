@@ -36,7 +36,6 @@ public class HospitalTest {
     @Test
     public void testHospitalWorkers() throws ImpossibleAllocationException, ImpossibleWorkerDistributionException {
         int populationSize = 10000;
-        int nHouseholds = 2000;
         int nInfections = 10;
 
         Population p = new Population(populationSize);
