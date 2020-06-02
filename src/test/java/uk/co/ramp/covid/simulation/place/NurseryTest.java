@@ -8,6 +8,7 @@ import com.google.gson.JsonParseException;
 import uk.co.ramp.covid.simulation.DailyStats;
 import uk.co.ramp.covid.simulation.io.ParameterReader;
 import uk.co.ramp.covid.simulation.population.*;
+import uk.co.ramp.covid.simulation.testutil.PopulationGenerator;
 import uk.co.ramp.covid.simulation.util.RNG;
 
 import static org.junit.Assert.assertEquals;
@@ -31,14 +32,12 @@ public class NurseryTest {
         assertEquals("Unexpected nursery TransProb", expProb, nursery.transProb, delta);
     }
 
-    @Ignore("Failing Test")
     @Test
-    public void testNurseryWorkers() throws ImpossibleAllocationException, ImpossibleWorkerDistributionException {
+    public void testNurseryWorkers() throws ImpossibleWorkerDistributionException {
         int populationSize = 10000;
-        int nHouseholds = 2000;
         int nInfections = 10;
 
-        Population p = new Population(populationSize);
+        Population p = PopulationGenerator.genValidPopulation(populationSize);
         p.allocatePeople();
         p.seedVirus(nInfections);
         List<Person> staff;
@@ -52,13 +51,13 @@ public class NurseryTest {
                 p.timeStep(day, i, s);
                 totStaff = 0;
                 for (Nursery place : p.getPlaces().getNurseries()) {
-                    staff = place.getStaff(day, i);
+                    staff = place.getStaff(day, i + 1);
                     totStaff += staff.size();
                 }
 
                 if (day < 5) {
                     //Staff should be at nursery during school times only
-                    if (i < startTime || i >= endTime - 1) {
+                    if (i + 1 < startTime || i +1 >= endTime) {
                         assertEquals("Unexpected staff at nursery", 0, totStaff);
                     } else {
                         assertTrue("No staff at nursery", totStaff > 0);

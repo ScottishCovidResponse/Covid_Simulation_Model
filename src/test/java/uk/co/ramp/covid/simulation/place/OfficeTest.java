@@ -8,6 +8,7 @@ import com.google.gson.JsonParseException;
 import uk.co.ramp.covid.simulation.DailyStats;
 import uk.co.ramp.covid.simulation.io.ParameterReader;
 import uk.co.ramp.covid.simulation.population.*;
+import uk.co.ramp.covid.simulation.testutil.PopulationGenerator;
 import uk.co.ramp.covid.simulation.util.RNG;
 
 import static org.junit.Assert.assertEquals;
@@ -31,14 +32,12 @@ public class OfficeTest {
         assertEquals("Unexpected office TransProb", expProb, office.transProb, delta);
     }
 
-    @Ignore("Failing Test")
     @Test
-    public void testOfficeWorkers() throws ImpossibleAllocationException, ImpossibleWorkerDistributionException {
+    public void testOfficeWorkers() throws ImpossibleWorkerDistributionException {
         int populationSize = 10000;
-        int nHouseholds = 2000;
         int nInfections = 10;
 
-        Population p = new Population(populationSize);
+        Population p = PopulationGenerator.genValidPopulation(populationSize);
         p.allocatePeople();
         p.seedVirus(nInfections);
         List<Person> staff;

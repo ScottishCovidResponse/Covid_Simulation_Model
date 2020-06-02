@@ -176,7 +176,6 @@ public class MovementTest {
         }
     }
 
-    @Ignore("Failing Test")
     @Test
     public void openPlacesShouldBeStaffed() {
         int day = 1;
@@ -184,7 +183,6 @@ public class MovementTest {
         for (int i = 0; i < 24; i++) {
             p.timeStep(day, i, s);
 
-            int npeople = 0;
             for (CommunalPlace place : p.getPlaces().getAllPlaces()) {
                 // i + 1 since the ith timestep has already been (so we are in the next state)
                 if (place.isOpen(day, i + 1)) {

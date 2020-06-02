@@ -153,9 +153,15 @@ public abstract class Person {
             return false;
         }
 
+        int start = shifts.getShift(day).getStart();
+        int end = shifts.getShift(day).getEnd();
+        if (end < start) {
+            end += 24;
+        }
+
         return primaryPlace == p
-                && hour >= shifts.getShift(day).getStart()
-                && hour < shifts.getShift(day).getEnd();
+                && hour >= start
+                && hour < end;
     }
     
     public boolean worksNextHour(CommunalPlace communalPlace, int day, int hour, boolean lockdown) {
@@ -164,6 +170,14 @@ public abstract class Person {
         }
 
         // Handle day crossovers
+        int nextHour = 0;
+        if (hour + 1 == 24) {
+            day = (day + 1) % 7;
+            nextHour = 0;
+        } else {
+            nextHour = hour + 1;
+        }
+
         int start = shifts.getShift(day).getStart();
         int end = shifts.getShift(day).getEnd();
         if (end < start) {
@@ -172,8 +186,8 @@ public abstract class Person {
 
         boolean shouldWork =
                 primaryPlace == communalPlace
-                && hour + 1 >= start
-                && hour + 1 < end;
+                && nextHour >= start
+                && nextHour < end;
         
         if (lockdown) {
             if (communalPlace.isKeyPremises()) {

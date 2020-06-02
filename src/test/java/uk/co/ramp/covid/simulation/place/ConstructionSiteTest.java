@@ -11,6 +11,7 @@ import uk.co.ramp.covid.simulation.DailyStats;
 import uk.co.ramp.covid.simulation.Model;
 import uk.co.ramp.covid.simulation.io.ParameterReader;
 import uk.co.ramp.covid.simulation.population.*;
+import uk.co.ramp.covid.simulation.testutil.PopulationGenerator;
 import uk.co.ramp.covid.simulation.util.RNG;
 
 import java.io.IOException;
@@ -34,18 +35,12 @@ public class ConstructionSiteTest {
         assertEquals("Unexpected construction site TransProb", expProb, constructionSite.transProb, delta);
     }
 
-    @Ignore("Failing Test")
     @Test
-    public void testNoConstructionSites() throws JsonParseException, ImpossibleAllocationException, ImpossibleWorkerDistributionException {
+    public void testNoConstructionSites() throws JsonParseException, ImpossibleWorkerDistributionException {
         //The input ConstructionSites ratio is set very high so that there are no construction sites.
         //Check that each person's primary place is never set to construction site
         PopulationParameters.get().setConstructionSiteRatio(100000);
-        Population p = null;
-        try {
-            p = new Population(10000);
-        } catch (ImpossibleAllocationException e) {
-            Assert.fail("Could not populate households in test");
-        }
+        Population p = PopulationGenerator.genValidPopulation(10000);
 
         ArrayList<Person> allPeople = p.getAllPeople();
         for (Person allPerson : allPeople) {
@@ -77,13 +72,12 @@ public class ConstructionSiteTest {
         }
     }
 
-    @Ignore("Failing Test")
     @Test
-    public void testConstructionSiteWorkers() throws ImpossibleAllocationException, ImpossibleWorkerDistributionException {
+    public void testConstructionSiteWorkers() throws ImpossibleWorkerDistributionException {
         int populationSize = 10000;
         int nInfections = 10;
 
-        Population p = new Population(populationSize);
+        Population p = PopulationGenerator.genValidPopulation(populationSize);
         p.allocatePeople();
         p.seedVirus(nInfections);
         List<Person> staff;
