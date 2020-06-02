@@ -125,13 +125,12 @@ public class ModelTest {
         }
     }
 
-    @Ignore("Failing Test")
     @Test
     public void testReadModelFromFile() throws JsonParseException, IOException {
         Model m  = Model.readModelFromFile("src/test/resources/test_model_params.json");
         m.setNoOutput();
         assertTrue(m.isValid());
-        m.run();
+        m.run(0);
     }
 
     @Ignore("Failing Test")
