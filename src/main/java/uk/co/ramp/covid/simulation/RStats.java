@@ -7,6 +7,8 @@ import uk.co.ramp.covid.simulation.population.Population;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 
 /** RStats handles generating/outputting the R naught statistics */
 public class RStats {
@@ -17,14 +19,13 @@ public class RStats {
         this.population = p;
     }
 
-    /** Returns the mean R for a given day */
-    public Double getMeanR(int absDay) {
+    private Double getMeanRGeneric(int absDay, BiFunction<Integer, Integer, Boolean> cmp) {
         double nInfectors = 0;
         double nSecondaries = 0;
         for (Person p : population.getAllPeople()) {
             Covid virus = p.getcVirus();
             if (virus != null) {
-                if (virus.getInfectionLog().getInfectionTime().getAbsDay() == absDay) {
+                if (cmp.apply(virus.getInfectionLog().getInfectionTime().getAbsDay(), absDay)) {
                     nInfectors++;
                     nSecondaries += virus.getInfectionLog().getSecondaryInfections().size();
                 }
@@ -36,6 +37,16 @@ public class RStats {
         }
 
         return null;
+    }
+
+    /** Returns the mean R for a given day */
+    public Double getMeanR(int absDay) {
+        return getMeanRGeneric(absDay, (a, b) -> a == b);
+    }
+
+    /** Returns the mean R up to a given day */
+    public Double getMeanRBefore(int absDay) {
+        return getMeanRGeneric(absDay, (a, b) -> a <= b);
     }
 
     /** Returns the mean generation time for a given day */

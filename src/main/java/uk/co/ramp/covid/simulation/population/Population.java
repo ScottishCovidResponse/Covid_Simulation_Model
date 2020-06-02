@@ -10,6 +10,7 @@ import org.apache.commons.math3.random.RandomDataGenerator;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import uk.co.ramp.covid.simulation.DailyStats;
+import uk.co.ramp.covid.simulation.RStats;
 import uk.co.ramp.covid.simulation.Time;
 import uk.co.ramp.covid.simulation.place.*;
 import uk.co.ramp.covid.simulation.util.ProbabilityDistribution;
@@ -317,10 +318,11 @@ public class Population {
     public List<DailyStats> simulate(int nDays) {
         List<DailyStats> stats = new ArrayList<>(nDays);
         Time t = new Time();
+        boolean rprinted = false;
         for (int i = 0; i < nDays; i++) {
             DailyStats dStats = new DailyStats(t);
             implementLockdown(t);
-            LOGGER.info("Lockdown = {}", this.lockdown);
+            LOGGER.info("Day = {}, Lockdown = {}", t.getAbsDay(), lockdown);
             for (int k = 0; k < 24; k++) {
                 timeStep(t, dStats);
                 t = t.advance();
@@ -328,8 +330,22 @@ public class Population {
             households.forEach(h -> h.dayEnd());
             stats.add(this.processCases(dStats));
 
+            if (!rprinted) {
+                rprinted = handleR(dStats, t.getAbsDay());
+            }
+
         }
         return stats;
+    }
+
+    /** Log the R value for the first 5% of recoveries or lockdown */
+    private boolean handleR(DailyStats s, int absDay) {
+        if (s.getRecovered() >= populationSize * 0.05 || isLockdown()) {
+            RStats rs = new RStats(this);
+            LOGGER.info("R0 in initial stage: " + rs.getMeanRBefore(absDay));
+            return true;
+        }
+        return false;
     }
 
     // Basically a method to set the instance variables. Could also do this through an overloaded constructor, but I rather prefer this way of doing things
