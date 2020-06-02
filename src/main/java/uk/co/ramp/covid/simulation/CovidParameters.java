@@ -76,6 +76,9 @@ public class CovidParameters {
         return diseaseParameters.meanLatentPeriod;
     }
 
+    public void setMeanLatentPeriod(double meanLatentPeriod) {
+        diseaseParameters.meanLatentPeriod = meanLatentPeriod;
+    }
     public double getMeanAsymptomaticPeriod () {
         return diseaseParameters.meanAsymptomaticPeriod;
     }

@@ -187,12 +187,12 @@ public class ModelTest {
     }
 
     @Test
-    public void testMortality() throws IOException {
+    public void testMortality() {
         //Mortality and transmission rates are set to 100%
         //Check that everyone is infected and progresses to death
-        ParameterReader.readParametersFromFile("src/test/resources/default_params.json");
         CovidParameters.get().setSymptomProbability(100.0);
         CovidParameters.get().setMeanSymptomDelay(-5.0);
+        CovidParameters.get().setMeanLatentPeriod(50.0);
         CovidParameters.get().setMeanInfectiousPeriod(100.0);
         CovidParameters.get().setMortalityRate(100.0);
         CovidParameters.get().setChildProgressionPhase2(100.0);
@@ -202,7 +202,7 @@ public class ModelTest {
         CovidParameters.get().setAsymptomaticTransAdjustment(100.0);
         PopulationParameters.get().setPTransmission(1.0);
         PopulationParameters.get().setPQuarantine(0.0);
-        nDays = 300;
+        nDays = 150;
         //Run the model
         Model m1 = new Model()
                 .setPopulationSize(population)
