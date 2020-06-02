@@ -410,11 +410,11 @@ public class PopulationTest {
 
     @Test
     public void meanRPositiveWhenInfectionsOccur() {
-        pop.seedVirus(5);
-        pop.simulate(20);
+        pop.seedVirus(20);
+        pop.simulate(30);
         RStats rs = new RStats(pop);
         
-        assertTrue(rs.getMeanRBefore(20) > 0);
+        assertTrue(rs.getMeanRBefore(30) > 0);
     }
 
 }
