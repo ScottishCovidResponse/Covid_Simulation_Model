@@ -9,6 +9,7 @@ import uk.co.ramp.covid.simulation.Time;
 import uk.co.ramp.covid.simulation.DailyStats;
 import uk.co.ramp.covid.simulation.io.ParameterReader;
 import uk.co.ramp.covid.simulation.population.*;
+import uk.co.ramp.covid.simulation.testutil.PopulationGenerator;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -63,13 +64,12 @@ public class ShopTest {
         assertEquals("Unexpected number of people sent home", expPeople, left);
     }
 
-    @Ignore("Failing Test")
     @Test
-    public void testShopWorkers() throws ImpossibleAllocationException, ImpossibleWorkerDistributionException {
+    public void testShopWorkers() throws ImpossibleWorkerDistributionException {
         int populationSize = 10000;
         int nInfections = 10;
 
-        Population p = new Population(populationSize);
+        Population p = PopulationGenerator.genValidPopulation(populationSize);
         p.allocatePeople();
         p.seedVirus(nInfections);
         List<Person> staff;
@@ -79,18 +79,19 @@ public class ShopTest {
             DailyStats s = new DailyStats(t);
             for (int i = 0; i < 24; i++) {
                 p.timeStep(t, s);
+                t = t.advance();
                 for (Shop place : p.getPlaces().getShops()) {
+                    // After time step staff for i + 1 hour are in place
                     staff = place.getStaff(t);
-                    int open = place.getShifts().getShift(day).getStart();
-                    int close = place.getShifts().getShift(day).getEnd();
-                    if (i < open || i >= close - 1) {
-                        assertEquals("Day "+day+" time "+ i + " Unexpected staff at shop", 0, staff.size());
+                    int open = place.times.getOpen();
+                    int close = place.times.getClose();
+                    if (i + 1 < open || i + 1>= close) {
+                        assertEquals("Day "+day+" time "+ (i + i) + " Unexpected staff at shop", 0, staff.size());
                     } else {
-                        assertTrue("Day "+day+" time "+ i + " No staff at shop", staff.size() > 0);
+                        assertTrue("Day "+day+" time "+ (i + i) + " No staff at shop", staff.size() > 0);
                     }
                 }
             }
-            t.advance();
         }
     }
 

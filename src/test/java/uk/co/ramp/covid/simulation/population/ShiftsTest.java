@@ -14,13 +14,14 @@ import static org.junit.Assert.assertEquals;
 
 public class ShiftsTest {
 
-    @Ignore("Failing Test")
     @Test
     public void testGetShift() throws JsonParseException, IOException {
         ParameterReader.readParametersFromFile("src/test/resources/default_params.json");
 
        Shop shop = new Shop(CommunalPlace.Size.LARGE);
        int end = shop.getShifts().getShift(1).getEnd();
+       assertEquals(15, end);
+       end = shop.getShifts().getShift(1).getEnd();
        assertEquals(22, end);
 
     }
