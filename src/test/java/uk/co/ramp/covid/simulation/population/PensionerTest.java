@@ -2,20 +2,19 @@ package uk.co.ramp.covid.simulation.population;
 
 import org.junit.Test;
 import uk.co.ramp.covid.simulation.DailyStats;
-import uk.co.ramp.covid.simulation.io.ParameterReader;
 import uk.co.ramp.covid.simulation.testutil.PopulationGenerator;
+import uk.co.ramp.covid.simulation.util.SimulationTest;
 
 import java.io.IOException;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
-public class PensionerTest {
+public class PensionerTest extends SimulationTest {
 
     @Test
     public void testPensionerReports() throws IOException, ImpossibleAllocationException, ImpossibleWorkerDistributionException {
         //Test Pensioner methods reportInfection() and reportDeath()
-        ParameterReader.readParametersFromFile("src/test/resources/default_params.json");
         Population p = PopulationGenerator.genValidPopulation(500);
         Pensioner pensioner = new Pensioner(70, Person.Sex.MALE);
 

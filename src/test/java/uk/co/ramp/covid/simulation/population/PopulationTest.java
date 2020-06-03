@@ -4,24 +4,23 @@ import org.junit.Before;
 import org.junit.Test;
 import uk.co.ramp.covid.simulation.DailyStats;
 import uk.co.ramp.covid.simulation.RStats;
-import uk.co.ramp.covid.simulation.io.ParameterReader;
 import uk.co.ramp.covid.simulation.place.*;
 import uk.co.ramp.covid.simulation.place.householdtypes.*;
 import uk.co.ramp.covid.simulation.testutil.PopulationGenerator;
+import uk.co.ramp.covid.simulation.util.SimulationTest;
 
 import java.io.IOException;
 import java.util.List;
 
 import static org.junit.Assert.*;
 
-public class PopulationTest {
+public class PopulationTest extends SimulationTest {
 
     private Population pop;
     private final int populationSize = 10000;
 
     @Before
     public void setupParams() throws IOException {
-        ParameterReader.readParametersFromFile("src/test/resources/default_params.json");
         pop = PopulationGenerator.genValidPopulation(populationSize);
     }
 
@@ -105,12 +104,6 @@ public class PopulationTest {
                 h.getInhabitants().forEach(per -> assertTrue(per instanceof Pensioner));
             }
         }
-    }
-
-    @Test (expected = ImpossibleAllocationException.class )
-    public void testImpossibleAllocationException() throws ImpossibleAllocationException, ImpossibleWorkerDistributionException {
-        PopulationParameters.get().setHouseholdRatio(15.0);
-        new Population(10);
     }
 
     @Test (expected = ImpossibleAllocationException.class )
@@ -374,7 +367,7 @@ public class PopulationTest {
         
         infected.getcVirus().forceSymptomatic(true);
         
-        pop.simulate(20);
+        pop.simulate(50);
         
         assertNotNull(infected.getcVirus().getInfectionLog().getSymptomaticTime());
     }
@@ -393,11 +386,11 @@ public class PopulationTest {
 
     @Test
     public void meanRPositiveWhenInfectionsOccur() {
-        pop.seedVirus(5);
-        pop.simulate(20);
+        pop.seedVirus(20);
+        pop.simulate(30);
         RStats rs = new RStats(pop);
         
-        assertTrue(rs.getMeanRBefore(20) > 0);
+        assertTrue(rs.getMeanRBefore(30) > 0);
     }
 
 }

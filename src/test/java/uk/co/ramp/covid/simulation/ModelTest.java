@@ -7,8 +7,8 @@ import org.junit.Test;
 import com.google.gson.JsonParseException;
 
 import uk.co.ramp.covid.simulation.covid.CovidParameters;
-import uk.co.ramp.covid.simulation.io.ParameterReader;
 import uk.co.ramp.covid.simulation.population.PopulationParameters;
+import uk.co.ramp.covid.simulation.util.SimulationTest;
 
 import java.io.IOException;
 import java.util.List;
@@ -16,21 +16,18 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public class ModelTest {
+public class ModelTest extends SimulationTest {
 
     int population;
     int nInfections;
-    int nHouseholds;
     int nIter;
     int nDays;
     int RNGSeed;
 
     @Before
     public void setupParams() throws IOException {
-        ParameterReader.readParametersFromFile("src/test/resources/default_params.json");
         population = 10000;
         nInfections = 10;
-        nHouseholds = 3000;
         nIter = 1;
         nDays = 90;
         RNGSeed = 42;
@@ -184,6 +181,8 @@ public class ModelTest {
             }
         }
         assertTrue("Unexpectedly fewer infections before lockdown", totInfDuringLockdown < totInfBeforeLockdown);
+        // TODO-CHECK: I'm unsure this is a correct test. If the lockdown is very effective there
+        //  are very low cases in the population afterwards
         assertTrue("Unexpectedly fewer infections after lockdown", totInfDuringLockdown < totInfAfterLockdown);
     }
 
@@ -203,7 +202,7 @@ public class ModelTest {
         CovidParameters.get().setAsymptomaticTransAdjustment(100.0);
         PopulationParameters.get().setPTransmission(1.0);
         PopulationParameters.get().setPQuarantine(0.0);
-        nDays = 150;
+        nDays = 200;
         //Run the model
         Model m1 = new Model()
                 .setPopulationSize(population)

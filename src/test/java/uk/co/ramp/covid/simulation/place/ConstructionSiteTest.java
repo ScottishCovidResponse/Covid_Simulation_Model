@@ -1,8 +1,5 @@
 package uk.co.ramp.covid.simulation.place;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.google.gson.JsonParseException;
@@ -10,21 +7,16 @@ import com.google.gson.JsonParseException;
 import uk.co.ramp.covid.simulation.DailyStats;
 import uk.co.ramp.covid.simulation.Model;
 import uk.co.ramp.covid.simulation.Time;
-import uk.co.ramp.covid.simulation.io.ParameterReader;
 import uk.co.ramp.covid.simulation.population.*;
+import uk.co.ramp.covid.simulation.testutil.PopulationGenerator;
+import uk.co.ramp.covid.simulation.util.SimulationTest;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.*;
 
-public class ConstructionSiteTest {
-
-    @Before
-    public void setupParams() throws IOException {
-        ParameterReader.readParametersFromFile("src/test/resources/default_params.json");
-    }
+public class ConstructionSiteTest extends SimulationTest {
 
     @Test
     public void testConstructionSiteTransProb() throws JsonParseException {
@@ -34,18 +26,12 @@ public class ConstructionSiteTest {
         assertEquals("Unexpected construction site TransProb", expProb, constructionSite.transProb, delta);
     }
 
-    @Ignore("Failing Test")
     @Test
-    public void testNoConstructionSites() throws JsonParseException, ImpossibleAllocationException, ImpossibleWorkerDistributionException {
+    public void testNoConstructionSites() throws JsonParseException, ImpossibleWorkerDistributionException {
         //The input ConstructionSites ratio is set very high so that there are no construction sites.
         //Check that each person's primary place is never set to construction site
         PopulationParameters.get().setConstructionSiteRatio(100000);
-        Population p = null;
-        try {
-            p = new Population(10000);
-        } catch (ImpossibleAllocationException e) {
-            Assert.fail("Could not populate households in test");
-        }
+        Population p = PopulationGenerator.genValidPopulation(10000);
 
         ArrayList<Person> allPeople = p.getAllPeople();
         for (Person allPerson : allPeople) {
@@ -77,13 +63,12 @@ public class ConstructionSiteTest {
         }
     }
 
-    @Ignore("Failing Test")
     @Test
-    public void testConstructionSiteWorkers() throws ImpossibleAllocationException, ImpossibleWorkerDistributionException {
+    public void testConstructionSiteWorkers() throws ImpossibleWorkerDistributionException {
         int populationSize = 10000;
         int nInfections = 10;
 
-        Population p = new Population(populationSize);
+        Population p = PopulationGenerator.genValidPopulation(populationSize);
         p.allocatePeople();
         p.seedVirus(nInfections);
         List<Person> staff;
@@ -96,6 +81,7 @@ public class ConstructionSiteTest {
             DailyStats s = new DailyStats(t);
             for (int i = 0; i < 24; i++) {
                 p.timeStep(t, s);
+                t = t.advance();
                 totStaff = 0;
                 for (ConstructionSite place : p.getPlaces().getConstructionSites()) {
                     staff = place.getStaff(t);
@@ -105,7 +91,7 @@ public class ConstructionSiteTest {
                 if (day < 5) {
 
                     //Staff should be at construction sites during working hours only
-                    if (i < startTime || i >= endTime - 1) {
+                    if (i + 1 < startTime || i + 1 >= endTime) {
                         assertEquals("Unexpected staff at construction site", 0, totStaff);
                     } else {
                         assertTrue("Unexpectedly no staff at construction site", totStaff > 0);
@@ -114,8 +100,6 @@ public class ConstructionSiteTest {
                     //Staff should not be at construction sites on weekends
                     assertEquals("Unexpected staff at construction site", 0, totStaff);
                 }
-
-                t.advance();
             }
 
         }

@@ -90,8 +90,7 @@ public abstract class CommunalPlace extends Place {
     public List<Person> getStaff(Time t) {
         List<Person> res = new ArrayList<>();
         for (Person p : people) {
-            if (p.getPrimaryCommunalPlace() == this
-                    && p.isWorking(this, t)) {
+            if (p.isWorking(this, t)) {
                 res.add(p);
             }
         }

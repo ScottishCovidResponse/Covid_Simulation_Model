@@ -2,17 +2,17 @@ package uk.co.ramp.covid.simulation.place;
 
 import org.graalvm.compiler.nodes.memory.MemoryCheckpoint;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.google.gson.JsonParseException;
 import uk.co.ramp.covid.simulation.DailyStats;
 import uk.co.ramp.covid.simulation.Time;
-import uk.co.ramp.covid.simulation.io.ParameterReader;
 import uk.co.ramp.covid.simulation.place.householdtypes.SingleAdult;
 import uk.co.ramp.covid.simulation.place.householdtypes.SingleOlder;
 import uk.co.ramp.covid.simulation.place.householdtypes.SmallFamily;
 import uk.co.ramp.covid.simulation.population.*;
+import uk.co.ramp.covid.simulation.testutil.PopulationGenerator;
+import uk.co.ramp.covid.simulation.util.SimulationTest;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -21,7 +21,7 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public class RestaurantTest {
+public class RestaurantTest extends SimulationTest {
 
     Restaurant restaurant;
     Person p1;
@@ -29,8 +29,6 @@ public class RestaurantTest {
 
     @Before
     public void initialise() throws JsonParseException, IOException {
-        ParameterReader.readParametersFromFile("src/test/resources/default_params.json");
-
         //Setup a restaurant with 2 people
         restaurant = new Restaurant(CommunalPlace.Size.MED);
         p1 = new Adult(30, Person.Sex.MALE);
@@ -68,13 +66,12 @@ public class RestaurantTest {
         assertEquals("Unexpected number of people sent home from restaurant", expPeople, left);
     }
 
-    @Ignore("Failing Test")
     @Test
-    public void testRestaurantWorkers() throws ImpossibleAllocationException, ImpossibleWorkerDistributionException {
+    public void testRestaurantWorkers() throws ImpossibleWorkerDistributionException {
         int populationSize = 10000;
         int nInfections = 10;
 
-        Population p = new Population(populationSize);
+        Population p = PopulationGenerator.genValidPopulation(populationSize);
         p.allocatePeople();
         p.seedVirus(nInfections);
         List<Person> staff;
@@ -84,14 +81,15 @@ public class RestaurantTest {
             DailyStats s = new DailyStats(t);
             for (int i = 0; i < 24; i++) {
                 p.timeStep(t, s);
+                t = t.advance();
                 for (Restaurant place : p.getPlaces().getRestaurants()) {
                     staff = place.getStaff(t);
-                    int open = place.getShifts().getShift(day).getStart();
-                    int close = place.getShifts().getShift(day).getEnd();
-                    if (i < open || i >= close - 1) {
-                        assertEquals("Day "+day+" time "+ i + " Unexpected staff at restaurant", 0, staff.size());
+                    int open = place.times.getOpen();
+                    int close = place.times.getClose();
+                    if (i + 1 < open || i + 1 >= close) {
+                        assertEquals("Day "+day+" time "+ (i + 1) + " Unexpected staff at restaurant", 0, staff.size());
                     } else {
-                        assertTrue("Day "+day+" time "+ i + " Unexpectedly no staff at restaurant", staff.size() > 0);
+                        assertTrue("Day "+day+" time "+ (i + 1) + " Unexpectedly no staff at restaurant", staff.size() > 0);
                     }
                 }
             }

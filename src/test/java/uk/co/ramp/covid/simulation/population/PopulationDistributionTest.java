@@ -1,16 +1,15 @@
 package uk.co.ramp.covid.simulation.population;
 
 import org.junit.Test;
-import uk.co.ramp.covid.simulation.io.ParameterReader;
 import uk.co.ramp.covid.simulation.util.InvalidParametersException;
+import uk.co.ramp.covid.simulation.util.SimulationTest;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
 import static org.junit.Assert.*;
 
-public class PopulationDistributionTest {
+public class PopulationDistributionTest extends SimulationTest {
 
     @Test(expected = InvalidParametersException.class)
     public void readFromMapNonBreakableKey() {
@@ -62,8 +61,7 @@ public class PopulationDistributionTest {
     }
 
     @Test
-    public void seeAllAgesInALargeSample() throws IOException {
-        ParameterReader.readParametersFromFile("src/test/resources/default_params.json");
+    public void seeAllAgesInALargeSample() {
         PopulationDistribution dist = new PopulationDistribution();
         dist.readFromMap(PopulationParameters.get().getPopulation());
 
