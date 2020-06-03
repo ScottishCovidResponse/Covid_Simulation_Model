@@ -21,7 +21,7 @@ public class ConstructionSiteTest extends SimulationTest {
     @Test
     public void testConstructionSiteTransProb() throws JsonParseException {
         ConstructionSite constructionSite = new ConstructionSite(CommunalPlace.Size.MED);
-        double expProb = PopulationParameters.get().getpBaseTrans() * 10d / (5000d / 100d);
+        double expProb = PopulationParameters.get().getpBaseTrans();
         double delta = 0.01;
         assertEquals("Unexpected construction site TransProb", expProb, constructionSite.transProb, delta);
     }

@@ -45,6 +45,7 @@ public class Household extends Place {
         this.hType = hType;
         this.neighbours = new ArrayList<>();
         this.places = places;
+        transAdjustment = Double.MAX_VALUE; // This is forced in there to ensure that the transProp for Households is never adjusted
         if (RNG.get().nextUniform(0,1) < PopulationParameters.get().getpHouseholdWillIsolate()) {
             willIsolate = true;
         }
