@@ -7,8 +7,8 @@ import org.junit.Test;
 import com.google.gson.JsonParseException;
 
 import uk.co.ramp.covid.simulation.covid.CovidParameters;
-import uk.co.ramp.covid.simulation.io.ParameterReader;
 import uk.co.ramp.covid.simulation.population.PopulationParameters;
+import uk.co.ramp.covid.simulation.util.SimulationTest;
 
 import java.io.IOException;
 import java.util.List;
@@ -16,7 +16,7 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public class ModelTest {
+public class ModelTest extends SimulationTest {
 
     int population;
     int nInfections;
@@ -26,7 +26,6 @@ public class ModelTest {
 
     @Before
     public void setupParams() throws IOException {
-        ParameterReader.readParametersFromFile("src/test/resources/default_params.json");
         population = 10000;
         nInfections = 10;
         nIter = 1;
