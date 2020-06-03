@@ -1,10 +1,9 @@
 package uk.co.ramp.covid.simulation.population;
 
-import org.junit.Assert;
 import org.junit.Test;
 import uk.co.ramp.covid.simulation.DailyStats;
 import uk.co.ramp.covid.simulation.io.ParameterReader;
-import uk.co.ramp.covid.simulation.util.RNG;
+import uk.co.ramp.covid.simulation.testutil.PopulationGenerator;
 
 import java.io.IOException;
 import java.util.List;
@@ -14,17 +13,10 @@ import static org.junit.Assert.assertEquals;
 public class PensionerTest {
 
     @Test
-    public void testPensionerReports() throws IOException {
+    public void testPensionerReports() throws IOException, ImpossibleAllocationException, ImpossibleWorkerDistributionException {
         //Test Pensioner methods reportInfection() and reportDeath()
         ParameterReader.readParametersFromFile("src/test/resources/default_params.json");
-        Population p = new Population(500,60);
-        try {
-            p.populateHouseholds();
-        } catch (ImpossibleAllocationException e) {
-            Assert.fail("Could not populate households in test");
-        }
-        p.createMixing();
-        p.assignNeighbours();
+        Population p = PopulationGenerator.genValidPopulation(500);
         Pensioner pensioner = new Pensioner(70, Person.Sex.MALE);
 
         List<DailyStats> stats;

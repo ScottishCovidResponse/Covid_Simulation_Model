@@ -1,15 +1,12 @@
 package uk.co.ramp.covid.simulation.population;
 
-import com.sun.source.tree.AssertTree;
 import org.junit.Before;
 import org.junit.Test;
 import uk.co.ramp.covid.simulation.io.ParameterReader;
 import uk.co.ramp.covid.simulation.place.*;
-import uk.co.ramp.covid.simulation.util.RNG;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 
 import static org.junit.Assert.*;

@@ -2,9 +2,10 @@
  * Code for managing the infection with Covid and for controlling infection
  */
 
-package uk.co.ramp.covid.simulation;
+package uk.co.ramp.covid.simulation.covid;
 
 import org.apache.commons.math3.random.RandomDataGenerator;
+import uk.co.ramp.covid.simulation.Time;
 import uk.co.ramp.covid.simulation.population.*;
 import uk.co.ramp.covid.simulation.util.RNG;
 
@@ -36,6 +37,8 @@ public class Covid {
     private int infCounter;
     private final Person ccase;
     private final RandomDataGenerator rng;
+    
+    private final InfectionLog log;
 
     public Covid(Person ccase) {
         this.rng = RNG.get();
@@ -56,6 +59,8 @@ public class Covid {
         this.setPeriods();
 
         this.latent = true;
+        
+        this.log = new InfectionLog();
     }
     
     public void forceSymptomatic(boolean symptoms) { // This is for testing to force the symptomatic status
@@ -93,10 +98,10 @@ public class Covid {
 
     // For each infection define the duration of the infection periods
     private void setPeriods() {
-        latentPeriod = (double) Math.exp(rng.nextGaussian(Math.log(meanLatentPeriod), 1.0));
+        latentPeriod = Math.exp(rng.nextGaussian(Math.log(meanLatentPeriod), 1.0));
         if(!symptomaticCase) asymptomaticPeriod = Math.exp(rng.nextGaussian(Math.log(meanAsymptomaticPeriod), 1.0));
         else if(symptomaticCase) {
-        	symptomDelay = latentPeriod - (double) rng.nextGaussian(meanSymptomDelay, 1.25); // Basically if symptom delay < 0 then the symproms appear after the infetcious period has started; otherwise before
+        	symptomDelay = latentPeriod - rng.nextGaussian(meanSymptomDelay, 1.25); // Basically if symptom delay < 0 then the symproms appear after the infetcious period has started; otherwise before
         	if(symptomDelay < 1.0) symptomDelay = 1.0; // There could be the odd instance where we have a negative value here 
         
         	infectiousPeriod = Math.exp(rng.nextGaussian(Math.log(meanInfectiousDuration), 1.0));
@@ -109,9 +114,9 @@ public class Covid {
         }
     }
 
-    public CStatus stepInfection() {
+    public CStatus stepInfection(Time t) {
     	CStatus status = null;
-    	if(symptomaticCase) status = this.stepInfectionSymptomatic();
+    	if(symptomaticCase) status = this.stepInfectionSymptomatic(t);
     	else if(!symptomaticCase) status = this.stepInfectionAsymptomatic();
     	return status;
     }
@@ -134,7 +139,7 @@ public class Covid {
         return status;
     }
 
-    public CStatus stepInfectionSymptomatic() {
+    public CStatus stepInfectionSymptomatic(Time t) {
         infCounter++;
         CStatus status = CStatus.LATENT;
         if ((latentPeriod) > infCounter) {
@@ -163,7 +168,14 @@ public class Covid {
             status = CStatus.RECOVERED;
 
         }
-        if((symptomDelay) < infCounter && !recovered) isSymptomatic = true;
+        if((symptomDelay) < infCounter && !recovered) {
+            // This check ensures we don't isolate twice with the same case
+            if (!isSymptomatic) {
+                isSymptomatic = true;
+                log.registerSymptomatic(t);
+                ccase.getHome().isolate();
+            }
+        }
         return status;
     }
 
@@ -186,7 +198,11 @@ public class Covid {
     public double getP2() {
         return p2;
     }
-    
+
+    public double getSymptomDelay() {
+        return symptomDelay;
+    }
+
     public double getTransAdjustment() {
     	double transAdjustment = 0.0;
     	if(asymptomatic) transAdjustment = this.asymptomaticTransAdjustment;
@@ -196,5 +212,9 @@ public class Covid {
     	
     	return transAdjustment;
     	
+    }
+
+    public InfectionLog getInfectionLog() {
+        return log;
     }
 }
