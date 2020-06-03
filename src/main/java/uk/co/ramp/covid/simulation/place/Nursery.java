@@ -16,7 +16,7 @@ public class Nursery extends CommunalPlace {
 
     @Override
     public void reportInfection(Time t, Person p, DailyStats s) {
-        if (p.isWorking(this, t)) {
+        if (p.isWorking(this, t) && p.getAge() >= 18) {
             s.incInfectionsNurseryWorker();
         } else {
             s.incInfectionsNurseryVisitor();

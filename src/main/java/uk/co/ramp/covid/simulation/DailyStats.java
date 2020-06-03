@@ -324,4 +324,5 @@ public class DailyStats {
         R = rs.getMeanR(day);
         generationTime = rs.getMeanGenerationTime(day);
     }
+
 }
