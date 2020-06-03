@@ -32,8 +32,8 @@ public class ShopTest {
         shop = new Shop(CommunalPlace.Size.MED);
         p1 = new Adult(25, Person.Sex.MALE);
         p2 = new Pensioner(67, Person.Sex.FEMALE);
-        Household h1 = new Household(new SingleAdult(), null);
-        Household h2 = new Household(new SingleOlder(), null);
+        Household h1 = new Household(null);
+        Household h2 = new Household(null);
         p1.setHome(h1);
         p2.setHome(h2);
         shop.people.add(p1);

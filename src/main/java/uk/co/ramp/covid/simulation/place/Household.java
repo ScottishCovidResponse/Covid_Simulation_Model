@@ -13,7 +13,6 @@ import java.util.*;
 
 public class Household extends Place {
 
-    private final HouseholdType hType;
     private final List<Household> neighbours;
     private final Places places;
     private int householdSize = 0;
@@ -22,8 +21,7 @@ public class Household extends Place {
     private int isolationTimer = 0;
 
     // Create household defined by who lives there
-    public Household(HouseholdType hType, Places places) {
-        this.hType = hType;
+    public Household(Places places) {
         this.neighbours = new ArrayList<>();
         this.places = places;
         if (RNG.get().nextUniform(0,1) < PopulationParameters.get().getpHouseholdWillIsolate()) {
@@ -41,10 +39,6 @@ public class Household extends Place {
 
     public int nNeighbours() {
         return neighbours.size();
-    }
-
-    public HouseholdType getHouseholdType() {
-        return this.hType;
     }
 
     public void addInhabitant(Person cPers) {

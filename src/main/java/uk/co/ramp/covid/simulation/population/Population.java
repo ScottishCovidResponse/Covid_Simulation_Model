@@ -17,7 +17,6 @@ import uk.co.ramp.covid.simulation.place.householdtypes.*;
 import uk.co.ramp.covid.simulation.util.ProbabilityDistribution;
 import uk.co.ramp.covid.simulation.util.RNG;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -95,46 +94,46 @@ public class Population {
     }
 
     // Creates households based on probability of different household types
-    private void createHouseholds() {
+    private List<HouseholdType> createHouseholdTypes() {
         ProbabilityDistribution<Supplier<HouseholdType>> p = PopulationParameters.get().getHouseholdDistribution();
+        
+        List<HouseholdType> householdTypes = new ArrayList<>(numHouseholds);
 
         for (int i = 0; i < numHouseholds; i++) {
             HouseholdType t = p.sample().get();
-            households.add(new Household(t, places));
+            householdTypes.add(t);
         }
+
+        return householdTypes;
     }
 
-    private void allocateRequired(Household h, BitSet remaining, Supplier<Boolean> required, Consumer<Object> add)
+    private void allocateRequired(HouseholdType h, BitSet remaining, Supplier<Boolean> required, Consumer<Person> add)
             throws ImpossibleAllocationException {
         int i = 0;
         while (required.get()) {
             i = remaining.nextSetBit(i);
             if (i < 0) {
-                throw new ImpossibleAllocationException("Population distribution cannot populate household distribution");
+                throw new ImpossibleAllocationException(
+                        "Population distribution cannot populate household distribution");
             }
             remaining.clear(i);
-            h.addInhabitant(allPeople.get(i));
-            // For type inference, Java 8 doesn't have void lambda functions so we just pass a trivial object and ignore it
-            add.accept(new Object());
+            add.accept(allPeople.get(i));
         }
     }
 
-    private void allocateAllowed(Household h, BitSet remaining, Supplier<Boolean> allowed, Consumer<Object> add)
-            throws ImpossibleAllocationException {
+    private void allocateAllowed(HouseholdType h, BitSet remaining, Supplier<Boolean> allowed, Consumer<Person> add) {
         int i = 0;
         if (allowed.get()) {
             i = remaining.nextSetBit(i);
             if (i >= 0) {
                 remaining.clear(i);
-                h.addInhabitant(allPeople.get(i));
-                // For type inference, Java 8 doesn't have void lambda functions so we just pass a trivial object and ignore it
-                add.accept(new Object());
+                add.accept(allPeople.get(i));
             }
         }
     }
 
     private void populateHouseholds() throws ImpossibleAllocationException {
-        createHouseholds();
+        List<HouseholdType> htypes = createHouseholdTypes();
 
         BitSet infantIndex = new BitSet(populationSize);
         BitSet childIndex = new BitSet(populationSize);
@@ -148,22 +147,26 @@ public class Population {
         childOrInfant.or(infantIndex);
 
         // Fill requirements first
-        for (Household h : households) {
-            HouseholdType htype = h.getHouseholdType();
-            allocateRequired(h, adultIndex, () -> htype.adultRequired(), v -> htype.addAdult());
-            allocateRequired(h, pensionerIndex, () -> htype.pensionerRequired(), v -> htype.addPensioner());
-            allocateRequired(h, childOrInfant, () -> htype.childRequired(), v -> htype.addChild());
+        for (HouseholdType h : htypes) {
+            allocateRequired(h, adultIndex, h::adultRequired, p -> h.addAdult(p));
+            allocateRequired(h, pensionerIndex, h::pensionerRequired, p -> h.addPensioner(p));
+            allocateRequired(h, childOrInfant, h::childRequired, p-> h.addChild(p));
         }
 
         // Now fill in anyone who is missing
         while (!adultIndex.isEmpty() || !pensionerIndex.isEmpty() || !childOrInfant.isEmpty()) {
-            for (Household h : households) {
-                HouseholdType htype = h.getHouseholdType();
-                allocateAllowed(h, adultIndex, () -> htype.adultAllowed(), v -> htype.addAdult());
-                allocateAllowed(h, pensionerIndex, () -> htype.pensionerAllowed(), v -> htype.addPensioner());
-                allocateAllowed(h, childOrInfant, () -> htype.childAllowed(), v -> htype.addChild());
+            for (HouseholdType h : htypes) {
+                allocateAllowed(h, adultIndex, h::adultAllowed, p -> h.addAdult(p));
+                allocateAllowed(h, pensionerIndex, h::pensionerAllowed, p -> h.addPensioner(p));
+                allocateAllowed(h, childOrInfant, h::childAllowed, p -> h.addChild(p));
             }
         }
+
+        //Once everyone is allocated we create the final households
+        for (HouseholdType h : htypes) {
+           households.add(h.toHousehold(places));
+        }
+
     }
 
     // This creates the Communal places of different types where people mix

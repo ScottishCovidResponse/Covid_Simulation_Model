@@ -29,16 +29,16 @@ public class HouseholdTest {
     @Before
     public void initialise() throws JsonParseException, IOException {
         ParameterReader.readParametersFromFile("src/test/resources/default_params.json");
-        household = new Household(new SingleAdult(), null);
+        household = new Household(null);
         Person p1 = new Adult(30, Person.Sex.MALE);
         Person p2 = new Adult(32, Person.Sex.FEMALE);
         Person p3 = new Adult(30, Person.Sex.MALE);
         household.addInhabitant(p1);
         household.addInhabitant(p2);
         household.addInhabitant(p3);
-        household2 = new Household(new SingleAdult(), null);
-        household3 = new Household(new SingleAdult(), null);
-        household4 = new Household(new SingleAdult(), null);
+        household2 = new Household(null);
+        household3 = new Household(null);
+        household4 = new Household(null);
     }
 
     @Test
@@ -74,7 +74,7 @@ public class HouseholdTest {
     @Test
     public void testSendNeighboursHome() {
         PopulationParameters.get().setHouseholdVisitorLeaveRate(1.0);
-        Household h = new Household(new SingleAdult(), null);
+        Household h = new Household(null);
         Person p1 = new Adult(22, Person.Sex.FEMALE);
         
         p1.setHome(household);

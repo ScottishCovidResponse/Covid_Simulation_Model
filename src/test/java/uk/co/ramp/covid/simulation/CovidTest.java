@@ -28,7 +28,7 @@ public class CovidTest {
 
         CStatus cStatus = null;
         Person pensioner = new Pensioner(65, Person.Sex.MALE);
-        Household h = new Household(new SingleOlder(), null);
+        Household h = new Household(null);
         pensioner.setHome(h);
         Covid virus = new Covid(pensioner);
         virus.forceSymptomatic(true);
@@ -63,7 +63,7 @@ public class CovidTest {
         CStatus cStatus = null;
         Time t = new Time();
         Person child = new Child(6, Person.Sex.FEMALE);
-        Household h = new Household(new SingleParent(), null);
+        Household h = new Household(null);
         child.setHome(h);
         Covid virus = new Covid(child);
         virus.forceSymptomatic(true);
