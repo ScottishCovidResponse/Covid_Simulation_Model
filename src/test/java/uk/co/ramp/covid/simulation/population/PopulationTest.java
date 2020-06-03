@@ -75,7 +75,7 @@ public class PopulationTest extends SimulationTest {
                         .filter(per -> per instanceof Child || per instanceof Infant).count();
 
                 assertTrue(numAdults == 2);
-                assertTrue(numAdults >= 3);
+                assertTrue(numChildren >= 3);
             }
 
             if (h instanceof LargeManyAdultFamily) {
@@ -85,7 +85,7 @@ public class PopulationTest extends SimulationTest {
                         .filter(per -> per instanceof Child || per instanceof Infant).count();
 
                 assertTrue(numAdults >= 3);
-                assertTrue(numAdults >= 1);
+                assertTrue(numChildren >= 1);
             }
 
             if (h instanceof LargeAdult) {
