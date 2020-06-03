@@ -39,4 +39,14 @@ public class SingleAdult extends Household {
     public boolean additionalPensionersAllowed() {
         return false;
     }
+
+    @Override
+    public boolean adultAnyAgeRequired() {
+        return false;
+    }
+
+    @Override
+    public boolean additionalAdultAnyAgeAllowed() {
+        return false;
+    }
 }

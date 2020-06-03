@@ -33,10 +33,12 @@ public class ParameterReaderTest {
         assertEquals(0.2, PopulationParameters.get().getpSmallAdult(), EPSILON);
         assertEquals(0.05, PopulationParameters.get().getpSingleParent(), EPSILON);
         assertEquals(0.12, PopulationParameters.get().getpSmallFamily(), EPSILON);
-        assertEquals(0.05, PopulationParameters.get().getpLargeTwoAdultFamily(), EPSILON);
+        assertEquals(0.03, PopulationParameters.get().getpLargeTwoAdultFamily(), EPSILON);
+        assertEquals(0.02, PopulationParameters.get().getpLargeManyFamily(), EPSILON);
         assertEquals(0.09, PopulationParameters.get().getpLargeAdult(), EPSILON);
-        assertEquals(0.14, PopulationParameters.get().getpAdultPensioner(), EPSILON);
-        assertEquals(0.13, PopulationParameters.get().getpSingleOlder(), EPSILON);
+        assertEquals(0.09, PopulationParameters.get().getpAdultPensioner(), EPSILON);
+        assertEquals(0.04, PopulationParameters.get().getpDobuleOlder(), EPSILON);
+        assertEquals(0.14, PopulationParameters.get().getpSingleOlder(), EPSILON);
 
         assertEquals(1000, PopulationParameters.get().getHospitalRatio());
         assertEquals(500, PopulationParameters.get().getSchoolsRatio());

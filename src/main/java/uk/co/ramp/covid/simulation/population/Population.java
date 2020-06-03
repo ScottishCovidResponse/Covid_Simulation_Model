@@ -142,24 +142,48 @@ public class Population {
 
         createPopulation(adultIndex, pensionerIndex, childIndex, infantIndex);
 
+        // When allocating we often treat children and infants as one type, likewise with adults/pensioners
         BitSet childOrInfant = new BitSet(populationSize);
         childOrInfant.or(childIndex);
         childOrInfant.or(infantIndex);
 
+        BitSet adultAnyAge = new BitSet(populationSize);
+        adultAnyAge.or(adultIndex);
+        adultAnyAge.or(pensionerIndex);
+
         // Fill requirements first
-        int i = 0;
         for (Household h : households) {
+            allocateRequired(adultAnyAge, h::adultAnyAgeRequired, h::addAdultOrPensioner);
+
+            // Set intersections keep adultAnyAge in sync with adults/pensioners
+            adultIndex.and(adultAnyAge);
+            pensionerIndex.and(adultAnyAge);
+
             allocateRequired(adultIndex, h::adultRequired, h::addAdult);
             allocateRequired(pensionerIndex, h::pensionerRequired, h::addPensioner);
+
+            // The only way to know what might have changed with adults/pensioners is to just recalculate the set
+            adultAnyAge = new BitSet(populationSize);
+            adultAnyAge.or(adultIndex);
+            adultAnyAge.or(pensionerIndex);
+
             allocateRequired(childOrInfant, h::childRequired, h::addChildOrInfant);
-            i++;
         }
 
         // Now fill in anyone who is missing
         while (!adultIndex.isEmpty() || !pensionerIndex.isEmpty() || !childOrInfant.isEmpty()) {
             for (Household h : households) {
+                allocateAllowed(adultAnyAge, h::additionalAdultAnyAgeAllowed, h::addAdultOrPensioner);
+                adultIndex.and(adultAnyAge);
+                pensionerIndex.and(adultAnyAge);
+
                 allocateAllowed(adultIndex, h::additionalAdultsAllowed, h::addAdult);
                 allocateAllowed(pensionerIndex, h::additionalPensionersAllowed, h::addPensioner);
+
+                adultAnyAge = new BitSet(populationSize);
+                adultAnyAge.or(adultIndex);
+                adultAnyAge.or(pensionerIndex);
+
                 allocateAllowed(childOrInfant, h::additionalChildrenAllowed, h::addChildOrInfant);
             }
         }

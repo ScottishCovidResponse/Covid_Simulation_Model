@@ -39,4 +39,14 @@ public class LargeManyAdultFamily extends Household {
     public boolean additionalPensionersAllowed() {
         return additionalAdultsAllowed();
     }
+
+    @Override
+    public boolean adultAnyAgeRequired() {
+        return adults + pensioners < 3;
+    }
+
+    @Override
+    public boolean additionalAdultAnyAgeAllowed() {
+        return true;
+    }
 }

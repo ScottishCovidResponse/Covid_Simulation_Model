@@ -55,7 +55,7 @@ public class PopulationTest extends SimulationTest {
 
             if (h instanceof SingleParent) {
                 assertEquals(1, h.getInhabitants().stream()
-                        .filter(per -> per instanceof Adult).count());
+                        .filter(per -> per instanceof Adult || per instanceof Pensioner).count());
                 assertTrue(h.getInhabitants().stream()
                         .filter(per -> per instanceof Child || per instanceof Infant).count() >= 1);
             }
@@ -74,12 +74,18 @@ public class PopulationTest extends SimulationTest {
                 long numChildren = h.getInhabitants().stream()
                         .filter(per -> per instanceof Child || per instanceof Infant).count();
 
-                if (numAdults == 2) {
-                    assertTrue(numChildren >= 3);
-                } else {
-                    assertTrue(numAdults >= 3);
-                    assertTrue(numChildren >= 1);
-                }
+                assertTrue(numAdults == 2);
+                assertTrue(numAdults >= 3);
+            }
+
+            if (h instanceof LargeManyAdultFamily) {
+                long numAdults = h.getInhabitants().stream()
+                        .filter(per -> per instanceof Adult || per instanceof Pensioner).count();
+                long numChildren = h.getInhabitants().stream()
+                        .filter(per -> per instanceof Child || per instanceof Infant).count();
+
+                assertTrue(numAdults >= 3);
+                assertTrue(numAdults >= 1);
             }
 
             if (h instanceof LargeAdult) {
@@ -95,8 +101,13 @@ public class PopulationTest extends SimulationTest {
                         .filter(per -> per instanceof Pensioner).count();
                 long numChildren = h.getInhabitants().stream()
                         .filter(per -> per instanceof Child || per instanceof Infant).count();
-                assertTrue(numPensioners == 2 || (numPensioners == 1 && numAdults == 1));
+                assertTrue(numAdults == 1 && numPensioners == 1);
                 assertEquals(0, numChildren);
+            }
+
+            if (h instanceof DoubleOlder) {
+                assertEquals(2, h.getHouseholdSize());
+                h.getInhabitants().forEach(per -> assertTrue(per instanceof Pensioner));
             }
 
             if (h instanceof SingleOlder) {

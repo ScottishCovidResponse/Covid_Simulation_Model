@@ -6,14 +6,13 @@ import uk.co.ramp.covid.simulation.population.Places;
 /** LargeTwoAdultFamily: two adults of any age and three or more children */
 public class LargeTwoAdultFamiy extends Household {
     
-
     public LargeTwoAdultFamiy(Places places) {
         super(places);
     }
 
     @Override
     public boolean adultRequired() {
-            return adults + pensioners < 2;
+            return false;
     }
 
     @Override
@@ -33,11 +32,21 @@ public class LargeTwoAdultFamiy extends Household {
 
     @Override
     public boolean pensionerRequired() {
-       return adultRequired();
+       return false;
     }
 
     @Override
     public boolean additionalPensionersAllowed() {
         return additionalAdultsAllowed();
+    }
+
+    @Override
+    public boolean adultAnyAgeRequired() {
+        return adults + pensioners < 2;
+    }
+
+    @Override
+    public boolean additionalAdultAnyAgeAllowed() {
+        return false;
     }
 }

@@ -281,9 +281,12 @@ public abstract class Household extends Place {
     public abstract boolean additionalChildrenAllowed();
     public abstract boolean pensionerRequired();
     public abstract boolean additionalPensionersAllowed();
+    public abstract boolean adultAnyAgeRequired();
+    public abstract boolean additionalAdultAnyAgeAllowed();
 
     public void addAdult(Adult p) {
-        if (adultRequired() || additionalAdultsAllowed()) {
+        if (adultRequired() || additionalAdultsAllowed()
+                || adultAnyAgeRequired() || additionalAdultAnyAgeAllowed()) {
             people.add(p);
             p.setHome(this);
             adults++;
@@ -305,8 +308,25 @@ public abstract class Household extends Place {
         }
     }
 
+    public void addAdultOrPensioner(Person p) {
+        // We need to do some type inference here to handle "any age" adults
+        if ((adultAnyAgeRequired() || additionalAdultAnyAgeAllowed()) && (p instanceof Adult || p instanceof Pensioner)) {
+            people.add(p);
+            p.setHome(this);
+            if (p instanceof Adult) {
+                adults++;
+            } else {
+                pensioners++;
+            }
+        } else {
+            throw new InvalidHouseholdAllocationException("Cannot add adult/pensioner to household");
+        }
+    }
+
+
     public void addPensioner(Pensioner p) {
-        if (pensionerRequired() || additionalPensionersAllowed()) {
+        if (pensionerRequired() || additionalPensionersAllowed()
+                || adultAnyAgeRequired() || additionalAdultAnyAgeAllowed()) {
             people.add(p);
             p.setHome(this);
             pensioners++;

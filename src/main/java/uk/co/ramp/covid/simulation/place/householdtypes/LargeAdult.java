@@ -12,7 +12,7 @@ public class LargeAdult extends Household {
 
     @Override
     public boolean adultRequired() {
-        return adults + pensioners < 3;
+        return false;
     }
 
     @Override
@@ -31,12 +31,20 @@ public class LargeAdult extends Household {
     }
 
     @Override
-    public boolean pensionerRequired() {
+    public boolean pensionerRequired() { return false; }
+
+    @Override
+    public boolean additionalPensionersAllowed() {
+        return true;
+    }
+
+    @Override
+    public boolean adultAnyAgeRequired() {
         return adults + pensioners < 3;
     }
 
     @Override
-    public boolean additionalPensionersAllowed() {
+    public boolean additionalAdultAnyAgeAllowed() {
         return true;
     }
 }

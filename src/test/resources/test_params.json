@@ -67,10 +67,12 @@
             "pSmallAdult":0.2,
             "pSingleParent":0.05,
             "pSmallFamily":0.12,
-            "pLargeFamily":0.05,
+            "pLargeTwoAdultFamily":0.03,
+            "pLargeManyAdultFamily":0.02,
             "pLargeAdult":0.09,
-            "pOlderSmaller":0.14,
-            "pSingleOlder":0.13
+            "pAdultPensioner":0.09,
+            "pDoubleOlder":0.04,
+            "pSingleOlder":0.14
         },
         "buildingDistribution":{
             "hospitals":1000,

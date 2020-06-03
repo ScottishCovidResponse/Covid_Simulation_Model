@@ -12,7 +12,7 @@ public class SmallFamily extends Household {
 
     @Override
     public boolean adultRequired() {
-        return Math.abs(adults - pensioners) < 2;
+        return false;
     }
 
     @Override
@@ -32,11 +32,21 @@ public class SmallFamily extends Household {
 
     @Override
     public boolean pensionerRequired() {
-        return Math.abs(adults - pensioners) < 2;
+        return false;
     }
 
     @Override
     public boolean additionalPensionersAllowed() {
+        return false;
+    }
+
+    @Override
+    public boolean adultAnyAgeRequired() {
+        return adults + pensioners < 2;
+    }
+
+    @Override
+    public boolean additionalAdultAnyAgeAllowed() {
         return false;
     }
 }
