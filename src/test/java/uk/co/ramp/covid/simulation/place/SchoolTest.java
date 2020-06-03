@@ -16,7 +16,7 @@ import static org.junit.Assert.assertTrue;
 public class SchoolTest extends SimulationTest {
 
     @Test
-    public void testSchoolTransProb() throws JsonParseException {
+    public void testSchoolTransProb(){
         School school = new School(CommunalPlace.Size.MED);
         double expProb = PopulationParameters.get().getpBaseTrans();
         double delta = 0.01;
