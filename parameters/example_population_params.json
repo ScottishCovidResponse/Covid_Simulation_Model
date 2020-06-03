@@ -6,7 +6,7 @@
             "meanAsymptomaticPeriod":192,
             "probabilitySymptoms": 0.692,
             "meanSymptomDelay": -16.08,
-            "meanSymptomDelayCD": 30,
+            "meanSymptomDelaySD": 30,
             "meanInfectiousDuration": 321.6,
             "phase1Betaa": 25.0,
             "phase1Betab": 30.0,
@@ -165,7 +165,7 @@
             }
         },
         "buildingProperties":{
-          "pBaseTrans":0.5,
+          "pBaseTrans":0.6,
           "pHospitalTrans":10.0,
           "pConstructionSiteTrans":5.0,
           "pNurseryTrans":10.0,
@@ -193,7 +193,7 @@
             "householdIsolationPeriod": 14
         },
         "personProperties":{
-            "pTransmission":0.5,
+            "pTransmission":0.6,
             "pQuarantine":0.9
         }
     }
