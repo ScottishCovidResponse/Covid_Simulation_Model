@@ -152,7 +152,11 @@ public class Covid {
             status = CStatus.PHASE1;
         } else if ((latentPeriod + p1 + p2) > infCounter) {
             phase2 = true;
-            isSymptomatic = true; 
+            if(!isSymptomatic) { // This if statement is needed because the case could or could not have reached this point wihtout symptoms
+            	isSymptomatic = true; 
+            	log.registerSymptomatic(t);
+            	ccase.getHome().isolate();
+            }
             phase1 = false;
             double rVal = rng.nextUniform(0, 1);
             if (rVal < mortalityRate / 24) {
