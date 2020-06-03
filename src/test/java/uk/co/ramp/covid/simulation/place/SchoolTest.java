@@ -1,8 +1,6 @@
 package uk.co.ramp.covid.simulation.place;
 
-import com.google.gson.JsonParseException;
-import org.junit.Before;
-import org.junit.Ignore;
+
 import org.junit.Test;
 import uk.co.ramp.covid.simulation.DailyStats;
 import uk.co.ramp.covid.simulation.Time;
