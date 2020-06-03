@@ -65,6 +65,7 @@
             "f_100_100":0.000125963
         },
         "households":{
+            "householdRatio": 2.18,
             "pAdultOnly":0.2,
             "pPensionerOnly":0.1,
             "pPensionerAdult":0.2,

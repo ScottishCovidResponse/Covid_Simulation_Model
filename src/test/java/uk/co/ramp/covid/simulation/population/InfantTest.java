@@ -1,42 +1,32 @@
 package uk.co.ramp.covid.simulation.population;
 
 import com.google.gson.JsonParseException;
-import org.junit.Assert;
 import org.junit.Test;
 import uk.co.ramp.covid.simulation.DailyStats;
-import uk.co.ramp.covid.simulation.io.ParameterReader;
-import uk.co.ramp.covid.simulation.util.RNG;
+import uk.co.ramp.covid.simulation.testutil.PopulationGenerator;
+import uk.co.ramp.covid.simulation.util.SimulationTest;
+
 import java.io.IOException;
 import java.util.List;
 import static org.junit.Assert.assertEquals;
 
-public class InfantTest {
+public class InfantTest extends SimulationTest {
 
     @Test
     public void testInfant() throws JsonParseException, IOException {
-        RNG.seed(0); // This test is sensitive to random numbers
-        ParameterReader.readParametersFromFile("src/test/resources/default_params.json");
         int nNursery = 0;
-        //Test 50% of infants go to nursery
+        //Test approximately 50% of infants go to nursery
         for (int i = 0; i < 1000; i++) {
             Infant infant = new Infant(2, Person.Sex.MALE);
             if (infant.isGoesToNursery()) nNursery++;
         }
-        assertEquals("Unexpected number of infants at nursery", 500, nNursery, 10);
+        assertEquals("Unexpected number of infants at nursery", 500, nNursery, 30);
     }
 
     @Test
-    public void testInfantReports() throws IOException {
+    public void testInfantReports() throws IOException, ImpossibleAllocationException, ImpossibleWorkerDistributionException {
         //Test Infant methods reportInfection() and reportDeath()
-        ParameterReader.readParametersFromFile("src/test/resources/default_params.json");
-        Population p = new Population(500,60);
-        try {
-            p.populateHouseholds();
-        } catch (ImpossibleAllocationException e) {
-            Assert.fail("Could not populate households in test");
-        }
-        p.createMixing();
-        p.assignNeighbours();
+        Population p = PopulationGenerator.genValidPopulation(500);
         Infant infant = new Infant(3, Person.Sex.FEMALE);
 
         List<DailyStats> stats;

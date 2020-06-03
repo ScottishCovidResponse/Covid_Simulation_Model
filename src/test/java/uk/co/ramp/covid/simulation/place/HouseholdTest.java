@@ -5,19 +5,18 @@ import org.junit.Test;
 
 import com.google.gson.JsonParseException;
 
-import uk.co.ramp.covid.simulation.DailyStats;
-import uk.co.ramp.covid.simulation.io.ParameterReader;
+import uk.co.ramp.covid.simulation.Time;
 import uk.co.ramp.covid.simulation.population.Adult;
 import uk.co.ramp.covid.simulation.population.Person;
 import uk.co.ramp.covid.simulation.population.PopulationParameters;
-import uk.co.ramp.covid.simulation.util.RNG;
+import uk.co.ramp.covid.simulation.util.SimulationTest;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 
-public class HouseholdTest {
+public class HouseholdTest extends SimulationTest {
 
     Household household;
 
@@ -25,11 +24,9 @@ public class HouseholdTest {
     Household household2;
     Household household3;
     Household household4;
-    int nneighbours = 3;
 
     @Before
     public void initialise() throws JsonParseException, IOException {
-        ParameterReader.readParametersFromFile("src/test/resources/default_params.json");
         household = new Household(Household.HouseholdType.ADULT, null);
         Person p1 = new Adult(30, Person.Sex.MALE);
         Person p2 = new Adult(32, Person.Sex.FEMALE);
@@ -40,7 +37,6 @@ public class HouseholdTest {
         household2 = new Household(Household.HouseholdType.ADULT, null);
         household3 = new Household(Household.HouseholdType.ADULT, null);
         household4 = new Household(Household.HouseholdType.ADULT, null);
-
     }
 
     @Test
@@ -90,7 +86,7 @@ public class HouseholdTest {
         h.stepPeople();
 
         int expSize = 1;
-        assertEquals("Unexpected number of visitors", expSize, h.sendNeighboursHome(0,0));
+        assertEquals("Unexpected number of visitors", expSize, h.sendNeighboursHome(new Time(0)));
     }
 
     @Test

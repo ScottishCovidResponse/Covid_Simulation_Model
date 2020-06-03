@@ -5,9 +5,10 @@
 package uk.co.ramp.covid.simulation.population;
 
 import org.apache.commons.math3.random.RandomDataGenerator;
-import uk.co.ramp.covid.simulation.Covid;
-import uk.co.ramp.covid.simulation.CovidParameters;
+import uk.co.ramp.covid.simulation.covid.Covid;
+import uk.co.ramp.covid.simulation.covid.CovidParameters;
 import uk.co.ramp.covid.simulation.DailyStats;
+import uk.co.ramp.covid.simulation.Time;
 import uk.co.ramp.covid.simulation.place.CommunalPlace;
 import uk.co.ramp.covid.simulation.place.Household;
 import uk.co.ramp.covid.simulation.util.RNG;
@@ -15,7 +16,7 @@ import uk.co.ramp.covid.simulation.util.RNG;
 import java.util.Optional;
 
 public abstract class Person {
-    
+
     public enum Sex {
         MALE, FEMALE
     }
@@ -97,8 +98,8 @@ public abstract class Person {
         return !(this.cVirus == null);
     }
 
-    public CStatus stepInfection() {
-        return this.cVirus.stepInfection();
+    public CStatus stepInfection(Time t) {
+        return this.cVirus.stepInfection(t);
     }
 
     public boolean infChallenge(double challengeProb) {
@@ -152,13 +153,40 @@ public abstract class Person {
     }
 
     public abstract boolean avoidsPhase2(double testP);
-    
-    public boolean worksNextHour(CommunalPlace communalPlace, int day, int hour, boolean lockdown) {
+
+    public boolean isWorking(CommunalPlace communalPlace, Time t) {
+        if (primaryPlace == null || shifts == null) {
+            return false;
+        }
+
+        int start = shifts.getShift(t.getDay()).getStart();
+        int end = shifts.getShift(t.getDay()).getEnd();
+
+        if (end < start) {
+            end += 24;
+        }
+
+        return primaryPlace == communalPlace
+                && t.getHour() >= start
+                && t.getHour() < end;
+    }
+
+
+    public boolean worksNextHour(CommunalPlace communalPlace, Time t, boolean lockdown) {
         if (primaryPlace == null || shifts == null) {
             return false;
         }
 
         // Handle day crossovers
+        int day = t.getDay();
+        int nextHour = 0;
+        if (t.getHour() + 1 == 24) {
+            day = (day + 1) % 7;
+            nextHour = 0;
+        } else {
+            nextHour = t.getHour() + 1;
+        }
+
         int start = shifts.getShift(day).getStart();
         int end = shifts.getShift(day).getEnd();
         if (end < start) {
@@ -167,9 +195,9 @@ public abstract class Person {
 
         boolean shouldWork =
                 primaryPlace == communalPlace
-                && hour + 1 >= start
-                && hour + 1 < end;
-        
+                && nextHour >= start
+                && nextHour < end;
+
         if (lockdown) {
             if (communalPlace.isKeyPremises()) {
                 return shouldWork;
@@ -189,9 +217,9 @@ public abstract class Person {
 
     // People need to leave early if they have a shift starting in 2 hours time
     // 1 hour travels home, 1 travels to work; There is currently no direct travel to work.
-    public boolean mustGoHome(int day, int hour) {
+    public boolean mustGoHome(Time t) {
         if (primaryPlace != null && shifts != null) {
-            return hour + 2 >= shifts.getShift(day).getStart();
+            return t.getHour() + 2 >= shifts.getShift(t.getDay()).getStart();
         }
         return false;
     }

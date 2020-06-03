@@ -102,18 +102,19 @@ households may include either/both children or infants.
 
 -   Object name: `households`
 
-| Parameter Name          | Description                                                       | Type   |
-|-------------------------|-------------------------------------------------------------------|--------|
-| pAdultOnly              | Probability of an adult only household                            | Double |
-| pPensionerOnly          | Probability of a pensioner only household                         | Double |
-| pPensionerAdult         | Probability of an adult/pensioner household                       | Double |
-| AdultChildren           | Probability of an adult/child household                           | Double |
-| pPnsionerChildren       | Probability of an pensioner/child household                       | Double |
-| pAdultPensionerChildren | Probability of an adult/pensioner/child household                 | Double |
-| pGoShopping             | Probability the households tries to go shopping in an hour        | Double |
-| pGoRestaurant           | Probability the households tries to go to a restaurant in an hour | Double |
-| pWillIsolate | Probability the household isolates if symptoms appear | Double |
-| householdIsolationPeriod | Period a household isolates when a symptomatic case appears | Int |
+| Parameter Name           | Description                                                                     | Type   |
+|--------------------------|---------------------------------------------------------------------------------|--------|
+| householdRaio            | Ratio of population size to households, e.g. 2 implies 1 household per 2 people | Double |
+| pAdultOnly               | Probability of an adult only household                                          | Double |
+| pPensionerOnly           | Probability of a pensioner only household                                       | Double |
+| pPensionerAdult          | Probability of an adult/pensioner household                                     | Double |
+| pAdultChildren           | Probability of an adult/child household                                         | Double |
+| pPensionerChildren       | Probability of an pensioner/child household                                     | Double |
+| pAdultPensionerChildren  | Probability of an adult/pensioner/child household                               | Double |
+| pGoShopping              | Probability the households tries to go shopping in an hour                      | Double |
+| pGoRestaurant            | Probability the households tries to go to a restaurant in an hour               | Double |
+| pWillIsolate             | Probability the household isolates if symptoms appear                           | Double |
+| householdIsolationPeriod | Period a household isolates when a symptomatic case appears                     | Int    |
 
 ## Household Size Distributions
 

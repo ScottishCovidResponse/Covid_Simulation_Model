@@ -1,6 +1,5 @@
 package uk.co.ramp.covid.simulation.population;
 
-import org.apache.commons.math3.random.RandomDataGenerator;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import uk.co.ramp.covid.simulation.util.InvalidParametersException;
@@ -20,10 +19,11 @@ public class PopulationParameters {
     private static PopulationParameters pp = null;
     private static final double EPSILON = 0.001;
 
-
     // Household populations
     // These values define the probability of a household being an adult only, adult and child household etc
     private static class Households {
+        public Double householdRatio = null;
+
         public Double pAdultOnly = null;
         public Double pPensionerOnly = null;
         public Double pPensionerAdult = null;
@@ -34,7 +34,8 @@ public class PopulationParameters {
         @Override
         public String toString() {
             return "Households{" +
-                    "pAdultOnly=" + pAdultOnly +
+                    "householdRatio=" + householdRatio +
+                    ", pAdultOnly=" + pAdultOnly +
                     ", pPensionerOnly=" + pPensionerOnly +
                     ", pPensionerAdult=" + pPensionerAdult +
                     ", pAdultChildren=" + pAdultChildren +
@@ -50,6 +51,8 @@ public class PopulationParameters {
                     && isValidProbability(pAdultPensionerChildren, "pAdultPensionerChildren")
                     && isValidProbability(pPensionerChildren, "pPensionerChildren")
                     && isValidProbability(pPensionerAdult, "pPensionerAdult");
+
+            probabilitiesValid = probabilitiesValid && (householdRatio >= 1);
 
             double totalP = pAdultOnly + pPensionerAdult + pPensionerOnly + pAdultChildren
                     + pPensionerChildren + pAdultPensionerChildren;
@@ -96,6 +99,7 @@ public class PopulationParameters {
             }
             return true;
         }
+
     }
 
 
@@ -318,12 +322,12 @@ public class PopulationParameters {
     private final Map<String,Double> population;
     private final Households households;
     private final AdditionalMembersDistributions additionalMembersDistributions;
-    private final BuildingDistribution buildingDistribution;
+    private BuildingDistribution buildingDistribution;
     private final WorkerAllocation workerAllocation;
     private final BuildingProperties buildingProperties;
-    private final InfantAllocation infantAllocation;
+    private InfantAllocation infantAllocation;
     private final PersonProperties personProperties;
-    private final HouseholdProperties householdProperties;
+    private HouseholdProperties householdProperties;
 
     private PopulationParameters() {
         population = new HashMap<>();
@@ -371,6 +375,11 @@ public class PopulationParameters {
     public Map<String, Double> getPopulation() { return population; }
 
     // Household allocation parameters
+
+    public double getHouseholdRatio() { return households.householdRatio; }
+
+    public void setHouseholdRatio(double r) { households.householdRatio = r; }
+
     public double getpAdultOnly() {
         return households.pAdultOnly;
     }
@@ -480,6 +489,9 @@ public class PopulationParameters {
         return buildingDistribution.constructionSites;
     }
 
+    public void setConstructionSiteRatio(Integer ratio) {
+        buildingDistribution.constructionSites = ratio;
+    }
     public double getpConstructionSiteSmall() {
         return buildingDistribution.constructionSiteSizes.pSmall;
     }
@@ -634,6 +646,9 @@ public class PopulationParameters {
     public double getpAttendsNursery() {
         return infantAllocation.pAttendsNursery;
     }
+    public void setAttendsNursery(double pAttendsNursery) {
+        infantAllocation.pAttendsNursery = pAttendsNursery;
+    }
 
     // Household properties
     public double getNeighbourVisitFreq() {
@@ -642,6 +657,7 @@ public class PopulationParameters {
     public int getExpectedNeighbours() {
         return householdProperties.expectedNeighbours;
     }
+
     public double getHouseholdVisitorLeaveRate() { return householdProperties.visitorLeaveRate; }
     public void setHouseholdVisitorLeaveRate(double p) { householdProperties.visitorLeaveRate = p; }
 
@@ -663,10 +679,16 @@ public class PopulationParameters {
         return personProperties.pQuarantine;
     }
 
+    public void setPQuarantine(double pQuarantine) {
+        personProperties.pQuarantine = pQuarantine;
+    }
     public double getpTransmission() {
         return personProperties.pTransmission;
     }
 
+    public void setPTransmission(double pTransmission) {
+        personProperties.pTransmission = pTransmission;
+    }
     @Override
     public String toString() {
         return "PopulationParameters{" + "\n" +

@@ -2,25 +2,27 @@ package uk.co.ramp.covid.simulation;
 
 import org.junit.After;
 import org.junit.Test;
-import uk.co.ramp.covid.simulation.io.ParameterReader;
+import uk.co.ramp.covid.simulation.covid.Covid;
+import uk.co.ramp.covid.simulation.covid.CovidParameters;
 import uk.co.ramp.covid.simulation.place.Household;
 import uk.co.ramp.covid.simulation.population.*;
-import uk.co.ramp.covid.simulation.util.RNG;
+import uk.co.ramp.covid.simulation.util.SimulationTest;
 
 import java.io.IOException;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
-public class CovidTest {
+public class CovidTest extends SimulationTest {
 
     //Test that a pensioner steps through the infection from latent to death
     @Test
     public void testStepInfectionSymptomatic() throws IOException {
-        RNG.seed(1); // This test is sensitive to random numbers
-        //Use the test file with a mortality rate of 100
-        ParameterReader.readParametersFromFile("src/test/resources/test_params.json");
+        //Use the default parameters with a mortality rate of 100
+        CovidParameters.get().setMortalityRate(100.0);
+        CovidParameters.get().setSymptomProbability(100.0);
+        CovidParameters.get().setPensionerProgressionPhase2(100.0);
+
         CStatus cStatus = null;
         Person pensioner = new Pensioner(65, Person.Sex.MALE);
         Household h = new Household(Household.HouseholdType.PENSIONER, null);
@@ -29,26 +31,23 @@ public class CovidTest {
         virus.forceSymptomatic(true);
         //Test that the person is latent at the end of the latent period
         double latentPeriod = virus.getLatentPeriod() - 1;
+        Time t = new Time();
         for (int i = 0; i < latentPeriod; i++) {
-
-        	cStatus = virus.stepInfection();
+        	cStatus = virus.stepInfection(t);
+        	t.advance();
         }
         assertEquals(CStatus.LATENT, cStatus);
 
-        //Test that the person becomes phase1 after the asymptomatic period
-        double p1Period = virus.getP1();
-
-        for (int i = 0; i < p1Period; i++) {
-            cStatus = virus.stepInfection();
-        }
+        //Test that the person becomes phase1 after the latent period
+        cStatus = virus.stepInfection(t);
         assertEquals(CStatus.PHASE1, cStatus);
-        assertTrue(virus.isSymptomatic());
 
-
-        //Test that the person becomes dead after the phase1 period       
+        //Test that the person becomes dead after the phase2 period
+        double p1Period = virus.getP1();
         double p2Period = virus.getP2();
-        for (int i = 0; i < p2Period; i++) {
-            if(!virus.isDead()) cStatus = virus.stepInfection();
+        for (int i = 0; i < p1Period + p2Period; i++) {
+            if(!virus.isDead()) cStatus = virus.stepInfection(t);
+            t.advance();
         }
 
         assertEquals(CStatus.DEAD, cStatus);
@@ -57,51 +56,49 @@ public class CovidTest {
     //Test that a child steps through the infection from latent to recovered
     @Test
     public void testStepInfectionRecover() throws IOException {
-        ParameterReader.readParametersFromFile("src/test/resources/default_params.json");
         CStatus cStatus = null;
+        Time t = new Time();
         Person child = new Child(6, Person.Sex.FEMALE);
-        Household h = new Household(Household.HouseholdType.PENSIONER, null);
+        Household h = new Household(Household.HouseholdType.ADULTCHILD, null);
         child.setHome(h);
         Covid virus = new Covid(child);
         virus.forceSymptomatic(true);
+
 
         double latentPeriod = virus.getLatentPeriod();
         double p1Period = virus.getP1();
 
         //Test that the person becomes recovered after the total infection period
         for (int i = 0; i < latentPeriod + p1Period; i++) {
-            cStatus = virus.stepInfection();
+            cStatus = virus.stepInfection(t);
         }
       //  cStatus = virus.stepInfection();
         assertEquals(CStatus.RECOVERED, cStatus);
         assertFalse(virus.isSymptomatic());
     }
 
-    //Test that a child steps through the infection from latent to recovered
+    //Test that a child steps through the infection from Asymtomatic to recovered
     @Test
     public void testStepInfectionAsymptomatic() throws IOException {
-        RNG.seed(321);
-        ParameterReader.readParametersFromFile("src/test/resources/default_params.json");
+        CovidParameters.get().setSymptomProbability(0.0);
         Person child = new Child(5, Person.Sex.FEMALE);
+        Time t = new Time();
         Covid virus = new Covid(child);
         virus.forceSymptomatic(false);
 
         double latentPeriod = virus.getLatentPeriod();
         double asymptomaticPeriod = virus.getAsymptomaticPeriod();
 
-        CStatus cStatus = virus.stepInfection();
+        CStatus cStatus = virus.stepInfection(t);
         
-        //Test that the person becomes recovered after the total infection period
-        for (int i = 1; i < latentPeriod; i++) {
-            assertEquals(CStatus.LATENT, cStatus);
-            assertFalse(virus.isSymptomatic());
-        	cStatus = virus.stepInfection();
+        //Test that the person is asymptomatic after the total infection period
+        for (int i = 0; i < latentPeriod; i++) {
+            cStatus = virus.stepInfection(t);
         }
+        assertEquals(CStatus.ASYMPTOMATIC, cStatus);
         
         for (int i = 0; i < asymptomaticPeriod; i++) {
-            assertEquals(CStatus.ASYMPTOMATIC, cStatus);
-            assertFalse(virus.isSymptomatic());
-        	cStatus = virus.stepInfection();
+        	cStatus = virus.stepInfection(t);
         }
         
         assertEquals(CStatus.RECOVERED, cStatus);

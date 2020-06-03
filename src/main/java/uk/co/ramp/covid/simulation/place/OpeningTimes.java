@@ -1,5 +1,7 @@
 package uk.co.ramp.covid.simulation.place;
 
+import uk.co.ramp.covid.simulation.Time;
+
 import java.util.BitSet;
 
 /** This class tracks the opening/closing times of the various places */
@@ -120,5 +122,9 @@ public class OpeningTimes {
 
     public static OpeningTimes twentyfourSeven() {
         return new OpeningTimes(0,24, OpeningTimes.getAllDays());
+    }
+
+    public boolean isOpenNextHour(Time t) {
+        return isOpen(t.getHour() + 1, t.getDay());
     }
 }

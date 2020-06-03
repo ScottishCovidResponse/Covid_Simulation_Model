@@ -65,12 +65,13 @@
             "f_100_100":0.000125963
         },
         "households":{
-            "pAdultOnly":0.3,
-            "pPensionerOnly":0.1,
-            "pPensionerAdult":0.1,
-            "pAdultChildren":0.3,
-            "pPensionerChildren":0.1,
-            "pAdultPensionerChildren":0.1
+            "householdRatio": 2.18,
+            "pAdultOnly":0.4,
+            "pPensionerOnly":0.12,
+            "pPensionerAdult":0.07,
+            "pAdultChildren":0.28,
+            "pPensionerChildren":0.05,
+            "pAdultPensionerChildren":0.08
         },
         "additionalMembersDistributions":{
             "adultAllocationPMap":{
@@ -150,14 +151,14 @@
             }
         },
         "workerAllocation":{
-            "pOffice":0.2,
-            "pShop":0.1,
-            "pHospital":0.1,
+            "pOffice":0.3,
+            "pShop":0.2,
+            "pHospital":0.08,
             "pConstruction":0.1,
-            "pTeacher":0.15,
+            "pTeacher":0.12,
             "pRestaurant":0.1,
             "pNursery":0.05,
-            "pUnemployed":0.2,
+            "pUnemployed":0.05,
             "sizeAllocation":{
                 "pSmall": 0.2,
                 "pMed": 0.3,
