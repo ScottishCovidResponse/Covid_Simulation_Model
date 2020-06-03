@@ -103,7 +103,9 @@ public class Population {
 
     }
 
-    private void allocateRequired(BitSet remaining, Supplier<Boolean> required, Consumer<Person> add)
+    // We know based on the bitset indexes that this cast is safe so ignore warnings here
+    @SuppressWarnings("unchecked")
+    private <T extends Person> void allocateRequired(BitSet remaining, Supplier<Boolean> required, Consumer<T> add)
             throws ImpossibleAllocationException {
         int i = 0;
         while (required.get()) {
@@ -113,17 +115,19 @@ public class Population {
                         "Population distribution cannot populate household distribution");
             }
             remaining.clear(i);
-            add.accept(allPeople.get(i));
+            add.accept((T) allPeople.get(i));
         }
     }
 
-    private void allocateAllowed(BitSet remaining, Supplier<Boolean> allowed, Consumer<Person> add) {
+    // We know based on the bitset indexes that this cast is safe so ignore warnings here
+    @SuppressWarnings("unchecked")
+    private  <T extends Person> void allocateAllowed(BitSet remaining, Supplier<Boolean> allowed, Consumer<T> add) {
         int i = 0;
         if (allowed.get()) {
             i = remaining.nextSetBit(i);
             if (i >= 0) {
                 remaining.clear(i);
-                add.accept(allPeople.get(i));
+                add.accept((T) allPeople.get(i));
             }
         }
     }
@@ -146,7 +150,7 @@ public class Population {
         for (Household h : households) {
             allocateRequired(adultIndex, h::adultRequired, h::addAdult);
             allocateRequired(pensionerIndex, h::pensionerRequired, h::addPensioner);
-            allocateRequired(childOrInfant, h::childRequired, h::addChild);
+            allocateRequired(childOrInfant, h::childRequired, h::addChildOrInfant);
         }
 
         // Now fill in anyone who is missing
@@ -154,7 +158,7 @@ public class Population {
             for (Household h : households) {
                 allocateAllowed(adultIndex, h::adultAllowed, h::addAdult);
                 allocateAllowed(pensionerIndex, h::pensionerAllowed, h::addPensioner);
-                allocateAllowed(childOrInfant, h::childAllowed, h::addChild);
+                allocateAllowed(childOrInfant, h::childAllowed, h::addChildOrInfant);
             }
         }
 

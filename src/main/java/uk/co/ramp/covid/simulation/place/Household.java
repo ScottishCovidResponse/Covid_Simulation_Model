@@ -2,10 +2,7 @@ package uk.co.ramp.covid.simulation.place;
 
 import uk.co.ramp.covid.simulation.DailyStats;
 import uk.co.ramp.covid.simulation.Time;
-import uk.co.ramp.covid.simulation.population.CStatus;
-import uk.co.ramp.covid.simulation.population.Person;
-import uk.co.ramp.covid.simulation.population.Places;
-import uk.co.ramp.covid.simulation.population.PopulationParameters;
+import uk.co.ramp.covid.simulation.population.*;
 import uk.co.ramp.covid.simulation.util.RNG;
 
 import java.util.*;
@@ -280,22 +277,37 @@ public abstract class Household extends Place {
     public abstract boolean pensionerRequired();
     public abstract boolean pensionerAllowed();
 
-    public void addAdult(Person p) {
-        people.add(p);
-        p.setHome(this);
-        adults++;
+    public void addAdult(Adult p) {
+        if (adultRequired() || adultAllowed()) {
+            people.add(p);
+            p.setHome(this);
+            adults++;
+        } else {
+            throw new InvalidHouseholdAllocationException("Cannot add adult to household");
+        }
+      
+    }
+    
+    public void addChildOrInfant(Person p) {
+        // We need to do some type inference here to handle the fact infants are
+        // treated as children for household population
+        if ((childRequired() || childAllowed()) && (p instanceof Child || p instanceof Infant)) {
+            people.add(p);
+            p.setHome(this);
+            children++;
+        } else {
+            throw new InvalidHouseholdAllocationException("Cannot add child/infant to household");
+        }
     }
 
-    public void addChild(Person p) {
-        people.add(p);
-        p.setHome(this);
-        children++;
-    }
-
-    public void addPensioner(Person p) {
-        people.add(p);
-        p.setHome(this);
-        pensioners++;
+    public void addPensioner(Pensioner p) {
+        if (pensionerRequired() || pensionerAllowed()) {
+            people.add(p);
+            p.setHome(this);
+            pensioners++;
+        } else {
+            throw new InvalidHouseholdAllocationException("Cannot add pensioner to household");
+        }
     }
 
 }

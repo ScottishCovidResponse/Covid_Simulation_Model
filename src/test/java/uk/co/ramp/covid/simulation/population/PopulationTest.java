@@ -117,7 +117,6 @@ public class PopulationTest extends SimulationTest {
         //Test that the primary place of adult construction workers is set to construction site
         Adult adult = new Adult(30, Person.Sex.FEMALE);
         adult.profession = Adult.Professions.CONSTRUCTION;
-        pop.getHouseholds().get(0).addAdult(adult);
         adult.allocateCommunalPlace(pop.getPlaces());
         CommunalPlace cp = adult.getPrimaryCommunalPlace();
         assertTrue("Unexpected primary communal place", cp instanceof ConstructionSite);
@@ -128,7 +127,6 @@ public class PopulationTest extends SimulationTest {
         //Test that the primary place of adult hospital workers is set to hospital
         Adult adult = new Adult(30, Person.Sex.MALE);
         adult.profession = Adult.Professions.HOSPITAL;
-        pop.getHouseholds().get(0).addAdult(adult);
         adult.allocateCommunalPlace(pop.getPlaces());
         CommunalPlace cp = adult.getPrimaryCommunalPlace();
         assertTrue("Unexpected primary communal place", cp instanceof Hospital);
@@ -139,7 +137,6 @@ public class PopulationTest extends SimulationTest {
         //Test that the primary place of adult office workers is set to office
         Adult adult = new Adult(30, Person.Sex.FEMALE);
         adult.profession = Adult.Professions.OFFICE;
-        pop.getHouseholds().get(0).addAdult(adult);
         adult.allocateCommunalPlace(pop.getPlaces());
         CommunalPlace cp = adult.getPrimaryCommunalPlace();
         assertTrue("Unexpected primary communal place", cp instanceof Office);
@@ -150,7 +147,6 @@ public class PopulationTest extends SimulationTest {
         //Test that the primary place of adult restaurant workers is set to restaurant
         Adult adult = new Adult(30, Person.Sex.MALE);
         adult.profession = Adult.Professions.RESTAURANT;
-        pop.getHouseholds().get(0).addAdult(adult);
         adult.allocateCommunalPlace(pop.getPlaces());
         CommunalPlace cp = adult.getPrimaryCommunalPlace();
         assertTrue("Unexpected primary communal place", cp instanceof Restaurant);
@@ -161,7 +157,6 @@ public class PopulationTest extends SimulationTest {
         //Test that the primary place of adult teachers is set to school
         Adult adult = new Adult(30, Person.Sex.FEMALE);
         adult.profession = Adult.Professions.TEACHER;
-        pop.getHouseholds().get(0).addAdult(adult);
         adult.allocateCommunalPlace(pop.getPlaces());
         CommunalPlace cp = adult.getPrimaryCommunalPlace();
         assertTrue("Unexpected primary communal place", cp instanceof School);
@@ -172,7 +167,6 @@ public class PopulationTest extends SimulationTest {
         //Test that the primary place of adult shop workers is set to shop
         Adult adult = new Adult(30, Person.Sex.MALE);
         adult.profession = Adult.Professions.SHOP;
-        pop.getHouseholds().get(0).addAdult(adult);
         adult.allocateCommunalPlace(pop.getPlaces());
         CommunalPlace cp = adult.getPrimaryCommunalPlace();
         assertTrue("Unexpected primary communal place", cp instanceof Shop);

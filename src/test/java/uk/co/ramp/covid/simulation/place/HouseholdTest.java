@@ -6,6 +6,7 @@ import org.junit.Test;
 import com.google.gson.JsonParseException;
 
 import uk.co.ramp.covid.simulation.Time;
+import uk.co.ramp.covid.simulation.place.householdtypes.LargeFamily;
 import uk.co.ramp.covid.simulation.place.householdtypes.SingleAdult;
 import uk.co.ramp.covid.simulation.place.householdtypes.SmallFamily;
 import uk.co.ramp.covid.simulation.population.Adult;
@@ -29,10 +30,10 @@ public class HouseholdTest extends SimulationTest {
 
     @Before
     public void initialise() throws JsonParseException, IOException {
-        household = new SmallFamily(null);
-        Person p1 = new Adult(30, Person.Sex.MALE);
-        Person p2 = new Adult(32, Person.Sex.FEMALE);
-        Person p3 = new Adult(30, Person.Sex.MALE);
+        household = new LargeFamily(null);
+        Adult p1 = new Adult(30, Person.Sex.MALE);
+        Adult p2 = new Adult(32, Person.Sex.FEMALE);
+        Adult p3 = new Adult(30, Person.Sex.MALE);
         household.addAdult(p1);
         household.addAdult(p2);
         household.addAdult(p3);
@@ -52,7 +53,7 @@ public class HouseholdTest extends SimulationTest {
 
     @Test
     public void testAddPerson() {
-        Person p4 = new Adult(40, Person.Sex.FEMALE);
+        Adult p4 = new Adult(40, Person.Sex.FEMALE);
         household.addAdult(p4);
         int expSize = 4;
         assertEquals("Unexpected household size", expSize, household.getInhabitants().size());
@@ -60,7 +61,7 @@ public class HouseholdTest extends SimulationTest {
 
     @Test
     public void testGetHouseholdSize() {
-        Person p1 = new Adult(50, Person.Sex.MALE);
+        Adult p1 = new Adult(50, Person.Sex.MALE);
         household.addAdult(p1);
         int expSize = 4;
         assertEquals("Unexpected household size", expSize, household.getHouseholdSize());
@@ -76,7 +77,6 @@ public class HouseholdTest extends SimulationTest {
         PopulationParameters.get().setHouseholdVisitorLeaveRate(1.0);
         Household h = new SmallFamily(null);
         Person p1 = new Adult(22, Person.Sex.FEMALE);
-        
         p1.setHome(household);
         h.addPersonNext(p1);
         h.stepPeople();
