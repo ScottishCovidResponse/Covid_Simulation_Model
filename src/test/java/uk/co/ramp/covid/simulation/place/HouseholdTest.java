@@ -6,8 +6,8 @@ import org.junit.Test;
 import com.google.gson.JsonParseException;
 
 import uk.co.ramp.covid.simulation.Time;
-import uk.co.ramp.covid.simulation.place.householdtypes.LargeFamily;
-import uk.co.ramp.covid.simulation.place.householdtypes.SingleAdult;
+import uk.co.ramp.covid.simulation.place.householdtypes.LargeManyAdultFamily;
+import uk.co.ramp.covid.simulation.place.householdtypes.LargeTwoAdultFamiy;
 import uk.co.ramp.covid.simulation.place.householdtypes.SmallFamily;
 import uk.co.ramp.covid.simulation.population.Adult;
 import uk.co.ramp.covid.simulation.population.Person;
@@ -30,7 +30,7 @@ public class HouseholdTest extends SimulationTest {
 
     @Before
     public void initialise() throws JsonParseException, IOException {
-        household = new LargeFamily(null);
+        household = new LargeManyAdultFamily(null);
         Adult p1 = new Adult(30, Person.Sex.MALE);
         Adult p2 = new Adult(32, Person.Sex.FEMALE);
         Adult p3 = new Adult(30, Person.Sex.MALE);

@@ -33,9 +33,11 @@ public class PopulationParameters {
         public Double pSmallAdult = null;
         public Double pSingleParent = null;
         public Double pSmallFamily = null;
-        public Double pLargeFamily = null;
+        public Double pLargeTwoAdultFamily = null;
+        public Double pLargeManyAdultFamily = null;
         public Double pLargeAdult = null;
-        public Double pOlderSmaller = null;
+        public Double pAdultPensioner = null;
+        public Double pDoubleOlder = null;
         public Double pSingleOlder = null;
         
         public ProbabilityDistribution<Function<Places, Household>> householdTypeDistribution() {
@@ -44,9 +46,11 @@ public class PopulationParameters {
             p.add(pSmallAdult, SmallAdult::new);
             p.add(pSingleParent, SingleParent::new);
             p.add(pSmallFamily, SmallFamily::new);
-            p.add(pLargeFamily, LargeFamily::new);
+            p.add(pLargeTwoAdultFamily, LargeTwoAdultFamiy::new);
+            p.add(pLargeManyAdultFamily, LargeManyAdultFamily::new);
             p.add(pLargeAdult, LargeAdult::new);
-            p.add(pOlderSmaller, OlderSmaller::new);
+            p.add(pAdultPensioner, AdultPensioner::new);
+            p.add(pDoubleOlder, DoubleOlder::new);
             p.add(pSingleOlder, SingleOlder::new);
             return p;
         }
@@ -59,9 +63,11 @@ public class PopulationParameters {
                     ", pSmallAdult=" + pSmallAdult +
                     ", pSingleParent=" + pSingleParent +
                     ", pSmallFamily=" + pSmallFamily +
-                    ", pLargeFamily=" + pLargeFamily +
+                    ", pLargeTwoAdultFamily=" + pLargeTwoAdultFamily +
+                    ", pLargeManyAdultFamily=" + pLargeManyAdultFamily +
                     ", pLargeAdult=" + pLargeAdult +
-                    ", pOlderSmaller=" + pOlderSmaller +
+                    ", pAdultPensioner=" + pAdultPensioner +
+                    ", pDoubleOlder=" + pDoubleOlder +
                     ", pSingleOlder=" + pSingleOlder +
                     '}';
         }
@@ -71,15 +77,17 @@ public class PopulationParameters {
                     && isValidProbability(pSmallAdult, "pSmallAdult")
                     && isValidProbability(pSingleParent, "pSingleParent")
                     && isValidProbability(pSmallFamily, "pSmallFamily")
-                    && isValidProbability(pLargeFamily, "pLargeFamily")
+                    && isValidProbability(pLargeTwoAdultFamily, "pLargeTwoAdultFamily")
+                    && isValidProbability(pLargeManyAdultFamily, "pLargeManyAdultFamily")
                     && isValidProbability(pLargeAdult, "pLargeAdult")
-                    && isValidProbability(pOlderSmaller, "pOlderSmaller")
+                    && isValidProbability(pAdultPensioner, "pAdultPensioner")
+                    && isValidProbability(pDoubleOlder, "pDoubleOlder")
                     && isValidProbability(pSingleOlder, "pSingleOlder");
 
             probabilitiesValid = probabilitiesValid && (householdRatio >= 1);
 
-            double totalP = pSingleAdult + pSmallAdult + pSingleParent + pSmallFamily + pLargeFamily
-                    + pLargeAdult + pOlderSmaller + pSingleOlder;
+            double totalP = pSingleAdult + pSmallAdult + pSingleParent + pSmallFamily + pLargeManyAdultFamily
+                    + pLargeTwoAdultFamily + pLargeAdult + pAdultPensioner + pDoubleOlder + pSingleOlder;
             if(!(totalP <= 1 + EPSILON && totalP >= 1 - EPSILON)) {
                 LOGGER.error("Household parameter probabilities do not total one");
                 return false;
@@ -401,16 +409,24 @@ public class PopulationParameters {
         return households.pSmallFamily;
     }
 
-    public double getpLargeFamily() {
-        return households.pLargeFamily;
+    public double getpLargeTwoAdultFamily() {
+        return households.pLargeTwoAdultFamily;
+    }
+
+    public double getpLargeManyFamily() {
+        return households.pLargeManyAdultFamily;
     }
 
     public double getpLargeAdult() {
         return households.pLargeAdult;
     }
 
-    public double getpOlderSmaller() {
-        return households.pOlderSmaller;
+    public double getpAdultPensioner() {
+        return households.pAdultPensioner;
+    }
+
+    public double getpDobuleOlder() {
+        return households.pDoubleOlder;
     }
 
     public double getpSingleOlder() {

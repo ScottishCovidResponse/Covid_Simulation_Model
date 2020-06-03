@@ -147,10 +147,12 @@ public class Population {
         childOrInfant.or(infantIndex);
 
         // Fill requirements first
+        int i = 0;
         for (Household h : households) {
             allocateRequired(adultIndex, h::adultRequired, h::addAdult);
             allocateRequired(pensionerIndex, h::pensionerRequired, h::addPensioner);
             allocateRequired(childOrInfant, h::childRequired, h::addChildOrInfant);
+            i++;
         }
 
         // Now fill in anyone who is missing
