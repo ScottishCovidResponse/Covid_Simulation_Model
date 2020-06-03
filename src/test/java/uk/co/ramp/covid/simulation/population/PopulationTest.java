@@ -4,24 +4,22 @@ import org.junit.Before;
 import org.junit.Test;
 import uk.co.ramp.covid.simulation.DailyStats;
 import uk.co.ramp.covid.simulation.RStats;
-import uk.co.ramp.covid.simulation.covid.CovidParameters;
-import uk.co.ramp.covid.simulation.io.ParameterReader;
 import uk.co.ramp.covid.simulation.place.*;
 import uk.co.ramp.covid.simulation.testutil.PopulationGenerator;
+import uk.co.ramp.covid.simulation.util.SimulationTest;
 
 import java.io.IOException;
 import java.util.List;
 
 import static org.junit.Assert.*;
 
-public class PopulationTest {
+public class PopulationTest extends SimulationTest {
 
     private Population pop;
     private final int populationSize = 10000;
 
     @Before
     public void setupParams() throws IOException {
-        ParameterReader.readParametersFromFile("src/test/resources/default_params.json");
         pop = PopulationGenerator.genValidPopulation(populationSize);
     }
 
@@ -122,12 +120,6 @@ public class PopulationTest {
                 }
             }
         }
-    }
-
-    @Test (expected = ImpossibleAllocationException.class )
-    public void testImpossibleAllocationException() throws ImpossibleAllocationException, ImpossibleWorkerDistributionException {
-        PopulationParameters.get().setHouseholdRatio(10.0);
-        new Population(10);
     }
 
     @Test (expected = ImpossibleAllocationException.class )

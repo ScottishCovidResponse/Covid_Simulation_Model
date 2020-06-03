@@ -8,7 +8,6 @@ import uk.co.ramp.covid.simulation.population.Population;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiFunction;
-import java.util.function.Function;
 
 /** RStats handles generating/outputting the R naught statistics */
 public class RStats {

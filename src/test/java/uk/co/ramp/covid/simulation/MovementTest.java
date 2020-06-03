@@ -1,15 +1,13 @@
 package uk.co.ramp.covid.simulation;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-import uk.co.ramp.covid.simulation.io.ParameterReader;
 import uk.co.ramp.covid.simulation.place.*;
 import uk.co.ramp.covid.simulation.population.*;
 import uk.co.ramp.covid.simulation.testutil.PopulationGenerator;
-import uk.co.ramp.covid.simulation.util.RNG;
+import uk.co.ramp.covid.simulation.util.SimulationTest;
 
 import java.io.IOException;
 import java.util.HashSet;
@@ -17,7 +15,7 @@ import java.util.List;
 import java.util.Set;
 
 /** Movement tests do not test a particular class, but check basic assumptions around movement throughout a run */
-public class MovementTest {
+public class MovementTest extends SimulationTest {
 
     Population p;
     int populationSize = 10000;
@@ -25,7 +23,6 @@ public class MovementTest {
 
     @Before
     public void initialiseTestModel() throws IOException {
-        ParameterReader.readParametersFromFile("src/test/resources/default_params.json");
         PopulationParameters.get().setpHouseholdWillIsolate(100.0);
 
         p = PopulationGenerator.genValidPopulation(populationSize);
@@ -34,7 +31,6 @@ public class MovementTest {
 
     @Test
     public void allChildrenGoToSchool() {
-        RNG.seed(0);
         Set<Child> schooled = new HashSet<>();
         Time t = new Time(24);
         DailyStats s = new DailyStats(t);
@@ -239,7 +235,6 @@ public class MovementTest {
 
     @Test
     public void stopIsolatingAfterTimerExpires() {
-        RNG.seed(1);
         int daysIsolated = 2;
         Time t = new Time(24);
         DailyStats s = new DailyStats(t);

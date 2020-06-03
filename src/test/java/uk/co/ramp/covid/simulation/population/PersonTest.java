@@ -1,19 +1,12 @@
 package uk.co.ramp.covid.simulation.population;
 
-import com.google.gson.JsonParseException;
-import org.junit.Before;
 import org.junit.Test;
 import uk.co.ramp.covid.simulation.Time;
-import uk.co.ramp.covid.simulation.io.ParameterReader;
-import java.io.IOException;
+import uk.co.ramp.covid.simulation.util.SimulationTest;
+
 import static org.junit.Assert.*;
 
-public class PersonTest {
-
-    @Before
-    public void initialise() throws JsonParseException, IOException {
-        ParameterReader.readParametersFromFile("src/test/resources/default_params.json");
-    }
+public class PersonTest extends SimulationTest {
 
     @Test
     public void testInfect() {
