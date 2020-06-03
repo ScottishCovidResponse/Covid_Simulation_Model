@@ -185,7 +185,7 @@
         "householdProperties":{
             "neighbourVisitFreq":0.006,
             "visitorLeaveRate":0.5,
-            "expectedNeighbours":3,
+            "expectedNeighbours":5,
             "pGoShopping":0.01786,
             "pGoRestaurant": 0.01190,
             "pWillIsolate": 0.5,
