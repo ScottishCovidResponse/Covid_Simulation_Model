@@ -22,6 +22,7 @@ public class CovidParameters {
         return cparams;
     }
 
+
     private static class TestParameters {
         public Double diagnosticTestSensitivity = null;
         
@@ -167,6 +168,10 @@ public class CovidParameters {
     }
 
     public double getDiagnosticTestSensitivity() { return testParameters.diagnosticTestSensitivity; }
+
+    public void setDiagnosticTestSensitivity(double v) {
+        testParameters.diagnosticTestSensitivity = v;
+    }
 
     public void setPensionerProgressionPhase2(double pensionerProgressionPhase2) {
         diseaseParameters.pensionerProgressionPhase2 = pensionerProgressionPhase2;

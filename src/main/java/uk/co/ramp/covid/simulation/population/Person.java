@@ -17,6 +17,7 @@ import java.util.Optional;
 
 public abstract class Person {
 
+
     public enum Sex {
         MALE, FEMALE
     }
@@ -34,7 +35,7 @@ public abstract class Person {
     private boolean quarantine;
     private final double quarantineProb; // Needs more thought. The probability that the person will go into quarantine
     private final double quarantineVal;
-    private Optional<Boolean> testOutcome;
+    private Optional<Boolean> testOutcome = Optional.empty();
     protected final RandomDataGenerator rng;
     
     public abstract void reportInfection(DailyStats s);
@@ -93,6 +94,10 @@ public abstract class Person {
         return inf;
     }
 
+    public boolean isinfected() {
+        return cVirus != null && !recovered;
+    }
+
     //Don't mess with this method
     public boolean getInfectionStatus() {
         return !(this.cVirus == null);
@@ -120,7 +125,7 @@ public abstract class Person {
         if (this.getInfectionStatus()) {
             if (this.cVirus.isLatent()) cStatus = CStatus.LATENT;
             if (this.cVirus.isAsymptomatic()) cStatus = CStatus.ASYMPTOMATIC;
-            if (this.cVirus.isSymptomatic()) this.quarantine = this.quarantineProb > this.quarantineVal;
+            if (this.cVirus.isSymptomatic()) enterQuarantine();
             if (this.cVirus.isPhase1()) {
                 cStatus = CStatus.PHASE1;
           //      this.quarantine = this.quarantineProb > this.quarantineVal;
@@ -136,6 +141,18 @@ public abstract class Person {
             }
         }
         return cStatus;
+    }
+    
+    public void enterQuarantine() {
+        quarantine = quarantineProb > quarantineVal;
+    }
+
+    public void forceQuarantine() {
+        quarantine = true;
+    }
+    
+    public void exitQuarantine() {
+        quarantine = false;
     }
 
     public boolean isInfectious() {
@@ -237,16 +254,21 @@ public abstract class Person {
     }
 
     public void getTested() {
-        if (cVirus == null || !wasTested() || !cVirus.isSymptomatic()) {
+        if (cVirus == null || wasTested() || !cVirus.isSymptomatic()) {
             return;
         }
 
         // Negative test
         if (RNG.get().nextUniform(0,1) >= CovidParameters.get().getDiagnosticTestSensitivity()) {
+            exitQuarantine();
             home.stopIsolating();
             testOutcome = Optional.of(false);
         } else {
             testOutcome = Optional.of(true);
         }
+    }
+
+    public Optional<Boolean> getTestOutcome() {
+        return testOutcome;
     }
 }

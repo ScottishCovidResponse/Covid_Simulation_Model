@@ -306,6 +306,8 @@ public class Population {
         // households.parallelStream().forEach(h -> h.doInfect(dStats));
         // places.getAllPlaces().parallelStream().forEach(p -> p.doInfect(dStats));
 
+        households.forEach(h -> h.doTesting(t));
+
         // Movement places people in "next" buffers (to avoid people moving twice in an hour)
         households.forEach(h -> h.doMovement(t, lockdown));
         places.getAllPlaces().forEach(p -> p.doMovement(t, lockdown));
