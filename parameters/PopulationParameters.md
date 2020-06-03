@@ -98,9 +98,11 @@ households may include either/both children or infants.
 | pSmallAdult              | Probability of a small adult household                                          | Double |
 | pSingleParent            | Probability of a single parent household                                        | Double |
 | pSmallFamily             | Probability of a small family household                                         | Double |
-| pLargeFmaily             | Probability of a large family household                                         | Double |
+| pLargeTwoAdultFamily     | Probability of a large, 2 adult, family household                               | Double |
+| pLargeTwoAdultFamily     | Probability of a large, >= 3 adult, family household                            | Double |
 | pLargeAdult              | Probability of a large adult household                                          | Double |
-| pOlderSmaller            | Probability of a smaller older person household                                 | Double |
+| pAdultPensioner          | Probability of an adult/pensioner household                                     | Double |
+| pDoubleOlder             | Probability of a two pensioner household                                        | Double |
 | pSingleOlder             | Probability of a single pensioner household                                     | Double |
 | pGoShopping              | Probability the households tries to go shopping in an hour                      | Double |
 | pGoRestaurant            | Probability the households tries to go to a restaurant in an hour               | Double |
