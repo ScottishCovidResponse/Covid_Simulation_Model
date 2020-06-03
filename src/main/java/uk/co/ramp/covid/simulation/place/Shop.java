@@ -15,7 +15,7 @@ public class Shop extends CommunalPlace {
 
     public Shop(Size s) {
         super(s);
-        transProb = PopulationParameters.get().getpBaseTrans() *  PopulationParameters.get().getpShopTrans();
+        transAdjustment = PopulationParameters.get().getpShopTrans();
         keyProb = PopulationParameters.get().getpShopKey();
         if (rng.nextUniform(0, 1) > keyProb) keyPremises = true;
         setOpeningHours();

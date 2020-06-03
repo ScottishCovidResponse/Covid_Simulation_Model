@@ -12,6 +12,7 @@ import java.io.IOException;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class CovidTest {
 
@@ -46,11 +47,12 @@ public class CovidTest {
         //Test that the person becomes dead after the phase2 period
         double p1Period = virus.getP1();
         double p2Period = virus.getP2();
-        for (int i = 0; i < p1Period + p2Period; i++) {
+        for (int i = 0; i < p1Period + p2Period - 1; i++) {
             if(!virus.isDead()) cStatus = virus.stepInfection(t);
             t.advance();
         }
-
+        assertTrue(virus.getIsSymptomatic());
+        virus.stepInfection(t.advance());
         assertEquals(CStatus.DEAD, cStatus);
     }
 

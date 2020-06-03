@@ -45,6 +45,7 @@ public class Household extends Place {
         this.hType = hType;
         this.neighbours = new ArrayList<>();
         this.places = places;
+        transAdjustment = Double.MAX_VALUE;
         if (RNG.get().nextUniform(0,1) < PopulationParameters.get().getpHouseholdWillIsolate()) {
             willIsolate = true;
         }
