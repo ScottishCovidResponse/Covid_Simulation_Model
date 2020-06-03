@@ -8,6 +8,7 @@ import com.google.gson.JsonParseException;
 import uk.co.ramp.covid.simulation.Time;
 import uk.co.ramp.covid.simulation.io.ParameterReader;
 import uk.co.ramp.covid.simulation.place.householdtypes.SingleAdult;
+import uk.co.ramp.covid.simulation.place.householdtypes.SmallFamily;
 import uk.co.ramp.covid.simulation.population.Adult;
 import uk.co.ramp.covid.simulation.population.Person;
 import uk.co.ramp.covid.simulation.population.PopulationParameters;
@@ -29,16 +30,16 @@ public class HouseholdTest {
     @Before
     public void initialise() throws JsonParseException, IOException {
         ParameterReader.readParametersFromFile("src/test/resources/default_params.json");
-        household = new Household(null);
+        household = new SmallFamily(null);
         Person p1 = new Adult(30, Person.Sex.MALE);
         Person p2 = new Adult(32, Person.Sex.FEMALE);
         Person p3 = new Adult(30, Person.Sex.MALE);
-        household.addInhabitant(p1);
-        household.addInhabitant(p2);
-        household.addInhabitant(p3);
-        household2 = new Household(null);
-        household3 = new Household(null);
-        household4 = new Household(null);
+        household.addAdult(p1);
+        household.addAdult(p2);
+        household.addAdult(p3);
+        household2 = new SmallFamily(null);
+        household3 = new SmallFamily(null);
+        household4 = new SmallFamily(null);
     }
 
     @Test
@@ -53,7 +54,7 @@ public class HouseholdTest {
     @Test
     public void testAddPerson() {
         Person p4 = new Adult(40, Person.Sex.FEMALE);
-        household.addInhabitant(p4);
+        household.addAdult(p4);
         int expSize = 4;
         assertEquals("Unexpected household size", expSize, household.getInhabitants().size());
     }
@@ -61,7 +62,7 @@ public class HouseholdTest {
     @Test
     public void testGetHouseholdSize() {
         Person p1 = new Adult(50, Person.Sex.MALE);
-        household.addInhabitant(p1);
+        household.addAdult(p1);
         int expSize = 4;
         assertEquals("Unexpected household size", expSize, household.getHouseholdSize());
     }
@@ -74,7 +75,7 @@ public class HouseholdTest {
     @Test
     public void testSendNeighboursHome() {
         PopulationParameters.get().setHouseholdVisitorLeaveRate(1.0);
-        Household h = new Household(null);
+        Household h = new SmallFamily(null);
         Person p1 = new Adult(22, Person.Sex.FEMALE);
         
         p1.setHome(household);

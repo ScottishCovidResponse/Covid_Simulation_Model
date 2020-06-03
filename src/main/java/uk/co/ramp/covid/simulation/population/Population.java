@@ -13,12 +13,12 @@ import uk.co.ramp.covid.simulation.DailyStats;
 import uk.co.ramp.covid.simulation.RStats;
 import uk.co.ramp.covid.simulation.Time;
 import uk.co.ramp.covid.simulation.place.*;
-import uk.co.ramp.covid.simulation.place.householdtypes.*;
 import uk.co.ramp.covid.simulation.util.ProbabilityDistribution;
 import uk.co.ramp.covid.simulation.util.RNG;
 
 import java.util.*;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class Population {
@@ -94,20 +94,16 @@ public class Population {
     }
 
     // Creates households based on probability of different household types
-    private List<HouseholdType> createHouseholdTypes() {
-        ProbabilityDistribution<Supplier<HouseholdType>> p = PopulationParameters.get().getHouseholdDistribution();
-        
-        List<HouseholdType> householdTypes = new ArrayList<>(numHouseholds);
+    private void createHouseholds() {
+        ProbabilityDistribution<Function<Places, Household>> p = PopulationParameters.get().getHouseholdDistribution();
 
         for (int i = 0; i < numHouseholds; i++) {
-            HouseholdType t = p.sample().get();
-            householdTypes.add(t);
+            households.add(p.sample().apply(places));
         }
 
-        return householdTypes;
     }
 
-    private void allocateRequired(HouseholdType h, BitSet remaining, Supplier<Boolean> required, Consumer<Person> add)
+    private void allocateRequired(BitSet remaining, Supplier<Boolean> required, Consumer<Person> add)
             throws ImpossibleAllocationException {
         int i = 0;
         while (required.get()) {
@@ -121,7 +117,7 @@ public class Population {
         }
     }
 
-    private void allocateAllowed(HouseholdType h, BitSet remaining, Supplier<Boolean> allowed, Consumer<Person> add) {
+    private void allocateAllowed(BitSet remaining, Supplier<Boolean> allowed, Consumer<Person> add) {
         int i = 0;
         if (allowed.get()) {
             i = remaining.nextSetBit(i);
@@ -133,7 +129,7 @@ public class Population {
     }
 
     private void populateHouseholds() throws ImpossibleAllocationException {
-        List<HouseholdType> htypes = createHouseholdTypes();
+        createHouseholds();
 
         BitSet infantIndex = new BitSet(populationSize);
         BitSet childIndex = new BitSet(populationSize);
@@ -147,24 +143,19 @@ public class Population {
         childOrInfant.or(infantIndex);
 
         // Fill requirements first
-        for (HouseholdType h : htypes) {
-            allocateRequired(h, adultIndex, h::adultRequired, p -> h.addAdult(p));
-            allocateRequired(h, pensionerIndex, h::pensionerRequired, p -> h.addPensioner(p));
-            allocateRequired(h, childOrInfant, h::childRequired, p-> h.addChild(p));
+        for (Household h : households) {
+            allocateRequired(adultIndex, h::adultRequired, h::addAdult);
+            allocateRequired(pensionerIndex, h::pensionerRequired, h::addPensioner);
+            allocateRequired(childOrInfant, h::childRequired, h::addChild);
         }
 
         // Now fill in anyone who is missing
         while (!adultIndex.isEmpty() || !pensionerIndex.isEmpty() || !childOrInfant.isEmpty()) {
-            for (HouseholdType h : htypes) {
-                allocateAllowed(h, adultIndex, h::adultAllowed, p -> h.addAdult(p));
-                allocateAllowed(h, pensionerIndex, h::pensionerAllowed, p -> h.addPensioner(p));
-                allocateAllowed(h, childOrInfant, h::childAllowed, p -> h.addChild(p));
+            for (Household h : households) {
+                allocateAllowed(adultIndex, h::adultAllowed, h::addAdult);
+                allocateAllowed(pensionerIndex, h::pensionerAllowed, h::addPensioner);
+                allocateAllowed(childOrInfant, h::childAllowed, h::addChild);
             }
-        }
-
-        //Once everyone is allocated we create the final households
-        for (HouseholdType h : htypes) {
-           households.add(h.toHousehold(places));
         }
 
     }

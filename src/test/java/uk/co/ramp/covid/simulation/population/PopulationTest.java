@@ -40,29 +40,28 @@ public class PopulationTest {
         }
         assertEquals("Sum total household size should equal population size",  populationSize, p);
 
-        /*
+
         for (Household h : pop.getHouseholds()) {
             assertTrue("Each household must be assigned at least 1 person", h.getHouseholdSize() > 0);
-            HouseholdType htype = h.getHouseholdType();
             
-            if (htype instanceof SingleAdult) {
+            if (h instanceof SingleAdult) {
                 assertEquals(1, h.getHouseholdSize());
                 h.getInhabitants().forEach(per -> assertTrue(per instanceof Adult));
             }
 
-            if (htype instanceof SmallAdult) {
+            if (h instanceof SmallAdult) {
                 assertEquals(2, h.getHouseholdSize());
                 h.getInhabitants().forEach(per -> assertTrue(per instanceof Adult));
             }
 
-            if (htype instanceof SingleParent) {
+            if (h instanceof SingleParent) {
                 assertEquals(1, h.getInhabitants().stream()
                         .filter(per -> per instanceof Adult).count());
                 assertTrue(h.getInhabitants().stream()
                         .filter(per -> per instanceof Child || per instanceof Infant).count() >= 1);
             }
 
-            if (htype instanceof SmallFamily) {
+            if (h instanceof SmallFamily) {
                 assertEquals(2, h.getInhabitants().stream()
                         .filter(per -> per instanceof Adult || per instanceof Pensioner).count());
                 long numChildren = h.getInhabitants().stream()
@@ -70,7 +69,7 @@ public class PopulationTest {
                 assertTrue(numChildren == 1 || numChildren == 2 );
             }
 
-            if (htype instanceof LargeFamily) {
+            if (h instanceof LargeFamily) {
                 long numAdults = h.getInhabitants().stream()
                         .filter(per -> per instanceof Adult || per instanceof Pensioner).count();
                 long numChildren = h.getInhabitants().stream()
@@ -84,13 +83,13 @@ public class PopulationTest {
                 }
             }
 
-            if (htype instanceof LargeAdult) {
+            if (h instanceof LargeAdult) {
                 long numAdults = h.getInhabitants().stream()
                         .filter(per -> per instanceof Adult || per instanceof Pensioner).count();
                 assertTrue(numAdults >= 3);
             }
 
-            if (htype instanceof OlderSmaller) {
+            if (h instanceof OlderSmaller) {
                 long numAdults = h.getInhabitants().stream()
                         .filter(per -> per instanceof Adult).count();
                 long numPensioners = h.getInhabitants().stream()
@@ -101,13 +100,11 @@ public class PopulationTest {
                 assertEquals(0, numChildren);
             }
 
-            if (htype instanceof SingleOlder) {
+            if (h instanceof SingleOlder) {
                 assertEquals(1, h.getHouseholdSize());
                 h.getInhabitants().forEach(per -> assertTrue(per instanceof Pensioner));
             }
         }
-
-         */
     }
 
     @Test (expected = ImpossibleAllocationException.class )
@@ -127,7 +124,7 @@ public class PopulationTest {
         //Test that the primary place of adult construction workers is set to construction site
         Adult adult = new Adult(30, Person.Sex.FEMALE);
         adult.profession = Adult.Professions.CONSTRUCTION;
-        pop.getHouseholds().get(0).addInhabitant(adult);
+        pop.getHouseholds().get(0).addAdult(adult);
         adult.allocateCommunalPlace(pop.getPlaces());
         CommunalPlace cp = adult.getPrimaryCommunalPlace();
         assertTrue("Unexpected primary communal place", cp instanceof ConstructionSite);
@@ -138,7 +135,7 @@ public class PopulationTest {
         //Test that the primary place of adult hospital workers is set to hospital
         Adult adult = new Adult(30, Person.Sex.MALE);
         adult.profession = Adult.Professions.HOSPITAL;
-        pop.getHouseholds().get(0).addInhabitant(adult);
+        pop.getHouseholds().get(0).addAdult(adult);
         adult.allocateCommunalPlace(pop.getPlaces());
         CommunalPlace cp = adult.getPrimaryCommunalPlace();
         assertTrue("Unexpected primary communal place", cp instanceof Hospital);
@@ -149,7 +146,7 @@ public class PopulationTest {
         //Test that the primary place of adult office workers is set to office
         Adult adult = new Adult(30, Person.Sex.FEMALE);
         adult.profession = Adult.Professions.OFFICE;
-        pop.getHouseholds().get(0).addInhabitant(adult);
+        pop.getHouseholds().get(0).addAdult(adult);
         adult.allocateCommunalPlace(pop.getPlaces());
         CommunalPlace cp = adult.getPrimaryCommunalPlace();
         assertTrue("Unexpected primary communal place", cp instanceof Office);
@@ -160,7 +157,7 @@ public class PopulationTest {
         //Test that the primary place of adult restaurant workers is set to restaurant
         Adult adult = new Adult(30, Person.Sex.MALE);
         adult.profession = Adult.Professions.RESTAURANT;
-        pop.getHouseholds().get(0).addInhabitant(adult);
+        pop.getHouseholds().get(0).addAdult(adult);
         adult.allocateCommunalPlace(pop.getPlaces());
         CommunalPlace cp = adult.getPrimaryCommunalPlace();
         assertTrue("Unexpected primary communal place", cp instanceof Restaurant);
@@ -171,7 +168,7 @@ public class PopulationTest {
         //Test that the primary place of adult teachers is set to school
         Adult adult = new Adult(30, Person.Sex.FEMALE);
         adult.profession = Adult.Professions.TEACHER;
-        pop.getHouseholds().get(0).addInhabitant(adult);
+        pop.getHouseholds().get(0).addAdult(adult);
         adult.allocateCommunalPlace(pop.getPlaces());
         CommunalPlace cp = adult.getPrimaryCommunalPlace();
         assertTrue("Unexpected primary communal place", cp instanceof School);
@@ -182,7 +179,7 @@ public class PopulationTest {
         //Test that the primary place of adult shop workers is set to shop
         Adult adult = new Adult(30, Person.Sex.MALE);
         adult.profession = Adult.Professions.SHOP;
-        pop.getHouseholds().get(0).addInhabitant(adult);
+        pop.getHouseholds().get(0).addAdult(adult);
         adult.allocateCommunalPlace(pop.getPlaces());
         CommunalPlace cp = adult.getPrimaryCommunalPlace();
         assertTrue("Unexpected primary communal place", cp instanceof Shop);

@@ -2,7 +2,6 @@ package uk.co.ramp.covid.simulation.place;
 
 import uk.co.ramp.covid.simulation.DailyStats;
 import uk.co.ramp.covid.simulation.Time;
-import uk.co.ramp.covid.simulation.place.householdtypes.HouseholdType;
 import uk.co.ramp.covid.simulation.population.CStatus;
 import uk.co.ramp.covid.simulation.population.Person;
 import uk.co.ramp.covid.simulation.population.Places;
@@ -11,7 +10,7 @@ import uk.co.ramp.covid.simulation.util.RNG;
 
 import java.util.*;
 
-public class Household extends Place {
+public abstract class Household extends Place {
 
     private final List<Household> neighbours;
     private final Places places;
@@ -41,14 +40,9 @@ public class Household extends Place {
         return neighbours.size();
     }
 
-    public void addInhabitant(Person cPers) {
-        cPers.setHome(this);
-        householdSize++;
-        this.people.add(cPers);
-    }
 
     public int getHouseholdSize() {
-        return householdSize;
+        return adults + pensioners + children;
     }
 
     public void addNeighbour(Household n) {
@@ -273,4 +267,35 @@ public class Household extends Place {
             isolationTimer--;
         }
     }
+
+    // Household Type management
+    protected int adults = 0;
+    protected int children = 0;
+    protected int pensioners = 0;
+
+    public abstract boolean adultRequired();
+    public abstract boolean adultAllowed();
+    public abstract boolean childRequired();
+    public abstract boolean childAllowed();
+    public abstract boolean pensionerRequired();
+    public abstract boolean pensionerAllowed();
+
+    public void addAdult(Person p) {
+        people.add(p);
+        p.setHome(this);
+        adults++;
+    }
+
+    public void addChild(Person p) {
+        people.add(p);
+        p.setHome(this);
+        children++;
+    }
+
+    public void addPensioner(Person p) {
+        people.add(p);
+        p.setHome(this);
+        pensioners++;
+    }
+
 }

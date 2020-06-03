@@ -2,7 +2,7 @@ package uk.co.ramp.covid.simulation.population;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.graalvm.compiler.nodes.memory.MemoryCheckpoint;
+import uk.co.ramp.covid.simulation.place.Household;
 import uk.co.ramp.covid.simulation.place.householdtypes.*;
 import uk.co.ramp.covid.simulation.util.InvalidParametersException;
 import uk.co.ramp.covid.simulation.util.ProbabilityDistribution;
@@ -10,7 +10,7 @@ import uk.co.ramp.covid.simulation.util.ProbabilityDistribution;
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Supplier;
+import java.util.function.Function;
 
 /**
  * PopulationParameters is a singleton class for reading and storing the population parameters
@@ -38,8 +38,8 @@ public class PopulationParameters {
         public Double pOlderSmaller = null;
         public Double pSingleOlder = null;
         
-        public ProbabilityDistribution<Supplier<HouseholdType>> householdTypeDistribution() {
-            ProbabilityDistribution<Supplier<HouseholdType>> p = new ProbabilityDistribution<>();
+        public ProbabilityDistribution<Function<Places, Household>> householdTypeDistribution() {
+            ProbabilityDistribution<Function<Places, Household>> p = new ProbabilityDistribution<>();
             p.add(pSingleAdult, SingleAdult::new);
             p.add(pSmallAdult, SmallAdult::new);
             p.add(pSingleParent, SingleParent::new);
@@ -377,7 +377,7 @@ public class PopulationParameters {
     // Household allocation parameters
 
 
-    public ProbabilityDistribution<Supplier<HouseholdType>> getHouseholdDistribution() {
+    public ProbabilityDistribution<Function<Places, Household>> getHouseholdDistribution() {
         return households.householdTypeDistribution();
     }
 

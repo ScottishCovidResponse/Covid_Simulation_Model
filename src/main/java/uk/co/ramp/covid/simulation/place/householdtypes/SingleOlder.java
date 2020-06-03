@@ -1,7 +1,15 @@
 package uk.co.ramp.covid.simulation.place.householdtypes;
 
+import uk.co.ramp.covid.simulation.place.Household;
+import uk.co.ramp.covid.simulation.population.Places;
+
 /** SingleOlder: One pensioner */
-public class SingleOlder extends HouseholdType {
+public class SingleOlder extends Household {
+
+    public SingleOlder(Places places) {
+        super(places);
+    }
+
     @Override
     public boolean adultRequired() {
         return false;
