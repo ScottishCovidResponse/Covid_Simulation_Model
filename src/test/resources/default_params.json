@@ -73,39 +73,6 @@
             "pOlderSmaller":0.14,
             "pSingleOlder":0.13
         },
-        "additionalMembersDistributions":{
-            "adultAllocationPMap":{
-                "1":0.8,
-                "2":0.5,
-                "3":0.3,
-                "4":0.2,
-                "5":0.1
-
-            },
-            "pensionerAllocationPMap":{
-                "1":0.8,
-                "2":0.5,
-                "3":0.3,
-                "4":0.2,
-                "5":0.1
-
-            },
-            "childAllocationPMap":{
-                "1":0.8,
-                "2":0.5,
-                "3":0.3,
-                "4":0.2,
-                "5":0.1
-
-            },
-            "infantAllocationPMap":{
-                "1":0.8,
-                "2":0.5,
-                "3":0.3,
-                "4":0.2,
-                "5":0.1
-            }
-        },
         "buildingDistribution":{
             "hospitals":10000,
             "hospitalSizes":{
