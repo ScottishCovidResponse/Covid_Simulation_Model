@@ -16,7 +16,7 @@ public class SmallFamily extends Household {
     }
 
     @Override
-    public boolean adultAllowed() {
+    public boolean additionalAdultsAllowed() {
         return false;
     }
 
@@ -26,7 +26,7 @@ public class SmallFamily extends Household {
     }
 
     @Override
-    public boolean childAllowed() {
+    public boolean additionalChildrenAllowed() {
         return children < 2;
     }
 
@@ -36,7 +36,7 @@ public class SmallFamily extends Household {
     }
 
     @Override
-    public boolean pensionerAllowed() {
+    public boolean additionalPensionersAllowed() {
         return false;
     }
 }

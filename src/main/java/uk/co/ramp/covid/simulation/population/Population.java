@@ -156,9 +156,9 @@ public class Population {
         // Now fill in anyone who is missing
         while (!adultIndex.isEmpty() || !pensionerIndex.isEmpty() || !childOrInfant.isEmpty()) {
             for (Household h : households) {
-                allocateAllowed(adultIndex, h::adultAllowed, h::addAdult);
-                allocateAllowed(pensionerIndex, h::pensionerAllowed, h::addPensioner);
-                allocateAllowed(childOrInfant, h::childAllowed, h::addChildOrInfant);
+                allocateAllowed(adultIndex, h::additionalAdultsAllowed, h::addAdult);
+                allocateAllowed(pensionerIndex, h::additionalPensionersAllowed, h::addPensioner);
+                allocateAllowed(childOrInfant, h::additionalChildrenAllowed, h::addChildOrInfant);
             }
         }
 

@@ -23,7 +23,7 @@ public class LargeFamily extends Household {
     }
 
     @Override
-    public boolean adultAllowed() {
+    public boolean additionalAdultsAllowed() {
         if (twoAdult) {
             return false;
         }
@@ -40,7 +40,7 @@ public class LargeFamily extends Household {
     }
 
     @Override
-    public boolean childAllowed() {
+    public boolean additionalChildrenAllowed() {
         return true;
     }
 
@@ -53,7 +53,7 @@ public class LargeFamily extends Household {
     }
 
     @Override
-    public boolean pensionerAllowed() {
+    public boolean additionalPensionersAllowed() {
         if (twoAdult) {
             return false;
         }

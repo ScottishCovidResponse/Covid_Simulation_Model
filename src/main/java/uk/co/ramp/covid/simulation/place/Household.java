@@ -270,15 +270,20 @@ public abstract class Household extends Place {
     protected int children = 0;
     protected int pensioners = 0;
 
+    // These functions control the allocation opf particular household types.
+    // The *Required functions should return true when it is essential another member of that type be added to the household.
+    // The additional*Allowed functions should return true if they can accept another member of that type, but it is not essential that they do so.
+    // For example, a household requiring at least one adult would have adultsRequired be true when adults < 1,
+    // and additionalAdultsRequired as true (allowing any number of additional adults to be added).
     public abstract boolean adultRequired();
-    public abstract boolean adultAllowed();
+    public abstract boolean additionalAdultsAllowed();
     public abstract boolean childRequired();
-    public abstract boolean childAllowed();
+    public abstract boolean additionalChildrenAllowed();
     public abstract boolean pensionerRequired();
-    public abstract boolean pensionerAllowed();
+    public abstract boolean additionalPensionersAllowed();
 
     public void addAdult(Adult p) {
-        if (adultRequired() || adultAllowed()) {
+        if (adultRequired() || additionalAdultsAllowed()) {
             people.add(p);
             p.setHome(this);
             adults++;
@@ -291,7 +296,7 @@ public abstract class Household extends Place {
     public void addChildOrInfant(Person p) {
         // We need to do some type inference here to handle the fact infants are
         // treated as children for household population
-        if ((childRequired() || childAllowed()) && (p instanceof Child || p instanceof Infant)) {
+        if ((childRequired() || additionalChildrenAllowed()) && (p instanceof Child || p instanceof Infant)) {
             people.add(p);
             p.setHome(this);
             children++;
@@ -301,7 +306,7 @@ public abstract class Household extends Place {
     }
 
     public void addPensioner(Pensioner p) {
-        if (pensionerRequired() || pensionerAllowed()) {
+        if (pensionerRequired() || additionalPensionersAllowed()) {
             people.add(p);
             p.setHome(this);
             pensioners++;

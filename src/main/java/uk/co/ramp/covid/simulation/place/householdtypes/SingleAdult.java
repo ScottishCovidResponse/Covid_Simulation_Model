@@ -16,7 +16,7 @@ public class SingleAdult extends Household {
     }
 
     @Override
-    public boolean adultAllowed() {
+    public boolean additionalAdultsAllowed() {
         return false;
     }
 
@@ -26,7 +26,7 @@ public class SingleAdult extends Household {
     }
 
     @Override
-    public boolean childAllowed() {
+    public boolean additionalChildrenAllowed() {
         return false;
     }
 
@@ -36,7 +36,7 @@ public class SingleAdult extends Household {
     }
 
     @Override
-    public boolean pensionerAllowed() {
+    public boolean additionalPensionersAllowed() {
         return false;
     }
 }
