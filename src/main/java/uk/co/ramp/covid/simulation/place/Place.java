@@ -44,7 +44,7 @@ public abstract class Place {
         reportInfection(t, p, s);
         p.reportInfection(s);
     } 
-    private double getTransProb() {
+    protected double getTransProb() {
     	double cTransProb = 0.0;
     	if(people.size() == 0) cTransProb = 0.0;
     	else if(people.size() <= transAdjustment) cTransProb = transProb;
