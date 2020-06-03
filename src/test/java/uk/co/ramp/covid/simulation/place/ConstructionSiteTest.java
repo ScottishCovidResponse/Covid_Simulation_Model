@@ -1,8 +1,5 @@
 package uk.co.ramp.covid.simulation.place;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.google.gson.JsonParseException;
@@ -10,22 +7,16 @@ import com.google.gson.JsonParseException;
 import uk.co.ramp.covid.simulation.DailyStats;
 import uk.co.ramp.covid.simulation.Model;
 import uk.co.ramp.covid.simulation.Time;
-import uk.co.ramp.covid.simulation.io.ParameterReader;
 import uk.co.ramp.covid.simulation.population.*;
 import uk.co.ramp.covid.simulation.testutil.PopulationGenerator;
+import uk.co.ramp.covid.simulation.util.SimulationTest;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.*;
 
-public class ConstructionSiteTest {
-
-    @Before
-    public void setupParams() throws IOException {
-        ParameterReader.readParametersFromFile("src/test/resources/default_params.json");
-    }
+public class ConstructionSiteTest extends SimulationTest {
 
     @Test
     public void testConstructionSiteTransProb() throws JsonParseException {

@@ -6,17 +6,17 @@ import org.junit.Test;
 import com.google.gson.JsonParseException;
 
 import uk.co.ramp.covid.simulation.Time;
-import uk.co.ramp.covid.simulation.io.ParameterReader;
 import uk.co.ramp.covid.simulation.population.Adult;
 import uk.co.ramp.covid.simulation.population.Person;
 import uk.co.ramp.covid.simulation.population.PopulationParameters;
+import uk.co.ramp.covid.simulation.util.SimulationTest;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 
-public class HouseholdTest {
+public class HouseholdTest extends SimulationTest {
 
     Household household;
 
@@ -27,7 +27,6 @@ public class HouseholdTest {
 
     @Before
     public void initialise() throws JsonParseException, IOException {
-        ParameterReader.readParametersFromFile("src/test/resources/default_params.json");
         household = new Household(Household.HouseholdType.ADULT, null);
         Person p1 = new Adult(30, Person.Sex.MALE);
         Person p2 = new Adult(32, Person.Sex.FEMALE);

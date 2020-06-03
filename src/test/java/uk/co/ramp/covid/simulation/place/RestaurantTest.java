@@ -1,15 +1,14 @@
 package uk.co.ramp.covid.simulation.place;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.google.gson.JsonParseException;
 import uk.co.ramp.covid.simulation.DailyStats;
 import uk.co.ramp.covid.simulation.Time;
-import uk.co.ramp.covid.simulation.io.ParameterReader;
 import uk.co.ramp.covid.simulation.population.*;
 import uk.co.ramp.covid.simulation.testutil.PopulationGenerator;
+import uk.co.ramp.covid.simulation.util.SimulationTest;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -18,7 +17,7 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public class RestaurantTest {
+public class RestaurantTest extends SimulationTest {
 
     Restaurant restaurant;
     Person p1;
@@ -26,8 +25,6 @@ public class RestaurantTest {
 
     @Before
     public void initialise() throws JsonParseException, IOException {
-        ParameterReader.readParametersFromFile("src/test/resources/default_params.json");
-
         //Setup a restaurant with 2 people
         restaurant = new Restaurant(CommunalPlace.Size.MED);
         p1 = new Adult(30, Person.Sex.MALE);

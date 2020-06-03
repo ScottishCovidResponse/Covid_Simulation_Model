@@ -4,9 +4,9 @@ import org.junit.After;
 import org.junit.Test;
 import uk.co.ramp.covid.simulation.covid.Covid;
 import uk.co.ramp.covid.simulation.covid.CovidParameters;
-import uk.co.ramp.covid.simulation.io.ParameterReader;
 import uk.co.ramp.covid.simulation.place.Household;
 import uk.co.ramp.covid.simulation.population.*;
+import uk.co.ramp.covid.simulation.util.SimulationTest;
 
 import java.io.IOException;
 
@@ -14,13 +14,12 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-public class CovidTest {
+public class CovidTest extends SimulationTest {
 
     //Test that a pensioner steps through the infection from latent to death
     @Test
     public void testStepInfectionSymptomatic() throws IOException {
         //Use the default parameters with a mortality rate of 100
-        ParameterReader.readParametersFromFile("src/test/resources/default_params.json");
         CovidParameters.get().setMortalityRate(100.0);
         CovidParameters.get().setSymptomProbability(100.0);
         CovidParameters.get().setPensionerProgressionPhase2(100.0);
@@ -59,7 +58,6 @@ public class CovidTest {
     //Test that a child steps through the infection from latent to recovered
     @Test
     public void testStepInfectionRecover() throws IOException {
-        ParameterReader.readParametersFromFile("src/test/resources/default_params.json");
         CStatus cStatus = null;
         Time t = new Time();
         Person child = new Child(6, Person.Sex.FEMALE);
@@ -84,7 +82,6 @@ public class CovidTest {
     //Test that a child steps through the infection from Asymtomatic to recovered
     @Test
     public void testStepInfectionAsymptomatic() throws IOException {
-        ParameterReader.readParametersFromFile("src/test/resources/default_params.json");
         CovidParameters.get().setSymptomProbability(0.0);
         Person child = new Child(5, Person.Sex.FEMALE);
         Time t = new Time();

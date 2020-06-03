@@ -1,24 +1,15 @@
 package uk.co.ramp.covid.simulation.population;
 
-import org.junit.Before;
 import org.junit.Test;
-import uk.co.ramp.covid.simulation.io.ParameterReader;
 import uk.co.ramp.covid.simulation.place.*;
+import uk.co.ramp.covid.simulation.util.SimulationTest;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.*;
 
-public class PlacesTest {
-
-    @Before
-    public void setupParams() throws IOException {
-        ParameterReader.readParametersFromFile("src/test/resources/default_params.json");
-        // NOTE: This test is not guaranteed to pass with a different seed due to randomness
-    }
-
+public class PlacesTest extends SimulationTest {
 
     @Test
     public void getRandomOffice() {
