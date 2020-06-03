@@ -36,14 +36,7 @@ public class ParameterReaderTest {
         assertEquals(0.05, PopulationParameters.get().getpLargeFamily(), EPSILON);
         assertEquals(0.09, PopulationParameters.get().getpLargeAdult(), EPSILON);
         assertEquals(0.14, PopulationParameters.get().getpOlderSmaller(), EPSILON);
-        assertEquals(0.14, PopulationParameters.get().getpSingleOlder(), EPSILON);
-
-        // Using size as a proxy to make sure it picks up the right parameter.
-        // As map parsing is built into GSON we don't test this again
-        assertEquals(3, PopulationParameters.get().getAdultAllocationPMap().size());
-        assertEquals(4, PopulationParameters.get().getPensionerAllocationPMap().size());
-        assertEquals(5, PopulationParameters.get().getChildAllocationPMap().size());
-        assertEquals(2, PopulationParameters.get().getInfantAllocationPMap().size());
+        assertEquals(0.13, PopulationParameters.get().getpSingleOlder(), EPSILON);
 
         assertEquals(1000, PopulationParameters.get().getHospitalRatio());
         assertEquals(500, PopulationParameters.get().getSchoolsRatio());
