@@ -1,7 +1,6 @@
 package uk.co.ramp.covid.simulation.population;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import uk.co.ramp.covid.simulation.DailyStats;
 import uk.co.ramp.covid.simulation.RStats;
@@ -121,13 +120,6 @@ public class PopulationTest extends SimulationTest {
                 }
             }
         }
-    }
-
-    @Ignore("Fails with some RNG seeds.")
-    @Test (expected = ImpossibleAllocationException.class )
-    public void testImpossibleAllocationException() throws ImpossibleAllocationException, ImpossibleWorkerDistributionException {
-        PopulationParameters.get().setHouseholdRatio(10.0);
-        new Population(10);
     }
 
     @Test (expected = ImpossibleAllocationException.class )
