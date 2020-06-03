@@ -29,7 +29,6 @@ public class HouseholdTest extends SimulationTest {
 
     @Before
     public void initialise() throws JsonParseException, IOException {
-        household = new Household(Household.HouseholdType.ADULT, null);
         household = new SmallFamily(null);
         Person p1 = new Adult(30, Person.Sex.MALE);
         Person p2 = new Adult(32, Person.Sex.FEMALE);
