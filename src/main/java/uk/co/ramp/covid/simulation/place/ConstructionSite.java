@@ -37,8 +37,4 @@ public class ConstructionSite extends CommunalPlace {
         return nStaff > 0;
     }
     
-    public void updateTransProb() {
-        transProb = PopulationParameters.get().getpBaseTrans() * PopulationParameters.get().getpConstructionSiteTrans() / super.people.size();    	
-    }
-
 }
