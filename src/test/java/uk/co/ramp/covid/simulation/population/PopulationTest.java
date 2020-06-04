@@ -5,6 +5,7 @@ import org.junit.Test;
 import uk.co.ramp.covid.simulation.DailyStats;
 import uk.co.ramp.covid.simulation.RStats;
 import uk.co.ramp.covid.simulation.place.*;
+import uk.co.ramp.covid.simulation.place.householdtypes.*;
 import uk.co.ramp.covid.simulation.testutil.PopulationGenerator;
 import uk.co.ramp.covid.simulation.util.SimulationTest;
 
@@ -28,9 +29,9 @@ public class PopulationTest extends SimulationTest {
         assertEquals("Unexpected population size", populationSize, pop.getPopulationSize());
     }
 
+
     @Test
     public void populateHouseholds() {
-
         // Final population size = initial population size (all people allocated)
         int p = 0;
         for (Household h : pop.getHouseholds()) {
@@ -38,86 +39,80 @@ public class PopulationTest extends SimulationTest {
         }
         assertEquals("Sum total household size should equal population size",  populationSize, p);
 
-        // Sanity check households
-        for (Household h : pop.getHouseholds()){
+
+        for (Household h : pop.getHouseholds()) {
             assertTrue("Each household must be assigned at least 1 person", h.getHouseholdSize() > 0);
-            switch (h.gethType()) {
-                // Adults only
-                case ADULT: {
-                    for (Object i : h.getInhabitants()) {
-                        assertTrue("Non Adult in adult only household", i instanceof Adult);
-                    }
-                    break;
-                }
-                // Pensioner only
-                case PENSIONER: {
-                    for (Object i : h.getInhabitants()) {
-                        assertTrue("Non Pensioner in pensioner only household", i instanceof Pensioner);
-                    }
-                    break;
-                }
-                // Adult + Pensioner (should contain at least one of each)
-                case ADULTPENSIONER: {
-                    boolean adultSeen = false;
-                    boolean pensionerSeen = false;
-                    for (Object i : h.getInhabitants()) {
-                        adultSeen = adultSeen || i instanceof Adult;
-                        pensionerSeen = adultSeen || i instanceof Pensioner;
-                        assertTrue( "Non Pensioner/Adult in pensioner/adult household",
-                                i instanceof Pensioner || i instanceof Adult);
-                    }
-                    assertTrue("No adult in an adult/pensioner household", adultSeen);
-                    assertTrue("No pensioner in an adult/pensioner household", pensionerSeen);
-                    break;
-                }
-                //Adult + Infant/Child ( Should contain at least one of each)
-                case ADULTCHILD: {
-                    boolean adultSeen = false;
-                    boolean childInfantSeen = false;
-                    for (Object i : h.getInhabitants()) {
-                        adultSeen = adultSeen || i instanceof Adult;
-                        childInfantSeen = childInfantSeen || i instanceof Child || i instanceof Infant;
-                        assertTrue("Non Adult/Child/Infant in Adult/Child household",
-                                i instanceof Child || i instanceof Infant || i instanceof Adult);
+            
+            if (h instanceof SingleAdult) {
+                assertEquals(1, h.getHouseholdSize());
+                h.getInhabitants().forEach(per -> assertTrue(per instanceof Adult));
+            }
 
-                    }
-                    assertTrue("No adult in an adult/child household", adultSeen);
-                    assertTrue("No child/infant in an adult/child household", childInfantSeen);
-                    break;
-                }
-                //Pensioner + Infant/Child ( Should contain at least one of each)
-                case PENSIONERCHILD: {
-                    boolean pensionerSeen = false;
-                    boolean childInfantSeen = false;
-                    for (Object i : h.getInhabitants()) {
-                        pensionerSeen = pensionerSeen || i instanceof Pensioner;
-                        childInfantSeen = childInfantSeen || i instanceof Child || i instanceof Infant;
-                        assertTrue("Non Pensioner/Child/Infact in Pensioner/Child household",
-                                i instanceof Pensioner || i instanceof Child || i instanceof Infant);
+            if (h instanceof SmallAdult) {
+                assertEquals(2, h.getHouseholdSize());
+                h.getInhabitants().forEach(per -> assertTrue(per instanceof Adult));
+            }
 
-                    }
-                    assertTrue("No pensioner in an pensioner/child household", pensionerSeen);
-                    assertTrue("No child/infant in an pensioner/child household", childInfantSeen);
-                    break;
-                }
-                //Adult + Pensioner + Infant/Child ( Should contain at least one of each)
-                case ADULTPENSIONERCHILD: {
-                    boolean adultSeen = false;
-                    boolean pensionerSeen = false;
-                    boolean childInfantSeen = false;
-                    for (Object i : h.getInhabitants()) {
-                        adultSeen = adultSeen || i instanceof Adult;
-                        pensionerSeen = pensionerSeen || i instanceof Pensioner;
-                        childInfantSeen = childInfantSeen || i instanceof Child || i instanceof Infant;
-                        assertTrue("Non Adult/Pensioner/Child/Infact in Pensioner/Child household",
-                                i instanceof Adult || i instanceof Pensioner
-                                        || i instanceof Child || i instanceof Infant);
-                    }
-                    assertTrue("No adult in an adult/pensioner/child household", adultSeen);
-                    assertTrue("No pensioner in an adult/pensioner/child household", pensionerSeen);
-                    assertTrue("No child/infant in an adult/pensioner/child household", childInfantSeen);
-                    break;
-                }
+            if (h instanceof SingleParent) {
+                assertEquals(1, h.getInhabitants().stream()
+                        .filter(per -> per instanceof Adult || per instanceof Pensioner).count());
+                assertTrue(h.getInhabitants().stream()
+                        .filter(per -> per instanceof Child || per instanceof Infant).count() >= 1);
+            }
+
+            if (h instanceof SmallFamily) {
+                assertEquals(2, h.getInhabitants().stream()
+                        .filter(per -> per instanceof Adult || per instanceof Pensioner).count());
+                long numChildren = h.getInhabitants().stream()
+                        .filter(per -> per instanceof Child || per instanceof Infant).count();
+                assertTrue(numChildren == 1 || numChildren == 2 );
+            }
+
+            if (h instanceof LargeTwoAdultFamiy) {
+                long numAdults = h.getInhabitants().stream()
+                        .filter(per -> per instanceof Adult || per instanceof Pensioner).count();
+                long numChildren = h.getInhabitants().stream()
+                        .filter(per -> per instanceof Child || per instanceof Infant).count();
+
+                assertTrue(numAdults == 2);
+                assertTrue(numChildren >= 3);
+            }
+
+            if (h instanceof LargeManyAdultFamily) {
+                long numAdults = h.getInhabitants().stream()
+                        .filter(per -> per instanceof Adult || per instanceof Pensioner).count();
+                long numChildren = h.getInhabitants().stream()
+                        .filter(per -> per instanceof Child || per instanceof Infant).count();
+
+                assertTrue(numAdults >= 3);
+                assertTrue(numChildren >= 1);
+            }
+
+            if (h instanceof LargeAdult) {
+                long numAdults = h.getInhabitants().stream()
+                        .filter(per -> per instanceof Adult || per instanceof Pensioner).count();
+                assertTrue(numAdults >= 3);
+            }
+
+            if (h instanceof AdultPensioner) {
+                long numAdults = h.getInhabitants().stream()
+                        .filter(per -> per instanceof Adult).count();
+                long numPensioners = h.getInhabitants().stream()
+                        .filter(per -> per instanceof Pensioner).count();
+                long numChildren = h.getInhabitants().stream()
+                        .filter(per -> per instanceof Child || per instanceof Infant).count();
+                assertTrue(numAdults == 1 && numPensioners == 1);
+                assertEquals(0, numChildren);
+            }
+
+            if (h instanceof DoubleOlder) {
+                assertEquals(2, h.getHouseholdSize());
+                h.getInhabitants().forEach(per -> assertTrue(per instanceof Pensioner));
+            }
+
+            if (h instanceof SingleOlder) {
+                assertEquals(1, h.getHouseholdSize());
+                h.getInhabitants().forEach(per -> assertTrue(per instanceof Pensioner));
             }
         }
     }
@@ -141,7 +136,6 @@ public class PopulationTest extends SimulationTest {
         //Test that the primary place of adult construction workers is set to construction site
         Adult adult = new Adult(30, Person.Sex.FEMALE);
         adult.profession = Adult.Professions.CONSTRUCTION;
-        pop.getHouseholds().get(0).addInhabitant(adult);
         adult.allocateCommunalPlace(pop.getPlaces());
         CommunalPlace cp = adult.getPrimaryCommunalPlace();
         assertTrue("Unexpected primary communal place", cp instanceof ConstructionSite);
@@ -152,7 +146,6 @@ public class PopulationTest extends SimulationTest {
         //Test that the primary place of adult hospital workers is set to hospital
         Adult adult = new Adult(30, Person.Sex.MALE);
         adult.profession = Adult.Professions.HOSPITAL;
-        pop.getHouseholds().get(0).addInhabitant(adult);
         adult.allocateCommunalPlace(pop.getPlaces());
         CommunalPlace cp = adult.getPrimaryCommunalPlace();
         assertTrue("Unexpected primary communal place", cp instanceof Hospital);
@@ -163,7 +156,6 @@ public class PopulationTest extends SimulationTest {
         //Test that the primary place of adult office workers is set to office
         Adult adult = new Adult(30, Person.Sex.FEMALE);
         adult.profession = Adult.Professions.OFFICE;
-        pop.getHouseholds().get(0).addInhabitant(adult);
         adult.allocateCommunalPlace(pop.getPlaces());
         CommunalPlace cp = adult.getPrimaryCommunalPlace();
         assertTrue("Unexpected primary communal place", cp instanceof Office);
@@ -174,7 +166,6 @@ public class PopulationTest extends SimulationTest {
         //Test that the primary place of adult restaurant workers is set to restaurant
         Adult adult = new Adult(30, Person.Sex.MALE);
         adult.profession = Adult.Professions.RESTAURANT;
-        pop.getHouseholds().get(0).addInhabitant(adult);
         adult.allocateCommunalPlace(pop.getPlaces());
         CommunalPlace cp = adult.getPrimaryCommunalPlace();
         assertTrue("Unexpected primary communal place", cp instanceof Restaurant);
@@ -185,7 +176,6 @@ public class PopulationTest extends SimulationTest {
         //Test that the primary place of adult teachers is set to school
         Adult adult = new Adult(30, Person.Sex.FEMALE);
         adult.profession = Adult.Professions.TEACHER;
-        pop.getHouseholds().get(0).addInhabitant(adult);
         adult.allocateCommunalPlace(pop.getPlaces());
         CommunalPlace cp = adult.getPrimaryCommunalPlace();
         assertTrue("Unexpected primary communal place", cp instanceof School);
@@ -196,7 +186,6 @@ public class PopulationTest extends SimulationTest {
         //Test that the primary place of adult shop workers is set to shop
         Adult adult = new Adult(30, Person.Sex.MALE);
         adult.profession = Adult.Professions.SHOP;
-        pop.getHouseholds().get(0).addInhabitant(adult);
         adult.allocateCommunalPlace(pop.getPlaces());
         CommunalPlace cp = adult.getPrimaryCommunalPlace();
         assertTrue("Unexpected primary communal place", cp instanceof Shop);

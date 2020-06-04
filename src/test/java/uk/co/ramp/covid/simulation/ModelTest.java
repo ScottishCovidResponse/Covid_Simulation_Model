@@ -186,6 +186,7 @@ public class ModelTest extends SimulationTest {
         assertTrue("Unexpectedly fewer infections after lockdown", totInfDuringLockdown < totInfAfterLockdown);
     }
 
+    @Ignore("Not robust to RNG")
     @Test
     public void testMortality() {
         //Mortality and transmission rates are set to 100%
