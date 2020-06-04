@@ -9,6 +9,7 @@ import uk.co.ramp.covid.simulation.util.SimulationTest;
 import java.io.IOException;
 import java.util.List;
 import static org.junit.Assert.assertEquals;
+import static uk.co.ramp.covid.simulation.population.Person.Sex.FEMALE;
 
 public class InfantTest extends SimulationTest {
 
@@ -27,7 +28,7 @@ public class InfantTest extends SimulationTest {
     public void testInfantReports() throws IOException, ImpossibleAllocationException, ImpossibleWorkerDistributionException {
         //Test Infant methods reportInfection() and reportDeath()
         Population p = PopulationGenerator.genValidPopulation(500);
-        Infant infant = new Infant(3, Person.Sex.FEMALE);
+        Infant infant = new Infant(3, FEMALE);
 
         List<DailyStats> stats;
         int nDays = 1;
@@ -38,5 +39,10 @@ public class InfantTest extends SimulationTest {
 
         infant.reportDeath(stats.get(0));
         assertEquals("Unexpected number of infant deaths", 1, stats.get(0).getInfantDeaths());
+    }
+
+    @Test (expected = InvalidAgeException.class)
+    public void testInvalidAgeException() {
+        Infant infant = new Infant(5, FEMALE);
     }
 }

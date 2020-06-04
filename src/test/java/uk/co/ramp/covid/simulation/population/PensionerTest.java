@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static uk.co.ramp.covid.simulation.population.Person.Sex.FEMALE;
 
 public class PensionerTest extends SimulationTest {
 
@@ -27,6 +28,11 @@ public class PensionerTest extends SimulationTest {
 
         pensioner.reportDeath(stats.get(0));
         assertEquals("Unexpected number of pensioner deaths", 1, stats.get(0).getPensionerDeaths());
+    }
+
+    @Test (expected = InvalidAgeException.class)
+    public void testInvalidAgeException() {
+        Pensioner pensioner = new Pensioner(5, FEMALE);
     }
 
 }

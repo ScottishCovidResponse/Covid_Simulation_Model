@@ -128,6 +128,14 @@ public class PopulationTest extends SimulationTest {
         new Population(10);
     }
 
+    @Test (expected = ImpossibleWorkerDistributionException.class)
+    public void testImpossibleWorkerDistribution() throws ImpossibleAllocationException, ImpossibleWorkerDistributionException {
+        int populationSize = 10000;
+        PopulationParameters.get().setConstructionSiteRatio(10);
+        Population p = new Population(populationSize);
+        p.allocatePeople();
+    }
+
     @Test
     public void testAllocateConstructionSite() {
         //Test that the primary place of adult construction workers is set to construction site

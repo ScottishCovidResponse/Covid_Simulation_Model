@@ -8,6 +8,7 @@ import uk.co.ramp.covid.simulation.util.SimulationTest;
 
 import java.io.IOException;
 import static org.junit.Assert.assertTrue;
+import static uk.co.ramp.covid.simulation.population.Person.Sex.FEMALE;
 
 public class ChildTest extends SimulationTest {
 
@@ -17,5 +18,10 @@ public class ChildTest extends SimulationTest {
         Child child = new Child(10, Person.Sex.MALE);
         child.allocateCommunalPlace(p.getPlaces());
         assertTrue("Child not at school", child.getPrimaryCommunalPlace() instanceof School);
+    }
+
+    @Test (expected = InvalidAgeException.class)
+    public void testInvalidAgeException() {
+        Child child = new Child(1, FEMALE);
     }
 }
