@@ -4,7 +4,9 @@ import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
+import uk.co.ramp.covid.simulation.covid.CovidParameters;
 import uk.co.ramp.covid.simulation.place.*;
+import uk.co.ramp.covid.simulation.place.householdtypes.SingleAdult;
 import uk.co.ramp.covid.simulation.population.*;
 import uk.co.ramp.covid.simulation.testutil.PopulationGenerator;
 import uk.co.ramp.covid.simulation.util.SimulationTest;
@@ -36,25 +38,25 @@ public class MovementTest extends SimulationTest {
         DailyStats s = new DailyStats(t);
         for (int i = 0; i < 24; i++) {
             p.timeStep(t, s);
-            
+
             for (School school : p.getPlaces().getSchools()) {
                 for (Person c : school.getPeople()) {
                     if (c instanceof Child) {
-                        schooled.add( (Child) c);
+                        schooled.add((Child) c);
                     }
                 }
             }
-            
+
             t = t.advance();
         }
-       
+
         int numChildren = 0;
         for (Person per : p.getAllPeople()) {
             if (per instanceof Child) {
                 numChildren++;
             }
         }
-        
+
         assertEquals(numChildren, schooled.size());
     }
 
@@ -69,7 +71,7 @@ public class MovementTest extends SimulationTest {
             for (Nursery nursery : p.getPlaces().getNurseries()) {
                 for (Person c : nursery.getPeople()) {
                     if (c instanceof Infant) {
-                        nursed.add( (Infant) c);
+                        nursed.add((Infant) c);
                     }
                 }
             }
@@ -93,7 +95,7 @@ public class MovementTest extends SimulationTest {
             for (CommunalPlace place : p.getPlaces().getAllPlaces()) {
                 for (Person per : place.getPeople()) {
                     if (per instanceof Adult) {
-                        working.add( (Adult) per);
+                        working.add((Adult) per);
                     }
                 }
             }
@@ -201,7 +203,7 @@ public class MovementTest extends SimulationTest {
             }
         }
     }
-    
+
     private void doesNotGoOut(Household iso, List<Person> isolating) {
         for (CommunalPlace place : p.getPlaces().getAllPlaces()) {
             for (Person per : isolating) {
@@ -262,12 +264,12 @@ public class MovementTest extends SimulationTest {
         int excursions = 0;
         for (int i = 0; i < 24; i++) {
             p.timeStep(t, s);
-            
+
             for (CommunalPlace place : p.getPlaces().getAllPlaces()) {
                 for (Person per : isolating) {
-                   if (place.getPeople().contains(per)) {
-                       excursions++;
-                   }
+                    if (place.getPeople().contains(per)) {
+                        excursions++;
+                    }
                 }
             }
 
@@ -323,6 +325,103 @@ public class MovementTest extends SimulationTest {
         p.getHouseholds().forEach(h -> h.dayEnd());
 
         // Initial 2 days are over but we should still be isolating since there's a new case
+        assertTrue(iso.isIsolating());
+    }
+
+    @Test
+    public void somePeopleGetTested() {
+        // As most tests are positive we force lots of infections to check some go negative.
+        p.seedVirus(100);
+        CovidParameters.get().setpDiagnosticTestAvailable(1.0);
+        p.simulate(50);
+
+        int numTested = 0;
+        int numNegative = 0;
+        for (Person p : p.getAllPeople()) {
+            if (p.wasTested()) {
+                numTested++;
+            }
+            // Only adults/pensioners get tested
+            if (p instanceof Child || p instanceof Infant) {
+                assertFalse(p.wasTested());
+            }
+
+            // Some tests are negatives
+            if (p.wasTested()) {
+                if (!p.getTestOutcome().get()) {
+                    numNegative++;
+                }
+            }
+        }
+        assertTrue(numTested > 0);
+        assertTrue(numNegative > 0);
+    }
+
+    @Test
+    public void negativeTestsExitQuarantine() {
+        Time t = new Time(24);
+        DailyStats s = new DailyStats(t);
+
+        Household iso = null;
+        for (Household h : p.getHouseholds()) {
+            if (h instanceof SingleAdult) {
+                iso = h;
+                break;
+            }
+        }
+
+        iso.forceIsolationtimer(14);
+        Person per = iso.getInhabitants().get(0);
+        per.forceQuarantine();
+
+        per.infect();
+        per.getcVirus().forceSymptomatic(true);
+        // Usually there's a delay before symptonms but we just force it here
+        double time = per.getcVirus().getSymptomDelay() + 1;
+        for (int j = 0; j < time; j++) {
+            per.getcVirus().stepInfection(t);
+        }
+        per.cStatus();
+
+        CovidParameters.get().setDiagnosticTestSensitivity(0.0);
+        per.getTested();
+        assertTrue(per.wasTested());
+        assertFalse(per.getTestOutcome().get());
+        assertFalse(per.getQuarantine());
+        assertFalse(iso.isIsolating());
+    }
+
+    @Test
+    public void positiveTestsStayInQuarantine() {
+        Time t = new Time(24);
+        DailyStats s = new DailyStats(t);
+
+        Household iso = null;
+        for (Household h : p.getHouseholds()) {
+            if (h instanceof SingleAdult) {
+                iso = h;
+                break;
+            }
+        }
+
+        iso.forceIsolationtimer(14);
+        Person per = iso.getInhabitants().get(0);
+        per.forceQuarantine();
+
+        per.infect();
+        per.getcVirus().forceSymptomatic(true);
+        // Usually there's a delay before symptonms but we just force it here
+        double time = per.getcVirus().getSymptomDelay() + 1;
+        for (int j = 0; j < time; j++) {
+            per.getcVirus().stepInfection(t);
+        }
+        per.cStatus();
+
+        CovidParameters.get().setDiagnosticTestSensitivity(1.0);
+        per.getTested();
+        assertTrue(per.wasTested());
+        assertTrue(per.getTestOutcome().get());
+        assertTrue(per.getQuarantine());
         assertTrue(iso.isIsolating());
     }
 }

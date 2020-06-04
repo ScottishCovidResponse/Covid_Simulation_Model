@@ -53,7 +53,7 @@ public class CovidTest extends SimulationTest {
             if(!virus.isDead()) cStatus = virus.stepInfection(t);
             t.advance();
         }
-        assertTrue(virus.getIsSymptomatic());
+        assertTrue(virus.isSymptomatic());
         virus.stepInfection(t.advance());
         assertEquals(CStatus.DEAD, cStatus);
     }
@@ -79,7 +79,7 @@ public class CovidTest extends SimulationTest {
         }
       //  cStatus = virus.stepInfection();
         assertEquals(CStatus.RECOVERED, cStatus);
-        assertFalse(virus.getIsSymptomatic());
+        assertFalse(virus.isSymptomatic());
     }
 
     //Test that a child steps through the infection from Asymtomatic to recovered
@@ -107,7 +107,7 @@ public class CovidTest extends SimulationTest {
         }
         
         assertEquals(CStatus.RECOVERED, cStatus);
-        assertFalse(virus.getIsSymptomatic());
+        assertFalse(virus.isSymptomatic());
     }
 
     @After
