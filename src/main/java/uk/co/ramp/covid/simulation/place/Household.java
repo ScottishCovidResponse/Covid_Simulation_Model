@@ -2,6 +2,7 @@ package uk.co.ramp.covid.simulation.place;
 
 import uk.co.ramp.covid.simulation.DailyStats;
 import uk.co.ramp.covid.simulation.Time;
+import uk.co.ramp.covid.simulation.covid.CovidParameters;
 import uk.co.ramp.covid.simulation.population.*;
 import uk.co.ramp.covid.simulation.util.RNG;
 
@@ -62,6 +63,10 @@ public abstract class Household extends Place {
         if (willIsolate) {
             isolationTimer = PopulationParameters.get().getHouseholdIsolationPeriod();
         }
+    }
+    
+    public void stopIsolating() {
+        isolationTimer = 0;
     }
     
     public boolean isIsolating() {
@@ -141,6 +146,7 @@ public abstract class Household extends Place {
         }
     }
 
+
     @Override
     public void doMovement(Time t, boolean lockdown) {
         if (!isIsolating()) {
@@ -166,7 +172,21 @@ public abstract class Household extends Place {
         sendNeighboursHome(t);
     }
 
-    private void moveNeighbour(boolean lockdown) {
+      public void doTesting(Time t) {
+        for (Person p : getInhabitants()) {
+            if (p.isinfected()) {
+                Time symptomaticTime = p.getcVirus().getInfectionLog().getSymptomaticTime();
+                if (symptomaticTime != null
+                        && symptomaticTime.getAbsTime() <= t.getAbsTime() + 24
+                        && RNG.get().nextUniform(0,1) <= CovidParameters.get().getpDiagnosticTestAvailable()) {
+                    p.getTested();
+                }
+            }
+        }
+    }
+
+    private void moveNeighbour() {
+
         List<Person> left = new ArrayList<>();
         if(!lockdown || !this.lockCompliant) {
         for (Household n : getNeighbours()) {

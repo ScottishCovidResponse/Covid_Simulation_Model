@@ -30,6 +30,18 @@ Determines parameters of the (COVID) disease
 | adultProgressionPhase2     | Daily probability an adult progresses to Phase 2               | Double |
 | pensionerProgressionPhase2 | Daily probability a pensioner progresses to Phase 2            | Double |
 
+## Tests Parameters
+
+Determines the efficiency of testing
+
+-   Object name: `testParameters`
+
+| Parameter Name            | Description                                                 | Type   |
+|---------------------------|-------------------------------------------------------------|--------|
+| diagnosticTestSensitivity | Probability of testing positive if a person has the disease | Double |
+| pDiagnosticTestAvailable  | Per hour probability that a test is available               | Double |
+
+
 # Population
 ## Population Parameters
 

@@ -26,6 +26,9 @@ public class ParameterReaderTest {
         assertEquals(0.15, CovidParameters.get().getAdultProgressionPhase2(), EPSILON);
         assertEquals(1.0, CovidParameters.get().getPensionerProgressionPhase2(), EPSILON);
 
+        // Test Parameters
+        assertEquals(0.9, CovidParameters.get().getDiagnosticTestSensitivity(), EPSILON);
+
         // Population Parameters
         assertEquals(42, PopulationParameters.get().getPopulation().size());
 

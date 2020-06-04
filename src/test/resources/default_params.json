@@ -1,6 +1,9 @@
 {
     "disease":{
-
+      "testParameters":{
+          "diagnosticTestSensitivity": 0.9,
+          "pDiagnosticTestAvailable":0.5
+      },
       "diseaseParameters":{
           "meanLatentPeriod":123.12,
           "meanAsymptomaticPeriod":192,
