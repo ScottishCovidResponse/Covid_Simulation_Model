@@ -40,12 +40,12 @@ public class RStats {
 
     /** Returns the mean R for a given day */
     public Double getMeanR(int absDay) {
-        return getMeanRGeneric(absDay, (a, b) -> a == b);
+        return getMeanRGeneric(absDay, (a, b) -> a.equals(b));
     }
 
     /** Returns the mean R up to a given day */
     public Double getMeanRBefore(int absDay) {
-        return getMeanRGeneric(absDay, (a, b) -> a <= b);
+        return getMeanRGeneric(absDay, (a, b) -> a.compareTo(b) <= 0);
     }
 
     /** Returns the mean generation time for a given day */
