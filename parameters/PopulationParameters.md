@@ -100,35 +100,20 @@ households may include either/both children or infants.
 | Parameter Name           | Description                                                                     | Type   |
 |--------------------------|---------------------------------------------------------------------------------|--------|
 | householdRaio            | Ratio of population size to households, e.g. 2 implies 1 household per 2 people | Double |
-| pAdultOnly               | Probability of an adult only household                                          | Double |
-| pPensionerOnly           | Probability of a pensioner only household                                       | Double |
-| pPensionerAdult          | Probability of an adult/pensioner household                                     | Double |
-| pAdultChildren           | Probability of an adult/child household                                         | Double |
-| pPensionerChildren       | Probability of an pensioner/child household                                     | Double |
-| pAdultPensionerChildren  | Probability of an adult/pensioner/child household                               | Double |
+| pSingleAdult             | Probability of a single adult household                                         | Double |
+| pSmallAdult              | Probability of a small adult household                                          | Double |
+| pSingleParent            | Probability of a single parent household                                        | Double |
+| pSmallFamily             | Probability of a small family household                                         | Double |
+| pLargeTwoAdultFamily     | Probability of a large, 2 adult, family household                               | Double |
+| pLargeTwoAdultFamily     | Probability of a large, >= 3 adult, family household                            | Double |
+| pLargeAdult              | Probability of a large adult household                                          | Double |
+| pAdultPensioner          | Probability of an adult/pensioner household                                     | Double |
+| pDoubleOlder             | Probability of a two pensioner household                                        | Double |
+| pSingleOlder             | Probability of a single pensioner household                                     | Double |
 | pGoShopping              | Probability the households tries to go shopping in an hour                      | Double |
 | pGoRestaurant            | Probability the households tries to go to a restaurant in an hour               | Double |
 | pWillIsolate             | Probability the household isolates if symptoms appear                           | Double |
 | householdIsolationPeriod | Period a household isolates when a symptomatic case appears                     | Int    |
-
-## Household Size Distributions
-
-Determines the probability of adding a person of a particular type to a
-household of a given size. E.g. for adults. 1:0.8, says there is an 80%
-chance that an additional adult will be added to the household.
-
-Note that househoolds are pre-allocated to meet their type requirements,
-e.g. an adult only household will contain at least one adult, so these
-distributions only need to account for household sizes greater than 1.
-
--   Object name: `additionalMembersDistributions`
-
-| Parameter Name          | Description                                                    | Type                              |
-|-------------------------|----------------------------------------------------------------|-----------------------------------|
-| adultAllocationPMap     | Probability map for adding additional adults to households     | Map (householdSize : probability) |
-| pensionerAllocationPMap | Probability map for adding additional pensioners to households | Map (householdSize : probability) |
-| childAllocationPMap     | Probability map for adding additional children to households   | Map (householdSize : probability) |
-| infantAllocationPMap    | Probability map for adding additional infants to households    | Map (householdSize : probability) |
 
 ## Household Properties
 

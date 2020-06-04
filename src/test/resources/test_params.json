@@ -64,39 +64,16 @@
         },
         "households":{
             "householdRatio": 2.18,
-            "pAdultOnly":0.2,
-            "pPensionerOnly":0.1,
-            "pPensionerAdult":0.2,
-            "pAdultChildren":0.2,
-            "pPensionerChildren":0.15,
-            "pAdultPensionerChildren":0.15
-        },
-        "additionalMembersDistributions":{
-            "adultAllocationPMap":{
-                "1":0.8,
-                "2":0.5,
-                "3":0.3
-
-            },
-            "pensionerAllocationPMap":{
-                "1":0.8,
-                "2":0.5,
-                "3":0.3,
-                "4":0.2
-
-            },
-            "childAllocationPMap":{
-                "1":0.8,
-                "2":0.5,
-                "3":0.3,
-                "4":0.2,
-                "5":0.1
-
-            },
-            "infantAllocationPMap":{
-                "1":0.8,
-                "2":0.5
-            }
+            "pSingleAdult":0.22,
+            "pSmallAdult":0.2,
+            "pSingleParent":0.05,
+            "pSmallFamily":0.12,
+            "pLargeTwoAdultFamily":0.03,
+            "pLargeManyAdultFamily":0.02,
+            "pLargeAdult":0.09,
+            "pAdultPensioner":0.09,
+            "pDoubleOlder":0.04,
+            "pSingleOlder":0.14
         },
         "buildingDistribution":{
             "hospitals":1000,

@@ -2,11 +2,15 @@ package uk.co.ramp.covid.simulation.population;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import uk.co.ramp.covid.simulation.place.Household;
+import uk.co.ramp.covid.simulation.place.householdtypes.*;
 import uk.co.ramp.covid.simulation.util.InvalidParametersException;
+import uk.co.ramp.covid.simulation.util.ProbabilityDistribution;
 
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Function;
 
 /**
  * PopulationParameters is a singleton class for reading and storing the population parameters
@@ -19,69 +23,76 @@ public class PopulationParameters {
     private static PopulationParameters pp = null;
     private static final double EPSILON = 0.001;
 
+
     // Household populations
     // These values define the probability of a household being an adult only, adult and child household etc
     private static class Households {
         public Double householdRatio = null;
 
-        public Double pAdultOnly = null;
-        public Double pPensionerOnly = null;
-        public Double pPensionerAdult = null;
-        public Double pAdultChildren = null;
-        public Double pPensionerChildren = null;
-        public Double pAdultPensionerChildren = null;
+        public Double pSingleAdult = null;
+        public Double pSmallAdult = null;
+        public Double pSingleParent = null;
+        public Double pSmallFamily = null;
+        public Double pLargeTwoAdultFamily = null;
+        public Double pLargeManyAdultFamily = null;
+        public Double pLargeAdult = null;
+        public Double pAdultPensioner = null;
+        public Double pDoubleOlder = null;
+        public Double pSingleOlder = null;
+        
+        public ProbabilityDistribution<Function<Places, Household>> householdTypeDistribution() {
+            ProbabilityDistribution<Function<Places, Household>> p = new ProbabilityDistribution<>();
+            p.add(pSingleAdult, SingleAdult::new);
+            p.add(pSmallAdult, SmallAdult::new);
+            p.add(pSingleParent, SingleParent::new);
+            p.add(pSmallFamily, SmallFamily::new);
+            p.add(pLargeTwoAdultFamily, LargeTwoAdultFamiy::new);
+            p.add(pLargeManyAdultFamily, LargeManyAdultFamily::new);
+            p.add(pLargeAdult, LargeAdult::new);
+            p.add(pAdultPensioner, AdultPensioner::new);
+            p.add(pDoubleOlder, DoubleOlder::new);
+            p.add(pSingleOlder, SingleOlder::new);
+            return p;
+        }
 
         @Override
         public String toString() {
             return "Households{" +
                     "householdRatio=" + householdRatio +
-                    ", pAdultOnly=" + pAdultOnly +
-                    ", pPensionerOnly=" + pPensionerOnly +
-                    ", pPensionerAdult=" + pPensionerAdult +
-                    ", pAdultChildren=" + pAdultChildren +
-                    ", pPensionerChildren=" + pPensionerChildren +
-                    ", pAdultPensionerChildren=" + pAdultPensionerChildren +
+                    ", pSingleAdult=" + pSingleAdult +
+                    ", pSmallAdult=" + pSmallAdult +
+                    ", pSingleParent=" + pSingleParent +
+                    ", pSmallFamily=" + pSmallFamily +
+                    ", pLargeTwoAdultFamily=" + pLargeTwoAdultFamily +
+                    ", pLargeManyAdultFamily=" + pLargeManyAdultFamily +
+                    ", pLargeAdult=" + pLargeAdult +
+                    ", pAdultPensioner=" + pAdultPensioner +
+                    ", pDoubleOlder=" + pDoubleOlder +
+                    ", pSingleOlder=" + pSingleOlder +
                     '}';
         }
 
         public boolean isValid() {
-            boolean probabilitiesValid = isValidProbability(pAdultOnly, "pAdultOnly")
-                    && isValidProbability(pPensionerOnly, "pPensionerOnly")
-                    && isValidProbability(pAdultChildren, "pAdultChildren")
-                    && isValidProbability(pAdultPensionerChildren, "pAdultPensionerChildren")
-                    && isValidProbability(pPensionerChildren, "pPensionerChildren")
-                    && isValidProbability(pPensionerAdult, "pPensionerAdult");
+            boolean probabilitiesValid = isValidProbability(pSingleAdult, "pSingleAdult")
+                    && isValidProbability(pSmallAdult, "pSmallAdult")
+                    && isValidProbability(pSingleParent, "pSingleParent")
+                    && isValidProbability(pSmallFamily, "pSmallFamily")
+                    && isValidProbability(pLargeTwoAdultFamily, "pLargeTwoAdultFamily")
+                    && isValidProbability(pLargeManyAdultFamily, "pLargeManyAdultFamily")
+                    && isValidProbability(pLargeAdult, "pLargeAdult")
+                    && isValidProbability(pAdultPensioner, "pAdultPensioner")
+                    && isValidProbability(pDoubleOlder, "pDoubleOlder")
+                    && isValidProbability(pSingleOlder, "pSingleOlder");
 
             probabilitiesValid = probabilitiesValid && (householdRatio >= 1);
 
-            double totalP = pAdultOnly + pPensionerAdult + pPensionerOnly + pAdultChildren
-                    + pPensionerChildren + pAdultPensionerChildren;
+            double totalP = pSingleAdult + pSmallAdult + pSingleParent + pSmallFamily + pLargeManyAdultFamily
+                    + pLargeTwoAdultFamily + pLargeAdult + pAdultPensioner + pDoubleOlder + pSingleOlder;
             if(!(totalP <= 1 + EPSILON && totalP >= 1 - EPSILON)) {
                 LOGGER.error("Household parameter probabilities do not total one");
                 return false;
             }
             return probabilitiesValid;
-        }
-
-    }
-
-    // Household allocation probabilities based on household size and type
-    private static class AdditionalMembersDistributions {
-        public Map<Integer, Double> adultAllocationPMap = null;
-        public Map<Integer, Double> pensionerAllocationPMap = null;
-        public Map<Integer, Double> childAllocationPMap = null;
-        public Map<Integer, Double> infantAllocationPMap = null;
-
-        public AdditionalMembersDistributions() {}
-
-        @Override
-        public String toString() {
-            return "AdditionalMembersDistributions{" +
-                    "adultAllocationPMap=" + adultAllocationPMap +
-                    ", pensionerAllocationPMap=" + pensionerAllocationPMap +
-                    ", childAllocationPMap=" + childAllocationPMap +
-                    ", infantAllocationPMap=" + infantAllocationPMap +
-                    '}';
         }
 
     }
@@ -314,7 +325,6 @@ public class PopulationParameters {
 
     private final Map<String,Double> population;
     private final Households households;
-    private final AdditionalMembersDistributions additionalMembersDistributions;
     private BuildingDistribution buildingDistribution;
     private final WorkerAllocation workerAllocation;
     private final BuildingProperties buildingProperties;
@@ -325,7 +335,6 @@ public class PopulationParameters {
     private PopulationParameters() {
         population = new HashMap<>();
         households = new Households();
-        additionalMembersDistributions = new AdditionalMembersDistributions();
         buildingDistribution = new BuildingDistribution();
         workerAllocation = new WorkerAllocation();
         buildingProperties = new BuildingProperties();
@@ -341,7 +350,6 @@ public class PopulationParameters {
         // in one go instead of being short circuited
         valid = valid && checker.isValid(population);
         valid = valid && checker.isValid(households) && households.isValid();
-        valid = valid && checker.isValid(additionalMembersDistributions);
         valid = valid && checker.isValid(buildingDistribution) && buildingDistribution.isValid();
         valid = valid && checker.isValid(workerAllocation) && workerAllocation.isValid();
         valid = valid && checker.isValid(buildingProperties) && buildingProperties.isValid();
@@ -369,48 +377,53 @@ public class PopulationParameters {
 
     // Household allocation parameters
 
+
+    public ProbabilityDistribution<Function<Places, Household>> getHouseholdDistribution() {
+        return households.householdTypeDistribution();
+    }
+
     public double getHouseholdRatio() { return households.householdRatio; }
 
     public void setHouseholdRatio(double r) { households.householdRatio = r; }
 
-    public double getpAdultOnly() {
-        return households.pAdultOnly;
+    public double getpSingleAdult() {
+        return households.pSingleAdult;
     }
 
-    public double getpPensionerOnly() {
-        return households.pPensionerOnly;
+    public double getpSmallAdult() {
+        return households.pSmallAdult;
     }
 
-    public double getpPensionerAdult() {
-        return households.pPensionerAdult;
+    public double getpSingleParent() {
+        return households.pSingleParent;
     }
 
-    public double getpAdultChildren() {
-        return households.pAdultChildren;
+    public double getpSmallFamily() {
+        return households.pSmallFamily;
     }
 
-    public double getpPensionerChildren() {
-        return households.pPensionerChildren;
+    public double getpLargeTwoAdultFamily() {
+        return households.pLargeTwoAdultFamily;
     }
 
-    public double getpAdultPensionerChildren() {
-        return households.pAdultPensionerChildren;
+    public double getpLargeManyFamily() {
+        return households.pLargeManyAdultFamily;
     }
 
-    public Map<Integer, Double> getAdultAllocationPMap() {
-        return additionalMembersDistributions.adultAllocationPMap;
+    public double getpLargeAdult() {
+        return households.pLargeAdult;
     }
 
-    public Map<Integer, Double> getPensionerAllocationPMap() {
-        return additionalMembersDistributions.pensionerAllocationPMap;
+    public double getpAdultPensioner() {
+        return households.pAdultPensioner;
     }
 
-    public Map<Integer, Double> getChildAllocationPMap() {
-        return additionalMembersDistributions.childAllocationPMap;
+    public double getpDobuleOlder() {
+        return households.pDoubleOlder;
     }
 
-    public Map<Integer, Double> getInfantAllocationPMap() {
-        return additionalMembersDistributions.infantAllocationPMap;
+    public double getpSingleOlder() {
+        return households.pSingleOlder;
     }
 
     // Number of buildings of a particular type
@@ -687,7 +700,6 @@ public class PopulationParameters {
         return "PopulationParameters{" + "\n" +
                 population + "\n" +
                 households + "\n" +
-                additionalMembersDistributions + "\n" +
                 buildingDistribution + "\n" +
                 workerAllocation + "\n" +
                 buildingProperties + "\n" +

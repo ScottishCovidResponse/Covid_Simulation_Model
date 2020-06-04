@@ -312,12 +312,13 @@ public class MovementTest extends SimulationTest {
                 per.getcVirus().forceSymptomatic(true);
                 // Usually there's a delay before symptonms but we just force it here
                 double time = per.getcVirus().getSymptomDelay() + 1;
-                for (int j = 0; j < time; j++) {
+                for (int j = 0; j < time + 1; j++) {
                     per.getcVirus().stepInfection(t);
                 }
                 per.cStatus();
             }
             doesNotGoOut(iso, isolating);
+            t = t.advance();
         }
         p.getHouseholds().forEach(h -> h.dayEnd());
 
