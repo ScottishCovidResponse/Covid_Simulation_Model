@@ -9,7 +9,6 @@ import uk.co.ramp.covid.simulation.place.householdtypes.*;
 import uk.co.ramp.covid.simulation.testutil.PopulationGenerator;
 import uk.co.ramp.covid.simulation.util.SimulationTest;
 
-import java.io.IOException;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -20,7 +19,7 @@ public class PopulationTest extends SimulationTest {
     private final int populationSize = 10000;
 
     @Before
-    public void setupParams() throws IOException {
+    public void setupParams() {
         pop = PopulationGenerator.genValidPopulation(populationSize);
     }
 
@@ -74,7 +73,7 @@ public class PopulationTest extends SimulationTest {
                 long numChildren = h.getInhabitants().stream()
                         .filter(per -> per instanceof Child || per instanceof Infant).count();
 
-                assertTrue(numAdults == 2);
+                assertEquals(2, numAdults);
                 assertTrue(numChildren >= 3);
             }
 
@@ -213,7 +212,7 @@ public class PopulationTest extends SimulationTest {
 
         //loop for each household and check neighbour list is not null
         for (int i = 0; i < pop.getNumHouseholds(); i++) {
-            assertNotNull("Null neighbour list", pop.getHouseholds().get(i).nNeighbours());
+            assertTrue("Null neighbour list", pop.getHouseholds().get(i).nNeighbours() >= 0);
             totalNeighbours += pop.getHouseholds().get(i).nNeighbours();
         }
 
@@ -294,11 +293,10 @@ public class PopulationTest extends SimulationTest {
     }
 
     @Test
-    public void allPlacesStaffed() throws ImpossibleAllocationException, IOException {
+    public void allPlacesStaffed() {
         for (CommunalPlace q : pop.getPlaces().getAllPlaces()) {
             assertTrue("Place not fully staffed, nStaff: " + q.getnStaff(), q.isFullyStaffed());
         }
-
     }
     
     @Test
