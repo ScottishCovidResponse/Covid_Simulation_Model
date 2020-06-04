@@ -13,6 +13,7 @@ import java.util.function.BiFunction;
 public class RStats {
 
     private final Population population;
+    private boolean rflag;
 
     public RStats(Population p) {
         this.population = p;
@@ -31,21 +32,21 @@ public class RStats {
             }
         }
 
-        if (nSecondaries > 0) {
-            return nSecondaries /  nInfectors;
-        }
-
+        if(nInfectors > 0 && !rflag) return nSecondaries;
+        if(rflag) return nSecondaries / nInfectors;
         return null;
     }
 
     /** Returns the mean R for a given day */
     public Double getMeanR(int absDay) {
-        return getMeanRGeneric(absDay, (a, b) -> a == b);
+    	rflag = false;
+        return getMeanRGeneric(absDay, (a, b) -> a.equals(b));
     }
 
     /** Returns the mean R up to a given day */
     public Double getMeanRBefore(int absDay) {
-        return getMeanRGeneric(absDay, (a, b) -> a <= b);
+    	rflag = true;
+        return getMeanRGeneric(absDay, (a, b) -> a.compareTo(b) <= 0);
     }
 
     /** Returns the mean generation time for a given day */

@@ -114,6 +114,7 @@ households may include either/both children or infants.
 | pGoRestaurant            | Probability the households tries to go to a restaurant in an hour               | Double |
 | pWillIsolate             | Probability the household isolates if symptoms appear                           | Double |
 | householdIsolationPeriod | Period a household isolates when a symptomatic case appears                     | Int    |
+| pLockCompliance          | Compliance to lockdown (will the household visit neighbours)                     | Double |
 
 ## Household Properties
 
@@ -170,13 +171,13 @@ an essential service).
 | Parameter Name         | Description                                                    | Type   |
 |------------------------|----------------------------------------------------------------|--------|
 | pBaseTrans             | Base disease transmission probability for all places           | Double |
-| pHospitalTrans         | Disease transmission probability in a hospital                 | Double |
-| pConstructionSiteTrans | Disease transmission probability on a construction site        | Double |
-| pNurseryTrans          | Disease transmission probability in a nursery                  | Double |
-| pOfficeTrans           | Disease transmission probability in an office                  | Double |
-| pRestaurantTrans       | Disease transmission probability in a restaurant               | Double |
-| pSchoolTrans           | Disease transmission probability in a school                   | Double |
-| pShopTrans             | Disease transmission probability in a shop                     | Double |
+| pHospitalTrans         | Contact frequency in a hospital                                | Double |
+| pConstructionSiteTrans | Contact frequency on a construction site                       | Double |
+| pNurseryTrans          | Contact frequency in a nursery                                 | Double |
+| pOfficeTrans           | Contact frequency in an office                                 | Double |
+| pRestaurantTrans       | Contact frequency in a restaurant                              | Double |
+| pSchoolTrans           | Contact frequency in a school                                  | Double |
+| pShopTrans             | Contact frequency in a shop                                    | Double |
 | pHospitalKey           | Probability a hospital closes in a lockdown                    | Double |
 | pConstructionSiteKey   | Probability a construction site closes in a lockdown           | Double |
 | pOfficeKey             | Probability an office closes in a lockdown                     | Double |

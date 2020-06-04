@@ -54,7 +54,7 @@ public class DailyStats {
     private int infantDeaths = 0;
 
     // Infection rate stats
-    private Double R = null;
+    private Double secInfections = null;
     private Double generationTime = null;
 
     public DailyStats(Time t) {
@@ -103,7 +103,7 @@ public class DailyStats {
                 constructionSiteInfectionsVisitor, hospitalInfectionsVisitor, nurseryInfectionsVisitor, 
                 officeInfectionsVisitor, restaurantInfectionsVisitor, schoolInfectionsVisitor, shopInfectionsVisitor,
                 homeInfectionsVisitor, adultInfected, pensionerInfected, childInfected, infantInfected, adultDeaths,
-                pensionerDeaths, childDeaths, infantDeaths, R, generationTime);
+                pensionerDeaths, childDeaths, infantDeaths, secInfections, generationTime);
     }
 
     public int getTotalDailyInfections () {
@@ -321,7 +321,7 @@ public class DailyStats {
 
     public void determineRValues(Population p) {
         RStats rs = new RStats(p);
-        R = rs.getMeanR(day);
+        secInfections = rs.getMeanR(day);
         generationTime = rs.getMeanGenerationTime(day);
     }
 

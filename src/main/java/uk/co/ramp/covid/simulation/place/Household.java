@@ -14,6 +14,7 @@ public abstract class Household extends Place {
     private int householdSize = 0;
     
     private boolean willIsolate = false;
+    private boolean lockCompliant = false;
     private int isolationTimer = 0;
 
     // Create household defined by who lives there
@@ -23,6 +24,10 @@ public abstract class Household extends Place {
         if (RNG.get().nextUniform(0,1) < PopulationParameters.get().getpHouseholdWillIsolate()) {
             willIsolate = true;
         }
+        if (RNG.get().nextUniform(0,1) < PopulationParameters.get().getpLockCompliance()) {
+        	lockCompliant = true;
+        }
+
     }
     
     public void forceIsolationtimer(int time) {
@@ -148,7 +153,7 @@ public abstract class Household extends Place {
                 moveShop(t, lockdown);
             }
 
-            moveNeighbour();
+            moveNeighbour(lockdown);
 
             // Restaurants are only open 8-22
             if (!lockdown && t.getHour() + 1 >= 8 && t.getHour() + 1 < 22) {
@@ -161,9 +166,9 @@ public abstract class Household extends Place {
         sendNeighboursHome(t);
     }
 
-    private void moveNeighbour() {
+    private void moveNeighbour(boolean lockdown) {
         List<Person> left = new ArrayList<>();
-
+        if(!lockdown || !this.lockCompliant) {
         for (Household n : getNeighbours()) {
             if (n.isIsolating()) {
                 continue;
@@ -180,7 +185,7 @@ public abstract class Household extends Place {
                 break;
             }
         }
-        
+        }
         people.removeAll(left);
     }
 
