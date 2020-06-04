@@ -1,11 +1,15 @@
 package uk.co.ramp.covid.simulation.place;
 
+import org.graalvm.compiler.nodes.memory.MemoryCheckpoint;
 import org.junit.Before;
 import org.junit.Test;
 
 import com.google.gson.JsonParseException;
 import uk.co.ramp.covid.simulation.DailyStats;
 import uk.co.ramp.covid.simulation.Time;
+import uk.co.ramp.covid.simulation.place.householdtypes.SingleAdult;
+import uk.co.ramp.covid.simulation.place.householdtypes.SingleOlder;
+import uk.co.ramp.covid.simulation.place.householdtypes.SmallFamily;
 import uk.co.ramp.covid.simulation.population.*;
 import uk.co.ramp.covid.simulation.testutil.PopulationGenerator;
 import uk.co.ramp.covid.simulation.util.SimulationTest;
@@ -29,8 +33,8 @@ public class RestaurantTest extends SimulationTest {
         restaurant = new Restaurant(CommunalPlace.Size.MED);
         p1 = new Adult(30, Person.Sex.MALE);
         p2 = new Pensioner(67, Person.Sex.FEMALE);
-        Household h1 = new Household(Household.HouseholdType.ADULT, null);
-        Household h2 = new Household(Household.HouseholdType.PENSIONER, null);
+        Household h1 = new SmallFamily(null);
+        Household h2 = new SmallFamily(null);
         p1.setHome(h1);
         p2.setHome(h2);
         restaurant.people.add(p1);

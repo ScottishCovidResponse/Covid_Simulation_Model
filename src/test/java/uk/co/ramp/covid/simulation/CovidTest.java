@@ -5,6 +5,9 @@ import org.junit.Test;
 import uk.co.ramp.covid.simulation.covid.Covid;
 import uk.co.ramp.covid.simulation.covid.CovidParameters;
 import uk.co.ramp.covid.simulation.place.Household;
+import uk.co.ramp.covid.simulation.place.householdtypes.SingleOlder;
+import uk.co.ramp.covid.simulation.place.householdtypes.SingleParent;
+import uk.co.ramp.covid.simulation.place.householdtypes.SmallFamily;
 import uk.co.ramp.covid.simulation.population.*;
 import uk.co.ramp.covid.simulation.util.SimulationTest;
 
@@ -26,7 +29,7 @@ public class CovidTest extends SimulationTest {
 
         CStatus cStatus = null;
         Person pensioner = new Pensioner(65, Person.Sex.MALE);
-        Household h = new Household(Household.HouseholdType.PENSIONER, null);
+        Household h = new SingleOlder(null);
         pensioner.setHome(h);
         Covid virus = new Covid(pensioner);
         virus.forceSymptomatic(true);
@@ -61,7 +64,7 @@ public class CovidTest extends SimulationTest {
         CStatus cStatus = null;
         Time t = new Time();
         Person child = new Child(6, Person.Sex.FEMALE);
-        Household h = new Household(Household.HouseholdType.ADULTCHILD, null);
+        Household h = new SmallFamily(null);
         child.setHome(h);
         Covid virus = new Covid(child);
         virus.forceSymptomatic(true);
