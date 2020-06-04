@@ -328,7 +328,11 @@ public class MovementTest extends SimulationTest {
 
     @Test
     public void somePeopleGetTested() {
+        // As most tests are positive we force lots of infections to check some go negative.
+        p.seedVirus(100);
+        CovidParameters.get().setpDiagnosticTestAvailable(1.0);
         p.simulate(50);
+
         int numTested = 0;
         int numNegative = 0;
         for (Person p : p.getAllPeople()) {
@@ -345,7 +349,6 @@ public class MovementTest extends SimulationTest {
                 if (!p.getTestOutcome().get()) {
                     numNegative++;
                 }
-                ;
             }
         }
         assertTrue(numTested > 0);

@@ -30,9 +30,10 @@ Determines the efficiency of testing
 
 -   Object name: `testParameters`
 
-| Parameter Name            | Description                                                  | Type |
-|---------------------------|--------------------------------------------------------------|------|
-| diagnosticTestSensitivity | Probability of testing positive if a person has the diseaseV | Int  |
+| Parameter Name            | Description                                                 | Type   |
+|---------------------------|-------------------------------------------------------------|--------|
+| diagnosticTestSensitivity | Probability of testing positive if a person has the disease | Double |
+| pDiagnosticTestAvailable  | Per hour probability that a test is available               | Double |
 
 
 # Population

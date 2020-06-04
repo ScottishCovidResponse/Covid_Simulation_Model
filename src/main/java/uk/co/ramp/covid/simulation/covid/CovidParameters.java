@@ -23,11 +23,14 @@ public class CovidParameters {
     }
 
 
+
     private static class TestParameters {
         public Double diagnosticTestSensitivity = null;
-        
+        public Double pDiagnosticTestAvailable = null;
+
         public boolean isValid() {
-            return isValidProbability(diagnosticTestSensitivity, "diagnosticTestSensitivity");
+            return  isValidProbability(pDiagnosticTestAvailable, "pdiagnoticTestAvailable")
+                    && isValidProbability(diagnosticTestSensitivity, "diagnosticTestSensitivity");
         }
     }
 
@@ -176,6 +179,17 @@ public class CovidParameters {
     public void setPensionerProgressionPhase2(double pensionerProgressionPhase2) {
         diseaseParameters.pensionerProgressionPhase2 = pensionerProgressionPhase2;
     }
+
+    public double getpDiagnosticTestAvailable() {
+        return testParameters.pDiagnosticTestAvailable;
+    }
+
+    public void setpDiagnosticTestAvailable(double v) {
+        testParameters.pDiagnosticTestAvailable =  v;
+    }
+
+
+
 
     @Override
     public String toString() {
