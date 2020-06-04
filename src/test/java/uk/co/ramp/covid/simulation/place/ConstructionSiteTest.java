@@ -27,7 +27,7 @@ public class ConstructionSiteTest extends SimulationTest {
     }
 
     @Test
-    public void testNoConstructionSites() throws JsonParseException, ImpossibleWorkerDistributionException {
+    public void testNoConstructionSites() throws JsonParseException {
         //The input ConstructionSites ratio is set very high so that there are no construction sites.
         //Check that each person's primary place is never set to construction site
         PopulationParameters.get().setConstructionSiteRatio(100000);

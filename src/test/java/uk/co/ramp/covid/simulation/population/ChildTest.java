@@ -6,14 +6,13 @@ import uk.co.ramp.covid.simulation.place.School;
 import uk.co.ramp.covid.simulation.testutil.PopulationGenerator;
 import uk.co.ramp.covid.simulation.util.SimulationTest;
 
-import java.io.IOException;
 import static org.junit.Assert.assertTrue;
 import static uk.co.ramp.covid.simulation.population.Person.Sex.FEMALE;
 
 public class ChildTest extends SimulationTest {
 
     @Test
-    public void testChildAtSchool() throws JsonParseException, IOException, ImpossibleAllocationException, ImpossibleWorkerDistributionException {
+    public void testChildAtSchool() throws JsonParseException {
         Population p = PopulationGenerator.genValidPopulation(5000);
         Child child = new Child(10, Person.Sex.MALE);
         child.allocateCommunalPlace(p.getPlaces());

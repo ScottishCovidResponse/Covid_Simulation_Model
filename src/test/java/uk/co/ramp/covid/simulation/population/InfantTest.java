@@ -6,7 +6,6 @@ import uk.co.ramp.covid.simulation.DailyStats;
 import uk.co.ramp.covid.simulation.testutil.PopulationGenerator;
 import uk.co.ramp.covid.simulation.util.SimulationTest;
 
-import java.io.IOException;
 import java.util.List;
 import static org.junit.Assert.assertEquals;
 import static uk.co.ramp.covid.simulation.population.Person.Sex.FEMALE;
@@ -14,7 +13,7 @@ import static uk.co.ramp.covid.simulation.population.Person.Sex.FEMALE;
 public class InfantTest extends SimulationTest {
 
     @Test
-    public void testInfant() throws JsonParseException, IOException {
+    public void testInfant() throws JsonParseException {
         int nNursery = 0;
         //Test approximately 50% of infants go to nursery
         for (int i = 0; i < 1000; i++) {
@@ -25,7 +24,7 @@ public class InfantTest extends SimulationTest {
     }
 
     @Test
-    public void testInfantReports() throws IOException, ImpossibleAllocationException, ImpossibleWorkerDistributionException {
+    public void testInfantReports() {
         //Test Infant methods reportInfection() and reportDeath()
         Population p = PopulationGenerator.genValidPopulation(500);
         Infant infant = new Infant(3, FEMALE);

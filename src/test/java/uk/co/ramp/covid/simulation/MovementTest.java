@@ -11,7 +11,6 @@ import uk.co.ramp.covid.simulation.population.*;
 import uk.co.ramp.covid.simulation.testutil.PopulationGenerator;
 import uk.co.ramp.covid.simulation.util.SimulationTest;
 
-import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -24,7 +23,7 @@ public class MovementTest extends SimulationTest {
     int nInfections = 10;
 
     @Before
-    public void initialiseTestModel() throws IOException {
+    public void initialiseTestModel() {
         PopulationParameters.get().setpHouseholdWillIsolate(100.0);
 
         p = PopulationGenerator.genValidPopulation(populationSize);
