@@ -27,6 +27,7 @@ public class CovidParameters {
         public Double meanAsymptomaticPeriod = null;
         public Double probabilitySymptoms = null;
         public Double meanSymptomDelay = null;
+        public Double meanSymptomDelaySD = null;
         public Double meanInfectiousDuration = null;
         public Double phase1Betaa = null;
         public Double phase1Betab = null;
@@ -44,6 +45,7 @@ public class CovidParameters {
                     ", meanAsymptomaticPeriod=" + meanAsymptomaticPeriod +
                     ", probabilitySymptoms=" + probabilitySymptoms +
                     ", meanSymptomDelay=" + meanSymptomDelay +
+                    ", meanSymptomDelaySD=" + meanSymptomDelaySD +
                     ", meanInfectiousDuration=" + meanInfectiousDuration +
                     ", phase1Betaa=" + phase1Betaa +
                     ", phase1Betab=" + phase1Betab +
@@ -97,6 +99,10 @@ public class CovidParameters {
     public void setMeanSymptomDelay(double meanSymptomDelay) {
         diseaseParameters.meanSymptomDelay = meanSymptomDelay;
     }
+    public double getSymptomDelaySD () {
+        return diseaseParameters.meanSymptomDelaySD;
+    }
+
     public double getInfectiousPeriod () {
         return diseaseParameters.meanInfectiousDuration;
     }

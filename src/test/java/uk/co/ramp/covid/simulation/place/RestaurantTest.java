@@ -38,8 +38,9 @@ public class RestaurantTest extends SimulationTest {
     }
 
     @Test
-    public void testRestaurantTransProb() {
-        double expProb = PopulationParameters.get().getpBaseTrans() * 5d / (5000d / 1000d);
+    public void testRestaurantTransProb() throws JsonParseException {
+        Restaurant restaurant = new Restaurant(CommunalPlace.Size.MED);
+        double expProb = PopulationParameters.get().getpBaseTrans();
         double delta = 0.01;
         assertEquals("Unexpected restaurant TransProb", expProb, restaurant.transProb, delta);
     }

@@ -75,6 +75,11 @@ public class Household extends Place {
     public int getHouseholdSize() {
         return householdSize;
     }
+    
+    @Override
+    protected double getTransProb() {
+    	return transProb;
+    }
 
     public void addNeighbour(Household n) {
         neighbours.add(n);

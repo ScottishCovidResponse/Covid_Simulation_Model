@@ -39,7 +39,7 @@ public class ShopTest extends SimulationTest {
 
     @Test
     public void testShopTransProb() {
-        double expProb = PopulationParameters.get().getpBaseTrans() * 5d / (5000d / 200d);
+        double expProb = PopulationParameters.get().getpBaseTrans();
         double delta = 0.01;
         assertEquals("Unexpected shop TransProb", expProb, shop.transProb, delta);
     }
