@@ -6,6 +6,7 @@ import static org.junit.Assert.*;
 
 import uk.co.ramp.covid.simulation.covid.CovidParameters;
 import uk.co.ramp.covid.simulation.place.*;
+import uk.co.ramp.covid.simulation.place.householdtypes.SingleAdult;
 import uk.co.ramp.covid.simulation.population.*;
 import uk.co.ramp.covid.simulation.testutil.PopulationGenerator;
 import uk.co.ramp.covid.simulation.util.SimulationTest;
@@ -313,12 +314,13 @@ public class MovementTest extends SimulationTest {
                 per.getcVirus().forceSymptomatic(true);
                 // Usually there's a delay before symptonms but we just force it here
                 double time = per.getcVirus().getSymptomDelay() + 1;
-                for (int j = 0; j < time; j++) {
+                for (int j = 0; j < time + 1; j++) {
                     per.getcVirus().stepInfection(t);
                 }
                 per.cStatus();
             }
             doesNotGoOut(iso, isolating);
+            t = t.advance();
         }
         p.getHouseholds().forEach(h -> h.dayEnd());
 
@@ -362,7 +364,7 @@ public class MovementTest extends SimulationTest {
 
         Household iso = null;
         for (Household h : p.getHouseholds()) {
-            if (h.gethType() == Household.HouseholdType.ADULT) {
+            if (h instanceof SingleAdult) {
                 iso = h;
                 break;
             }
@@ -396,7 +398,7 @@ public class MovementTest extends SimulationTest {
 
         Household iso = null;
         for (Household h : p.getHouseholds()) {
-            if (h.gethType() == Household.HouseholdType.ADULT) {
+            if (h instanceof SingleAdult) {
                 iso = h;
                 break;
             }

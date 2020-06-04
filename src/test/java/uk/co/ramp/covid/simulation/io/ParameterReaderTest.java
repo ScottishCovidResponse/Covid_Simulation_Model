@@ -32,19 +32,16 @@ public class ParameterReaderTest {
         // Population Parameters
         assertEquals(42, PopulationParameters.get().getPopulation().size());
 
-        assertEquals(0.2, PopulationParameters.get().getpAdultOnly(), EPSILON);
-        assertEquals(0.1, PopulationParameters.get().getpPensionerOnly(), EPSILON);
-        assertEquals(0.2, PopulationParameters.get().getpPensionerAdult(), EPSILON);
-        assertEquals(0.2, PopulationParameters.get().getpAdultChildren(), EPSILON);
-        assertEquals(0.15, PopulationParameters.get().getpPensionerChildren(), EPSILON);
-        assertEquals(0.15, PopulationParameters.get().getpAdultPensionerChildren(), EPSILON);
-
-        // Using size as a proxy to make sure it picks up the right parameter.
-        // As map parsing is built into GSON we don't test this again
-        assertEquals(3, PopulationParameters.get().getAdultAllocationPMap().size());
-        assertEquals(4, PopulationParameters.get().getPensionerAllocationPMap().size());
-        assertEquals(5, PopulationParameters.get().getChildAllocationPMap().size());
-        assertEquals(2, PopulationParameters.get().getInfantAllocationPMap().size());
+        assertEquals(0.22, PopulationParameters.get().getpSingleAdult(), EPSILON);
+        assertEquals(0.2, PopulationParameters.get().getpSmallAdult(), EPSILON);
+        assertEquals(0.05, PopulationParameters.get().getpSingleParent(), EPSILON);
+        assertEquals(0.12, PopulationParameters.get().getpSmallFamily(), EPSILON);
+        assertEquals(0.03, PopulationParameters.get().getpLargeTwoAdultFamily(), EPSILON);
+        assertEquals(0.02, PopulationParameters.get().getpLargeManyFamily(), EPSILON);
+        assertEquals(0.09, PopulationParameters.get().getpLargeAdult(), EPSILON);
+        assertEquals(0.09, PopulationParameters.get().getpAdultPensioner(), EPSILON);
+        assertEquals(0.04, PopulationParameters.get().getpDobuleOlder(), EPSILON);
+        assertEquals(0.14, PopulationParameters.get().getpSingleOlder(), EPSILON);
 
         assertEquals(1000, PopulationParameters.get().getHospitalRatio());
         assertEquals(500, PopulationParameters.get().getSchoolsRatio());

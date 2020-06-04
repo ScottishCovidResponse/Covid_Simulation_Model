@@ -6,6 +6,9 @@ import org.junit.Test;
 import com.google.gson.JsonParseException;
 
 import uk.co.ramp.covid.simulation.Time;
+import uk.co.ramp.covid.simulation.place.householdtypes.LargeManyAdultFamily;
+import uk.co.ramp.covid.simulation.place.householdtypes.LargeTwoAdultFamiy;
+import uk.co.ramp.covid.simulation.place.householdtypes.SmallFamily;
 import uk.co.ramp.covid.simulation.population.Adult;
 import uk.co.ramp.covid.simulation.population.Person;
 import uk.co.ramp.covid.simulation.population.PopulationParameters;
@@ -27,16 +30,16 @@ public class HouseholdTest extends SimulationTest {
 
     @Before
     public void initialise() throws JsonParseException, IOException {
-        household = new Household(Household.HouseholdType.ADULT, null);
-        Person p1 = new Adult(30, Person.Sex.MALE);
-        Person p2 = new Adult(32, Person.Sex.FEMALE);
-        Person p3 = new Adult(30, Person.Sex.MALE);
-        household.addInhabitant(p1);
-        household.addInhabitant(p2);
-        household.addInhabitant(p3);
-        household2 = new Household(Household.HouseholdType.ADULT, null);
-        household3 = new Household(Household.HouseholdType.ADULT, null);
-        household4 = new Household(Household.HouseholdType.ADULT, null);
+        household = new LargeManyAdultFamily(null);
+        Adult p1 = new Adult(30, Person.Sex.MALE);
+        Adult p2 = new Adult(32, Person.Sex.FEMALE);
+        Adult p3 = new Adult(30, Person.Sex.MALE);
+        household.addAdult(p1);
+        household.addAdult(p2);
+        household.addAdult(p3);
+        household2 = new SmallFamily(null);
+        household3 = new SmallFamily(null);
+        household4 = new SmallFamily(null);
     }
 
     @Test
@@ -49,23 +52,17 @@ public class HouseholdTest extends SimulationTest {
     }
 
     @Test
-    public void testGetnType() {
-        Household.HouseholdType expHType = Household.HouseholdType.ADULT;
-        assertEquals("Unexpected household nType", expHType, household.gethType());
-    }
-
-    @Test
     public void testAddPerson() {
-        Person p4 = new Adult(40, Person.Sex.FEMALE);
-        household.addInhabitant(p4);
+        Adult p4 = new Adult(40, Person.Sex.FEMALE);
+        household.addAdult(p4);
         int expSize = 4;
         assertEquals("Unexpected household size", expSize, household.getInhabitants().size());
     }
 
     @Test
     public void testGetHouseholdSize() {
-        Person p1 = new Adult(50, Person.Sex.MALE);
-        household.addInhabitant(p1);
+        Adult p1 = new Adult(50, Person.Sex.MALE);
+        household.addAdult(p1);
         int expSize = 4;
         assertEquals("Unexpected household size", expSize, household.getHouseholdSize());
     }
@@ -78,9 +75,8 @@ public class HouseholdTest extends SimulationTest {
     @Test
     public void testSendNeighboursHome() {
         PopulationParameters.get().setHouseholdVisitorLeaveRate(1.0);
-        Household h = new Household(Household.HouseholdType.ADULT, null);
+        Household h = new SmallFamily(null);
         Person p1 = new Adult(22, Person.Sex.FEMALE);
-        
         p1.setHome(household);
         h.addPersonNext(p1);
         h.stepPeople();

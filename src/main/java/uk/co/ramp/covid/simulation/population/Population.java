@@ -17,6 +17,9 @@ import uk.co.ramp.covid.simulation.util.ProbabilityDistribution;
 import uk.co.ramp.covid.simulation.util.RNG;
 
 import java.util.*;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 public class Population {
 
@@ -92,92 +95,43 @@ public class Population {
 
     // Creates households based on probability of different household types
     private void createHouseholds() {
-        ProbabilityDistribution<Household.HouseholdType> p = new ProbabilityDistribution<>();
-        p.add(PopulationParameters.get().getpAdultOnly(), Household.HouseholdType.ADULT);
-        p.add(PopulationParameters.get().getpPensionerOnly(), Household.HouseholdType.PENSIONER);
-        p.add(PopulationParameters.get().getpPensionerAdult(), Household.HouseholdType.ADULTPENSIONER);
-        p.add(PopulationParameters.get().getpAdultChildren(), Household.HouseholdType.ADULTCHILD);
-        p.add(PopulationParameters.get().getpPensionerChildren(), Household.HouseholdType.PENSIONERCHILD);
-        p.add(PopulationParameters.get().getpAdultPensionerChildren(), Household.HouseholdType.ADULTPENSIONERCHILD);
-
+        ProbabilityDistribution<Function<Places, Household>> p = PopulationParameters.get().getHouseholdDistribution();
 
         for (int i = 0; i < numHouseholds; i++) {
-            Household.HouseholdType t = p.sample();
-            households.add(new Household(t, places));
+            households.add(p.sample().apply(places));
         }
+
     }
 
-    // Checks we have enough people of the right types to perform a household allocation
-    private boolean householdAllocationPossible(BitSet adultIndex, BitSet pensionerIndex,
-                                                BitSet childIndex, BitSet infantIndex) {
-        int adult = 0; int pensioner = 0; int adultPensioner = 0; int adultChild = 0;
-        int pensionerChild = 0; int adultPensionerChild = 0;
-        for (Household h : households) {
-            switch(h.gethType()) {
-                case ADULT: adult++; break;
-                case PENSIONER: pensioner++; break;
-                case ADULTPENSIONER: adultPensioner++; break;
-                case ADULTCHILD: adultChild++; break;
-                case PENSIONERCHILD: pensionerChild++; break;
-                case ADULTPENSIONERCHILD: adultPensionerChild++; break;
+    // We know based on the bitset indexes that this cast is safe so ignore warnings here
+    @SuppressWarnings("unchecked")
+    private <T extends Person> void allocateRequired(BitSet remaining, Supplier<Boolean> required, Consumer<T> add)
+            throws ImpossibleAllocationException {
+        int i = 0;
+        while (required.get()) {
+            i = remaining.nextSetBit(i);
+            if (i < 0) {
+                throw new ImpossibleAllocationException(
+                        "Population distribution cannot populate household distribution");
             }
+            remaining.clear(i);
+            add.accept((T) allPeople.get(i));
         }
-
-        int adultHouseholds = adult + adultPensioner + adultChild + adultPensionerChild;
-        int pensionerHouseholds = adultPensioner + pensioner + pensionerChild + adultPensionerChild;
-        int childHouseholds = adultChild + pensionerChild + adultPensionerChild;
-        
-        boolean possible = adultIndex.cardinality() > adultHouseholds
-                && pensionerIndex.cardinality() > pensionerHouseholds
-                && childIndex.cardinality() + infantIndex.cardinality() > childHouseholds
-                // We need to ensure everyone has somewhere to go
-                && (adultIndex.cardinality() > 0 ? adultHouseholds > 0 : true)
-                && (pensionerIndex.cardinality() > 0 ? pensionerHouseholds > 0 : true)
-                && (childIndex.cardinality() > 0 ? childHouseholds > 0 : true);
-
-        return  possible;
     }
 
-    // Cycles over all bits of remainingPeople and ensures they are allocated to a household in a greedy fashion
-    private void greedyAllocate(BitSet remainingPeople, Set<Household.HouseholdType> types) {
-        int i = 0; // Pointer into remaining
-        for (Household h : households) {
-            Household.HouseholdType htype = h.gethType();
-            if (types.contains(htype)) {
-                i = remainingPeople.nextSetBit(i);
-                if (i < 0) {
-                    break;
-                }
-                remainingPeople.clear(i);
-                h.addInhabitant(allPeople.get(i));
+    // We know based on the bitset indexes that this cast is safe so ignore warnings here
+    @SuppressWarnings("unchecked")
+    private  <T extends Person> void allocateAllowed(BitSet remaining, Supplier<Boolean> allowed, Consumer<T> add) {
+        int i = 0;
+        if (allowed.get()) {
+            i = remaining.nextSetBit(i);
+            if (i >= 0) {
+                remaining.clear(i);
+                add.accept((T) allPeople.get(i));
             }
         }
     }
 
-    private void probAllocate(BitSet remainingPeople,
-                              Set<Household.HouseholdType> types,
-                              Map<Integer, Double> probabilities) {
-        int i = 0; // Pointer into remaining
-        while (!remainingPeople.isEmpty()) {
-            for (Household h : households) {
-                Household.HouseholdType htype = h.gethType();
-                if (types.contains(htype)) {
-                    double rand = rng.nextUniform(0, 1);
-                    double prob_to_add = probabilities.getOrDefault(h.getHouseholdSize(), 1.0);
-                    if (rand < prob_to_add) {
-                        i = remainingPeople.nextSetBit(i);
-                        if (i < 0) {
-                            break;
-                        }
-                        h.addInhabitant(allPeople.get(i));
-                        remainingPeople.clear(i);
-                    }
-                }
-            }
-        }
-    }
-
-    // We populate houseHolds greedily.
     private void populateHouseholds() throws ImpossibleAllocationException {
         createHouseholds();
 
@@ -188,38 +142,52 @@ public class Population {
 
         createPopulation(adultIndex, pensionerIndex, childIndex, infantIndex);
 
-        if (!householdAllocationPossible(adultIndex, pensionerIndex, childIndex, infantIndex)) {
-            throw new ImpossibleAllocationException("Population distribution cannot populate household distribution");
-        }
-
-        // Ensures miminal constraints are met
-        greedyAllocate(adultIndex, Household.adultHouseholds);
-        greedyAllocate(pensionerIndex, Household.pensionerHouseholds);
-
-        // For OR constraints, e.g. child or infant, we union the bitsets during the greedy algorithm
-        // For the probabilistic allocations below, they can have different probabilities.
+        // When allocating we often treat children and infants as one type, likewise with adults/pensioners
         BitSet childOrInfant = new BitSet(populationSize);
         childOrInfant.or(childIndex);
         childOrInfant.or(infantIndex);
 
-        greedyAllocate(childOrInfant, Household.childHouseholds);
+        BitSet adultAnyAge = new BitSet(populationSize);
+        adultAnyAge.or(adultIndex);
+        adultAnyAge.or(pensionerIndex);
 
-        // set intersections to allow children/infants to be treated independently again
-        childIndex.and(childOrInfant);
-        infantIndex.and(childOrInfant);
+        // Fill requirements first
+        for (Household h : households) {
+            allocateRequired(adultAnyAge, h::adultAnyAgeRequired, h::addAdultOrPensioner);
 
-        probAllocate(adultIndex,
-                Household.adultHouseholds,
-                PopulationParameters.get().getAdultAllocationPMap());
-        probAllocate(pensionerIndex,
-                Household.pensionerHouseholds,
-                PopulationParameters.get().getPensionerAllocationPMap());
-        probAllocate(childIndex,
-                Household.childHouseholds,
-                PopulationParameters.get().getChildAllocationPMap());
-        probAllocate(infantIndex,
-                Household.childHouseholds,
-                PopulationParameters.get().getInfantAllocationPMap());
+            // Set intersections keep adultAnyAge in sync with adults/pensioners
+            adultIndex.and(adultAnyAge);
+            pensionerIndex.and(adultAnyAge);
+
+            allocateRequired(adultIndex, h::adultRequired, h::addAdult);
+            allocateRequired(pensionerIndex, h::pensionerRequired, h::addPensioner);
+
+            // The only way to know what might have changed with adults/pensioners is to just recalculate the set
+            adultAnyAge = new BitSet(populationSize);
+            adultAnyAge.or(adultIndex);
+            adultAnyAge.or(pensionerIndex);
+
+            allocateRequired(childOrInfant, h::childRequired, h::addChildOrInfant);
+        }
+
+        // Now fill in anyone who is missing
+        while (!adultIndex.isEmpty() || !pensionerIndex.isEmpty() || !childOrInfant.isEmpty()) {
+            for (Household h : households) {
+                allocateAllowed(adultAnyAge, h::additionalAdultAnyAgeAllowed, h::addAdultOrPensioner);
+                adultIndex.and(adultAnyAge);
+                pensionerIndex.and(adultAnyAge);
+
+                allocateAllowed(adultIndex, h::additionalAdultsAllowed, h::addAdult);
+                allocateAllowed(pensionerIndex, h::additionalPensionersAllowed, h::addPensioner);
+
+                adultAnyAge = new BitSet(populationSize);
+                adultAnyAge.or(adultIndex);
+                adultAnyAge.or(pensionerIndex);
+
+                allocateAllowed(childOrInfant, h::additionalChildrenAllowed, h::addChildOrInfant);
+            }
+        }
+
     }
 
     // This creates the Communal places of different types where people mix

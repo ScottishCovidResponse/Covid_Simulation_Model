@@ -3,37 +3,13 @@ package uk.co.ramp.covid.simulation.place;
 import uk.co.ramp.covid.simulation.DailyStats;
 import uk.co.ramp.covid.simulation.Time;
 import uk.co.ramp.covid.simulation.covid.CovidParameters;
-import uk.co.ramp.covid.simulation.population.CStatus;
-import uk.co.ramp.covid.simulation.population.Person;
-import uk.co.ramp.covid.simulation.population.Places;
-import uk.co.ramp.covid.simulation.population.PopulationParameters;
+import uk.co.ramp.covid.simulation.population.*;
 import uk.co.ramp.covid.simulation.util.RNG;
 
 import java.util.*;
 
-public class Household extends Place {
+public abstract class Household extends Place {
 
-    public enum HouseholdType {
-       ADULT               { public String toString() {return "Adult only";                   } },
-       PENSIONER           { public String toString() {return "Pensioner only";               } },
-       ADULTPENSIONER      { public String toString() {return "Adult & pensioner";            } },
-       ADULTCHILD          { public String toString() {return "Adult & children";             } },
-       PENSIONERCHILD      { public String toString() {return "Pensioner & children";         } },
-       ADULTPENSIONERCHILD { public String toString() {return "Adult & pensioner & children"; } }
-    }
-
-    public static final Set<HouseholdType> adultHouseholds = new HashSet<>(Arrays.asList(
-            HouseholdType.ADULT, HouseholdType.ADULTPENSIONERCHILD,
-            HouseholdType.ADULTPENSIONER, HouseholdType.ADULTCHILD));
-
-    public static final Set<HouseholdType> pensionerHouseholds = new HashSet<>(Arrays.asList(
-            HouseholdType.PENSIONER, HouseholdType.ADULTPENSIONERCHILD,
-            HouseholdType.PENSIONERCHILD, HouseholdType.ADULTPENSIONER));
-
-    public static final Set<HouseholdType> childHouseholds = new HashSet<>(Arrays.asList(
-            HouseholdType.ADULTCHILD, HouseholdType.ADULTPENSIONERCHILD, HouseholdType.PENSIONERCHILD));
-
-    private final HouseholdType hType;
     private final List<Household> neighbours;
     private final Places places;
     private int householdSize = 0;
@@ -42,8 +18,7 @@ public class Household extends Place {
     private int isolationTimer = 0;
 
     // Create household defined by who lives there
-    public Household(HouseholdType hType, Places places) {
-        this.hType = hType;
+    public Household(Places places) {
         this.neighbours = new ArrayList<>();
         this.places = places;
         if (RNG.get().nextUniform(0,1) < PopulationParameters.get().getpHouseholdWillIsolate()) {
@@ -63,18 +38,9 @@ public class Household extends Place {
         return neighbours.size();
     }
 
-    public HouseholdType gethType() {
-        return this.hType;
-    }
-
-    public void addInhabitant(Person cPers) {
-        cPers.setHome(this);
-        householdSize++;
-        this.people.add(cPers);
-    }
 
     public int getHouseholdSize() {
-        return householdSize;
+        return adults + pensioners + children;
     }
     
     @Override
@@ -322,4 +288,75 @@ public class Household extends Place {
             isolationTimer--;
         }
     }
+
+    // Household Type management
+    protected int adults = 0;
+    protected int children = 0;
+    protected int pensioners = 0;
+
+    // These functions control the allocation of particular household types.
+    // The *Required functions should return true when it is essential another member of that type be added to the household.
+    // The additional*Allowed functions should return true if they can accept another member of that type, but it is not essential that they do so.
+    // For example, a household requiring at least one adult would have adultsRequired be true when adults < 1,
+    // and additionalAdultsRequired as true (allowing any number of additional adults to be added).
+    public abstract boolean adultRequired();
+    public abstract boolean additionalAdultsAllowed();
+    public abstract boolean childRequired();
+    public abstract boolean additionalChildrenAllowed();
+    public abstract boolean pensionerRequired();
+    public abstract boolean additionalPensionersAllowed();
+    public abstract boolean adultAnyAgeRequired();
+    public abstract boolean additionalAdultAnyAgeAllowed();
+
+    public void addAdult(Adult p) {
+        if (adultRequired() || additionalAdultsAllowed()
+                || adultAnyAgeRequired() || additionalAdultAnyAgeAllowed()) {
+            people.add(p);
+            p.setHome(this);
+            adults++;
+        } else {
+            throw new InvalidHouseholdAllocationException("Cannot add adult to household");
+        }
+      
+    }
+    
+    public void addChildOrInfant(Person p) {
+        // We need to do some type inference here to handle the fact infants are
+        // treated as children for household population
+        if ((childRequired() || additionalChildrenAllowed()) && (p instanceof Child || p instanceof Infant)) {
+            people.add(p);
+            p.setHome(this);
+            children++;
+        } else {
+            throw new InvalidHouseholdAllocationException("Cannot add child/infant to household");
+        }
+    }
+
+    public void addAdultOrPensioner(Person p) {
+        // We need to do some type inference here to handle "any age" adults
+        if ((adultAnyAgeRequired() || additionalAdultAnyAgeAllowed()) && (p instanceof Adult || p instanceof Pensioner)) {
+            people.add(p);
+            p.setHome(this);
+            if (p instanceof Adult) {
+                adults++;
+            } else {
+                pensioners++;
+            }
+        } else {
+            throw new InvalidHouseholdAllocationException("Cannot add adult/pensioner to household");
+        }
+    }
+
+
+    public void addPensioner(Pensioner p) {
+        if (pensionerRequired() || additionalPensionersAllowed()
+                || adultAnyAgeRequired() || additionalAdultAnyAgeAllowed()) {
+            people.add(p);
+            p.setHome(this);
+            pensioners++;
+        } else {
+            throw new InvalidHouseholdAllocationException("Cannot add pensioner to household");
+        }
+    }
+
 }
