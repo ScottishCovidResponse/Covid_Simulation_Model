@@ -4,10 +4,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import uk.co.ramp.covid.simulation.place.Household;
 import uk.co.ramp.covid.simulation.place.householdtypes.*;
-import uk.co.ramp.covid.simulation.util.InvalidParametersException;
-import uk.co.ramp.covid.simulation.util.ProbabilityDistribution;
+import uk.co.ramp.covid.simulation.util.*;
 
-import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
@@ -23,23 +21,33 @@ public class PopulationParameters {
     private static PopulationParameters pp = null;
     private static final double EPSILON = 0.001;
 
-
     // Household populations
     // These values define the probability of a household being an adult only, adult and child household etc
-    private static class Households {
+    public static class Households {
+        @ParamDoc("Ratio of population size to households, e.g. 2 implies 1 household per 2 people ")
         public Double householdRatio = null;
 
+        @ParamDoc("Probability of a single adult household")
         public Double pSingleAdult = null;
+        @ParamDoc("Probability of a small adult household")
         public Double pSmallAdult = null;
+        @ParamDoc("Probability of a single parent household")
         public Double pSingleParent = null;
+        @ParamDoc("Probability of a small family household")
         public Double pSmallFamily = null;
+        @ParamDoc("Probability of a two adult family household")
         public Double pLargeTwoAdultFamily = null;
+        @ParamDoc("Probability of a >= 3 adult family household")
         public Double pLargeManyAdultFamily = null;
+        @ParamDoc("Probability of large adult only household")
         public Double pLargeAdult = null;
+        @ParamDoc("Probability of an adult pensioner household")
         public Double pAdultPensioner = null;
+        @ParamDoc("Probability of a two pensioenr household")
         public Double pDoubleOlder = null;
+        @ParamDoc("Probability of a single pensioenr household")
         public Double pSingleOlder = null;
-        
+
         public ProbabilityDistribution<Function<Places, Household>> householdTypeDistribution() {
             ProbabilityDistribution<Function<Places, Household>> p = new ProbabilityDistribution<>();
             p.add(pSingleAdult, SingleAdult::new);
@@ -55,34 +63,17 @@ public class PopulationParameters {
             return p;
         }
 
-        @Override
-        public String toString() {
-            return "Households{" +
-                    "householdRatio=" + householdRatio +
-                    ", pSingleAdult=" + pSingleAdult +
-                    ", pSmallAdult=" + pSmallAdult +
-                    ", pSingleParent=" + pSingleParent +
-                    ", pSmallFamily=" + pSmallFamily +
-                    ", pLargeTwoAdultFamily=" + pLargeTwoAdultFamily +
-                    ", pLargeManyAdultFamily=" + pLargeManyAdultFamily +
-                    ", pLargeAdult=" + pLargeAdult +
-                    ", pAdultPensioner=" + pAdultPensioner +
-                    ", pDoubleOlder=" + pDoubleOlder +
-                    ", pSingleOlder=" + pSingleOlder +
-                    '}';
-        }
-
         public boolean isValid() {
-            boolean probabilitiesValid = isValidProbability(pSingleAdult, "pSingleAdult")
-                    && isValidProbability(pSmallAdult, "pSmallAdult")
-                    && isValidProbability(pSingleParent, "pSingleParent")
-                    && isValidProbability(pSmallFamily, "pSmallFamily")
-                    && isValidProbability(pLargeTwoAdultFamily, "pLargeTwoAdultFamily")
-                    && isValidProbability(pLargeManyAdultFamily, "pLargeManyAdultFamily")
-                    && isValidProbability(pLargeAdult, "pLargeAdult")
-                    && isValidProbability(pAdultPensioner, "pAdultPensioner")
-                    && isValidProbability(pDoubleOlder, "pDoubleOlder")
-                    && isValidProbability(pSingleOlder, "pSingleOlder");
+            boolean probabilitiesValid = ParameterChecker.isValidProbability(pSingleAdult, "pSingleAdult")
+                    && ParameterChecker.isValidProbability(pSmallAdult, "pSmallAdult")
+                    && ParameterChecker.isValidProbability(pSingleParent, "pSingleParent")
+                    && ParameterChecker.isValidProbability(pSmallFamily, "pSmallFamily")
+                    && ParameterChecker.isValidProbability(pLargeTwoAdultFamily, "pLargeTwoAdultFamily")
+                    && ParameterChecker.isValidProbability(pLargeManyAdultFamily, "pLargeManyAdultFamily")
+                    && ParameterChecker.isValidProbability(pLargeAdult, "pLargeAdult")
+                    && ParameterChecker.isValidProbability(pAdultPensioner, "pAdultPensioner")
+                    && ParameterChecker.isValidProbability(pDoubleOlder, "pDoubleOlder")
+                    && ParameterChecker.isValidProbability(pSingleOlder, "pSingleOlder");
 
             probabilitiesValid = probabilitiesValid && (householdRatio >= 1);
 
@@ -97,7 +88,7 @@ public class PopulationParameters {
 
     }
 
-    private static class Size {
+    public static class Size {
         public Double pSmall = null;
         public Double pMed = null;
         public Double pLarge = null;
@@ -115,40 +106,41 @@ public class PopulationParameters {
 
 
     // Defines the number of types of building per N people
-    private static class BuildingDistribution {
+    public static class BuildingDistribution {
+        @ParamDoc("Hospitals per N people")
         public Integer hospitals = null;
+        @ParamDoc("Distribution of hosptial sizes")
         public Size hospitalSizes = null;
 
+        @ParamDoc("Schools per N people")
         public Integer schools = null;
+        @ParamDoc("Distribution of school sizes")
         public Size schoolSizes = null;
 
+        @ParamDoc("Shops per N people")
         public Integer shops = null;
+        @ParamDoc("Distribution of shop sizes")
         public Size shopSizes = null;
 
+        @ParamDoc("Offices per N people")
         public Integer offices = null;
+        @ParamDoc("Distribution of office sizes")
         public Size officeSizes = null;
 
+        @ParamDoc("Construction Sites per N people")
         public Integer constructionSites = null;
+        @ParamDoc("Distribution of construction site sizes")
         public Size constructionSiteSizes = null;
 
+        @ParamDoc("Nurseries per N people")
         public Integer nurseries = null;
+        @ParamDoc("Distribution of nursery sizes")
         public Size nurserySizes = null;
 
+        @ParamDoc("Restaurants per N people")
         public Integer restaurants = null;
+        @ParamDoc("Distribution of restaurant sizes")
         public Size restaurantSizes = null;
-
-        @Override
-        public String toString() {
-            return "BuildingDistribution{" +
-                    "hospitals=" + hospitals +
-                    ", schools=" + schools +
-                    ", shops=" + shops +
-                    ", offices=" + offices +
-                    ", constructionSites=" + constructionSites +
-                    ", nurseries=" + nurseries +
-                    ", restaurants=" + restaurants +
-                    '}';
-        }
 
         public boolean isValid() {
             return hospitalSizes.isValid("hospital")
@@ -162,42 +154,36 @@ public class PopulationParameters {
     }
 
     // Probability an Adult works in a particular job
-    private static class WorkerAllocation {
+    public static class WorkerAllocation {
+        @ParamDoc("Probability of working in an office")
         public Double pOffice = null;
+        @ParamDoc("Probability of working in a shop")
         public Double pShop = null;
+        @ParamDoc("Probability of working in a hospital")
         public Double pHospital = null;
+        @ParamDoc("Probability of working on a construction site")
         public Double pConstruction = null;
+        @ParamDoc("Probability of working in a schol")
         public Double pTeacher = null;
+        @ParamDoc("Probability of working in a restaurant")
         public Double pRestaurant = null;
+        @ParamDoc("Probability of being unemployed")
         public Double pUnemployed = null;
+        @ParamDoc("Probability of working in a nursery unemployed")
         public Double pNursery = null;
 
+        @ParamDoc("Probability of being assigned a workplace of a particular size")
         public Size sizeAllocation = null;
 
-        @Override
-        public String toString() {
-            return "WorkerAllocation{" +
-                    "pOffice=" + pOffice +
-                    ", pShop=" + pShop +
-                    ", pHospital=" + pHospital +
-                    ", pConstruction=" + pConstruction +
-                    ", pTeacher=" + pTeacher +
-                    ", pRestaurant=" + pRestaurant +
-                    ", pUnemployed=" + pUnemployed +
-                    ", pNursery=" + pNursery +
-                    ", sizeAllocation=" + sizeAllocation +
-                    '}';
-        }
-
         public boolean isValid() {
-            boolean probabilitiesValid = isValidProbability(pOffice, "pOffice")
-                    && isValidProbability(pShop, "pShop")
-                    && isValidProbability(pHospital, "pHospital")
-                    && isValidProbability(pConstruction, "pConstruction")
-                    && isValidProbability(pTeacher, "pTeacher")
-                    && isValidProbability(pRestaurant, "pRestaurant")
-                    && isValidProbability(pNursery, "pNursery")
-                    && isValidProbability(pUnemployed, "pUnemployed");
+            boolean probabilitiesValid = ParameterChecker.isValidProbability(pOffice, "pOffice")
+                    && ParameterChecker.isValidProbability(pShop, "pShop")
+                    && ParameterChecker.isValidProbability(pHospital, "pHospital")
+                    && ParameterChecker.isValidProbability(pConstruction, "pConstruction")
+                    && ParameterChecker.isValidProbability(pTeacher, "pTeacher")
+                    && ParameterChecker.isValidProbability(pRestaurant, "pRestaurant")
+                    && ParameterChecker.isValidProbability(pNursery, "pNursery")
+                    && ParameterChecker.isValidProbability(pUnemployed, "pUnemployed");
 
             double totalP = pOffice + pShop + pHospital + pConstruction + pTeacher + pRestaurant + pNursery + pUnemployed;
             if(!(totalP <= 1 + EPSILON && totalP >= 1 - EPSILON)) {
@@ -209,128 +195,110 @@ public class PopulationParameters {
         }
     }
 
-    private static class BuildingProperties {
+    public static class BuildingProperties {
+        @ParamDoc("Base disease transmission probability for all places")
         public Double pBaseTrans = null;
+        @ParamDoc("Transmission probability for hospitals")
         public Double pHospitalTrans = null;
+        @ParamDoc("Transmission probability for construction sites")
         public Double pConstructionSiteTrans = null;
+        @ParamDoc("Transmission probability for nurseries")
         public Double pNurseryTrans = null;
+        @ParamDoc("Transmission probability for offices")
         public Double pOfficeTrans = null;
+        @ParamDoc("Transmission probability for restaurants")
         public Double pRestaurantTrans = null;
+        @ParamDoc("Transmission probability for schols")
         public Double pSchoolTrans = null;
+        @ParamDoc("Transmission probability for shops")
         public Double pShopTrans = null;
 
+        @ParamDoc("Probability a hospital remains open during lockdown")
         public Double pHospitalKey = null;
+        @ParamDoc("Probability a construction site remains open during lockdown")
         public Double pConstructionSiteKey = null;
+        @ParamDoc("Probability an office remains open during lockdown")
         public Double pOfficeKey = null;
+        @ParamDoc("Probability a shop remains open during lockdown")
         public Double pShopKey = null;
-        
+
+        @ParamDoc("Probability (per hour) a shooper (and family) leave a shop")
         public Double pLeaveShop = null;
+        @ParamDoc("Probability (per hour) a restaurant visitor (and family) leave a restaurant")
         public Double pLeaveRestaurant = null;
 
-        @Override
-        public String toString() {
-            return "BuildingProperties{" +
-                    "pBaseTrans =" + pBaseTrans +
-                    ", pHospitalTrans=" + pHospitalTrans +
-                    ", pConstructionSiteTrans=" + pConstructionSiteTrans +
-                    ", pNurseryTrans=" + pNurseryTrans +
-                    ", pOfficeTrans=" + pOfficeTrans +
-                    ", pRestaurantTrans=" + pRestaurantTrans +
-                    ", pSchoolTrans=" + pSchoolTrans +
-                    ", pShopTrans=" + pShopTrans +
-                    ", pHospitalKey=" + pHospitalKey +
-                    ", pConstructionSiteKey=" + pConstructionSiteKey +
-                    ", pOfficeKey=" + pOfficeKey +
-                    ", pShopKey=" + pShopKey +
-                    ", pLeaveShop =" + pLeaveShop +
-                    ", pLeaveRestaurant =" + pLeaveRestaurant +
-                    '}';
-        }
-
         public boolean isValid() {
-            return isValidProbability(pBaseTrans, "pBaseTrans")
-                    && isValidProbability(pHospitalKey, "pHospitalKey")
-                    && isValidProbability(pConstructionSiteKey, "pConstructionSiteKey")
-                    && isValidProbability(pOfficeKey, "pOfficeKey")
-                    && isValidProbability(pShopKey, "pShopKey")
-                    && isValidProbability(pLeaveShop, "pLeaveShop")
-                    && isValidProbability(pLeaveRestaurant, "pLeaveRestaurant");
+            return ParameterChecker.isValidProbability(pBaseTrans, "pBaseTrans")
+                    && ParameterChecker.isValidProbability(pHospitalKey, "pHospitalKey")
+                    && ParameterChecker.isValidProbability(pConstructionSiteKey, "pConstructionSiteKey")
+                    && ParameterChecker.isValidProbability(pOfficeKey, "pOfficeKey")
+                    && ParameterChecker.isValidProbability(pShopKey, "pShopKey")
+                    && ParameterChecker.isValidProbability(pLeaveShop, "pLeaveShop")
+                    && ParameterChecker.isValidProbability(pLeaveRestaurant, "pLeaveRestaurant");
         }
     }
 
-    private static class InfantAllocation {
+    public static class InfantAllocation {
+        @ParamDoc("Probability an infant attends nursery")
         public Double pAttendsNursery = null;
 
-        @Override
-        public String toString() {
-            return "InfantAllocation{" +
-                    "pAttendsNursery=" + pAttendsNursery +
-                    '}';
-        }
-
         public boolean isValid() {
-            return isValidProbability(pAttendsNursery, "pAttendsNursery");
+            return ParameterChecker.isValidProbability(pAttendsNursery, "pAttendsNursery");
         }
-
-
     }
 
-    private static class PersonProperties {
+    public static class PersonProperties {
+        @ParamDoc("Probability a person respects lockdown")
         public Double pQuarantine = null;
+        @ParamDoc("Base transimission rate for a person")
         public Double pTransmission = null;
 
-        @Override
-        public String toString() {
-            return "PersonProperties{" +
-                    "pQuarantine=" + pQuarantine +
-                    ", pTransmission=" + pTransmission +
-                    '}';
-        }
-
         public boolean isValid() {
-            return isValidProbability(pQuarantine, "pQuarantine")
-                    && isValidProbability(pTransmission, "pTransmission");
+            return ParameterChecker.isValidProbability(pQuarantine, "pQuarantine")
+                    && ParameterChecker.isValidProbability(pTransmission, "pTransmission");
         }
     }
     
-    private static class HouseholdProperties {
+    public static class HouseholdProperties {
+        @ParamDoc("Chance a visitor (and family) leave a neighbour each hour")
         public Double visitorLeaveRate = null;
+        @ParamDoc("How often people try to visit neighbours")
         public Double neighbourVisitFreq = null;
+        @ParamDoc("Expected (Poisson) number of neighbours")
         public Integer expectedNeighbours = null;
 
+        @ParamDoc("Probability a household goes shopping")
         public Double pGoShopping = null;
+        @ParamDoc("Probability a household goes to eat")
         public Double pGoRestaurant = null;
+        @ParamDoc("Number of days a household isolates for when a member becomes symptomatic")
         public Integer householdIsolationPeriod = null;
+        @ParamDoc("Probability the household respects isolation when a member becomes symptomatic")
         public Double pWillIsolate = null;
 
-        @Override
-        public String toString() {
-            return "HouseholdProperties{" +
-                    "visitorLeaveRate=" + visitorLeaveRate +
-                    ", neighbourVisitFreq=" + neighbourVisitFreq +
-                    ", expectedNeighbours=" + expectedNeighbours +
-                    ", pGoShopping=" + pGoShopping +
-                    ", pGoRestaurant=" + pGoRestaurant +
-                    ", householdIsolationPeriod=" + householdIsolationPeriod +
-                    ", pWillIsolate=" + pWillIsolate +
-                    '}';
-        }
-
         public boolean isValid() {
-            return isValidProbability(pGoShopping, "pGoShopping")
-                    && isValidProbability(pGoRestaurant, "pGoRestaurant")
-                    && isValidProbability(pWillIsolate, "pWillIsolate");
+            return ParameterChecker.isValidProbability(pGoShopping, "pGoShopping")
+                    && ParameterChecker.isValidProbability(pGoRestaurant, "pGoRestaurant")
+                    && ParameterChecker.isValidProbability(pWillIsolate, "pWillIsolate");
         }
     }
 
-    private final Map<String,Double> population;
-    private final Households households;
-    private BuildingDistribution buildingDistribution;
-    private final WorkerAllocation workerAllocation;
-    private final BuildingProperties buildingProperties;
-    private InfantAllocation infantAllocation;
-    private final PersonProperties personProperties;
-    private HouseholdProperties householdProperties;
+    @ParamDoc("Map specifying population. E.g. \"m_0_5:0.02\" implies a 0.02 chance a person is male aged between 0-5")
+    public Map<String,Double> population;
+    @ParamDoc("Controls the distribution of households")
+    public Households households;
+    @ParamDoc("Controls the distribution of places")
+    public BuildingDistribution buildingDistribution;
+    @ParamDoc("Controls the distribution of workers")
+    public WorkerAllocation workerAllocation;
+    @ParamDoc("Controls the properties of place types")
+    public BuildingProperties buildingProperties;
+    @ParamDoc("Determines infant nursery allocation")
+    public InfantAllocation infantAllocation;
+    @ParamDoc("Person Properties")
+    public PersonProperties personProperties;
+    @ParamDoc("Household Properties")
+    public HouseholdProperties householdProperties;
 
     private PopulationParameters() {
         population = new HashMap<>();
@@ -344,19 +312,40 @@ public class PopulationParameters {
     }
 
     public boolean isValid() {
-        ParameterInitialisedChecker checker = new ParameterInitialisedChecker();
         boolean valid = true;
         // We don't do this in a single statement to ensure that all the "uninitalised" parameter warnings are printed
         // in one go instead of being short circuited
-        valid = valid && checker.isValid(population);
-        valid = valid && checker.isValid(households) && households.isValid();
-        valid = valid && checker.isValid(buildingDistribution) && buildingDistribution.isValid();
-        valid = valid && checker.isValid(workerAllocation) && workerAllocation.isValid();
-        valid = valid && checker.isValid(buildingProperties) && buildingProperties.isValid();
-        valid = valid && checker.isValid(infantAllocation) && infantAllocation.isValid();
-        valid = valid && checker.isValid(personProperties) && personProperties.isValid();
-        valid = valid && checker.isValid(householdProperties) && householdProperties.isValid();
+        valid = valid && ParameterChecker.isValid(population);
+        valid = valid && ParameterChecker.isValid(households) && households.isValid();
+        valid = valid && ParameterChecker.isValid(buildingDistribution) && buildingDistribution.isValid();
+        valid = valid && ParameterChecker.isValid(workerAllocation) && workerAllocation.isValid();
+        valid = valid && ParameterChecker.isValid(buildingProperties) && buildingProperties.isValid();
+        valid = valid && ParameterChecker.isValid(infantAllocation) && infantAllocation.isValid();
+        valid = valid && ParameterChecker.isValid(personProperties) && personProperties.isValid();
+        valid = valid && ParameterChecker.isValid(householdProperties) && householdProperties.isValid();
         return valid;
+    }
+    
+    public static void printDoc() {
+        StringBuilder b = new StringBuilder();
+        // We use new objects here to allow us to print the doc-strings even if the user-specified parameters are wrong.
+        b.append("---Population Parameters---\n");
+        ParameterPrinter.appendDoc(b, new PopulationParameters());
+        b.append("---household---\n");
+        ParameterPrinter.appendDoc(b, new Households());
+        b.append("---buildingDistribution---\n");
+        ParameterPrinter.appendDoc(b, new BuildingDistribution());
+        b.append("---workerAllocation---\n");
+        ParameterPrinter.appendDoc(b, new WorkerAllocation());
+        b.append("---buildingProperties---\n");
+        ParameterPrinter.appendDoc(b, new BuildingProperties());
+        b.append("---infantAllocation---\n");
+        ParameterPrinter.appendDoc(b, new InfantAllocation());
+        b.append("---personProperties---\n");
+        ParameterPrinter.appendDoc(b, new PersonProperties());
+        b.append("---householdProperties---\n");
+        ParameterPrinter.appendDoc(b, new HouseholdProperties());
+        LOGGER.info(b.toString());
     }
 
     public static PopulationParameters get() {
@@ -695,48 +684,7 @@ public class PopulationParameters {
     public void setPTransmission(double pTransmission) {
         personProperties.pTransmission = pTransmission;
     }
-    @Override
-    public String toString() {
-        return "PopulationParameters{" + "\n" +
-                population + "\n" +
-                households + "\n" +
-                buildingDistribution + "\n" +
-                workerAllocation + "\n" +
-                buildingProperties + "\n" +
-                infantAllocation + "\n" +
-                householdProperties + "\n" +
-                personProperties + "\n" +
-                '}';
-    }
     
-    private static boolean isValidProbability(Double val, String name) {
-        if(val < 0 || val > 1) {
-            LOGGER.error(name + " is not a valid probability");
-            return false;
-        }
-        return true;
-    }
 
-    public class ParameterInitialisedChecker {
 
-        public boolean isValid (Object o) {
-            try {
-                return fieldsValid(o);
-            } catch (IllegalAccessException e) {
-                LOGGER.warn(e);
-            }
-            return false;
-        }
-
-        private boolean fieldsValid (Object o) throws IllegalAccessException {
-            boolean res = true;
-            for (Field f : o.getClass().getFields()) {
-                if (f.get(o) == null) {
-                    LOGGER.warn("Uninitialised parameter: " + f.getName());
-                    res = false;
-                }
-            }
-            return res;
-        }
-    }
 }

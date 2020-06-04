@@ -19,6 +19,11 @@ public class RunModel {
     private static final Logger LOGGER = LogManager.getLogger(RunModel.class);
 
     public static void main(String[] args) throws Exception {
+        if (args.length == 1 && args[0].equals("doc")) {
+            PopulationParameters.printDoc();
+            System.exit(0);
+        }
+        
         if (args.length != 3) {
             LOGGER.error("Expected parameters: <population_params.json> <model_params.json> <simulationID>");
             System.exit(-1);
