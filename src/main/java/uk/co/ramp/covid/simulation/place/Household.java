@@ -270,7 +270,7 @@ public abstract class Household extends Place {
     protected int children = 0;
     protected int pensioners = 0;
 
-    // These functions control the allocation opf particular household types.
+    // These functions control the allocation of particular household types.
     // The *Required functions should return true when it is essential another member of that type be added to the household.
     // The additional*Allowed functions should return true if they can accept another member of that type, but it is not essential that they do so.
     // For example, a household requiring at least one adult would have adultsRequired be true when adults < 1,
