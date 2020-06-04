@@ -11,12 +11,12 @@ public class School extends CommunalPlace {
     public School(Size s) {
         super(s);
         times = OpeningTimes.nineFiveWeekdays();
-        transProb = PopulationParameters.get().getpBaseTrans() * PopulationParameters.get().getpSchoolTrans();
+        transAdjustment = PopulationParameters.get().getpSchoolTrans();
     }
 
     @Override
     public void reportInfection(Time t, Person p, DailyStats s) {
-        if (p.isWorking(this, t)) {
+        if (p.isWorking(this, t) && p.getAge() >= 18) {
             s.incInfectionsSchoolWorker();
         } else {
             s.incInfectionsSchoolVisitor();

@@ -15,10 +15,16 @@ Determines parameters of the (COVID) disease
 
 | Parameter Name             | Description                                                    | Type   |
 |----------------------------|----------------------------------------------------------------|--------|
-| meanLatentPeriod           | Expected (Poisson) disease latent period                       | Int    |
-| meanAsymptomaticPeriod     | Expected (Poisson) disease asymptomatic period                 | Int    |
-| meanPhase1DurationMild     | Expected (Poisson) disease phase 1 duration (mild symptoms)    | Int    |
-| meanPhase1DurationSeverse  | Expected (Poisson) disease phase 1 duration (severe symptoms)  | Int    |
+| meanLatentPeriod           | Mean (lognormal) disease latent period (Hours)                 | Double |
+| meanAsymptomaticPeriod     | Mean (lognormal) asymptomatic infection duration (Hours)       | Double |
+| probabilitySymptoms        | Probability of developing symptoms                             | Double |
+| meanSymptomDelay           | Mean delay in developing symptoms (Hours)                      | Double |
+| meanSymptomDelaySD         | Standard deviation in delay developing symptoms (Hours)        | Double |
+| meanInfectiopusDuration    | Mean duration of infectiousness (Hours)                        | Double |
+| phase1Betaa                | alpha value for beta distribution to determine phase 2 inf     | Double |
+| phase1Betab                | beta value for beta distribution to determine phase 2 inf      | Double |
+| aSymptomaticTransAdjustment| Adjustment to asymptomatic transmission                        | Double |
+| symptomaticTransAdjustment | Adjustment to symptomatic transmission                         | Double |
 | mortalityRate              | Daily probability of death (Phase 2)                           | Double |
 | childProgressionPhase2     | Daily probability a child progresses to Phase 2                | Double |
 | adultProgressionPhase2     | Daily probability an adult progresses to Phase 2               | Double |

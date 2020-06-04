@@ -238,13 +238,6 @@ public class PopulationParameters {
 
         public boolean isValid() {
             return isValidProbability(pBaseTrans, "pBaseTrans")
-                    && isValidProbability(pHospitalTrans, "pHospitalTrans")
-                    && isValidProbability(pConstructionSiteTrans, "pConstructionSiteTrans")
-                    && isValidProbability(pNurseryTrans, "pNurseryTrans")
-                    && isValidProbability(pOfficeTrans, "pOfficeTrans")
-                    && isValidProbability(pRestaurantTrans, "pRestaurantTrans")
-                    && isValidProbability(pSchoolTrans, "pSchoolTrans")
-                    && isValidProbability(pShopTrans, "pShopTrans")
                     && isValidProbability(pHospitalKey, "pHospitalKey")
                     && isValidProbability(pConstructionSiteKey, "pConstructionSiteKey")
                     && isValidProbability(pOfficeKey, "pOfficeKey")

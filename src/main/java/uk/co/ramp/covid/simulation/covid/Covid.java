@@ -22,6 +22,7 @@ public class Covid {
     private final double meanAsymptomaticPeriod;
     private final double pSymptoms;
     private final double meanSymptomDelay;
+    private final double meanSymptomDelaySD;    
     private final double meanInfectiousDuration;
     private final double oPhase1Betaa;
     private final double oPhase1Betab;
@@ -46,6 +47,7 @@ public class Covid {
         this.meanAsymptomaticPeriod = CovidParameters.get().getMeanAsymptomaticPeriod();
         this.pSymptoms = CovidParameters.get().getSymptomProbability();
         this.meanSymptomDelay = CovidParameters.get().getSymptomDelay();
+        this.meanSymptomDelaySD = CovidParameters.get().getSymptomDelaySD();
         this.meanInfectiousDuration = CovidParameters.get().getInfectiousPeriod();
         this.oPhase1Betaa = CovidParameters.get().getphase1Betaa(); 
         this.oPhase1Betab = CovidParameters.get().getphase1Betab(); 
@@ -101,7 +103,7 @@ public class Covid {
         latentPeriod = Math.exp(rng.nextGaussian(Math.log(meanLatentPeriod), 1.0));
         if(!symptomaticCase) asymptomaticPeriod = Math.exp(rng.nextGaussian(Math.log(meanAsymptomaticPeriod), 1.0));
         else if(symptomaticCase) {
-        	symptomDelay = latentPeriod - rng.nextGaussian(meanSymptomDelay, 1.25); // Basically if symptom delay < 0 then the symproms appear after the infetcious period has started; otherwise before
+        	symptomDelay = latentPeriod - rng.nextGaussian(meanSymptomDelay, meanSymptomDelaySD); // Basically if symptom delay < 0 then the symptoms appear after the infectious period has started; otherwise before
         	if(symptomDelay < 1.0) symptomDelay = 1.0; // There could be the odd instance where we have a negative value here 
         
         	infectiousPeriod = Math.exp(rng.nextGaussian(Math.log(meanInfectiousDuration), 1.0));
@@ -150,6 +152,11 @@ public class Covid {
             status = CStatus.PHASE1;
         } else if ((latentPeriod + p1 + p2) > infCounter) {
             phase2 = true;
+            if(!isSymptomatic) { // This if statement is needed because the case could or could not have reached this point wihtout symptoms
+            	isSymptomatic = true; 
+            	log.registerSymptomatic(t);
+            	ccase.getHome().isolate();
+            }
             phase1 = false;
             double rVal = rng.nextUniform(0, 1);
             if (rVal < mortalityRate / 24) {

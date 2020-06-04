@@ -10,13 +10,13 @@ public class Nursery extends CommunalPlace {
 
     public Nursery(Size s) {
         super(s);
-        transProb = PopulationParameters.get().getpBaseTrans() * PopulationParameters.get().getpNurseryTrans();
+        transAdjustment = PopulationParameters.get().getpNurseryTrans();
         times = OpeningTimes.nineFiveWeekdays();
     }
 
     @Override
     public void reportInfection(Time t, Person p, DailyStats s) {
-        if (p.isWorking(this, t)) {
+        if (p.isWorking(this, t) && p.getAge() >= 18) {
             s.incInfectionsNurseryWorker();
         } else {
             s.incInfectionsNurseryVisitor();
