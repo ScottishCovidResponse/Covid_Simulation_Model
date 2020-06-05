@@ -302,6 +302,7 @@ public class PopulationParameters {
         public Double pGoRestaurant = null;
         public Integer householdIsolationPeriod = null;
         public Double pWillIsolate = null;
+        public Double pLockCompliance = null;
 
         @Override
         public String toString() {
@@ -313,13 +314,15 @@ public class PopulationParameters {
                     ", pGoRestaurant=" + pGoRestaurant +
                     ", householdIsolationPeriod=" + householdIsolationPeriod +
                     ", pWillIsolate=" + pWillIsolate +
+                    ", pLockCompliance=" + pLockCompliance +
                     '}';
         }
 
         public boolean isValid() {
             return isValidProbability(pGoShopping, "pGoShopping")
                     && isValidProbability(pGoRestaurant, "pGoRestaurant")
-                    && isValidProbability(pWillIsolate, "pWillIsolate");
+                    && isValidProbability(pWillIsolate, "pWillIsolate")
+                    && isValidProbability(pLockCompliance, "pLockCompliance");
         }
     }
 
@@ -676,7 +679,10 @@ public class PopulationParameters {
     
     public int getHouseholdIsolationPeriod() { return householdProperties.householdIsolationPeriod; }
     public Double getpHouseholdWillIsolate() { return householdProperties.pWillIsolate; }
+    public Double getpLockCompliance() { return householdProperties.pLockCompliance; }
+
     public void setpHouseholdWillIsolate(Double p) { householdProperties.pWillIsolate = p; }
+    public void setpLockCompliance(Double p) { householdProperties.pLockCompliance = p; }
 
 
 

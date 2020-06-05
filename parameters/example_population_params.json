@@ -139,13 +139,13 @@
             }
         },
         "buildingProperties":{
-          "pBaseTrans":0.6,
+          "pBaseTrans":0.7,
           "pHospitalTrans":10.0,
           "pConstructionSiteTrans":5.0,
           "pNurseryTrans":10.0,
           "pOfficeTrans":5.0,
           "pRestaurantTrans":10.0,
-          "pSchoolTrans":30.0,
+          "pSchoolTrans":25.0,
           "pShopTrans":5.0,
             "pHospitalKey":0.8,
             "pConstructionSiteKey":0.5,
@@ -158,17 +158,18 @@
             "pAttendsNursery":0.5
         },
         "householdProperties":{
-            "neighbourVisitFreq":0.006,
-            "visitorLeaveRate":0.5,
-            "expectedNeighbours":5,
-            "pGoShopping":0.01786,
-            "pGoRestaurant": 0.01190,
+            "neighbourVisitFreq":0.004,
+            "visitorLeaveRate":0.333,
+            "expectedNeighbours":7,
+            "pGoShopping":0.0417,
+            "pGoRestaurant": 0.0417,
             "pWillIsolate": 0.5,
-            "householdIsolationPeriod": 14
+            "householdIsolationPeriod": 14,
+            "pLockCompliance": 0.8
         },
         "personProperties":{
-            "pTransmission":0.6,
-            "pQuarantine":0.9
+            "pTransmission":0.7,
+            "pQuarantine":0.8
         }
     }
 }

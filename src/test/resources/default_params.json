@@ -164,7 +164,8 @@
             "pGoShopping":0.01786,
             "pGoRestaurant": 0.01190,
             "pWillIsolate": 0.5,
-            "householdIsolationPeriod": 14
+            "householdIsolationPeriod": 14,
+            "pLockCompliance": 0.8
         },
         "personProperties":{
             "pTransmission":0.45,

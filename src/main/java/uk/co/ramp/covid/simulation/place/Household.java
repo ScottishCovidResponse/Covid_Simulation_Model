@@ -15,6 +15,7 @@ public abstract class Household extends Place {
     private int householdSize = 0;
     
     private boolean willIsolate = false;
+    private boolean lockCompliant = false;
     private int isolationTimer = 0;
 
     // Create household defined by who lives there
@@ -24,6 +25,10 @@ public abstract class Household extends Place {
         if (RNG.get().nextUniform(0,1) < PopulationParameters.get().getpHouseholdWillIsolate()) {
             willIsolate = true;
         }
+        if (RNG.get().nextUniform(0,1) < PopulationParameters.get().getpLockCompliance()) {
+        	lockCompliant = true;
+        }
+
     }
     
     public void forceIsolationtimer(int time) {
@@ -154,7 +159,7 @@ public abstract class Household extends Place {
                 moveShop(t, lockdown);
             }
 
-            moveNeighbour();
+            moveNeighbour(lockdown);
 
             // Restaurants are only open 8-22
             if (!lockdown && t.getHour() + 1 >= 8 && t.getHour() + 1 < 22) {
@@ -167,7 +172,7 @@ public abstract class Household extends Place {
         sendNeighboursHome(t);
     }
 
-    public void doTesting(Time t) {
+      public void doTesting(Time t) {
         for (Person p : getInhabitants()) {
             if (p.isinfected()) {
                 Time symptomaticTime = p.getcVirus().getInfectionLog().getSymptomaticTime();
@@ -180,26 +185,27 @@ public abstract class Household extends Place {
         }
     }
 
-    private void moveNeighbour() {
+    private void moveNeighbour(boolean lockdown) {
+
         List<Person> left = new ArrayList<>();
-
-        for (Household n : getNeighbours()) {
-            if (n.isIsolating()) {
-                continue;
-            }
-
-            if (RNG.get().nextUniform(0, 1) < PopulationParameters.get().getNeighbourVisitFreq()) {
-                // We visit neighbours as a family
-                for (Person p : getInhabitants()) {
-                    if (!p.getQuarantine()) {
-                        n.addPersonNext(p);
-                        left.add(p);
-                    }
-                }
-                break;
-            }
+        if((!lockdown) || (!this.lockCompliant)) {
+	        for (Household n : getNeighbours()) {
+	            if (n.isIsolating()) {
+	                continue;
+	            }
+	
+	            if (RNG.get().nextUniform(0, 1) < PopulationParameters.get().getNeighbourVisitFreq()) {
+	                // We visit neighbours as a family
+	                for (Person p : getInhabitants()) {
+	                    if (!p.getQuarantine()) {
+	                        n.addPersonNext(p);
+	                        left.add(p);
+	                    }
+	                }
+	                break;
+	            }
+	        }
         }
-        
         people.removeAll(left);
     }
 
