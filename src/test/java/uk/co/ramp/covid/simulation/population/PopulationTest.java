@@ -383,25 +383,4 @@ public class PopulationTest extends SimulationTest {
         assertNotNull(infected.getcVirus().getInfectionLog().getSymptomaticTime());
     }
 
-    @Test
-    public void meanRWithNoInfectionsIsNull() {
-        pop.seedVirus(0);
-        pop.simulate(20);
-        RStats rs = new RStats(pop);
-
-        for (int i = 0; i < 20; i++) {
-            assertNull(rs.getMeanR(i));
-            assertNull(rs.getMeanGenerationTime(i));
-        }
-    }
-
-    @Test
-    public void meanRPositiveWhenInfectionsOccur() {
-        pop.seedVirus(20);
-        pop.simulate(30);
-        RStats rs = new RStats(pop);
-        
-        assertTrue(rs.getMeanRBefore(30) > 0);
-    }
-
 }
