@@ -25,7 +25,7 @@ public class RStatsTest extends SimulationTest {
         RStats rs = new RStats(pop);
 
         for (int i = 0; i < 20; i++) {
-            assertNull(rs.getMeanR(i));
+            assertNull(rs.getSecInfections(i));
             assertNull(rs.getMeanGenerationTime(i));
         }
     }
