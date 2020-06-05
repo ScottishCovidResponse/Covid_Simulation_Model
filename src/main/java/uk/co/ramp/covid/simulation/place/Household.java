@@ -185,10 +185,10 @@ public abstract class Household extends Place {
         }
     }
 
-    private void moveNeighbour() {
+    private void moveNeighbour(boolean lockdown) {
 
         List<Person> left = new ArrayList<>();
-        if(!lockdown || !this.lockCompliant) {
+        if((!lockdown) || (!this.lockCompliant)) {
         for (Household n : getNeighbours()) {
             if (n.isIsolating()) {
                 continue;
