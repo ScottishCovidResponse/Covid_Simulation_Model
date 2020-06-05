@@ -33,12 +33,12 @@ public class RStats {
         }
 
         if(nInfectors > 0 && !rflag) return nSecondaries;
-        if(rflag) return nSecondaries / nInfectors;
+        if(nInfectors > 0 && rflag) return nSecondaries / nInfectors;
         return null;
     }
 
     /** Returns the mean R for a given day */
-    public Double getMeanR(int absDay) {
+    public Double getSecInfections(int absDay) {
     	rflag = false;
         return getMeanRGeneric(absDay, (a, b) -> a.equals(b));
     }

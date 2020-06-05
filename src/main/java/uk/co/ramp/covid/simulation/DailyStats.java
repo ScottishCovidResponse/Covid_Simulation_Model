@@ -321,7 +321,7 @@ public class DailyStats {
 
     public void determineRValues(Population p) {
         RStats rs = new RStats(p);
-        secInfections = rs.getMeanR(day);
+        secInfections = rs.getSecInfections(day);
         generationTime = rs.getMeanGenerationTime(day);
     }
 

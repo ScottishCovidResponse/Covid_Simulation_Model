@@ -189,22 +189,22 @@ public abstract class Household extends Place {
 
         List<Person> left = new ArrayList<>();
         if((!lockdown) || (!this.lockCompliant)) {
-        for (Household n : getNeighbours()) {
-            if (n.isIsolating()) {
-                continue;
-            }
-
-            if (RNG.get().nextUniform(0, 1) < PopulationParameters.get().getNeighbourVisitFreq()) {
-                // We visit neighbours as a family
-                for (Person p : getInhabitants()) {
-                    if (!p.getQuarantine()) {
-                        n.addPersonNext(p);
-                        left.add(p);
-                    }
-                }
-                break;
-            }
-        }
+	        for (Household n : getNeighbours()) {
+	            if (n.isIsolating()) {
+	                continue;
+	            }
+	
+	            if (RNG.get().nextUniform(0, 1) < PopulationParameters.get().getNeighbourVisitFreq()) {
+	                // We visit neighbours as a family
+	                for (Person p : getInhabitants()) {
+	                    if (!p.getQuarantine()) {
+	                        n.addPersonNext(p);
+	                        left.add(p);
+	                    }
+	                }
+	                break;
+	            }
+	        }
         }
         people.removeAll(left);
     }
