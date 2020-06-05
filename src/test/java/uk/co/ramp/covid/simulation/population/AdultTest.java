@@ -4,15 +4,15 @@ import com.google.gson.JsonParseException;
 import org.junit.Test;
 import uk.co.ramp.covid.simulation.util.SimulationTest;
 
-import java.io.IOException;
 import static org.junit.Assert.assertTrue;
+import static uk.co.ramp.covid.simulation.population.Person.Sex.FEMALE;
 
 public class AdultTest extends SimulationTest {
 
     @Test
-    public void testSetProfession() throws JsonParseException, IOException {
+    public void testSetProfession() throws JsonParseException {
         //Test that a profession is set for an adult
-        Adult adult = new Adult(30, Person.Sex.FEMALE);
+        Adult adult = new Adult(30, FEMALE);
         adult.setProfession();
         boolean professionSet = false;
         professionSet = professionSet
@@ -26,5 +26,10 @@ public class AdultTest extends SimulationTest {
                      || adult.profession == Adult.Professions.NONE;
 
         assertTrue("Unexpected adult profession", professionSet);
+    }
+
+    @Test (expected = InvalidAgeException.class)
+    public void testInvalidAgeException() {
+        Adult adult = new Adult(66, FEMALE);
     }
 }

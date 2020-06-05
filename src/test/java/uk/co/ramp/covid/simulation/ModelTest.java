@@ -25,7 +25,7 @@ public class ModelTest extends SimulationTest {
     int RNGSeed;
 
     @Before
-    public void setupParams() throws IOException {
+    public void setupParams() {
         population = 10000;
         nInfections = 10;
         nIter = 1;

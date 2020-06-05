@@ -5,15 +5,15 @@ import uk.co.ramp.covid.simulation.DailyStats;
 import uk.co.ramp.covid.simulation.testutil.PopulationGenerator;
 import uk.co.ramp.covid.simulation.util.SimulationTest;
 
-import java.io.IOException;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static uk.co.ramp.covid.simulation.population.Person.Sex.FEMALE;
 
 public class PensionerTest extends SimulationTest {
 
     @Test
-    public void testPensionerReports() throws IOException, ImpossibleAllocationException, ImpossibleWorkerDistributionException {
+    public void testPensionerReports() {
         //Test Pensioner methods reportInfection() and reportDeath()
         Population p = PopulationGenerator.genValidPopulation(500);
         Pensioner pensioner = new Pensioner(70, Person.Sex.MALE);
@@ -27,6 +27,11 @@ public class PensionerTest extends SimulationTest {
 
         pensioner.reportDeath(stats.get(0));
         assertEquals("Unexpected number of pensioner deaths", 1, stats.get(0).getPensionerDeaths());
+    }
+
+    @Test (expected = InvalidAgeException.class)
+    public void testInvalidAgeException() {
+        Pensioner pensioner = new Pensioner(5, FEMALE);
     }
 
 }

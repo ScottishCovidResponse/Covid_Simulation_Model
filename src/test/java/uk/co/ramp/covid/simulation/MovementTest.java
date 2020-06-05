@@ -1,6 +1,7 @@
 package uk.co.ramp.covid.simulation;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -11,7 +12,6 @@ import uk.co.ramp.covid.simulation.population.*;
 import uk.co.ramp.covid.simulation.testutil.PopulationGenerator;
 import uk.co.ramp.covid.simulation.util.SimulationTest;
 
-import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -24,7 +24,7 @@ public class MovementTest extends SimulationTest {
     int nInfections = 10;
 
     @Before
-    public void initialiseTestModel() throws IOException {
+    public void initialiseTestModel() {
         PopulationParameters.get().setpHouseholdWillIsolate(100.0);
 
         p = PopulationGenerator.genValidPopulation(populationSize);
@@ -148,6 +148,27 @@ public class MovementTest extends SimulationTest {
 
         assertTrue(eating.size() > 0);
     }
+
+    @Ignore("Failing test - no-one visits hospitals")
+    @Test
+    public void someNonWorkersGoToHospital() {
+        Set<Person> visiting = new HashSet<>();
+        Time t = new Time(24);
+        DailyStats s = new DailyStats(t);
+        for (int i = 0; i < 120; i++) {
+            p.timeStep(t, s);
+            for (Hospital place : p.getPlaces().getHospitals()) {
+                for (Person per : place.getPeople()) {
+                    if (per.getPrimaryCommunalPlace() != place) {
+                        visiting.add(per);
+                    }
+                }
+            }
+            t = t.advance();
+        }
+        assertTrue("No-one visits hospitals", visiting.size() > 0);
+    }
+
 
     @Test
     public void somePeopleVisitNeighbours() {

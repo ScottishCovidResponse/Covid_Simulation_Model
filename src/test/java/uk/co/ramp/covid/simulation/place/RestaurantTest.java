@@ -1,20 +1,16 @@
 package uk.co.ramp.covid.simulation.place;
 
-import org.graalvm.compiler.nodes.memory.MemoryCheckpoint;
 import org.junit.Before;
 import org.junit.Test;
 
 import com.google.gson.JsonParseException;
 import uk.co.ramp.covid.simulation.DailyStats;
 import uk.co.ramp.covid.simulation.Time;
-import uk.co.ramp.covid.simulation.place.householdtypes.SingleAdult;
-import uk.co.ramp.covid.simulation.place.householdtypes.SingleOlder;
 import uk.co.ramp.covid.simulation.place.householdtypes.SmallFamily;
 import uk.co.ramp.covid.simulation.population.*;
 import uk.co.ramp.covid.simulation.testutil.PopulationGenerator;
 import uk.co.ramp.covid.simulation.util.SimulationTest;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,7 +24,7 @@ public class RestaurantTest extends SimulationTest {
     Person p2;
 
     @Before
-    public void initialise() throws JsonParseException, IOException {
+    public void initialise() throws JsonParseException {
         //Setup a restaurant with 2 people
         restaurant = new Restaurant(CommunalPlace.Size.MED);
         p1 = new Adult(30, Person.Sex.MALE);

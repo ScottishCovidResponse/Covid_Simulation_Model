@@ -7,17 +7,16 @@ import com.google.gson.JsonParseException;
 
 import uk.co.ramp.covid.simulation.Time;
 import uk.co.ramp.covid.simulation.place.householdtypes.LargeManyAdultFamily;
-import uk.co.ramp.covid.simulation.place.householdtypes.LargeTwoAdultFamiy;
+import uk.co.ramp.covid.simulation.place.householdtypes.SingleAdult;
 import uk.co.ramp.covid.simulation.place.householdtypes.SmallFamily;
 import uk.co.ramp.covid.simulation.population.Adult;
+import uk.co.ramp.covid.simulation.population.Child;
 import uk.co.ramp.covid.simulation.population.Person;
 import uk.co.ramp.covid.simulation.population.PopulationParameters;
 import uk.co.ramp.covid.simulation.util.SimulationTest;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-
-import java.io.IOException;
 
 public class HouseholdTest extends SimulationTest {
 
@@ -29,7 +28,7 @@ public class HouseholdTest extends SimulationTest {
     Household household4;
 
     @Before
-    public void initialise() throws JsonParseException, IOException {
+    public void initialise() throws JsonParseException {
         household = new LargeManyAdultFamily(null);
         Adult p1 = new Adult(30, Person.Sex.MALE);
         Adult p2 = new Adult(32, Person.Sex.FEMALE);
@@ -89,6 +88,14 @@ public class HouseholdTest extends SimulationTest {
     public void testGetInhabitants() {
         int expSize = 3;
         assertEquals("Unexpected number of inhabitants", expSize, household.getInhabitants().size());
+    }
 
+    @Test (expected = InvalidHouseholdAllocationException.class)
+    public void testInvalidHouseholdAllocation() {
+        Household house = new SingleAdult(null);
+        Adult p1 = new Adult(40, Person.Sex.FEMALE);
+        Child c1 = new Child(10, Person.Sex.FEMALE);
+        house.addAdult(p1);
+        house.addChildOrInfant(c1);
     }
 }

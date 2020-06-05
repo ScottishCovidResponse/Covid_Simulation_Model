@@ -6,14 +6,11 @@ import org.junit.Test;
 import com.google.gson.JsonParseException;
 import uk.co.ramp.covid.simulation.Time;
 import uk.co.ramp.covid.simulation.DailyStats;
-import uk.co.ramp.covid.simulation.place.householdtypes.SingleAdult;
-import uk.co.ramp.covid.simulation.place.householdtypes.SingleOlder;
 import uk.co.ramp.covid.simulation.place.householdtypes.SmallFamily;
 import uk.co.ramp.covid.simulation.population.*;
 import uk.co.ramp.covid.simulation.testutil.PopulationGenerator;
 import uk.co.ramp.covid.simulation.util.SimulationTest;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,7 +24,7 @@ public class ShopTest extends SimulationTest {
     Person p2;
 
     @Before
-    public void initialise() throws JsonParseException, IOException {
+    public void initialise() throws JsonParseException {
         //Setup a shop with 2 people
         shop = new Shop(CommunalPlace.Size.MED);
         p1 = new Adult(25, Person.Sex.MALE);
