@@ -25,7 +25,7 @@ public class MovementTest extends SimulationTest {
 
     @Before
     public void initialiseTestModel() {
-        PopulationParameters.get().setpHouseholdWillIsolate(100.0);
+        PopulationParameters.get().householdProperties.pWillIsolate = 100.0;
 
         p = PopulationGenerator.genValidPopulation(populationSize);
         p.seedVirus(nInfections);

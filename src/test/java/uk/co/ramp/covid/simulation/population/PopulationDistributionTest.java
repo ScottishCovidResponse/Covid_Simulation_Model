@@ -63,7 +63,7 @@ public class PopulationDistributionTest extends SimulationTest {
     @Test
     public void seeAllAgesInALargeSample() {
         PopulationDistribution dist = new PopulationDistribution();
-        dist.readFromMap(PopulationParameters.get().getPopulation());
+        dist.readFromMap(PopulationParameters.get().population);
 
         int SAMPLES = 1000000;
         int[] seen = new int[101];

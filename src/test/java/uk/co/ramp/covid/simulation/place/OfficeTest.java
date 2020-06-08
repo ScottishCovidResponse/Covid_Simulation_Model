@@ -19,7 +19,7 @@ public class OfficeTest extends SimulationTest {
     @Test
     public void testOfficeTransProb() throws JsonParseException {
         Office office = new Office(CommunalPlace.Size.MED);
-        double expProb = PopulationParameters.get().getpBaseTrans();
+        double expProb = PopulationParameters.get().buildingProperties.pBaseTrans;
         double delta = 0.01;
         assertEquals("Unexpected office TransProb", expProb, office.transProb, delta);
     }

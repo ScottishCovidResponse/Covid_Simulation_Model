@@ -11,7 +11,7 @@ public class School extends CommunalPlace {
     public School(Size s) {
         super(s);
         times = OpeningTimes.nineFiveWeekdays();
-        transAdjustment = PopulationParameters.get().getpSchoolTrans();
+        transAdjustment = PopulationParameters.get().buildingProperties.pSchoolTrans;
     }
 
     @Override

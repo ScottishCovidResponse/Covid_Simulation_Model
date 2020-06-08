@@ -16,7 +16,7 @@ public class Restaurant extends CommunalPlace {
 
     public Restaurant(Size s) {
         super(s);
-        transAdjustment = PopulationParameters.get().getpRestaurantTrans();
+        transAdjustment = PopulationParameters.get().buildingProperties.pRestaurantTrans;
         keyPremises = false;
         setOpeningHours();
     }
@@ -71,7 +71,7 @@ public class Restaurant extends CommunalPlace {
                 nPers.returnHome();
                 left.addAll(sendFamilyHome(nPers, this, t));
             }
-            else if (rng.nextUniform(0, 1) < PopulationParameters.get().getpLeaveRestaurant()
+            else if (rng.nextUniform(0, 1) < PopulationParameters.get().buildingProperties.pLeaveRestaurant
                     || !times.isOpenNextHour(t)) {
                 left.add(nPers);
                 nPers.returnHome();

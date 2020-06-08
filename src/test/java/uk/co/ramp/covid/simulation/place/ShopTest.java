@@ -39,7 +39,7 @@ public class ShopTest extends SimulationTest {
 
     @Test
     public void testShopTransProb() {
-        double expProb = PopulationParameters.get().getpBaseTrans();
+        double expProb = PopulationParameters.get().buildingProperties.pBaseTrans;
         double delta = 0.01;
         assertEquals("Unexpected shop TransProb", expProb, shop.transProb, delta);
     }
@@ -55,7 +55,7 @@ public class ShopTest extends SimulationTest {
 
     @Test
     public void testSendHome() {
-        PopulationParameters.get().setpLeaveShop(1.0);
+        PopulationParameters.get().buildingProperties.pLeaveShop = 1.0;
         int time = shop.times.getClose() - 1;
         int left = shop.sendHome(new Time(time));
         int expPeople = 2;

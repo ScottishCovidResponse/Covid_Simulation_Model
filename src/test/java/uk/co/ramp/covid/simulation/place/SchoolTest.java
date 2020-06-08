@@ -18,7 +18,7 @@ public class SchoolTest extends SimulationTest {
     @Test
     public void testSchoolTransProb(){
         School school = new School(CommunalPlace.Size.MED);
-        double expProb = PopulationParameters.get().getpBaseTrans();
+        double expProb = PopulationParameters.get().buildingProperties.pBaseTrans;
         double delta = 0.01;
         assertEquals("Unexpected school TransProb", expProb, school.transProb, delta);
     }

@@ -201,8 +201,8 @@ public class ModelTest extends SimulationTest {
         CovidParameters.get().setPensionerProgressionPhase2(100.0);
         CovidParameters.get().setSymptomaticTransAdjustment(100.0);
         CovidParameters.get().setAsymptomaticTransAdjustment(100.0);
-        PopulationParameters.get().setPTransmission(1.0);
-        PopulationParameters.get().setPQuarantine(0.0);
+        PopulationParameters.get().personProperties.pTransmission = 1.0;
+        PopulationParameters.get().personProperties.pQuarantine = 0.0;
         nDays = 200;
         //Run the model
         Model m1 = new Model()

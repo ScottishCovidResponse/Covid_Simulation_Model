@@ -13,8 +13,8 @@ public class Hospital extends CommunalPlace {
 
     public Hospital(Size s) {
         super(s);
-        transAdjustment = PopulationParameters.get().getpHospitalTrans();
-        keyProb = PopulationParameters.get().getpHospitalKey();
+        transAdjustment = PopulationParameters.get().buildingProperties.pHospitalTrans;
+        keyProb = PopulationParameters.get().buildingProperties.pHospitalKey;
         times = OpeningTimes.twentyfourSeven();
         if (rng.nextUniform(0, 1) > keyProb) keyPremises = true;
         allocateShifts();

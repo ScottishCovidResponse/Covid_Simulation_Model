@@ -73,7 +73,7 @@ public class HouseholdTest extends SimulationTest {
 
     @Test
     public void testSendNeighboursHome() {
-        PopulationParameters.get().setHouseholdVisitorLeaveRate(1.0);
+        PopulationParameters.get().householdProperties.visitorLeaveRate = 1.0;
         Household h = new SmallFamily(null);
         Person p1 = new Adult(22, Person.Sex.FEMALE);
         p1.setHome(household);

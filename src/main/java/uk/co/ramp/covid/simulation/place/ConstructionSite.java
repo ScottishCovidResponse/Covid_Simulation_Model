@@ -10,8 +10,8 @@ public class ConstructionSite extends CommunalPlace {
 
     public ConstructionSite(Size s) {
         super(s);
-        transAdjustment = PopulationParameters.get().getpConstructionSiteTrans();
-        keyProb = PopulationParameters.get().getpConstructionSiteKey();
+        transAdjustment = PopulationParameters.get().buildingProperties.pConstructionSiteTrans;
+        keyProb = PopulationParameters.get().buildingProperties.pConstructionSiteKey;
         if (rng.nextUniform(0, 1) > keyProb) keyPremises = true;
         times = OpeningTimes.nineFiveWeekdays();
     }

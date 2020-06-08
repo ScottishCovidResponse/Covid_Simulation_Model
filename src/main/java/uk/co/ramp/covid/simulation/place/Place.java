@@ -26,7 +26,7 @@ public abstract class Place {
     public Place() {
         this.people = new ArrayList<>();
         this.nextPeople = new ArrayList<>();
-        this.transProb = PopulationParameters.get().getpBaseTrans();
+        this.transProb = PopulationParameters.get().buildingProperties.pBaseTrans;
         this.sDistance = 1.0;
         this.transAdjustment = 1.0;
 

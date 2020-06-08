@@ -22,10 +22,10 @@ public abstract class Household extends Place {
     public Household(Places places) {
         this.neighbours = new ArrayList<>();
         this.places = places;
-        if (RNG.get().nextUniform(0,1) < PopulationParameters.get().getpHouseholdWillIsolate()) {
+        if (RNG.get().nextUniform(0,1) < PopulationParameters.get().householdProperties.pWillIsolate) {
             willIsolate = true;
         }
-        if (RNG.get().nextUniform(0,1) < PopulationParameters.get().getpLockCompliance()) {
+        if (RNG.get().nextUniform(0,1) < PopulationParameters.get().householdProperties.pLockCompliance) {
         	lockCompliant = true;
         }
 
@@ -61,7 +61,7 @@ public abstract class Household extends Place {
     
     public void isolate() {
         if (willIsolate) {
-            isolationTimer = PopulationParameters.get().getHouseholdIsolationPeriod();
+            isolationTimer = PopulationParameters.get().householdProperties.householdIsolationPeriod;
         }
     }
     
@@ -100,7 +100,7 @@ public abstract class Household extends Place {
                 p.returnHome();
                 left.addAll(sendFamilyHome(p, null, t));
             }
-            else if (RNG.get().nextUniform(0, 1) < PopulationParameters.get().getHouseholdVisitorLeaveRate()) {
+            else if (RNG.get().nextUniform(0, 1) < PopulationParameters.get().householdProperties.visitorLeaveRate) {
                 left.add(p);
                 left.addAll(sendFamilyHome(p, null, t));
                 if (p.cStatus() != CStatus.DEAD) {
@@ -193,8 +193,8 @@ public abstract class Household extends Place {
 	            if (n.isIsolating()) {
 	                continue;
 	            }
-	
-	            if (RNG.get().nextUniform(0, 1) < PopulationParameters.get().getNeighbourVisitFreq()) {
+
+                if (RNG.get().nextUniform(0, 1) < PopulationParameters.get().householdProperties.neighbourVisitFreq) {
 	                // We visit neighbours as a family
 	                for (Person p : getInhabitants()) {
 	                    if (!p.getQuarantine()) {
@@ -212,7 +212,7 @@ public abstract class Household extends Place {
     private void moveShop(Time t, boolean lockdown) {
         List<Person> left = new ArrayList<>();
 
-        double visitProb = PopulationParameters.get().getpGoShopping();
+        double visitProb = PopulationParameters.get().householdProperties.pGoShopping;
         if (lockdown) {
             visitProb = visitProb * 0.5;
         }
@@ -248,7 +248,7 @@ public abstract class Household extends Place {
     private void moveRestaurant(Time t) {
         List<Person> left = new ArrayList<>();
 
-        double visitProb = PopulationParameters.get().getpGoRestaurant();
+        double visitProb = PopulationParameters.get().householdProperties.pGoRestaurant;
 
         if (RNG.get().nextUniform(0, 1) < visitProb) {
             Restaurant r = places.getRandomRestaurant();

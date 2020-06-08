@@ -21,7 +21,7 @@ public class ConstructionSiteTest extends SimulationTest {
     @Test
     public void testConstructionSiteTransProb() throws JsonParseException {
         ConstructionSite constructionSite = new ConstructionSite(CommunalPlace.Size.MED);
-        double expProb = PopulationParameters.get().getpBaseTrans();
+        double expProb = PopulationParameters.get().buildingProperties.pBaseTrans;
         double delta = 0.01;
         assertEquals("Unexpected construction site TransProb", expProb, constructionSite.transProb, delta);
     }
@@ -30,7 +30,7 @@ public class ConstructionSiteTest extends SimulationTest {
     public void testNoConstructionSites() throws JsonParseException {
         //The input ConstructionSites ratio is set very high so that there are no construction sites.
         //Check that each person's primary place is never set to construction site
-        PopulationParameters.get().setConstructionSiteRatio(100000);
+        PopulationParameters.get().buildingDistribution.constructionSites = 100000;
         Population p = PopulationGenerator.genValidPopulation(10000);
 
         ArrayList<Person> allPeople = p.getAllPeople();
@@ -44,7 +44,7 @@ public class ConstructionSiteTest extends SimulationTest {
     public void testNoCSInfections() throws JsonParseException {
         //The input ConstructionSites ratio is set very high so that there are no construction sites.
         //Check that there are no infections on construction sites
-        PopulationParameters.get().setConstructionSiteRatio(100000);
+        PopulationParameters.get().buildingDistribution.constructionSites = 100000;
         int population = 10000;
         int nInfections = 100;
 
