@@ -71,7 +71,7 @@ public class Restaurant extends CommunalPlace {
                 nPers.returnHome();
                 left.addAll(sendFamilyHome(nPers, this, t));
             }
-            else if (rng.nextUniform(0, 1) < PopulationParameters.get().buildingProperties.pLeaveRestaurant
+            else if (rng.nextUniform(0, 1) < PopulationParameters.get().buildingProperties.pLeaveRestaurant.asDouble()
                     || !times.isOpenNextHour(t)) {
                 left.add(nPers);
                 nPers.returnHome();

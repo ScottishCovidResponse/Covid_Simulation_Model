@@ -46,6 +46,10 @@ public class ProbabilityDistribution<T> {
         Collections.sort(pmap, Collections.reverseOrder());
     }
 
+    public void add(Probability prob, T val) {
+        add(prob.asDouble(), val);
+    }
+
     /** sample the current probability distribution. Returns null on failure */
     public T sample() {
         assert isValid()

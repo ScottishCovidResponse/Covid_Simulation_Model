@@ -1,10 +1,11 @@
 package uk.co.ramp.covid.simulation.parameters;
 
+import uk.co.ramp.covid.simulation.util.Probability;
+
 public class InfantProperties {
-    public Double pAttendsNursery = null;
+    public Probability pAttendsNursery = null;
 
     public boolean isValid() {
-        //return PopulationParameters.isValidProbability(pAttendsNursery, "pAttendsNursery");
         return true;
     }
 }

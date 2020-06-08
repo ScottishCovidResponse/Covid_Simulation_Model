@@ -1,18 +1,19 @@
 package uk.co.ramp.covid.simulation.parameters;
 
 import uk.co.ramp.covid.simulation.population.Adult;
+import uk.co.ramp.covid.simulation.util.Probability;
 import uk.co.ramp.covid.simulation.util.ProbabilityDistribution;
 
 // Probability an Adult works in a particular job
 public class WorkerDistribution {
-    public Double pOffice = null;
-    public Double pShop = null;
-    public Double pHospital = null;
-    public Double pConstruction = null;
-    public Double pTeacher = null;
-    public Double pRestaurant = null;
-    public Double pUnemployed = null;
-    public Double pNursery = null;
+    public Probability pOffice = null;
+    public Probability pShop = null;
+    public Probability pHospital = null;
+    public Probability pConstruction = null;
+    public Probability pTeacher = null;
+    public Probability pRestaurant = null;
+    public Probability pUnemployed = null;
+    public Probability pNursery = null;
 
     public PlaceSizeDistribution sizeAllocation = null;
 
@@ -31,17 +32,6 @@ public class WorkerDistribution {
 
 
     public boolean isValid() {
-        /*
-        boolean probabilitiesValid = PopulationParameters.isValidProbability(pOffice, "pOffice")
-                && PopulationParameters.isValidProbability(pShop, "pShop")
-                && PopulationParameters.isValidProbability(pHospital, "pHospital")
-                && PopulationParameters.isValidProbability(pConstruction, "pConstruction")
-                && PopulationParameters.isValidProbability(pTeacher, "pTeacher")
-                && PopulationParameters.isValidProbability(pRestaurant, "pRestaurant")
-                && PopulationParameters.isValidProbability(pNursery, "pNursery")
-                && PopulationParameters.isValidProbability(pUnemployed, "pUnemployed");
-        */
-
         return professionDistribution().isValid();
     }
 }

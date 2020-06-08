@@ -48,8 +48,8 @@ public abstract class Person {
         this.age = age;
         this.sex = sex;
         this.rng = RNG.get();
-        this.transmissionProb = PopulationParameters.get().personProperties.pTransmission;
-        this.quarantineProb = PopulationParameters.get().personProperties.pQuarantine;
+        this.transmissionProb = PopulationParameters.get().personProperties.pTransmission.asDouble();
+        this.quarantineProb = PopulationParameters.get().personProperties.pQuarantine.asDouble();
         this.quarantineVal = rng.nextUniform(0, 1);
     }
 

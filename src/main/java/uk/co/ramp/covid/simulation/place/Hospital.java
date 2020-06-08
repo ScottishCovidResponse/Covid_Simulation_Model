@@ -14,7 +14,7 @@ public class Hospital extends CommunalPlace {
     public Hospital(Size s) {
         super(s);
         transAdjustment = PopulationParameters.get().buildingProperties.pHospitalTrans;
-        keyProb = PopulationParameters.get().buildingProperties.pHospitalKey;
+        keyProb = PopulationParameters.get().buildingProperties.pHospitalKey.asDouble();
         times = OpeningTimes.twentyfourSeven();
         if (rng.nextUniform(0, 1) > keyProb) keyPremises = true;
         allocateShifts();

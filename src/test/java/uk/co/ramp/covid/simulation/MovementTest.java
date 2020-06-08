@@ -11,6 +11,7 @@ import uk.co.ramp.covid.simulation.place.*;
 import uk.co.ramp.covid.simulation.place.householdtypes.SingleAdult;
 import uk.co.ramp.covid.simulation.population.*;
 import uk.co.ramp.covid.simulation.testutil.PopulationGenerator;
+import uk.co.ramp.covid.simulation.util.Probability;
 import uk.co.ramp.covid.simulation.util.SimulationTest;
 
 import java.util.HashSet;
@@ -26,7 +27,7 @@ public class MovementTest extends SimulationTest {
 
     @Before
     public void initialiseTestModel() {
-        PopulationParameters.get().householdProperties.pWillIsolate = 100.0;
+        PopulationParameters.get().householdProperties.pWillIsolate = new Probability(1.0);
 
         p = PopulationGenerator.genValidPopulation(populationSize);
         p.seedVirus(nInfections);

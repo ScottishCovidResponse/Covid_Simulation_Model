@@ -1,6 +1,9 @@
 package uk.co.ramp.covid.simulation.parameters;
 
+import uk.co.ramp.covid.simulation.util.Probability;
+
 public class BuildingProperties {
+    // TODO: These are now rates, not probabilities
     public Double pBaseTrans = null;
     public Double pHospitalTrans = null;
     public Double pConstructionSiteTrans = null;
@@ -10,25 +13,15 @@ public class BuildingProperties {
     public Double pSchoolTrans = null;
     public Double pShopTrans = null;
 
-    public Double pHospitalKey = null;
-    public Double pConstructionSiteKey = null;
-    public Double pOfficeKey = null;
-    public Double pShopKey = null;
+    public Probability pHospitalKey = null;
+    public Probability pConstructionSiteKey = null;
+    public Probability pOfficeKey = null;
+    public Probability pShopKey = null;
 
-    public Double pLeaveShop = null;
-    public Double pLeaveRestaurant = null;
+    public Probability pLeaveShop = null;
+    public Probability pLeaveRestaurant = null;
 
     public boolean isValid() {
-        /*
-        return PopulationParameters.isValidProbability(pBaseTrans, "pBaseTrans")
-                && PopulationParameters.isValidProbability(pHospitalKey, "pHospitalKey")
-                && PopulationParameters.isValidProbability(pConstructionSiteKey, "pConstructionSiteKey")
-                && PopulationParameters.isValidProbability(pOfficeKey, "pOfficeKey")
-                && PopulationParameters.isValidProbability(pShopKey, "pShopKey")
-                && PopulationParameters.isValidProbability(pLeaveShop, "pLeaveShop")
-                && PopulationParameters.isValidProbability(pLeaveRestaurant, "pLeaveRestaurant");
-    }
-    */
         return true;
     }
 }

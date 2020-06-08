@@ -23,10 +23,10 @@ public abstract class Household extends Place {
     public Household(Places places) {
         this.neighbours = new ArrayList<>();
         this.places = places;
-        if (RNG.get().nextUniform(0,1) < PopulationParameters.get().householdProperties.pWillIsolate) {
+        if (RNG.get().nextUniform(0,1) < PopulationParameters.get().householdProperties.pWillIsolate.asDouble()) {
             willIsolate = true;
         }
-        if (RNG.get().nextUniform(0,1) < PopulationParameters.get().householdProperties.pLockCompliance) {
+        if (RNG.get().nextUniform(0,1) < PopulationParameters.get().householdProperties.pLockCompliance.asDouble()) {
         	lockCompliant = true;
         }
 
@@ -213,7 +213,7 @@ public abstract class Household extends Place {
     private void moveShop(Time t, boolean lockdown) {
         List<Person> left = new ArrayList<>();
 
-        double visitProb = PopulationParameters.get().householdProperties.pGoShopping;
+        double visitProb = PopulationParameters.get().householdProperties.pGoShopping.asDouble();
         if (lockdown) {
             visitProb = visitProb * 0.5;
         }
@@ -249,7 +249,7 @@ public abstract class Household extends Place {
     private void moveRestaurant(Time t) {
         List<Person> left = new ArrayList<>();
 
-        double visitProb = PopulationParameters.get().householdProperties.pGoRestaurant;
+        double visitProb = PopulationParameters.get().householdProperties.pGoRestaurant.asDouble();
 
         if (RNG.get().nextUniform(0, 1) < visitProb) {
             Restaurant r = places.getRandomRestaurant();

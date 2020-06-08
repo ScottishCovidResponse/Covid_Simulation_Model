@@ -3,6 +3,7 @@ package uk.co.ramp.covid.simulation.parameters;
 import uk.co.ramp.covid.simulation.place.Household;
 import uk.co.ramp.covid.simulation.place.householdtypes.*;
 import uk.co.ramp.covid.simulation.population.Places;
+import uk.co.ramp.covid.simulation.util.Probability;
 import uk.co.ramp.covid.simulation.util.ProbabilityDistribution;
 
 import java.util.function.Function;
@@ -12,16 +13,16 @@ import java.util.function.Function;
 public class HouseholdDistribution {
     public Double householdRatio = null;
 
-    public Double pSingleAdult = null;
-    public Double pSmallAdult = null;
-    public Double pSingleParent = null;
-    public Double pSmallFamily = null;
-    public Double pLargeTwoAdultFamily = null;
-    public Double pLargeManyAdultFamily = null;
-    public Double pLargeAdult = null;
-    public Double pAdultPensioner = null;
-    public Double pDoubleOlder = null;
-    public Double pSingleOlder = null;
+    public Probability pSingleAdult = null;
+    public Probability pSmallAdult = null;
+    public Probability pSingleParent = null;
+    public Probability pSmallFamily = null;
+    public Probability pLargeTwoAdultFamily = null;
+    public Probability pLargeManyAdultFamily = null;
+    public Probability pLargeAdult = null;
+    public Probability pAdultPensioner = null;
+    public Probability pDoubleOlder = null;
+    public Probability pSingleOlder = null;
 
     public ProbabilityDistribution<Function<Places, Household>> householdTypeDistribution() {
         ProbabilityDistribution<Function<Places, Household>> p = new ProbabilityDistribution<>();
@@ -40,20 +41,6 @@ public class HouseholdDistribution {
 
     public boolean isValid() {
         return householdTypeDistribution().isValid() && householdRatio >= 1;
-        /*
-        boolean probabilitiesValid = PopulationParameters.isValidProbability(pSingleAdult, "pSingleAdult")
-                && PopulationParameters.isValidProbability(pSmallAdult, "pSmallAdult")
-                && PopulationParameters.isValidProbability(pSingleParent, "pSingleParent")
-                && PopulationParameters.isValidProbability(pSmallFamily, "pSmallFamily")
-                && PopulationParameters.isValidProbability(pLargeTwoAdultFamily, "pLargeTwoAdultFamily")
-                && PopulationParameters.isValidProbability(pLargeManyAdultFamily, "pLargeManyAdultFamily")
-                && PopulationParameters.isValidProbability(pLargeAdult, "pLargeAdult")
-                && PopulationParameters.isValidProbability(pAdultPensioner, "pAdultPensioner")
-                && PopulationParameters.isValidProbability(pDoubleOlder, "pDoubleOlder")
-                && PopulationParameters.isValidProbability(pSingleOlder, "pSingleOlder");
-        
-        return probabilitiesValid;
-        */
     }
 
 }

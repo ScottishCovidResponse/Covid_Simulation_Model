@@ -18,7 +18,7 @@ public class Infant extends Person {
     }
 
     private void setNursery() {
-        if (rng.nextUniform(0, 1) < PopulationParameters.get().infantAllocation.pAttendsNursery) {
+        if (rng.nextUniform(0, 1) < PopulationParameters.get().infantAllocation.pAttendsNursery.asDouble()) {
             goesToNursery = true;
         } else {
             goesToNursery = false;

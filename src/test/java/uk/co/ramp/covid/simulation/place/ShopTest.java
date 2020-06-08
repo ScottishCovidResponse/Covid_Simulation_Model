@@ -10,6 +10,7 @@ import uk.co.ramp.covid.simulation.parameters.PopulationParameters;
 import uk.co.ramp.covid.simulation.place.householdtypes.SmallFamily;
 import uk.co.ramp.covid.simulation.population.*;
 import uk.co.ramp.covid.simulation.testutil.PopulationGenerator;
+import uk.co.ramp.covid.simulation.util.Probability;
 import uk.co.ramp.covid.simulation.util.SimulationTest;
 
 import java.util.ArrayList;
@@ -56,7 +57,7 @@ public class ShopTest extends SimulationTest {
 
     @Test
     public void testSendHome() {
-        PopulationParameters.get().buildingProperties.pLeaveShop = 1.0;
+        PopulationParameters.get().buildingProperties.pLeaveShop = new Probability(1.0);
         int time = shop.times.getClose() - 1;
         int left = shop.sendHome(new Time(time));
         int expPeople = 2;

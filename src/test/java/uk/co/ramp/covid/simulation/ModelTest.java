@@ -8,6 +8,7 @@ import com.google.gson.JsonParseException;
 
 import uk.co.ramp.covid.simulation.covid.CovidParameters;
 import uk.co.ramp.covid.simulation.parameters.PopulationParameters;
+import uk.co.ramp.covid.simulation.util.Probability;
 import uk.co.ramp.covid.simulation.util.SimulationTest;
 
 import java.io.IOException;
@@ -201,8 +202,8 @@ public class ModelTest extends SimulationTest {
         CovidParameters.get().setPensionerProgressionPhase2(100.0);
         CovidParameters.get().setSymptomaticTransAdjustment(100.0);
         CovidParameters.get().setAsymptomaticTransAdjustment(100.0);
-        PopulationParameters.get().personProperties.pTransmission = 1.0;
-        PopulationParameters.get().personProperties.pQuarantine = 0.0;
+        PopulationParameters.get().personProperties.pTransmission = new Probability(1.0);
+        PopulationParameters.get().personProperties.pQuarantine = new Probability(0.0);
         nDays = 200;
         //Run the model
         Model m1 = new Model()

@@ -1,14 +1,12 @@
 package uk.co.ramp.covid.simulation.parameters;
 
+import uk.co.ramp.covid.simulation.util.Probability;
+
 public class PersonProperties {
-    public Double pQuarantine = null;
-    public Double pTransmission = null;
+    public Probability pQuarantine = null;
+    public Probability pTransmission = null;
 
     public boolean isValid() {
         return true;
-        /*return PopulationParameters.isValidProbability(pQuarantine, "pQuarantine")
-                && PopulationParameters.isValidProbability(pTransmission, "pTransmission");
-
-         */
     }
 }

@@ -45,7 +45,7 @@ public abstract class Place {
         p.reportInfection(s);
     } 
     protected double getTransProb() {
-    	double cTransProb = 0.0;
+        double cTransProb = 0;
     	if(people.size() == 0) cTransProb = 0.0;
     	else if(people.size() <= transAdjustment) cTransProb = transProb;
       	else if(people.size() > transAdjustment) cTransProb = transProb * transAdjustment / people.size();

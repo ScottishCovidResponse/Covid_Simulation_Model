@@ -1,12 +1,13 @@
 package uk.co.ramp.covid.simulation.parameters;
 
 import uk.co.ramp.covid.simulation.place.CommunalPlace;
+import uk.co.ramp.covid.simulation.util.Probability;
 import uk.co.ramp.covid.simulation.util.ProbabilityDistribution;
 
 public class PlaceSizeDistribution {
-    public Double pSmall = null;
-    public Double pMed = null;
-    public Double pLarge = null;
+    public Probability pSmall = null;
+    public Probability pMed = null;
+    public Probability pLarge = null;
     
     public ProbabilityDistribution<CommunalPlace.Size> sizeDistribution() {
         ProbabilityDistribution<CommunalPlace.Size> p = new ProbabilityDistribution<>();

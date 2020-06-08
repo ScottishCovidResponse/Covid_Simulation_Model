@@ -144,9 +144,9 @@ public class Places {
             places.add(constructor.apply(size));
         }
 
-        double lprob = PopulationParameters.get().workerAllocation.sizeAllocation.pLarge;
-        double mprob = PopulationParameters.get().workerAllocation.sizeAllocation.pMed;
-        double sprob = PopulationParameters.get().workerAllocation.sizeAllocation.pSmall;
+        double lprob = PopulationParameters.get().workerAllocation.sizeAllocation.pLarge.asDouble();
+        double mprob = PopulationParameters.get().workerAllocation.sizeAllocation.pMed.asDouble();
+        double sprob = PopulationParameters.get().workerAllocation.sizeAllocation.pSmall.asDouble();
 
         // In the case of 0 buildings we need to expand the probabilities to fill the distribution
         if (l == 0 && m == 0) {
