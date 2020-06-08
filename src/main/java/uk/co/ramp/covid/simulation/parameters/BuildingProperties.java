@@ -20,8 +20,4 @@ public class BuildingProperties {
 
     public Probability pLeaveShop = null;
     public Probability pLeaveRestaurant = null;
-
-    public boolean isValid() {
-        return true;
-    }
 }

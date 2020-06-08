@@ -17,7 +17,7 @@ public class PlaceSizeDistribution {
         return p;
     }
 
-    public boolean isValid(String name) {
+    public boolean isValid() {
         return sizeDistribution().isValid();
     }
 

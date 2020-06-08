@@ -46,10 +46,10 @@ public class PopulationParameters {
         valid = valid && checker.isValid(households) && households.isValid();
         valid = valid && checker.isValid(buildingDistribution) && buildingDistribution.isValid();
         valid = valid && checker.isValid(workerAllocation) && workerAllocation.isValid();
-        valid = valid && checker.isValid(buildingProperties) && buildingProperties.isValid();
-        valid = valid && checker.isValid(infantAllocation) && infantAllocation.isValid();
-        valid = valid && checker.isValid(personProperties) && personProperties.isValid();
-        valid = valid && checker.isValid(householdProperties) && householdProperties.isValid();
+        valid = valid && checker.isValid(buildingProperties);
+        valid = valid && checker.isValid(infantAllocation);
+        valid = valid && checker.isValid(personProperties);
+        valid = valid && checker.isValid(householdProperties);
         return valid;
     }
 

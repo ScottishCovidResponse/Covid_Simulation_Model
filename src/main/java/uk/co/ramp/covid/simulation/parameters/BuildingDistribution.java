@@ -24,12 +24,12 @@ public class BuildingDistribution {
     public PlaceSizeDistribution restaurantSizes = null;
 
     public boolean isValid() {
-        return hospitalSizes.isValid("hospital")
-                && schoolSizes.isValid("school")
-                && shopSizes.isValid("shop")
-                && officeSizes.isValid("office")
-                && constructionSiteSizes.isValid("construction site")
-                && nurserySizes.isValid("nurseries")
-                && restaurantSizes.isValid("restaurant");
+        return hospitalSizes.isValid()
+                && schoolSizes.isValid()
+                && shopSizes.isValid()
+                && officeSizes.isValid()
+                && constructionSiteSizes.isValid()
+                && nurserySizes.isValid()
+                && restaurantSizes.isValid();
     }
 }

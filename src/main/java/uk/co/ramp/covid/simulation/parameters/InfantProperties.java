@@ -4,8 +4,4 @@ import uk.co.ramp.covid.simulation.util.Probability;
 
 public class InfantProperties {
     public Probability pAttendsNursery = null;
-
-    public boolean isValid() {
-        return true;
-    }
 }

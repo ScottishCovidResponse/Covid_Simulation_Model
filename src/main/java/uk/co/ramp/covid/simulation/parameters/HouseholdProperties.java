@@ -12,8 +12,4 @@ public class HouseholdProperties {
     public Integer householdIsolationPeriod = null;
     public Probability pWillIsolate = null;
     public Probability pLockCompliance = null;
-
-    public boolean isValid() {
-        return true;
-    }
 }
