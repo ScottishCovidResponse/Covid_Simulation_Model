@@ -1,10 +1,8 @@
-package uk.co.ramp.covid.simulation.io;
+package uk.co.ramp.covid.simulation.parameters;
 
 import com.google.gson.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import uk.co.ramp.covid.simulation.parameters.CovidParameters;
-import uk.co.ramp.covid.simulation.parameters.PopulationParameters;
 import uk.co.ramp.covid.simulation.util.InvalidProbabilityException;
 import uk.co.ramp.covid.simulation.util.Probability;
 

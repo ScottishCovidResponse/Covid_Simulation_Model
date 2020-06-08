@@ -2,7 +2,7 @@ package uk.co.ramp.covid.simulation;
 
 import org.junit.Test;
 import uk.co.ramp.covid.simulation.parameters.CovidParameters;
-import uk.co.ramp.covid.simulation.io.ParameterReader;
+import uk.co.ramp.covid.simulation.parameters.ParameterReader;
 
 import java.io.IOException;
 

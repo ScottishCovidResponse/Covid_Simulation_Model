@@ -3,6 +3,7 @@ package uk.co.ramp.covid.simulation.io;
 import org.junit.After;
 import org.junit.Test;
 import uk.co.ramp.covid.simulation.parameters.CovidParameters;
+import uk.co.ramp.covid.simulation.parameters.ParameterReader;
 import uk.co.ramp.covid.simulation.parameters.PopulationParameters;
 import uk.co.ramp.covid.simulation.util.Probability;
 
