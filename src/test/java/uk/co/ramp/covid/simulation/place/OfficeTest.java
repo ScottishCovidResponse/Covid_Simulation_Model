@@ -27,11 +27,8 @@ public class OfficeTest extends SimulationTest {
     @Test
     public void testOfficeWorkers() throws ImpossibleWorkerDistributionException {
         int populationSize = 10000;
-        int nInfections = 10;
-
         Population p = PopulationGenerator.genValidPopulation(populationSize);
         p.allocatePeople();
-        p.seedVirus(nInfections);
         List<Person> staff;
         Time t = new Time(0);
         //Run for a whole week

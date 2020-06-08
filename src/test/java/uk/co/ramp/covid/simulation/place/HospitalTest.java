@@ -27,11 +27,8 @@ public class HospitalTest extends SimulationTest {
     @Test
     public void testHospitalWorkers() throws ImpossibleAllocationException, ImpossibleWorkerDistributionException {
         int populationSize = 10000;
-        int nInfections = 10;
-
         Population p = new Population(populationSize);
         p.allocatePeople();
-        p.seedVirus(nInfections);
         List<Person> staff;
         Time t = new Time(0);
         //Run for a whole week

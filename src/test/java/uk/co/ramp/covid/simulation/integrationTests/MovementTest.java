@@ -1,10 +1,12 @@
-package uk.co.ramp.covid.simulation;
+package uk.co.ramp.covid.simulation.integrationTests;
 
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
+import uk.co.ramp.covid.simulation.DailyStats;
+import uk.co.ramp.covid.simulation.Time;
 import uk.co.ramp.covid.simulation.covid.CovidParameters;
 import uk.co.ramp.covid.simulation.place.*;
 import uk.co.ramp.covid.simulation.place.householdtypes.SingleAdult;
@@ -57,7 +59,7 @@ public class MovementTest extends SimulationTest {
             }
         }
 
-        assertEquals(numChildren, schooled.size());
+        assertEquals("Some children not at school", numChildren, schooled.size());
     }
 
     @Test
@@ -81,7 +83,7 @@ public class MovementTest extends SimulationTest {
 
         // TODO: We can check specifics once we know how many infants go to nursery.
         // This is not trivial since not all infants who go to nursery will go on day 1.
-        assertTrue(nursed.size() > 0);
+        assertTrue("No infants at nursery", nursed.size() > 0);
     }
 
     @Test
@@ -102,7 +104,7 @@ public class MovementTest extends SimulationTest {
             t = t.advance();
         }
 
-        assertTrue(working.size() > 0);
+        assertTrue("No-one goes to work", working.size() > 0);
     }
 
     @Test
@@ -124,7 +126,7 @@ public class MovementTest extends SimulationTest {
             t = t.advance();
         }
 
-        assertTrue(shopping.size() > 0);
+        assertTrue("No-one visits shops", shopping.size() > 0);
     }
 
     @Test
@@ -146,10 +148,10 @@ public class MovementTest extends SimulationTest {
             t = t.advance();
         }
 
-        assertTrue(eating.size() > 0);
+        assertTrue("No-one visits restaurants", eating.size() > 0);
     }
 
-    @Ignore("Failing test - no-one visits hospitals")
+    @Ignore("No-one visits hospitals. Functionality awaiting implementation")
     @Test
     public void someNonWorkersGoToHospital() {
         Set<Person> visiting = new HashSet<>();
@@ -183,7 +185,7 @@ public class MovementTest extends SimulationTest {
             }
             t = t.advance();
         }
-        assertTrue(visiting.size() > 0);
+        assertTrue("No-one visits neighbours", visiting.size() > 0);
     }
 
     @Test
@@ -201,7 +203,7 @@ public class MovementTest extends SimulationTest {
             for (Household hld : p.getHouseholds()) {
                 npeople += hld.getPeople().size();
             }
-            assertEquals(populationSize, npeople);
+            assertEquals("People have been lost", populationSize, npeople);
             t = t.advance();
         }
     }
