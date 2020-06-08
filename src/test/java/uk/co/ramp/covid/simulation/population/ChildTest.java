@@ -21,6 +21,6 @@ public class ChildTest extends SimulationTest {
 
     @Test (expected = InvalidAgeException.class)
     public void testInvalidAgeException() {
-        Child child = new Child(1, FEMALE);
+        new Child(1, FEMALE);
     }
 }
