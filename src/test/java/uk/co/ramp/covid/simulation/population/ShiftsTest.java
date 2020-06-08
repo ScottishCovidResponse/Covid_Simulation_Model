@@ -6,7 +6,7 @@ import org.junit.Test;
 import uk.co.ramp.covid.simulation.place.CommunalPlace;
 import uk.co.ramp.covid.simulation.place.Hospital;
 import uk.co.ramp.covid.simulation.place.Shop;
-import uk.co.ramp.covid.simulation.util.SimulationTest;
+import uk.co.ramp.covid.simulation.testutil.SimulationTest;
 
 import static org.junit.Assert.assertEquals;
 

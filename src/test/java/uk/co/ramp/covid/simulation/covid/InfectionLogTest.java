@@ -5,7 +5,7 @@ import org.junit.Test;
 import uk.co.ramp.covid.simulation.population.Person;
 import uk.co.ramp.covid.simulation.population.Population;
 import uk.co.ramp.covid.simulation.testutil.PopulationGenerator;
-import uk.co.ramp.covid.simulation.util.SimulationTest;
+import uk.co.ramp.covid.simulation.testutil.SimulationTest;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;

@@ -2,7 +2,7 @@ package uk.co.ramp.covid.simulation.population;
 
 import org.junit.Test;
 import uk.co.ramp.covid.simulation.place.*;
-import uk.co.ramp.covid.simulation.util.SimulationTest;
+import uk.co.ramp.covid.simulation.testutil.SimulationTest;
 
 import java.util.ArrayList;
 import java.util.List;

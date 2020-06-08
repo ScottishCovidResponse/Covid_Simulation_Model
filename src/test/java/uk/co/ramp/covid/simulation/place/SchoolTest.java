@@ -6,7 +6,7 @@ import uk.co.ramp.covid.simulation.DailyStats;
 import uk.co.ramp.covid.simulation.Time;
 import uk.co.ramp.covid.simulation.population.*;
 import uk.co.ramp.covid.simulation.testutil.PopulationGenerator;
-import uk.co.ramp.covid.simulation.util.SimulationTest;
+import uk.co.ramp.covid.simulation.testutil.SimulationTest;
 
 import java.util.List;
 

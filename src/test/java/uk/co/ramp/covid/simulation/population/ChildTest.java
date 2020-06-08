@@ -4,7 +4,7 @@ import com.google.gson.JsonParseException;
 import org.junit.Test;
 import uk.co.ramp.covid.simulation.place.School;
 import uk.co.ramp.covid.simulation.testutil.PopulationGenerator;
-import uk.co.ramp.covid.simulation.util.SimulationTest;
+import uk.co.ramp.covid.simulation.testutil.SimulationTest;
 
 import static org.junit.Assert.assertTrue;
 import static uk.co.ramp.covid.simulation.population.Person.Sex.FEMALE;

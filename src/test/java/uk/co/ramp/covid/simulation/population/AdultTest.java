@@ -2,7 +2,7 @@ package uk.co.ramp.covid.simulation.population;
 
 import com.google.gson.JsonParseException;
 import org.junit.Test;
-import uk.co.ramp.covid.simulation.util.SimulationTest;
+import uk.co.ramp.covid.simulation.testutil.SimulationTest;
 
 import static org.junit.Assert.assertTrue;
 import static uk.co.ramp.covid.simulation.population.Person.Sex.FEMALE;
@@ -30,6 +30,6 @@ public class AdultTest extends SimulationTest {
 
     @Test (expected = InvalidAgeException.class)
     public void testInvalidAgeException() {
-        Adult adult = new Adult(66, FEMALE);
+        new Adult(66, FEMALE);
     }
 }

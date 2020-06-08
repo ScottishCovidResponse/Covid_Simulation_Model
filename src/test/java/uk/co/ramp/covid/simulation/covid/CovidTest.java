@@ -3,13 +3,11 @@ package uk.co.ramp.covid.simulation.covid;
 import org.junit.After;
 import org.junit.Test;
 import uk.co.ramp.covid.simulation.Time;
-import uk.co.ramp.covid.simulation.covid.Covid;
-import uk.co.ramp.covid.simulation.covid.CovidParameters;
 import uk.co.ramp.covid.simulation.place.Household;
 import uk.co.ramp.covid.simulation.place.householdtypes.SingleOlder;
 import uk.co.ramp.covid.simulation.place.householdtypes.SmallFamily;
 import uk.co.ramp.covid.simulation.population.*;
-import uk.co.ramp.covid.simulation.util.SimulationTest;
+import uk.co.ramp.covid.simulation.testutil.SimulationTest;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;

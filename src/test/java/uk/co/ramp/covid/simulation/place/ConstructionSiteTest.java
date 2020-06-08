@@ -9,7 +9,7 @@ import uk.co.ramp.covid.simulation.Model;
 import uk.co.ramp.covid.simulation.Time;
 import uk.co.ramp.covid.simulation.population.*;
 import uk.co.ramp.covid.simulation.testutil.PopulationGenerator;
-import uk.co.ramp.covid.simulation.util.SimulationTest;
+import uk.co.ramp.covid.simulation.testutil.SimulationTest;
 
 import java.util.ArrayList;
 import java.util.List;

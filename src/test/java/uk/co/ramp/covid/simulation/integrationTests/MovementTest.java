@@ -12,7 +12,7 @@ import uk.co.ramp.covid.simulation.place.*;
 import uk.co.ramp.covid.simulation.place.householdtypes.SingleAdult;
 import uk.co.ramp.covid.simulation.population.*;
 import uk.co.ramp.covid.simulation.testutil.PopulationGenerator;
-import uk.co.ramp.covid.simulation.util.SimulationTest;
+import uk.co.ramp.covid.simulation.testutil.SimulationTest;
 
 import java.util.HashSet;
 import java.util.List;
@@ -151,7 +151,7 @@ public class MovementTest extends SimulationTest {
         assertTrue("No-one visits restaurants", eating.size() > 0);
     }
 
-    @Ignore("No-one visits hospitals. Functionality awaiting implementation")
+    @Ignore("Failing test - no-one visits hospitals")
     @Test
     public void someNonWorkersGoToHospital() {
         Set<Person> visiting = new HashSet<>();
@@ -383,7 +383,6 @@ public class MovementTest extends SimulationTest {
     @Test
     public void negativeTestsExitQuarantine() {
         Time t = new Time(24);
-        DailyStats s = new DailyStats(t);
 
         Household iso = null;
         for (Household h : p.getHouseholds()) {
@@ -417,7 +416,6 @@ public class MovementTest extends SimulationTest {
     @Test
     public void positiveTestsStayInQuarantine() {
         Time t = new Time(24);
-        DailyStats s = new DailyStats(t);
 
         Household iso = null;
         for (Household h : p.getHouseholds()) {
