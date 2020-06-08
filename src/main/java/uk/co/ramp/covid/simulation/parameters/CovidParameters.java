@@ -10,7 +10,6 @@ import uk.co.ramp.covid.simulation.util.InvalidParametersException;
  * Note: This use of the singleton pattern is not thread safe
  */
 public class CovidParameters {
-    private static final Logger LOGGER = LogManager.getLogger(CovidParameters.class);
     public static CovidParameters cparams = null;
 
     public static CovidParameters get() {

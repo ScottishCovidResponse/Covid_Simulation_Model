@@ -2,7 +2,6 @@ package uk.co.ramp.covid.simulation.parameters;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import uk.co.ramp.covid.simulation.io.ParameterReader;
 
 import java.lang.reflect.Field;
 

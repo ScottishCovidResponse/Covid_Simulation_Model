@@ -14,7 +14,6 @@ import java.util.Map;
  * Note: This use of the singleton pattern is not thread safe
  */
 public class PopulationParameters {
-    private static final Logger LOGGER = LogManager.getLogger(PopulationParameters.class);
     private static PopulationParameters pp = null;
 
     public final Map<String,Double> population;
@@ -66,13 +65,4 @@ public class PopulationParameters {
     public static void clearParameters() {
         pp = null;
     }
-    
-    private static boolean isValidProbability(Double val, String name) {
-        if(val < 0 || val > 1) {
-            LOGGER.error(name + " is not a valid probability");
-            return false;
-        }
-        return true;
-    }
-
 }
