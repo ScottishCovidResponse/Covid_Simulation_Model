@@ -22,4 +22,9 @@ public class RNG {
     public static void seed(int seed) {
         get().reSeed(seed);
     }
+    
+    public static int generateRandomSeed() {
+        // The default generator is seeded with System.currentTimeMillis() + System.identityHashCode(this)).
+        return (new RandomDataGenerator()).nextInt(0, Integer.MAX_VALUE);
+    }
 }

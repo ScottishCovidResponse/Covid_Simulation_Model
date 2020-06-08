@@ -14,6 +14,8 @@ import java.io.IOException;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 public class ModelTest extends SimulationTest {
@@ -129,6 +131,21 @@ public class ModelTest extends SimulationTest {
         m.setNoOutput();
         assertTrue(m.isValid());
         m.run(0);
+    }
+    
+    @Test
+    public void testRNGSeedGeneration() throws JsonParseException, IOException {
+        Model m  = Model.readModelFromFile("src/test/resources/test_model_params.json");
+        m.optionallyGenerateRNGSeed();
+        assertEquals(42, (int)m.getRNGSeed());
+
+        Model m2  = Model.readModelFromFile("src/test/resources/test_model_params_with_no_seed.json");
+        assertNull(m2.getRNGSeed());
+        assertFalse(m2.isValid());
+
+        // This also should write the new seed to the log
+        m2.optionallyGenerateRNGSeed();
+        assertTrue(m2.isValid());
     }
 
     @Ignore("Failing Test")
