@@ -1,5 +1,6 @@
-package uk.co.ramp.covid.simulation.population;
+package uk.co.ramp.covid.simulation.parameters;
 
+import uk.co.ramp.covid.simulation.population.Person;
 import uk.co.ramp.covid.simulation.util.InvalidParametersException;
 import uk.co.ramp.covid.simulation.util.ProbabilityDistribution;
 
