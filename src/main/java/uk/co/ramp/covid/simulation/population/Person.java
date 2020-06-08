@@ -9,6 +9,7 @@ import uk.co.ramp.covid.simulation.covid.Covid;
 import uk.co.ramp.covid.simulation.covid.CovidParameters;
 import uk.co.ramp.covid.simulation.DailyStats;
 import uk.co.ramp.covid.simulation.Time;
+import uk.co.ramp.covid.simulation.parameters.PopulationParameters;
 import uk.co.ramp.covid.simulation.place.CommunalPlace;
 import uk.co.ramp.covid.simulation.place.Household;
 import uk.co.ramp.covid.simulation.util.RNG;

@@ -1,13 +1,13 @@
-package uk.co.ramp.covid.simulation.population;
+package uk.co.ramp.covid.simulation.parameters;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import uk.co.ramp.covid.simulation.place.Household;
 import uk.co.ramp.covid.simulation.place.householdtypes.*;
+import uk.co.ramp.covid.simulation.population.Places;
 import uk.co.ramp.covid.simulation.util.InvalidParametersException;
 import uk.co.ramp.covid.simulation.util.ProbabilityDistribution;
 
-import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
@@ -22,8 +22,7 @@ public class PopulationParameters {
     private static final Logger LOGGER = LogManager.getLogger(PopulationParameters.class);
     private static PopulationParameters pp = null;
     private static final double EPSILON = 0.001;
-
-
+    
     // Household populations
     // These values define the probability of a household being an adult only, adult and child household etc
     public static class Households {
@@ -53,23 +52,6 @@ public class PopulationParameters {
             p.add(pDoubleOlder, DoubleOlder::new);
             p.add(pSingleOlder, SingleOlder::new);
             return p;
-        }
-
-        @Override
-        public String toString() {
-            return "Households{" +
-                    "householdRatio=" + householdRatio +
-                    ", pSingleAdult=" + pSingleAdult +
-                    ", pSmallAdult=" + pSmallAdult +
-                    ", pSingleParent=" + pSingleParent +
-                    ", pSmallFamily=" + pSmallFamily +
-                    ", pLargeTwoAdultFamily=" + pLargeTwoAdultFamily +
-                    ", pLargeManyAdultFamily=" + pLargeManyAdultFamily +
-                    ", pLargeAdult=" + pLargeAdult +
-                    ", pAdultPensioner=" + pAdultPensioner +
-                    ", pDoubleOlder=" + pDoubleOlder +
-                    ", pSingleOlder=" + pSingleOlder +
-                    '}';
         }
 
         public boolean isValid() {
@@ -137,19 +119,6 @@ public class PopulationParameters {
         public Integer restaurants = null;
         public Size restaurantSizes = null;
 
-        @Override
-        public String toString() {
-            return "BuildingDistribution{" +
-                    "hospitals=" + hospitals +
-                    ", schools=" + schools +
-                    ", shops=" + shops +
-                    ", offices=" + offices +
-                    ", constructionSites=" + constructionSites +
-                    ", nurseries=" + nurseries +
-                    ", restaurants=" + restaurants +
-                    '}';
-        }
-
         public boolean isValid() {
             return hospitalSizes.isValid("hospital")
                     && schoolSizes.isValid("school")
@@ -173,21 +142,6 @@ public class PopulationParameters {
         public Double pNursery = null;
 
         public Size sizeAllocation = null;
-
-        @Override
-        public String toString() {
-            return "WorkerAllocation{" +
-                    "pOffice=" + pOffice +
-                    ", pShop=" + pShop +
-                    ", pHospital=" + pHospital +
-                    ", pConstruction=" + pConstruction +
-                    ", pTeacher=" + pTeacher +
-                    ", pRestaurant=" + pRestaurant +
-                    ", pUnemployed=" + pUnemployed +
-                    ", pNursery=" + pNursery +
-                    ", sizeAllocation=" + sizeAllocation +
-                    '}';
-        }
 
         public boolean isValid() {
             boolean probabilitiesValid = isValidProbability(pOffice, "pOffice")
@@ -227,26 +181,6 @@ public class PopulationParameters {
         public Double pLeaveShop = null;
         public Double pLeaveRestaurant = null;
 
-        @Override
-        public String toString() {
-            return "BuildingProperties{" +
-                    "pBaseTrans =" + pBaseTrans +
-                    ", pHospitalTrans=" + pHospitalTrans +
-                    ", pConstructionSiteTrans=" + pConstructionSiteTrans +
-                    ", pNurseryTrans=" + pNurseryTrans +
-                    ", pOfficeTrans=" + pOfficeTrans +
-                    ", pRestaurantTrans=" + pRestaurantTrans +
-                    ", pSchoolTrans=" + pSchoolTrans +
-                    ", pShopTrans=" + pShopTrans +
-                    ", pHospitalKey=" + pHospitalKey +
-                    ", pConstructionSiteKey=" + pConstructionSiteKey +
-                    ", pOfficeKey=" + pOfficeKey +
-                    ", pShopKey=" + pShopKey +
-                    ", pLeaveShop =" + pLeaveShop +
-                    ", pLeaveRestaurant =" + pLeaveRestaurant +
-                    '}';
-        }
-
         public boolean isValid() {
             return isValidProbability(pBaseTrans, "pBaseTrans")
                     && isValidProbability(pHospitalKey, "pHospitalKey")
@@ -261,31 +195,14 @@ public class PopulationParameters {
     public static class InfantAllocation {
         public Double pAttendsNursery = null;
 
-        @Override
-        public String toString() {
-            return "InfantAllocation{" +
-                    "pAttendsNursery=" + pAttendsNursery +
-                    '}';
-        }
-
         public boolean isValid() {
             return isValidProbability(pAttendsNursery, "pAttendsNursery");
         }
-
-
     }
 
     public static class PersonProperties {
         public Double pQuarantine = null;
         public Double pTransmission = null;
-
-        @Override
-        public String toString() {
-            return "PersonProperties{" +
-                    "pQuarantine=" + pQuarantine +
-                    ", pTransmission=" + pTransmission +
-                    '}';
-        }
 
         public boolean isValid() {
             return isValidProbability(pQuarantine, "pQuarantine")
@@ -303,20 +220,6 @@ public class PopulationParameters {
         public Integer householdIsolationPeriod = null;
         public Double pWillIsolate = null;
         public Double pLockCompliance = null;
-
-        @Override
-        public String toString() {
-            return "HouseholdProperties{" +
-                    "visitorLeaveRate=" + visitorLeaveRate +
-                    ", neighbourVisitFreq=" + neighbourVisitFreq +
-                    ", expectedNeighbours=" + expectedNeighbours +
-                    ", pGoShopping=" + pGoShopping +
-                    ", pGoRestaurant=" + pGoRestaurant +
-                    ", householdIsolationPeriod=" + householdIsolationPeriod +
-                    ", pWillIsolate=" + pWillIsolate +
-                    ", pLockCompliance=" + pLockCompliance +
-                    '}';
-        }
 
         public boolean isValid() {
             return isValidProbability(pGoShopping, "pGoShopping")
@@ -384,26 +287,4 @@ public class PopulationParameters {
         return true;
     }
 
-    public class ParameterInitialisedChecker {
-
-        public boolean isValid (Object o) {
-            try {
-                return fieldsValid(o);
-            } catch (IllegalAccessException e) {
-                LOGGER.warn(e);
-            }
-            return false;
-        }
-
-        private boolean fieldsValid (Object o) throws IllegalAccessException {
-            boolean res = true;
-            for (Field f : o.getClass().getFields()) {
-                if (f.get(o) == null) {
-                    LOGGER.warn("Uninitialised parameter: " + f.getName());
-                    res = false;
-                }
-            }
-            return res;
-        }
-    }
 }

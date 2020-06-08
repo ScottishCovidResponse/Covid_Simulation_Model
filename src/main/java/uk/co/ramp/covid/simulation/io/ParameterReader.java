@@ -3,7 +3,7 @@ package uk.co.ramp.covid.simulation.io;
 import com.google.gson.Gson;
 import com.google.gson.JsonParseException;
 import uk.co.ramp.covid.simulation.covid.CovidParameters;
-import uk.co.ramp.covid.simulation.population.PopulationParameters;
+import uk.co.ramp.covid.simulation.parameters.PopulationParameters;
 
 import java.io.FileReader;
 import java.io.IOException;
