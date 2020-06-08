@@ -10,17 +10,14 @@ public class RNG {
 
     public static RandomDataGenerator get() {
         if (rng == null) {
-            rng = new RandomDataGenerator();
-
-            // Use a fixed seed for tests
-            // - seed() will always be called to override this in non-test runs  
-            rng.reSeed(0);
+            throw new NullPointerException("The RNG must be seeded before use.");
         }
         return rng;
     }
 
     public static void seed(int seed) {
-        get().reSeed(seed);
+        rng = new RandomDataGenerator();
+        rng.reSeed(seed);
     }
     
     public static int generateRandomSeed() {
