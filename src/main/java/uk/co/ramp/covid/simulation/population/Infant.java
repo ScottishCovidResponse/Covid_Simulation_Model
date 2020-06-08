@@ -6,7 +6,7 @@ import uk.co.ramp.covid.simulation.parameters.PopulationParameters;
 
 public class Infant extends Person {
 
-    private boolean goesToNursery;
+    private boolean goesToNursery = false;
 
     public Infant(int age, Sex sex) {
         super(age, sex);
@@ -18,10 +18,8 @@ public class Infant extends Person {
     }
 
     private void setNursery() {
-        if (rng.nextUniform(0, 1) < PopulationParameters.get().infantAllocation.pAttendsNursery.asDouble()) {
+        if (PopulationParameters.get().infantAllocation.pAttendsNursery.sample()) {
             goesToNursery = true;
-        } else {
-            goesToNursery = false;
         }
     }
 

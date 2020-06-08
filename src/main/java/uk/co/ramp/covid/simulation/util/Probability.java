@@ -18,4 +18,8 @@ public class Probability {
         }
         this.p = p;
     }
+    
+    public boolean sample() {
+        return RNG.get().nextUniform(0.0,1.0) < p;
+    }
 }

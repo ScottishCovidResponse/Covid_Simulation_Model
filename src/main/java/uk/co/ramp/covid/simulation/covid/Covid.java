@@ -8,6 +8,7 @@ import org.apache.commons.math3.random.RandomDataGenerator;
 import uk.co.ramp.covid.simulation.Time;
 import uk.co.ramp.covid.simulation.parameters.CovidParameters;
 import uk.co.ramp.covid.simulation.population.*;
+import uk.co.ramp.covid.simulation.util.Probability;
 import uk.co.ramp.covid.simulation.util.RNG;
 
 public class Covid {
@@ -21,7 +22,7 @@ public class Covid {
     private boolean dead;
     private final double meanLatentPeriod;
     private final double meanAsymptomaticPeriod;
-    private final double pSymptoms;
+    private final Probability pSymptoms;
     private final double meanSymptomDelay;
     private final double meanSymptomDelaySD;    
     private final double meanInfectiousDuration;
@@ -46,7 +47,7 @@ public class Covid {
         this.rng = RNG.get();
         this.meanLatentPeriod = CovidParameters.get().diseaseParameters.meanLatentPeriod;
         this.meanAsymptomaticPeriod = CovidParameters.get().diseaseParameters.meanAsymptomaticPeriod;
-        this.pSymptoms = CovidParameters.get().diseaseParameters.probabilitySymptoms.asDouble();
+        this.pSymptoms = CovidParameters.get().diseaseParameters.probabilitySymptoms;
         this.meanSymptomDelay = CovidParameters.get().diseaseParameters.meanSymptomDelay;
         this.meanSymptomDelaySD = CovidParameters.get().diseaseParameters.meanSymptomDelaySD;
         this.meanInfectiousDuration = CovidParameters.get().diseaseParameters.meanInfectiousDuration;
@@ -96,7 +97,7 @@ public class Covid {
     }
     
     private void setSymptomatic() {
-        symptomaticCase = rng.nextUniform(0.0, 1.0) < pSymptoms;    	
+        symptomaticCase = pSymptoms.sample();
     }
 
     // For each infection define the duration of the infection periods

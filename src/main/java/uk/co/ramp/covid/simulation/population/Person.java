@@ -12,6 +12,7 @@ import uk.co.ramp.covid.simulation.Time;
 import uk.co.ramp.covid.simulation.parameters.PopulationParameters;
 import uk.co.ramp.covid.simulation.place.CommunalPlace;
 import uk.co.ramp.covid.simulation.place.Household;
+import uk.co.ramp.covid.simulation.util.Probability;
 import uk.co.ramp.covid.simulation.util.RNG;
 
 import java.util.Optional;
@@ -34,7 +35,7 @@ public abstract class Person {
     private Covid cVirus;
     private final double transmissionProb;
     private boolean quarantine;
-    private final double quarantineProb; // Needs more thought. The probability that the person will go into quarantine
+    private final Probability quarantineProb; // Needs more thought. The probability that the person will go into quarantine
     private final double quarantineVal;
     private Optional<Boolean> testOutcome = Optional.empty();
     protected final RandomDataGenerator rng;
@@ -49,7 +50,7 @@ public abstract class Person {
         this.sex = sex;
         this.rng = RNG.get();
         this.transmissionProb = PopulationParameters.get().personProperties.pTransmission.asDouble();
-        this.quarantineProb = PopulationParameters.get().personProperties.pQuarantine.asDouble();
+        this.quarantineProb = PopulationParameters.get().personProperties.pQuarantine;
         this.quarantineVal = rng.nextUniform(0, 1);
     }
 
@@ -145,7 +146,7 @@ public abstract class Person {
     }
     
     public void enterQuarantine() {
-        quarantine = quarantineProb > quarantineVal;
+        quarantine = quarantineProb.asDouble() > quarantineVal;
     }
 
     public void forceQuarantine() {
@@ -260,7 +261,7 @@ public abstract class Person {
         }
 
         // Negative test
-        if (RNG.get().nextUniform(0,1) >= CovidParameters.get().testParameters.diagnosticTestSensitivity.asDouble()) {
+        if (!CovidParameters.get().testParameters.diagnosticTestSensitivity.sample()) {
             exitQuarantine();
             home.stopIsolating();
             testOutcome = Optional.of(false);

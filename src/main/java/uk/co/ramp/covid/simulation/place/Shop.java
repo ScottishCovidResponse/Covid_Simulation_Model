@@ -16,8 +16,8 @@ public class Shop extends CommunalPlace {
     public Shop(Size s) {
         super(s);
         transAdjustment = PopulationParameters.get().buildingProperties.pShopTrans;
-        keyProb = PopulationParameters.get().buildingProperties.pShopKey.asDouble();
-        if (rng.nextUniform(0, 1) > keyProb) keyPremises = true;
+        keyProb = PopulationParameters.get().buildingProperties.pShopKey;
+        if (keyProb.sample()) keyPremises = true;
         setOpeningHours();
     }
     
@@ -64,7 +64,7 @@ public class Shop extends CommunalPlace {
                 nPers.returnHome();
                 left.addAll(sendFamilyHome(nPers, this, t));
             }
-            else if (rng.nextUniform(0, 1) < PopulationParameters.get().buildingProperties.pLeaveShop.asDouble()
+            else if (PopulationParameters.get().buildingProperties.pLeaveShop.sample()
                     || !times.isOpenNextHour(t)) {
                 nPers.returnHome();
                 left.add(nPers);

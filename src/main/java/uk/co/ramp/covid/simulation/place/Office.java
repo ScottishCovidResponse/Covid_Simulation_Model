@@ -11,8 +11,8 @@ public class Office extends CommunalPlace {
     public Office(Size s)  {
         super(s);
         transAdjustment = PopulationParameters.get().buildingProperties.pOfficeTrans;
-        keyProb = PopulationParameters.get().buildingProperties.pOfficeKey.asDouble();
-        if (rng.nextUniform(0, 1) > keyProb) keyPremises = true;
+        keyProb = PopulationParameters.get().buildingProperties.pOfficeKey;
+        if (keyProb.sample()) keyPremises = true;
         times = OpeningTimes.nineFiveWeekdays();
     }
 
