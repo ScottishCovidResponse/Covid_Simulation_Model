@@ -14,7 +14,6 @@ public abstract class Household extends Place {
 
     private final List<Household> neighbours;
     private final Places places;
-    private int householdSize = 0;
     
     private boolean willIsolate = false;
     private boolean lockCompliant = false;

@@ -151,6 +151,8 @@ public class MovementTest extends SimulationTest {
         assertTrue(eating.size() > 0);
     }
 
+    // This should be fixed as part of
+    //   https://github.com/ScottishCovidResponse/SCRCIssueTracking/issues/314
     @Ignore("Failing test - no-one visits hospitals")
     @Test
     public void someNonWorkersGoToHospital() {
@@ -383,7 +385,6 @@ public class MovementTest extends SimulationTest {
     @Test
     public void negativeTestsExitQuarantine() {
         Time t = new Time(24);
-        DailyStats s = new DailyStats(t);
 
         Household iso = null;
         for (Household h : p.getHouseholds()) {
@@ -417,7 +418,6 @@ public class MovementTest extends SimulationTest {
     @Test
     public void positiveTestsStayInQuarantine() {
         Time t = new Time(24);
-        DailyStats s = new DailyStats(t);
 
         Household iso = null;
         for (Household h : p.getHouseholds()) {

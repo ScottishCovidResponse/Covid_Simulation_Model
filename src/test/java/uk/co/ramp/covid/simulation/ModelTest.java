@@ -1,7 +1,6 @@
 package uk.co.ramp.covid.simulation;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.google.gson.JsonParseException;
@@ -15,6 +14,8 @@ import java.io.IOException;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 public class ModelTest extends SimulationTest {
@@ -131,13 +132,27 @@ public class ModelTest extends SimulationTest {
         assertTrue(m.isValid());
         m.run(0);
     }
+    
+    @Test
+    public void testRNGSeedGeneration() throws JsonParseException, IOException {
+        Model m  = Model.readModelFromFile("src/test/resources/test_model_params.json");
+        m.optionallyGenerateRNGSeed();
+        assertEquals(42, (int)m.getRNGSeed());
 
-    @Ignore("Failing Test")
+        Model m2  = Model.readModelFromFile("src/test/resources/test_model_params_with_no_seed.json");
+        assertNull(m2.getRNGSeed());
+        assertFalse(m2.isValid());
+
+        // This also should write the new seed to the log
+        m2.optionallyGenerateRNGSeed();
+        assertTrue(m2.isValid());
+    }
+
     @Test
     public void testLockdown() {
 
         int startLock = 30;
-        int endLock = 60;
+        int endLock = 90;
 
         //Run the model with no lockdown
         Model m1 = new Model()
@@ -171,23 +186,16 @@ public class ModelTest extends SimulationTest {
         //is higher than during lockdown (ignoring the first 10 days after start and end of lockdown)
         int totInfBeforeLockdown = 0;
         int totInfDuringLockdown = 0;
-        int totInfAfterLockdown = 0;
         for (int i = 0; i < stats2.get(0).size(); i++) {
             if (i < startLock && i>=10) {
                 totInfBeforeLockdown += stats2.get(0).get(i).getTotalDailyInfections();
             } else if (i < endLock && i>= startLock + 10) {
                 totInfDuringLockdown += stats2.get(0).get(i).getTotalDailyInfections();
-            } else if(i >= endLock + 10){
-                totInfAfterLockdown += stats2.get(0).get(i).getTotalDailyInfections();
             }
         }
         assertTrue("Unexpectedly fewer infections before lockdown", totInfDuringLockdown < totInfBeforeLockdown);
-        // TODO-CHECK: I'm unsure this is a correct test. If the lockdown is very effective there
-        //  are very low cases in the population afterwards
-        assertTrue("Unexpectedly fewer infections after lockdown", totInfDuringLockdown < totInfAfterLockdown);
-    }
+     }
 
-    @Ignore("Not robust to RNG")
     @Test
     public void testMortality() {
         //Mortality and transmission rates are set to 100%
@@ -217,7 +225,9 @@ public class ModelTest extends SimulationTest {
         List<List<DailyStats>> stats1 = m1.run(0);
         int dead = stats1.get(0).get(nDays - 1).getDead();
         int recovered = stats1.get(0).get(nDays -1).getRecovered();
+        int latent = stats1.get(0).get(nDays -1).getExposed();
+        assertTrue("Too many latent remain", latent < 3);
         assertEquals("Unexpected recoveries", 0, recovered);
-        assertEquals("Unexpected number of deaths", population, dead);
+        assertEquals("Unexpected number of deaths", population, dead + latent);
     }
 }
