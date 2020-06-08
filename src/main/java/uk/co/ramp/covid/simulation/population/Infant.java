@@ -1,6 +1,6 @@
 package uk.co.ramp.covid.simulation.population;
 
-import uk.co.ramp.covid.simulation.covid.CovidParameters;
+import uk.co.ramp.covid.simulation.parameters.CovidParameters;
 import uk.co.ramp.covid.simulation.DailyStats;
 import uk.co.ramp.covid.simulation.parameters.PopulationParameters;
 
@@ -49,7 +49,7 @@ public class Infant extends Person {
 
     @Override
     public boolean avoidsPhase2(double testP) {
-        return testP > CovidParameters.get().getChildProgressionPhase2();
+        return testP > CovidParameters.get().diseaseParameters.childProgressionPhase2;
     }
 
     // Infants don't get tested

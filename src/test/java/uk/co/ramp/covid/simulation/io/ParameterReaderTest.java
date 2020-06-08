@@ -2,7 +2,7 @@ package uk.co.ramp.covid.simulation.io;
 
 import org.junit.After;
 import org.junit.Test;
-import uk.co.ramp.covid.simulation.covid.CovidParameters;
+import uk.co.ramp.covid.simulation.parameters.CovidParameters;
 import uk.co.ramp.covid.simulation.parameters.PopulationParameters;
 import uk.co.ramp.covid.simulation.util.Probability;
 
@@ -21,15 +21,15 @@ public class ParameterReaderTest {
         ParameterReader.readParametersFromFile("src/test/resources/test_params.json");
 
         // Disease Parameters (Tests CovidParameters as a side effect)
-        assertEquals(123.12, CovidParameters.get().getMeanLatentPeriod(), EPSILON);
-        assertEquals(192.0, CovidParameters.get().getMeanAsymptomaticPeriod(), EPSILON);
-        assertEquals(100.0, CovidParameters.get().getMortalityRate(), EPSILON);
-        assertEquals(0.0, CovidParameters.get().getChildProgressionPhase2(), EPSILON);
-        assertEquals(0.15, CovidParameters.get().getAdultProgressionPhase2(), EPSILON);
-        assertEquals(1.0, CovidParameters.get().getPensionerProgressionPhase2(), EPSILON);
+        assertEquals(123.12, CovidParameters.get().diseaseParameters.meanLatentPeriod, EPSILON);
+        assertEquals(192.0, CovidParameters.get().diseaseParameters.meanAsymptomaticPeriod, EPSILON);
+        assertEquals(100.0, CovidParameters.get().diseaseParameters.mortalityRate, EPSILON);
+        assertEquals(0.0, CovidParameters.get().diseaseParameters.childProgressionPhase2, EPSILON);
+        assertEquals(0.15, CovidParameters.get().diseaseParameters.adultProgressionPhase2, EPSILON);
+        assertEquals(1.0, CovidParameters.get().diseaseParameters.pensionerProgressionPhase2, EPSILON);
 
         // Test Parameters
-        assertEquals(0.9, CovidParameters.get().getDiagnosticTestSensitivity(), EPSILON);
+        assertEqualsP(0.9, CovidParameters.get().testParameters.diagnosticTestSensitivity, EPSILON);
 
         // Population Parameters
         assertEquals(42, PopulationParameters.get().population.size());

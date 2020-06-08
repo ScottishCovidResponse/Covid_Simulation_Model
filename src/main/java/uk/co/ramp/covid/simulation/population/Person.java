@@ -6,7 +6,7 @@ package uk.co.ramp.covid.simulation.population;
 
 import org.apache.commons.math3.random.RandomDataGenerator;
 import uk.co.ramp.covid.simulation.covid.Covid;
-import uk.co.ramp.covid.simulation.covid.CovidParameters;
+import uk.co.ramp.covid.simulation.parameters.CovidParameters;
 import uk.co.ramp.covid.simulation.DailyStats;
 import uk.co.ramp.covid.simulation.Time;
 import uk.co.ramp.covid.simulation.parameters.PopulationParameters;
@@ -260,7 +260,7 @@ public abstract class Person {
         }
 
         // Negative test
-        if (RNG.get().nextUniform(0,1) >= CovidParameters.get().getDiagnosticTestSensitivity()) {
+        if (RNG.get().nextUniform(0,1) >= CovidParameters.get().testParameters.diagnosticTestSensitivity.asDouble()) {
             exitQuarantine();
             home.stopIsolating();
             testOutcome = Optional.of(false);

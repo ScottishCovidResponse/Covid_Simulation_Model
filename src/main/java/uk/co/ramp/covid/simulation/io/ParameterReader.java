@@ -3,8 +3,7 @@ package uk.co.ramp.covid.simulation.io;
 import com.google.gson.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import uk.co.ramp.covid.simulation.RunModel;
-import uk.co.ramp.covid.simulation.covid.CovidParameters;
+import uk.co.ramp.covid.simulation.parameters.CovidParameters;
 import uk.co.ramp.covid.simulation.parameters.PopulationParameters;
 import uk.co.ramp.covid.simulation.util.InvalidProbabilityException;
 import uk.co.ramp.covid.simulation.util.Probability;
@@ -12,7 +11,6 @@ import uk.co.ramp.covid.simulation.util.Probability;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
-import java.lang.reflect.Type;
 
 /** The ParameterReader class reads parameters from a provided JSON input file and
  * creates the static parameter classes */

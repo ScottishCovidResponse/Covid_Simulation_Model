@@ -1,6 +1,6 @@
 package uk.co.ramp.covid.simulation.population;
 
-import uk.co.ramp.covid.simulation.covid.CovidParameters;
+import uk.co.ramp.covid.simulation.parameters.CovidParameters;
 import uk.co.ramp.covid.simulation.DailyStats;
 
 public class Pensioner extends Person {
@@ -27,6 +27,6 @@ public class Pensioner extends Person {
 
     @Override
     public boolean avoidsPhase2(double testP) {
-        return testP > CovidParameters.get().getPensionerProgressionPhase2();
+        return testP > CovidParameters.get().diseaseParameters.pensionerProgressionPhase2;
     }
 }

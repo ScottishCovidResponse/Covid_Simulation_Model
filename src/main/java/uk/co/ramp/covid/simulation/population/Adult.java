@@ -1,6 +1,6 @@
 package uk.co.ramp.covid.simulation.population;
 
-import uk.co.ramp.covid.simulation.covid.CovidParameters;
+import uk.co.ramp.covid.simulation.parameters.CovidParameters;
 import uk.co.ramp.covid.simulation.DailyStats;
 import uk.co.ramp.covid.simulation.parameters.PopulationParameters;
 import uk.co.ramp.covid.simulation.place.*;
@@ -75,6 +75,6 @@ public class Adult extends Person {
 
     @Override
     public boolean avoidsPhase2(double testP) {
-        return testP > CovidParameters.get().getAdultProgressionPhase2();
+        return testP > CovidParameters.get().diseaseParameters.adultProgressionPhase2;
     }
 }

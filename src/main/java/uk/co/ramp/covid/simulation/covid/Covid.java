@@ -6,6 +6,7 @@ package uk.co.ramp.covid.simulation.covid;
 
 import org.apache.commons.math3.random.RandomDataGenerator;
 import uk.co.ramp.covid.simulation.Time;
+import uk.co.ramp.covid.simulation.parameters.CovidParameters;
 import uk.co.ramp.covid.simulation.population.*;
 import uk.co.ramp.covid.simulation.util.RNG;
 
@@ -43,18 +44,18 @@ public class Covid {
 
     public Covid(Person ccase) {
         this.rng = RNG.get();
-        this.meanLatentPeriod = CovidParameters.get().getMeanLatentPeriod();
-        this.meanAsymptomaticPeriod = CovidParameters.get().getMeanAsymptomaticPeriod();
-        this.pSymptoms = CovidParameters.get().getSymptomProbability();
-        this.meanSymptomDelay = CovidParameters.get().getSymptomDelay();
-        this.meanSymptomDelaySD = CovidParameters.get().getSymptomDelaySD();
-        this.meanInfectiousDuration = CovidParameters.get().getInfectiousPeriod();
-        this.oPhase1Betaa = CovidParameters.get().getphase1Betaa(); 
-        this.oPhase1Betab = CovidParameters.get().getphase1Betab(); 
-        this.asymptomaticTransAdjustment = CovidParameters.get().getAsymptomaticTransAdjustment();
-        this.symptomaticTransAdjustment = CovidParameters.get().getSymptomaticTransAdjustment();
+        this.meanLatentPeriod = CovidParameters.get().diseaseParameters.meanLatentPeriod;
+        this.meanAsymptomaticPeriod = CovidParameters.get().diseaseParameters.meanAsymptomaticPeriod;
+        this.pSymptoms = CovidParameters.get().diseaseParameters.probabilitySymptoms.asDouble();
+        this.meanSymptomDelay = CovidParameters.get().diseaseParameters.meanSymptomDelay;
+        this.meanSymptomDelaySD = CovidParameters.get().diseaseParameters.meanSymptomDelaySD;
+        this.meanInfectiousDuration = CovidParameters.get().diseaseParameters.meanInfectiousDuration;
+        this.oPhase1Betaa = CovidParameters.get().diseaseParameters.phase1Betaa;
+        this.oPhase1Betab = CovidParameters.get().diseaseParameters.phase1Betab;
+        this.asymptomaticTransAdjustment = CovidParameters.get().diseaseParameters.aSymptomaticTransAdjustment;
+        this.symptomaticTransAdjustment = CovidParameters.get().diseaseParameters.symptomaticTransAdjustment;
         this.ccase = ccase;
-        this.mortalityRate = CovidParameters.get().getMortalityRate();
+        this.mortalityRate = CovidParameters.get().diseaseParameters.mortalityRate;
 
         this.infCounter = 0;
         this.setSymptomatic();

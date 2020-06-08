@@ -5,7 +5,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-import uk.co.ramp.covid.simulation.covid.CovidParameters;
+import uk.co.ramp.covid.simulation.parameters.CovidParameters;
 import uk.co.ramp.covid.simulation.parameters.PopulationParameters;
 import uk.co.ramp.covid.simulation.place.*;
 import uk.co.ramp.covid.simulation.place.householdtypes.SingleAdult;
@@ -355,7 +355,7 @@ public class MovementTest extends SimulationTest {
     public void somePeopleGetTested() {
         // As most tests are positive we force lots of infections to check some go negative.
         p.seedVirus(100);
-        CovidParameters.get().setpDiagnosticTestAvailable(1.0);
+        CovidParameters.get().testParameters.pDiagnosticTestAvailable = new Probability(1.0);
         p.simulate(50);
 
         int numTested = 0;
@@ -406,7 +406,7 @@ public class MovementTest extends SimulationTest {
         }
         per.cStatus();
 
-        CovidParameters.get().setDiagnosticTestSensitivity(0.0);
+        CovidParameters.get().testParameters.diagnosticTestSensitivity = new Probability(0.0);
         per.getTested();
         assertTrue(per.wasTested());
         assertFalse(per.getTestOutcome().get());
@@ -440,7 +440,7 @@ public class MovementTest extends SimulationTest {
         }
         per.cStatus();
 
-        CovidParameters.get().setDiagnosticTestSensitivity(1.0);
+        CovidParameters.get().testParameters.diagnosticTestSensitivity = new Probability(1.0);
         per.getTested();
         assertTrue(per.wasTested());
         assertTrue(per.getTestOutcome().get());

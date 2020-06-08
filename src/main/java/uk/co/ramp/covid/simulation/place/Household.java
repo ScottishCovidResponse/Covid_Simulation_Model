@@ -2,7 +2,7 @@ package uk.co.ramp.covid.simulation.place;
 
 import uk.co.ramp.covid.simulation.DailyStats;
 import uk.co.ramp.covid.simulation.Time;
-import uk.co.ramp.covid.simulation.covid.CovidParameters;
+import uk.co.ramp.covid.simulation.parameters.CovidParameters;
 import uk.co.ramp.covid.simulation.parameters.PopulationParameters;
 import uk.co.ramp.covid.simulation.population.*;
 import uk.co.ramp.covid.simulation.util.RNG;
@@ -179,7 +179,7 @@ public abstract class Household extends Place {
                 Time symptomaticTime = p.getcVirus().getInfectionLog().getSymptomaticTime();
                 if (symptomaticTime != null
                         && symptomaticTime.getAbsTime() <= t.getAbsTime() + 24
-                        && RNG.get().nextUniform(0,1) <= CovidParameters.get().getpDiagnosticTestAvailable()) {
+                        && RNG.get().nextUniform(0,1) <= CovidParameters.get().testParameters.pDiagnosticTestAvailable.asDouble()) {
                     p.getTested();
                 }
             }
