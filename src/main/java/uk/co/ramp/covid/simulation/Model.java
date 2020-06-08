@@ -95,6 +95,10 @@ public class Model {
         return this;
     }
 
+    public Integer getRNGSeed() {
+        return rngSeed;
+    }
+
     public Model setSchoolLockdown(int start, int end, double socialDistance) {
         this.schoolLockDown = new Lockdown(start, end, socialDistance);
         return this;
@@ -237,4 +241,10 @@ public class Model {
         return m;
     }
 
+    public void optionallyGenerateRNGSeed() {
+        if (rngSeed == null) {
+            rngSeed = RNG.generateRandomSeed();
+            LOGGER.warn("Generated RNG seed: " + rngSeed);
+        }
+    }
 }

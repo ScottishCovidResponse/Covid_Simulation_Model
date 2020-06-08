@@ -30,6 +30,6 @@ public class AdultTest extends SimulationTest {
 
     @Test (expected = InvalidAgeException.class)
     public void testInvalidAgeException() {
-        Adult adult = new Adult(66, FEMALE);
+        new Adult(66, FEMALE);
     }
 }

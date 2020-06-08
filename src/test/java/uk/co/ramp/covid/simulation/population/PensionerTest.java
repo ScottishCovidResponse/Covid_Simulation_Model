@@ -31,7 +31,7 @@ public class PensionerTest extends SimulationTest {
 
     @Test (expected = InvalidAgeException.class)
     public void testInvalidAgeException() {
-        Pensioner pensioner = new Pensioner(5, FEMALE);
+        new Pensioner(5, FEMALE);
     }
 
 }
