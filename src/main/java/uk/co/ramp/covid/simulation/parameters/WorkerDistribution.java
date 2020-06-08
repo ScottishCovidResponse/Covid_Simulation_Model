@@ -1,5 +1,8 @@
 package uk.co.ramp.covid.simulation.parameters;
 
+import uk.co.ramp.covid.simulation.population.Adult;
+import uk.co.ramp.covid.simulation.util.ProbabilityDistribution;
+
 // Probability an Adult works in a particular job
 public class WorkerDistribution {
     public Double pOffice = null;
@@ -13,6 +16,20 @@ public class WorkerDistribution {
 
     public PlaceSizeDistribution sizeAllocation = null;
 
+    public ProbabilityDistribution<Adult.Professions> professionDistribution() {
+        ProbabilityDistribution<Adult.Professions> p = new ProbabilityDistribution<>();
+        p.add(pOffice, Adult.Professions.OFFICE);
+        p.add(pShop, Adult.Professions.SHOP);
+        p.add(pHospital, Adult.Professions.HOSPITAL);
+        p.add(pConstruction, Adult.Professions.CONSTRUCTION);
+        p.add(pTeacher, Adult.Professions.TEACHER);
+        p.add(pRestaurant, Adult.Professions.RESTAURANT);
+        p.add(pNursery, Adult.Professions.NURSERY);
+        p.add(pUnemployed, Adult.Professions.NONE);
+        return p;
+    }
+
+
     public boolean isValid() {
         /*
         boolean probabilitiesValid = PopulationParameters.isValidProbability(pOffice, "pOffice")
@@ -23,14 +40,8 @@ public class WorkerDistribution {
                 && PopulationParameters.isValidProbability(pRestaurant, "pRestaurant")
                 && PopulationParameters.isValidProbability(pNursery, "pNursery")
                 && PopulationParameters.isValidProbability(pUnemployed, "pUnemployed");
-
-        double totalP = pOffice + pShop + pHospital + pConstruction + pTeacher + pRestaurant + pNursery + pUnemployed;
-        if(!(totalP <= 1 + PopulationParameters.EPSILON && totalP >= 1 - PopulationParameters.EPSILON)) {
-            PopulationParameters.LOGGER.error("Worker allocation parameter probabilities do not total one");
-            return false;
-        }
         */
 
-        return true;
+        return professionDistribution().isValid();
     }
 }

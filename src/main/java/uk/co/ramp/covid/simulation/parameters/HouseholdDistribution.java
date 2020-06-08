@@ -39,6 +39,7 @@ public class HouseholdDistribution {
     }
 
     public boolean isValid() {
+        return householdTypeDistribution().isValid() && householdRatio >= 1;
         /*
         boolean probabilitiesValid = PopulationParameters.isValidProbability(pSingleAdult, "pSingleAdult")
                 && PopulationParameters.isValidProbability(pSmallAdult, "pSmallAdult")
@@ -50,18 +51,9 @@ public class HouseholdDistribution {
                 && PopulationParameters.isValidProbability(pAdultPensioner, "pAdultPensioner")
                 && PopulationParameters.isValidProbability(pDoubleOlder, "pDoubleOlder")
                 && PopulationParameters.isValidProbability(pSingleOlder, "pSingleOlder");
-
-        probabilitiesValid = probabilitiesValid && (householdRatio >= 1);
-
-        double totalP = pSingleAdult + pSmallAdult + pSingleParent + pSmallFamily + pLargeManyAdultFamily
-                + pLargeTwoAdultFamily + pLargeAdult + pAdultPensioner + pDoubleOlder + pSingleOlder;
-        if(!(totalP <= 1 + PopulationParameters.EPSILON && totalP >= 1 - PopulationParameters.EPSILON)) {
-            PopulationParameters.LOGGER.error("Household parameter probabilities do not total one");
-            return false;
-        }
+        
         return probabilitiesValid;
         */
-        return true;
     }
 
 }
