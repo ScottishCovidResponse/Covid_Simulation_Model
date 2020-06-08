@@ -20,9 +20,9 @@ public class HospitalTest extends SimulationTest {
     @Test
     public void testHospitalTransProb() throws JsonParseException {
         Hospital hospital = new Hospital(CommunalPlace.Size.MED);
-        double expProb = PopulationParameters.get().buildingProperties.pBaseTrans;
+        double expProb = PopulationParameters.get().buildingProperties.baseTransmissionConstant;
         double delta = 0.01;
-        assertEquals("Unexpected hospital TransProb", expProb, hospital.transProb, delta);
+        assertEquals("Unexpected hospital TransProb", expProb, hospital.transConstant, delta);
     }
 
     @Test

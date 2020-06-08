@@ -41,10 +41,7 @@ public abstract class CommunalPlace extends Place {
         super();
         this.rng = RNG.get();
         this.times = new OpeningTimes(8,17,1,5, OpeningTimes.getAllDays());
-
-        this.keyProb = new Probability(1.0);
-        // TODO-CHECKME: This used to be sample > keyProb (but this would indicate not key).
-        if (keyProb.sample()) this.keyPremises = true;
+        this.keyPremises = false;
     }
 
     public void overrideKeyPremises(boolean overR) {

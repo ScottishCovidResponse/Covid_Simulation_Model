@@ -16,7 +16,7 @@ public class Restaurant extends CommunalPlace {
 
     public Restaurant(Size s) {
         super(s);
-        transAdjustment = PopulationParameters.get().buildingProperties.pRestaurantTrans;
+        transAdjustment = PopulationParameters.get().buildingProperties.restaurantTransmissionConstant;
         keyPremises = false;
         setOpeningHours();
     }

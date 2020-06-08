@@ -20,9 +20,9 @@ public class NurseryTest extends SimulationTest {
     @Test
     public void testNurseryTransProb() throws JsonParseException {
         Nursery nursery = new Nursery(CommunalPlace.Size.MED);
-        double expProb = PopulationParameters.get().buildingProperties.pBaseTrans;
+        double expProb = PopulationParameters.get().buildingProperties.baseTransmissionConstant;
         double delta = 0.01;
-        assertEquals("Unexpected nursery TransProb", expProb, nursery.transProb, delta);
+        assertEquals("Unexpected nursery TransProb", expProb, nursery.transConstant, delta);
     }
 
     @Test

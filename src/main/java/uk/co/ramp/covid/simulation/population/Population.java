@@ -45,7 +45,7 @@ public class Population {
         this.rng = RNG.get();
         this.populationSize = populationSize;
 
-        this.numHouseholds = (int) (populationSize / PopulationParameters.get().households.householdRatio);
+        this.numHouseholds = (int) (populationSize / PopulationParameters.get().householdDistribution.householdRatio);
 
         if (numHouseholds == 0) {
             throw new ImpossibleAllocationException("No households requested");
@@ -76,7 +76,7 @@ public class Population {
     private void createPopulation(BitSet adultIndex, BitSet pensionerIndex,
                                   BitSet childIndex, BitSet infantIndex) {
         PopulationDistribution dist = new PopulationDistribution();
-        dist.readFromMap(PopulationParameters.get().population);
+        dist.readFromMap(PopulationParameters.get().populationDistribution);
         for (int i = 0; i < this.populationSize; i++) {
             PopulationDistribution.SexAge t = dist.sample();
             if (t.getAge() < 5) {
@@ -97,7 +97,7 @@ public class Population {
 
     // Creates households based on probability of different household types
     private void createHouseholds() {
-        ProbabilityDistribution<Function<Places, Household>> p = PopulationParameters.get().households.householdTypeDistribution();
+        ProbabilityDistribution<Function<Places, Household>> p = PopulationParameters.get().householdDistribution.householdTypeDistribution();
 
         for (int i = 0; i < numHouseholds; i++) {
             households.add(p.sample().apply(places));
@@ -194,13 +194,13 @@ public class Population {
 
     // This creates the Communal places of different types where people mix
     private void createMixing() {
-        int nHospitals = populationSize / PopulationParameters.get().buildingDistribution.hospitals;
-        int nSchools = populationSize / PopulationParameters.get().buildingDistribution.schools;
-        int nShops = populationSize / PopulationParameters.get().buildingDistribution.shops;
-        int nOffices = populationSize / PopulationParameters.get().buildingDistribution.offices;
-        int nConstructionSites = populationSize / PopulationParameters.get().buildingDistribution.constructionSites;
-        int nNurseries = populationSize / PopulationParameters.get().buildingDistribution.nurseries;
-        int nRestaurants = populationSize / PopulationParameters.get().buildingDistribution.restaurants;
+        int nHospitals = populationSize / PopulationParameters.get().buildingDistribution.populationToHospitalsRatio;
+        int nSchools = populationSize / PopulationParameters.get().buildingDistribution.populationToSchoolsRatio;
+        int nShops = populationSize / PopulationParameters.get().buildingDistribution.populationToShopsRatio;
+        int nOffices = populationSize / PopulationParameters.get().buildingDistribution.populationToOfficesRatio;
+        int nConstructionSites = populationSize / PopulationParameters.get().buildingDistribution.populationToConstructionSitesRatio;
+        int nNurseries = populationSize / PopulationParameters.get().buildingDistribution.populationToNurseriesRatio;
+        int nRestaurants = populationSize / PopulationParameters.get().buildingDistribution.populationToRestaurantsRatio;
 
         places.createNHospitals(nHospitals);
         places.createNSchools(nSchools);

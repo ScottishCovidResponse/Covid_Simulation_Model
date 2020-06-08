@@ -30,55 +30,55 @@ public class ParameterReaderTest {
         assertEquals(1.0, CovidParameters.get().diseaseParameters.pensionerProgressionPhase2, EPSILON);
 
         // Test Parameters
-        assertEqualsP(0.9, CovidParameters.get().testParameters.diagnosticTestSensitivity, EPSILON);
+        assertEqualsP(0.9, CovidParameters.get().testParameters.pDiagnosticTestDetectsSuccessfully, EPSILON);
 
         // Population Parameters
-        assertEquals(42, PopulationParameters.get().population.size());
+        assertEquals(42, PopulationParameters.get().populationDistribution.size());
 
-        assertEquals(10, PopulationParameters.get().households.householdTypeDistribution().toList().size());
+        assertEquals(10, PopulationParameters.get().householdDistribution.householdTypeDistribution().toList().size());
 
-        assertEquals(1000, (int) PopulationParameters.get().buildingDistribution.hospitals);
-        assertEquals(500, (int) PopulationParameters.get().buildingDistribution.schools);
-        assertEquals(200, (int) PopulationParameters.get().buildingDistribution.shops);
-        assertEquals(2000, (int) PopulationParameters.get().buildingDistribution.constructionSites);
-        assertEquals(100, (int) PopulationParameters.get().buildingDistribution.offices);
-        assertEquals(3000, (int) PopulationParameters.get().buildingDistribution.nurseries);
-        assertEquals(800, (int) PopulationParameters.get().buildingDistribution.restaurants);
+        assertEquals(1000, (int) PopulationParameters.get().buildingDistribution.populationToHospitalsRatio);
+        assertEquals(500, (int) PopulationParameters.get().buildingDistribution.populationToSchoolsRatio);
+        assertEquals(200, (int) PopulationParameters.get().buildingDistribution.populationToShopsRatio);
+        assertEquals(2000, (int) PopulationParameters.get().buildingDistribution.populationToConstructionSitesRatio);
+        assertEquals(100, (int) PopulationParameters.get().buildingDistribution.populationToOfficesRatio);
+        assertEquals(3000, (int) PopulationParameters.get().buildingDistribution.populationToNurseriesRatio);
+        assertEquals(800, (int) PopulationParameters.get().buildingDistribution.populationToRestaurantsRatio);
 
-        assertEqualsP(0.1, PopulationParameters.get().workerAllocation.pOffice, EPSILON);
-        assertEqualsP(0.2, PopulationParameters.get().workerAllocation.pShop, EPSILON);
-        assertEqualsP(0.2, PopulationParameters.get().workerAllocation.pHospital, EPSILON);
-        assertEqualsP(0.1, PopulationParameters.get().workerAllocation.pConstruction, EPSILON);
-        assertEqualsP(0.2, PopulationParameters.get().workerAllocation.pRestaurant, EPSILON);
-        assertEqualsP(0.1, PopulationParameters.get().workerAllocation.pUnemployed, EPSILON);
+        assertEqualsP(0.1, PopulationParameters.get().workerDistribution.pOffice, EPSILON);
+        assertEqualsP(0.2, PopulationParameters.get().workerDistribution.pShop, EPSILON);
+        assertEqualsP(0.2, PopulationParameters.get().workerDistribution.pHospital, EPSILON);
+        assertEqualsP(0.1, PopulationParameters.get().workerDistribution.pConstruction, EPSILON);
+        assertEqualsP(0.2, PopulationParameters.get().workerDistribution.pRestaurant, EPSILON);
+        assertEqualsP(0.1, PopulationParameters.get().workerDistribution.pUnemployed, EPSILON);
 
-        assertEquals(0.8, PopulationParameters.get().buildingProperties.pBaseTrans, EPSILON);
-        assertEquals(0.2, PopulationParameters.get().buildingProperties.pHospitalTrans, EPSILON);
-        assertEquals(0.3, PopulationParameters.get().buildingProperties.pConstructionSiteTrans, EPSILON);
-        assertEquals(0.001, PopulationParameters.get().buildingProperties.pNurseryTrans, EPSILON);
-        assertEquals(0.6, PopulationParameters.get().buildingProperties.pOfficeTrans, EPSILON);
-        assertEquals(0.1, PopulationParameters.get().buildingProperties.pRestaurantTrans, EPSILON);
-        assertEquals(0.05, PopulationParameters.get().buildingProperties.pSchoolTrans, EPSILON);
-        assertEquals(0.2, PopulationParameters.get().buildingProperties.pShopTrans, EPSILON);
+        assertEquals(0.8, PopulationParameters.get().buildingProperties.baseTransmissionConstant, EPSILON);
+        assertEquals(0.2, PopulationParameters.get().buildingProperties.hospitalTransmissionConstant, EPSILON);
+        assertEquals(0.3, PopulationParameters.get().buildingProperties.constructionSiteTransmissionConstant, EPSILON);
+        assertEquals(0.001, PopulationParameters.get().buildingProperties.nurseryTransmissionConstant, EPSILON);
+        assertEquals(0.6, PopulationParameters.get().buildingProperties.officeTransmissionConstant, EPSILON);
+        assertEquals(0.1, PopulationParameters.get().buildingProperties.restaurantTransmissionConstant, EPSILON);
+        assertEquals(0.05, PopulationParameters.get().buildingProperties.schoolTransmissionConstant, EPSILON);
+        assertEquals(0.2, PopulationParameters.get().buildingProperties.shopTransmissionConstant, EPSILON);
 
         assertEqualsP(0.1, PopulationParameters.get().buildingProperties.pHospitalKey, EPSILON);
         assertEqualsP(0.6, PopulationParameters.get().buildingProperties.pConstructionSiteKey, EPSILON);
         assertEqualsP(0.2, PopulationParameters.get().buildingProperties.pShopKey, EPSILON);
         assertEqualsP(0.9, PopulationParameters.get().buildingProperties.pOfficeKey, EPSILON);
 
-        assertEqualsP(0.8, PopulationParameters.get().infantAllocation.pAttendsNursery, EPSILON);
+        assertEqualsP(0.8, PopulationParameters.get().infantProperties.pAttendsNursery, EPSILON);
 
-        assertEquals(0.05, PopulationParameters.get().householdProperties.neighbourVisitFreq, EPSILON);
+        assertEqualsP(0.05, PopulationParameters.get().householdProperties.pHouseholdVisitsNeighbour, EPSILON);
         assertEquals(2, (int) PopulationParameters.get().householdProperties.expectedNeighbours);
 
         assertEqualsP(0.9, PopulationParameters.get().personProperties.pTransmission, EPSILON);
-        assertEqualsP(0.7, PopulationParameters.get().personProperties.pQuarantine, EPSILON);
+        assertEqualsP(0.7, PopulationParameters.get().personProperties.pQuarantinesIfSymptomatic, EPSILON);
 
-        assertEquals(0.8, PopulationParameters.get().householdProperties.visitorLeaveRate, EPSILON);
+        assertEqualsP(0.8, PopulationParameters.get().householdProperties.pVisitorsLeaveHousehold, EPSILON);
 
-        assertEqualsP(0.25, PopulationParameters.get().buildingDistribution.officeSizes.pSmall, EPSILON);
-        assertEqualsP(0.4, PopulationParameters.get().buildingDistribution.officeSizes.pMed, EPSILON);
-        assertEqualsP(0.35, PopulationParameters.get().buildingDistribution.officeSizes.pLarge, EPSILON);
+        assertEqualsP(0.25, PopulationParameters.get().buildingDistribution.officeSizeDistribution.pSmall, EPSILON);
+        assertEqualsP(0.4, PopulationParameters.get().buildingDistribution.officeSizeDistribution.pMed, EPSILON);
+        assertEqualsP(0.35, PopulationParameters.get().buildingDistribution.officeSizeDistribution.pLarge, EPSILON);
 
         assertEqualsP(0.4, PopulationParameters.get().buildingProperties.pLeaveRestaurant, EPSILON);
         assertEqualsP(0.5, PopulationParameters.get().buildingProperties.pLeaveShop, EPSILON);

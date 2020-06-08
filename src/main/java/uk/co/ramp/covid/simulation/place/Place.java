@@ -17,7 +17,7 @@ public abstract class Place {
     protected List<Person> nextPeople;
     
     protected double sDistance;
-    protected double transProb;
+    protected double transConstant;
     protected double transAdjustment;
 
 
@@ -26,10 +26,9 @@ public abstract class Place {
     public Place() {
         this.people = new ArrayList<>();
         this.nextPeople = new ArrayList<>();
-        this.transProb = PopulationParameters.get().buildingProperties.pBaseTrans;
+        this.transConstant = PopulationParameters.get().buildingProperties.baseTransmissionConstant;
         this.sDistance = 1.0;
         this.transAdjustment = 1.0;
-
     }
 
     public List<Person> getPeople() {
@@ -44,12 +43,16 @@ public abstract class Place {
         reportInfection(t, p, s);
         p.reportInfection(s);
     } 
-    protected double getTransProb() {
-        double cTransProb = 0;
-    	if(people.size() == 0) cTransProb = 0.0;
-    	else if(people.size() <= transAdjustment) cTransProb = transProb;
-      	else if(people.size() > transAdjustment) cTransProb = transProb * transAdjustment / people.size();
-    	return cTransProb;
+    protected double getTransConstant() {
+    	if(people.size() == 0) {
+    	   return 0.0;
+        }
+
+    	if(people.size() <= transAdjustment) {
+    	    return transConstant;
+        }
+
+        return transConstant * transAdjustment / people.size();
     }
     
     /** Handles infections between all people in this place */
@@ -62,7 +65,7 @@ public abstract class Place {
                     for (Person nPers : people) {
                         if (cPers != nPers) {
                             if (!nPers.getInfectionStatus()) {
-                                boolean infected = nPers.infChallenge(this.getTransProb() * this.sDistance * cPers.getTransAdjustment());
+                                boolean infected = nPers.infChallenge(this.getTransConstant() * this.sDistance * cPers.getTransAdjustment());
                                 if (infected) {
                                     registerInfection(t, nPers, stats);
                                     nPers.getcVirus().getInfectionLog().registerInfected(t);

@@ -1,13 +1,13 @@
 {
     "disease":{
       "testParameters":{
-        "diagnosticTestSensitivity": 0.9,
+        "pDiagnosticTestDetectsSuccessfully": 0.9,
         "pDiagnosticTestAvailable":0.5
       },
       "diseaseParameters":{
           "meanLatentPeriod":123.12,
           "meanAsymptomaticPeriod":192,
-          "probabilitySymptoms": 0.692,
+          "pSymptomaticCase": 0.692,
           "meanSymptomDelay": -16.08,
           "meanSymptomDelaySD": 30,
           "meanInfectiousDuration": 321.6,
@@ -22,7 +22,7 @@
       }
     },
   "population":{
-        "population":{
+        "populationDistribution":{
             "m_0_4":0.026218532,
             "m_5_9":0.028290396,
             "m_10_14":0.027080414,
@@ -66,7 +66,7 @@
             "f_95_99":0.001114544,
             "f_100_100":0.000125963
         },
-        "households":{
+        "householdDistribution":{
             "householdRatio": 2.18,
             "pSingleAdult":0.22,
             "pSmallAdult":0.2,
@@ -80,49 +80,49 @@
             "pSingleOlder":0.14
         },
         "buildingDistribution":{
-            "hospitals":1000,
-            "schools":500,
-            "shops":200,
-            "offices":100,
-            "constructionSites":2000,
-            "nurseries":3000,
-            "restaurants":800,
-          "hospitalSizes":{
+          "populationToHospitalsRatio":1000,
+          "populationToSchoolsRatio":500,
+          "populationToShopsRatio":200,
+          "populationToOfficesRatio":100,
+          "populationToConstructionSitesRatio":2000,
+          "populationToNurseriesRatio":3000,
+          "populationToRestaurantsRatio":800,
+          "hospitalSizeDistribution":{
             "pSmall":0,
             "pMed":1.0,
             "pLarge":0
           },
-          "schoolSizes":{
+          "schoolSizeDistribution":{
             "pSmall":0,
             "pMed":1.0,
             "pLarge":0
           },
-          "shopSizes":{
+          "shopSizeDistribution":{
             "pSmall":0.7,
             "pMed":0.2,
             "pLarge":0.1
           },
-          "officeSizes":{
+          "officeSizeDistribution":{
             "pSmall":0.25,
             "pMed":0.4,
             "pLarge":0.35},
-          "constructionSiteSizes":{
+          "constructionSiteSizeDistribution":{
             "pSmall":0.7,
             "pMed":0.2,
             "pLarge":0.1
           },
-          "nurserySizes":{
+          "nurserySizeDistribution":{
             "pSmall":0,
             "pMed":1,
             "pLarge":0
           },
-          "restaurantSizes":{
+          "restaurantSizeDistribution":{
             "pSmall":0.3,
             "pMed":0.6,
             "pLarge":0.1
           }
         },
-        "workerAllocation":{
+        "workerDistribution":{
             "pOffice":0.1,
             "pShop":0.2,
             "pHospital":0.2,
@@ -138,14 +138,14 @@
             }
         },
         "buildingProperties":{
-            "pBaseTrans":0.8,
-            "pHospitalTrans":0.2,
-            "pConstructionSiteTrans":0.3,
-            "pNurseryTrans":0.001,
-            "pOfficeTrans":0.6,
-            "pRestaurantTrans":0.1,
-            "pSchoolTrans":0.05,
-            "pShopTrans":0.2,
+            "baseTransmissionConstant":0.8,
+            "hospitalTransmissionConstant":0.2,
+            "constructionSiteTransmissionConstant":0.3,
+            "nurseryTransmissionConstant":0.001,
+            "officeTransmissionConstant":0.6,
+            "restaurantTransmissionConstant":0.1,
+            "schoolTransmissionConstant":0.05,
+            "shopTransmissionConstant":0.2,
             "pHospitalKey":0.1,
             "pConstructionSiteKey":0.6,
             "pOfficeKey":0.9,
@@ -153,12 +153,12 @@
             "pLeaveShop": 0.5,
             "pLeaveRestaurant": 0.4
         },
-        "infantAllocation":{
+        "infantProperties":{
             "pAttendsNursery":0.8
         },
         "householdProperties":{
-            "neighbourVisitFreq":0.05,
-            "visitorLeaveRate":0.8,
+            "pHouseholdVisitsNeighbour":0.05,
+            "pVisitorsLeaveHousehold":0.8,
             "expectedNeighbours":2,
             "pGoShopping":0.01786,
             "pGoRestaurant": 0.01190,
@@ -168,7 +168,7 @@
         },
         "personProperties":{
             "pTransmission":0.9,
-            "pQuarantine":0.7
+            "pQuarantinesIfSymptomatic":0.7
         }
     }
 }

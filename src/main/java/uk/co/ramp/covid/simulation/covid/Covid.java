@@ -47,7 +47,7 @@ public class Covid {
         this.rng = RNG.get();
         this.meanLatentPeriod = CovidParameters.get().diseaseParameters.meanLatentPeriod;
         this.meanAsymptomaticPeriod = CovidParameters.get().diseaseParameters.meanAsymptomaticPeriod;
-        this.pSymptoms = CovidParameters.get().diseaseParameters.probabilitySymptoms;
+        this.pSymptoms = CovidParameters.get().diseaseParameters.pSymptomaticCase;
         this.meanSymptomDelay = CovidParameters.get().diseaseParameters.meanSymptomDelay;
         this.meanSymptomDelaySD = CovidParameters.get().diseaseParameters.meanSymptomDelaySD;
         this.meanInfectiousDuration = CovidParameters.get().diseaseParameters.meanInfectiousDuration;

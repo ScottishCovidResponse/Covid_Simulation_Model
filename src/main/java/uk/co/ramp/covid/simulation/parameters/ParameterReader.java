@@ -36,7 +36,6 @@ public class ParameterReader {
             }
         };
 
-
         gson.registerTypeAdapter(Probability.class, pdeserializer);
         ParameterReader r = gson.create().fromJson(file, ParameterReader.class);
 

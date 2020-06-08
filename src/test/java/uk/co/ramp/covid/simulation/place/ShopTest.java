@@ -41,9 +41,9 @@ public class ShopTest extends SimulationTest {
 
     @Test
     public void testShopTransProb() {
-        double expProb = PopulationParameters.get().buildingProperties.pBaseTrans;
+        double expProb = PopulationParameters.get().buildingProperties.baseTransmissionConstant;
         double delta = 0.01;
-        assertEquals("Unexpected shop TransProb", expProb, shop.transProb, delta);
+        assertEquals("Unexpected shop TransProb", expProb, shop.transConstant, delta);
     }
 
     @Test

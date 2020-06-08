@@ -24,7 +24,7 @@ public class Adult extends Person {
 
     // Allocates adults to different professions
     public void setProfession() {
-        ProbabilityDistribution<Professions> p = PopulationParameters.get().workerAllocation.professionDistribution();
+        ProbabilityDistribution<Professions> p = PopulationParameters.get().workerDistribution.professionDistribution();
         profession = p.sample();
     }
 

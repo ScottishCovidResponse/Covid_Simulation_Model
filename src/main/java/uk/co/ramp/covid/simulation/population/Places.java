@@ -144,9 +144,9 @@ public class Places {
             places.add(constructor.apply(size));
         }
 
-        double lprob = PopulationParameters.get().workerAllocation.sizeAllocation.pLarge.asDouble();
-        double mprob = PopulationParameters.get().workerAllocation.sizeAllocation.pMed.asDouble();
-        double sprob = PopulationParameters.get().workerAllocation.sizeAllocation.pSmall.asDouble();
+        double lprob = PopulationParameters.get().workerDistribution.sizeAllocation.pLarge.asDouble();
+        double mprob = PopulationParameters.get().workerDistribution.sizeAllocation.pMed.asDouble();
+        double sprob = PopulationParameters.get().workerDistribution.sizeAllocation.pSmall.asDouble();
 
         // In the case of 0 buildings we need to expand the probabilities to fill the distribution
         if (l == 0 && m == 0) {
@@ -203,42 +203,42 @@ public class Places {
 
     public void createNOffices(int n) {
         ProbabilityDistribution<CommunalPlace.Size> p =
-                PopulationParameters.get().buildingDistribution.officeSizes.sizeDistribution();
+                PopulationParameters.get().buildingDistribution.officeSizeDistribution.sizeDistribution();
         createNGeneric(s -> new Office(s), n, p, offices);
     }
 
     public void createNHospitals(int n) {
         ProbabilityDistribution<CommunalPlace.Size> p =
-                PopulationParameters.get().buildingDistribution.hospitalSizes.sizeDistribution();
+                PopulationParameters.get().buildingDistribution.hospitalSizeDistribution.sizeDistribution();
         createNGeneric(s -> new Hospital(s), n, p, hospitals);
     }
 
     public void createNSchools(int n) {
         ProbabilityDistribution<CommunalPlace.Size> p =
-                PopulationParameters.get().buildingDistribution.schoolSizes.sizeDistribution();
+                PopulationParameters.get().buildingDistribution.schoolSizeDistribution.sizeDistribution();
         createNGeneric(s -> new School(s), n, p, schools);
     }
     public void createNNurseries(int n) {
         ProbabilityDistribution<CommunalPlace.Size> p =
-                PopulationParameters.get().buildingDistribution.nurserySizes.sizeDistribution();
+                PopulationParameters.get().buildingDistribution.nurserySizeDistribution.sizeDistribution();
         createNGeneric(s -> new Nursery(s), n, p, nurseries);
     }
 
     public void createNRestaurants(int n) {
         ProbabilityDistribution<CommunalPlace.Size> p =
-                PopulationParameters.get().buildingDistribution.restaurantSizes.sizeDistribution();
+                PopulationParameters.get().buildingDistribution.restaurantSizeDistribution.sizeDistribution();
         createNGeneric(s -> new Restaurant(s), n, p, restaurants);
     }
 
     public void createNShops(int n) {
         ProbabilityDistribution<CommunalPlace.Size> p =
-                PopulationParameters.get().buildingDistribution.shopSizes.sizeDistribution();
+                PopulationParameters.get().buildingDistribution.shopSizeDistribution.sizeDistribution();
         createNGeneric(s -> new Shop(s), n, p, shops);
     }
 
     public void createNConstructionSites(int n) {
         ProbabilityDistribution<CommunalPlace.Size> p =
-                PopulationParameters.get().buildingDistribution.constructionSiteSizes.sizeDistribution();
+                PopulationParameters.get().buildingDistribution.constructionSiteSizeDistribution.sizeDistribution();
         createNGeneric(s -> new ConstructionSite(s), n, p, constructionSites);
     }
 

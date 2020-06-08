@@ -1,7 +1,5 @@
 package uk.co.ramp.covid.simulation.parameters;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import uk.co.ramp.covid.simulation.util.InvalidParametersException;
 
 import java.util.HashMap;
@@ -16,22 +14,22 @@ import java.util.Map;
 public class PopulationParameters {
     private static PopulationParameters pp = null;
 
-    public final Map<String,Double> population;
-    public final HouseholdDistribution households;
+    public final Map<String,Double> populationDistribution;
+    public final HouseholdDistribution householdDistribution;
     public BuildingDistribution buildingDistribution;
-    public final WorkerDistribution workerAllocation;
+    public final WorkerDistribution workerDistribution;
     public final BuildingProperties buildingProperties;
-    public InfantProperties infantAllocation;
+    public InfantProperties infantProperties;
     public final PersonProperties personProperties;
     public HouseholdProperties householdProperties;
 
     private PopulationParameters() {
-        population = new HashMap<>();
-        households = new HouseholdDistribution();
+        populationDistribution = new HashMap<>();
+        householdDistribution = new HouseholdDistribution();
         buildingDistribution = new BuildingDistribution();
-        workerAllocation = new WorkerDistribution();
+        workerDistribution = new WorkerDistribution();
         buildingProperties = new BuildingProperties();
-        infantAllocation = new InfantProperties();
+        infantProperties = new InfantProperties();
         personProperties = new PersonProperties();
         householdProperties = new HouseholdProperties();
     }
@@ -41,12 +39,12 @@ public class PopulationParameters {
         boolean valid = true;
         // We don't do this in a single statement to ensure that all the "uninitalised" parameter warnings are printed
         // in one go instead of being short circuited
-        valid = valid && checker.isValid(population);
-        valid = valid && checker.isValid(households) && households.isValid();
+        valid = valid && checker.isValid(populationDistribution);
+        valid = valid && checker.isValid(householdDistribution) && householdDistribution.isValid();
         valid = valid && checker.isValid(buildingDistribution) && buildingDistribution.isValid();
-        valid = valid && checker.isValid(workerAllocation) && workerAllocation.isValid();
+        valid = valid && checker.isValid(workerDistribution) && workerDistribution.isValid();
         valid = valid && checker.isValid(buildingProperties);
-        valid = valid && checker.isValid(infantAllocation);
+        valid = valid && checker.isValid(infantProperties);
         valid = valid && checker.isValid(personProperties);
         valid = valid && checker.isValid(householdProperties);
         return valid;

@@ -3,8 +3,8 @@ package uk.co.ramp.covid.simulation.parameters;
 import uk.co.ramp.covid.simulation.util.Probability;
 
 public class HouseholdProperties {
-    public Double visitorLeaveRate = null;
-    public Double neighbourVisitFreq = null;
+    public Probability pVisitorsLeaveHousehold = null;
+    public Probability pHouseholdVisitsNeighbour = null;
     public Integer expectedNeighbours = null;
 
     public Probability pGoShopping = null;

@@ -13,7 +13,7 @@ public class Hospital extends CommunalPlace {
 
     public Hospital(Size s) {
         super(s);
-        transAdjustment = PopulationParameters.get().buildingProperties.pHospitalTrans;
+        transAdjustment = PopulationParameters.get().buildingProperties.hospitalTransmissionConstant;
         keyProb = PopulationParameters.get().buildingProperties.pHospitalKey;
         times = OpeningTimes.twentyfourSeven();
         if (keyProb.sample()) keyPremises = true;

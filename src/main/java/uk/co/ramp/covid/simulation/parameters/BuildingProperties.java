@@ -3,15 +3,14 @@ package uk.co.ramp.covid.simulation.parameters;
 import uk.co.ramp.covid.simulation.util.Probability;
 
 public class BuildingProperties {
-    // TODO: These are now rates, not probabilities
-    public Double pBaseTrans = null;
-    public Double pHospitalTrans = null;
-    public Double pConstructionSiteTrans = null;
-    public Double pNurseryTrans = null;
-    public Double pOfficeTrans = null;
-    public Double pRestaurantTrans = null;
-    public Double pSchoolTrans = null;
-    public Double pShopTrans = null;
+    public Double baseTransmissionConstant = null;
+    public Double hospitalTransmissionConstant = null;
+    public Double constructionSiteTransmissionConstant = null;
+    public Double nurseryTransmissionConstant = null;
+    public Double officeTransmissionConstant = null;
+    public Double restaurantTransmissionConstant = null;
+    public Double schoolTransmissionConstant = null;
+    public Double shopTransmissionConstant = null;
 
     public Probability pHospitalKey = null;
     public Probability pConstructionSiteKey = null;

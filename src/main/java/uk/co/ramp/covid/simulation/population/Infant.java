@@ -18,7 +18,7 @@ public class Infant extends Person {
     }
 
     private void setNursery() {
-        if (PopulationParameters.get().infantAllocation.pAttendsNursery.sample()) {
+        if (PopulationParameters.get().infantProperties.pAttendsNursery.sample()) {
             goesToNursery = true;
         }
     }

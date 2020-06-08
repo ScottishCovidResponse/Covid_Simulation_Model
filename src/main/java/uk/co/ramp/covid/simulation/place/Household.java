@@ -51,8 +51,8 @@ public abstract class Household extends Place {
     }
     
     @Override
-    protected double getTransProb() {
-    	return transProb;
+    protected double getTransConstant() {
+    	return transConstant;
     }
 
     public void addNeighbour(Household n) {
@@ -102,7 +102,7 @@ public abstract class Household extends Place {
                 p.returnHome();
                 left.addAll(sendFamilyHome(p, null, t));
             }
-            else if (RNG.get().nextUniform(0, 1) < PopulationParameters.get().householdProperties.visitorLeaveRate) {
+            else if (PopulationParameters.get().householdProperties.pVisitorsLeaveHousehold.sample()) {
                 left.add(p);
                 left.addAll(sendFamilyHome(p, null, t));
                 if (p.cStatus() != CStatus.DEAD) {
@@ -196,7 +196,7 @@ public abstract class Household extends Place {
 	                continue;
 	            }
 
-                if (RNG.get().nextUniform(0, 1) < PopulationParameters.get().householdProperties.neighbourVisitFreq) {
+                if (PopulationParameters.get().householdProperties.pHouseholdVisitsNeighbour.sample()) {
 	                // We visit neighbours as a family
 	                for (Person p : getInhabitants()) {
 	                    if (!p.getQuarantine()) {

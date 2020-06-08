@@ -406,7 +406,7 @@ public class MovementTest extends SimulationTest {
         }
         per.cStatus();
 
-        CovidParameters.get().testParameters.diagnosticTestSensitivity = new Probability(0.0);
+        CovidParameters.get().testParameters.pDiagnosticTestDetectsSuccessfully = new Probability(0.0);
         per.getTested();
         assertTrue(per.wasTested());
         assertFalse(per.getTestOutcome().get());
@@ -440,7 +440,7 @@ public class MovementTest extends SimulationTest {
         }
         per.cStatus();
 
-        CovidParameters.get().testParameters.diagnosticTestSensitivity = new Probability(1.0);
+        CovidParameters.get().testParameters.pDiagnosticTestDetectsSuccessfully = new Probability(1.0);
         per.getTested();
         assertTrue(per.wasTested());
         assertTrue(per.getTestOutcome().get());

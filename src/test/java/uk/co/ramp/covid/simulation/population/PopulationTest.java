@@ -118,14 +118,14 @@ public class PopulationTest extends SimulationTest {
 
     @Test (expected = ImpossibleAllocationException.class )
     public void testBadHouseholdRatioExceptional() throws ImpossibleAllocationException, ImpossibleWorkerDistributionException {
-        PopulationParameters.get().households.householdRatio = 50.0;
+        PopulationParameters.get().householdDistribution.householdRatio = 50.0;
         new Population(10);
     }
 
     @Test (expected = ImpossibleWorkerDistributionException.class)
     public void testImpossibleWorkerDistribution() throws ImpossibleAllocationException, ImpossibleWorkerDistributionException {
         int populationSize = 10000;
-        PopulationParameters.get().buildingDistribution.constructionSites = 10;
+        PopulationParameters.get().buildingDistribution.populationToConstructionSitesRatio = 10;
         Population p = new Population(populationSize);
         p.allocatePeople();
     }

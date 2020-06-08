@@ -50,7 +50,7 @@ public abstract class Person {
         this.sex = sex;
         this.rng = RNG.get();
         this.transmissionProb = PopulationParameters.get().personProperties.pTransmission.asDouble();
-        this.quarantineProb = PopulationParameters.get().personProperties.pQuarantine;
+        this.quarantineProb = PopulationParameters.get().personProperties.pQuarantinesIfSymptomatic;
         this.quarantineVal = rng.nextUniform(0, 1);
     }
 
@@ -261,7 +261,7 @@ public abstract class Person {
         }
 
         // Negative test
-        if (!CovidParameters.get().testParameters.diagnosticTestSensitivity.sample()) {
+        if (!CovidParameters.get().testParameters.pDiagnosticTestDetectsSuccessfully.sample()) {
             exitQuarantine();
             home.stopIsolating();
             testOutcome = Optional.of(false);

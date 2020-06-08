@@ -192,7 +192,7 @@ public class ModelTest extends SimulationTest {
     public void testMortality() {
         //Mortality and transmission rates are set to 100%
         //Check that everyone is infected and progresses to death
-        CovidParameters.get().diseaseParameters.probabilitySymptoms = new Probability(1.0);
+        CovidParameters.get().diseaseParameters.pSymptomaticCase = new Probability(1.0);
         CovidParameters.get().diseaseParameters.meanSymptomDelay = -5.0;
         CovidParameters.get().diseaseParameters.meanLatentPeriod = 50.0;
         CovidParameters.get().diseaseParameters.meanInfectiousDuration = 100.0;
@@ -203,7 +203,7 @@ public class ModelTest extends SimulationTest {
         CovidParameters.get().diseaseParameters.symptomaticTransAdjustment = 100.0;
         CovidParameters.get().diseaseParameters.aSymptomaticTransAdjustment = 100.0;
         PopulationParameters.get().personProperties.pTransmission = new Probability(1.0);
-        PopulationParameters.get().personProperties.pQuarantine = new Probability(0.0);
+        PopulationParameters.get().personProperties.pQuarantinesIfSymptomatic = new Probability(0.0);
         nDays = 200;
         //Run the model
         Model m1 = new Model()

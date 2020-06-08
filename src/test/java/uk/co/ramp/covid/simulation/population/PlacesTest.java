@@ -39,9 +39,9 @@ public class PlacesTest extends SimulationTest {
         assertTrue("We should sample medium offices more often than small", m > s);
 
         double DELTA = 0.02;
-        assertEquals(PopulationParameters.get().workerAllocation.sizeAllocation.pLarge.asDouble(),  (double) l/ (double) iters, DELTA);
-        assertEquals(PopulationParameters.get().workerAllocation.sizeAllocation.pMed.asDouble(), (double) m / (double) iters, DELTA);
-        assertEquals(PopulationParameters.get().workerAllocation.sizeAllocation.pSmall.asDouble(), (double) s / (double) iters, DELTA);
+        assertEquals(PopulationParameters.get().workerDistribution.sizeAllocation.pLarge.asDouble(),  (double) l/ (double) iters, DELTA);
+        assertEquals(PopulationParameters.get().workerDistribution.sizeAllocation.pMed.asDouble(), (double) m / (double) iters, DELTA);
+        assertEquals(PopulationParameters.get().workerDistribution.sizeAllocation.pSmall.asDouble(), (double) s / (double) iters, DELTA);
     }
 
     @Test
@@ -71,9 +71,9 @@ public class PlacesTest extends SimulationTest {
         assertTrue("We should sample medium constructionSites more often than small", m > s);
 
         double DELTA = 0.02;
-        assertEquals(PopulationParameters.get().workerAllocation.sizeAllocation.pLarge.asDouble(),  (double) l/ (double) iters, DELTA);
-        assertEquals(PopulationParameters.get().workerAllocation.sizeAllocation.pMed.asDouble(), (double) m / (double) iters, DELTA);
-        assertEquals(PopulationParameters.get().workerAllocation.sizeAllocation.pSmall.asDouble(), (double) s / (double) iters, DELTA);
+        assertEquals(PopulationParameters.get().workerDistribution.sizeAllocation.pLarge.asDouble(),  (double) l/ (double) iters, DELTA);
+        assertEquals(PopulationParameters.get().workerDistribution.sizeAllocation.pMed.asDouble(), (double) m / (double) iters, DELTA);
+        assertEquals(PopulationParameters.get().workerDistribution.sizeAllocation.pSmall.asDouble(), (double) s / (double) iters, DELTA);
     }
 
     @Test
@@ -153,9 +153,9 @@ public class PlacesTest extends SimulationTest {
         assertTrue("We should sample medium restaurants more often than small", m > s);
 
         double DELTA = 0.02;
-        assertEquals(PopulationParameters.get().workerAllocation.sizeAllocation.pLarge.asDouble(),  (double) l/ (double) iters, DELTA);
-        assertEquals(PopulationParameters.get().workerAllocation.sizeAllocation.pMed.asDouble(), (double) m / (double) iters, DELTA);
-        assertEquals(PopulationParameters.get().workerAllocation.sizeAllocation.pSmall.asDouble(), (double) s / (double) iters, DELTA);
+        assertEquals(PopulationParameters.get().workerDistribution.sizeAllocation.pLarge.asDouble(),  (double) l/ (double) iters, DELTA);
+        assertEquals(PopulationParameters.get().workerDistribution.sizeAllocation.pMed.asDouble(), (double) m / (double) iters, DELTA);
+        assertEquals(PopulationParameters.get().workerDistribution.sizeAllocation.pSmall.asDouble(), (double) s / (double) iters, DELTA);
     }
 
     @Test
@@ -210,9 +210,9 @@ public class PlacesTest extends SimulationTest {
         assertTrue("We should sample medium shops more often than small", m > s);
 
         double DELTA = 0.02;
-        assertEquals(PopulationParameters.get().workerAllocation.sizeAllocation.pLarge.asDouble(),  (double) l/ (double) iters, DELTA);
-        assertEquals(PopulationParameters.get().workerAllocation.sizeAllocation.pMed.asDouble(), (double) m / (double) iters, DELTA);
-        assertEquals(PopulationParameters.get().workerAllocation.sizeAllocation.pSmall.asDouble(), (double) s / (double) iters, DELTA);
+        assertEquals(PopulationParameters.get().workerDistribution.sizeAllocation.pLarge.asDouble(),  (double) l/ (double) iters, DELTA);
+        assertEquals(PopulationParameters.get().workerDistribution.sizeAllocation.pMed.asDouble(), (double) m / (double) iters, DELTA);
+        assertEquals(PopulationParameters.get().workerDistribution.sizeAllocation.pSmall.asDouble(), (double) s / (double) iters, DELTA);
     }
 
     @Test
@@ -232,9 +232,9 @@ public class PlacesTest extends SimulationTest {
 
         // Test params = pSmall: 0.2, pMed: 0.3, pLarge:0.5
         assertEquals(n, s + m + l);
-        assertEquals(n * PopulationParameters.get().buildingDistribution.officeSizes.pSmall.asDouble(), s, n*0.05);
-        assertEquals(n * PopulationParameters.get().buildingDistribution.officeSizes.pMed.asDouble(), m, n*0.05);
-        assertEquals(n * PopulationParameters.get().buildingDistribution.officeSizes.pLarge.asDouble(), l, n*0.05);
+        assertEquals(n * PopulationParameters.get().buildingDistribution.officeSizeDistribution.pSmall.asDouble(), s, n*0.05);
+        assertEquals(n * PopulationParameters.get().buildingDistribution.officeSizeDistribution.pMed.asDouble(), m, n*0.05);
+        assertEquals(n * PopulationParameters.get().buildingDistribution.officeSizeDistribution.pLarge.asDouble(), l, n*0.05);
     }
 
     @Test
@@ -254,9 +254,9 @@ public class PlacesTest extends SimulationTest {
 
         // Test params = pSmall: 0.2, pMed: 0.3, pLarge:0.5
         assertEquals(n, s + m + l);
-        assertEquals(n * PopulationParameters.get().buildingDistribution.hospitalSizes.pSmall.asDouble(), s, n*0.05);
-        assertEquals(n * PopulationParameters.get().buildingDistribution.hospitalSizes.pMed.asDouble(), m, n*0.05);
-        assertEquals(n * PopulationParameters.get().buildingDistribution.hospitalSizes.pLarge.asDouble(), l, n*0.05);
+        assertEquals(n * PopulationParameters.get().buildingDistribution.hospitalSizeDistribution.pSmall.asDouble(), s, n*0.05);
+        assertEquals(n * PopulationParameters.get().buildingDistribution.hospitalSizeDistribution.pMed.asDouble(), m, n*0.05);
+        assertEquals(n * PopulationParameters.get().buildingDistribution.hospitalSizeDistribution.pLarge.asDouble(), l, n*0.05);
     }
 
     @Test
@@ -276,9 +276,9 @@ public class PlacesTest extends SimulationTest {
 
         // Test params = pSmall: 0.2, pMed: 0.3, pLarge:0.5
         assertEquals(n, s + m + l);
-        assertEquals(n * PopulationParameters.get().buildingDistribution.schoolSizes.pSmall.asDouble(), s, n*0.05);
-        assertEquals(n * PopulationParameters.get().buildingDistribution.schoolSizes.pMed.asDouble(), m, n*0.05);
-        assertEquals(n * PopulationParameters.get().buildingDistribution.schoolSizes.pLarge.asDouble(), l, n*0.05);
+        assertEquals(n * PopulationParameters.get().buildingDistribution.schoolSizeDistribution.pSmall.asDouble(), s, n*0.05);
+        assertEquals(n * PopulationParameters.get().buildingDistribution.schoolSizeDistribution.pMed.asDouble(), m, n*0.05);
+        assertEquals(n * PopulationParameters.get().buildingDistribution.schoolSizeDistribution.pLarge.asDouble(), l, n*0.05);
     }
 
     @Test
@@ -298,9 +298,9 @@ public class PlacesTest extends SimulationTest {
 
         // Test params = pSmall: 0.2, pMed: 0.3, pLarge:0.5
         assertEquals(n, s + m + l);
-        assertEquals(n * PopulationParameters.get().buildingDistribution.nurserySizes.pSmall.asDouble(), s, n*0.05);
-        assertEquals(n * PopulationParameters.get().buildingDistribution.nurserySizes.pMed.asDouble(), m, n*0.05);
-        assertEquals(n * PopulationParameters.get().buildingDistribution.nurserySizes.pLarge.asDouble(), l, n*0.05);
+        assertEquals(n * PopulationParameters.get().buildingDistribution.nurserySizeDistribution.pSmall.asDouble(), s, n*0.05);
+        assertEquals(n * PopulationParameters.get().buildingDistribution.nurserySizeDistribution.pMed.asDouble(), m, n*0.05);
+        assertEquals(n * PopulationParameters.get().buildingDistribution.nurserySizeDistribution.pLarge.asDouble(), l, n*0.05);
     }
 
     @Test
@@ -319,9 +319,9 @@ public class PlacesTest extends SimulationTest {
         }
 
         assertEquals(n, s + m + l);
-        assertEquals(n * PopulationParameters.get().buildingDistribution.restaurantSizes.pSmall.asDouble(), s, n*0.05);
-        assertEquals(n * PopulationParameters.get().buildingDistribution.restaurantSizes.pMed.asDouble(), m, n*0.05);
-        assertEquals(n * PopulationParameters.get().buildingDistribution.restaurantSizes.pLarge.asDouble(), l, n*0.05);
+        assertEquals(n * PopulationParameters.get().buildingDistribution.restaurantSizeDistribution.pSmall.asDouble(), s, n*0.05);
+        assertEquals(n * PopulationParameters.get().buildingDistribution.restaurantSizeDistribution.pMed.asDouble(), m, n*0.05);
+        assertEquals(n * PopulationParameters.get().buildingDistribution.restaurantSizeDistribution.pLarge.asDouble(), l, n*0.05);
     }
 
     @Test
@@ -341,9 +341,9 @@ public class PlacesTest extends SimulationTest {
 
         // Test params = pSmall: 0.2, pMed: 0.3, pLarge:0.5
         assertEquals(n, s + m + l);
-        assertEquals(n * PopulationParameters.get().buildingDistribution.shopSizes.pSmall.asDouble(), s, n*0.05);
-        assertEquals(n * PopulationParameters.get().buildingDistribution.shopSizes.pMed.asDouble(), m, n*0.05);
-        assertEquals(n * PopulationParameters.get().buildingDistribution.shopSizes.pLarge.asDouble(), l, n*0.05);
+        assertEquals(n * PopulationParameters.get().buildingDistribution.shopSizeDistribution.pSmall.asDouble(), s, n*0.05);
+        assertEquals(n * PopulationParameters.get().buildingDistribution.shopSizeDistribution.pMed.asDouble(), m, n*0.05);
+        assertEquals(n * PopulationParameters.get().buildingDistribution.shopSizeDistribution.pLarge.asDouble(), l, n*0.05);
     }
 
     @Test
@@ -363,9 +363,9 @@ public class PlacesTest extends SimulationTest {
 
         // Test params = pSmall: 0.2, pMed: 0.3, pLarge:0.5
         assertEquals(n, s + m + l);
-        assertEquals(n * PopulationParameters.get().buildingDistribution.constructionSiteSizes.pSmall.asDouble(), s, n*0.05);
-        assertEquals(n * PopulationParameters.get().buildingDistribution.constructionSiteSizes.pMed.asDouble(), m, n*0.05);
-        assertEquals(n * PopulationParameters.get().buildingDistribution.constructionSiteSizes.pLarge.asDouble(), l, n*0.05);
+        assertEquals(n * PopulationParameters.get().buildingDistribution.constructionSiteSizeDistribution.pSmall.asDouble(), s, n*0.05);
+        assertEquals(n * PopulationParameters.get().buildingDistribution.constructionSiteSizeDistribution.pMed.asDouble(), m, n*0.05);
+        assertEquals(n * PopulationParameters.get().buildingDistribution.constructionSiteSizeDistribution.pLarge.asDouble(), l, n*0.05);
     }
 
     @Test
