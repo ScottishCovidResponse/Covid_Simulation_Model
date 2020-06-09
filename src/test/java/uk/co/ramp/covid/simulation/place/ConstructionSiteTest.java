@@ -54,7 +54,7 @@ public class ConstructionSiteTest extends SimulationTest {
                 .setnInitialInfections(nInfections)
                 .setExternalInfectionDays(0)
                 .setIters(1)
-                .setnDays(90)
+                .setnDays(60)
                 .setRNGSeed(42)
                 .setNoOutput();
 

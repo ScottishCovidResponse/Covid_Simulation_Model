@@ -2,8 +2,6 @@ package uk.co.ramp.covid.simulation.parameters;
 
 import org.junit.Assert;
 import org.junit.Test;
-import uk.co.ramp.covid.simulation.parameters.PopulationDistribution;
-import uk.co.ramp.covid.simulation.parameters.PopulationParameters;
 import uk.co.ramp.covid.simulation.population.Person;
 import uk.co.ramp.covid.simulation.util.InvalidParametersException;
 import uk.co.ramp.covid.simulation.testutil.SimulationTest;
