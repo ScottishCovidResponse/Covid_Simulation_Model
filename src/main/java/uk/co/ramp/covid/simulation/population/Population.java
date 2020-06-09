@@ -12,6 +12,8 @@ import org.apache.logging.log4j.Logger;
 import uk.co.ramp.covid.simulation.DailyStats;
 import uk.co.ramp.covid.simulation.RStats;
 import uk.co.ramp.covid.simulation.Time;
+import uk.co.ramp.covid.simulation.parameters.PopulationDistribution;
+import uk.co.ramp.covid.simulation.parameters.PopulationParameters;
 import uk.co.ramp.covid.simulation.place.*;
 import uk.co.ramp.covid.simulation.util.ProbabilityDistribution;
 import uk.co.ramp.covid.simulation.util.RNG;
@@ -43,7 +45,7 @@ public class Population {
         this.rng = RNG.get();
         this.populationSize = populationSize;
 
-        this.numHouseholds = (int) (populationSize / PopulationParameters.get().getHouseholdRatio());
+        this.numHouseholds = (int) (populationSize / PopulationParameters.get().householdDistribution.householdRatio);
 
         if (numHouseholds == 0) {
             throw new ImpossibleAllocationException("No households requested");
@@ -74,7 +76,7 @@ public class Population {
     private void createPopulation(BitSet adultIndex, BitSet pensionerIndex,
                                   BitSet childIndex, BitSet infantIndex) {
         PopulationDistribution dist = new PopulationDistribution();
-        dist.readFromMap(PopulationParameters.get().getPopulation());
+        dist.readFromMap(PopulationParameters.get().populationDistribution);
         for (int i = 0; i < this.populationSize; i++) {
             PopulationDistribution.SexAge t = dist.sample();
             if (t.getAge() < 5) {
@@ -95,7 +97,7 @@ public class Population {
 
     // Creates households based on probability of different household types
     private void createHouseholds() {
-        ProbabilityDistribution<Function<Places, Household>> p = PopulationParameters.get().getHouseholdDistribution();
+        ProbabilityDistribution<Function<Places, Household>> p = PopulationParameters.get().householdDistribution.householdTypeDistribution();
 
         for (int i = 0; i < numHouseholds; i++) {
             households.add(p.sample().apply(places));
@@ -192,13 +194,13 @@ public class Population {
 
     // This creates the Communal places of different types where people mix
     private void createMixing() {
-        int nHospitals = populationSize / PopulationParameters.get().getHospitalRatio();
-        int nSchools = populationSize / PopulationParameters.get().getSchoolsRatio();
-        int nShops = populationSize / PopulationParameters.get().getShopsRatio();
-        int nOffices = populationSize / PopulationParameters.get().getOfficesRatio();
-        int nConstructionSites = populationSize / PopulationParameters.get().getConstructionSiteRatio();
-        int nNurseries = populationSize / PopulationParameters.get().getNurseriesRatio();
-        int nRestaurants = populationSize / PopulationParameters.get().getRestaurantRatio();
+        int nHospitals = populationSize / PopulationParameters.get().buildingDistribution.populationToHospitalsRatio;
+        int nSchools = populationSize / PopulationParameters.get().buildingDistribution.populationToSchoolsRatio;
+        int nShops = populationSize / PopulationParameters.get().buildingDistribution.populationToShopsRatio;
+        int nOffices = populationSize / PopulationParameters.get().buildingDistribution.populationToOfficesRatio;
+        int nConstructionSites = populationSize / PopulationParameters.get().buildingDistribution.populationToConstructionSitesRatio;
+        int nNurseries = populationSize / PopulationParameters.get().buildingDistribution.populationToNurseriesRatio;
+        int nRestaurants = populationSize / PopulationParameters.get().buildingDistribution.populationToRestaurantsRatio;
 
         places.createNHospitals(nHospitals);
         places.createNSchools(nSchools);
@@ -230,7 +232,7 @@ public class Population {
     // This method assigns a random number of neighbours to each Household
     public void assignNeighbours() {
         for (Household cHouse : households) {
-            int expectedNeighbours = PopulationParameters.get().getExpectedNeighbours();
+            int expectedNeighbours = PopulationParameters.get().householdProperties.expectedNeighbours;
             int nneighbours = (int) rng.nextPoisson(expectedNeighbours);
             for (int k = 0; k < nneighbours; k++) {
 

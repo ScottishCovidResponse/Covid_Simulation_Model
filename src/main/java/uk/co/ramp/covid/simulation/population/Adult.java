@@ -1,7 +1,8 @@
 package uk.co.ramp.covid.simulation.population;
 
-import uk.co.ramp.covid.simulation.covid.CovidParameters;
+import uk.co.ramp.covid.simulation.parameters.CovidParameters;
 import uk.co.ramp.covid.simulation.DailyStats;
+import uk.co.ramp.covid.simulation.parameters.PopulationParameters;
 import uk.co.ramp.covid.simulation.place.*;
 import uk.co.ramp.covid.simulation.util.ProbabilityDistribution;
 
@@ -23,16 +24,7 @@ public class Adult extends Person {
 
     // Allocates adults to different professions
     public void setProfession() {
-        ProbabilityDistribution<Professions> p = new ProbabilityDistribution<Professions>();
-        p.add(PopulationParameters.get().getpOfficeWorker(), Professions.OFFICE);
-        p.add(PopulationParameters.get().getpShopWorker(), Professions.SHOP);
-        p.add(PopulationParameters.get().getpHospitalWorker(), Professions.HOSPITAL);
-        p.add(PopulationParameters.get().getpConstructionWorker(), Professions.CONSTRUCTION);
-        p.add(PopulationParameters.get().getpTeacher(), Professions.TEACHER);
-        p.add(PopulationParameters.get().getpRestaurantWorker(), Professions.RESTAURANT);
-        p.add(PopulationParameters.get().getpNurseryWorker(), Professions.NURSERY);
-        p.add(PopulationParameters.get().getpUnemployed(), Professions.NONE);
-
+        ProbabilityDistribution<Professions> p = PopulationParameters.get().workerDistribution.professionDistribution();
         profession = p.sample();
     }
 
@@ -83,6 +75,6 @@ public class Adult extends Person {
 
     @Override
     public boolean avoidsPhase2(double testP) {
-        return testP > CovidParameters.get().getAdultProgressionPhase2();
+        return testP > CovidParameters.get().diseaseParameters.adultProgressionPhase2;
     }
 }

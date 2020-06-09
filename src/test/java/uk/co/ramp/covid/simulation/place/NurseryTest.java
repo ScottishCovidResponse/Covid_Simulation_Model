@@ -5,6 +5,7 @@ import org.junit.Test;
 import com.google.gson.JsonParseException;
 import uk.co.ramp.covid.simulation.DailyStats;
 import uk.co.ramp.covid.simulation.Time;
+import uk.co.ramp.covid.simulation.parameters.PopulationParameters;
 import uk.co.ramp.covid.simulation.population.*;
 import uk.co.ramp.covid.simulation.testutil.PopulationGenerator;
 import uk.co.ramp.covid.simulation.util.SimulationTest;
@@ -19,9 +20,9 @@ public class NurseryTest extends SimulationTest {
     @Test
     public void testNurseryTransProb() throws JsonParseException {
         Nursery nursery = new Nursery(CommunalPlace.Size.MED);
-        double expProb = PopulationParameters.get().getpBaseTrans();
+        double expProb = PopulationParameters.get().buildingProperties.baseTransmissionConstant;
         double delta = 0.01;
-        assertEquals("Unexpected nursery TransProb", expProb, nursery.transProb, delta);
+        assertEquals("Unexpected nursery TransProb", expProb, nursery.transConstant, delta);
     }
 
     @Test

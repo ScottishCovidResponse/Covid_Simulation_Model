@@ -3,7 +3,7 @@ package uk.co.ramp.covid.simulation.place;
 import uk.co.ramp.covid.simulation.DailyStats;
 import uk.co.ramp.covid.simulation.Time;
 import uk.co.ramp.covid.simulation.population.Person;
-import uk.co.ramp.covid.simulation.population.PopulationParameters;
+import uk.co.ramp.covid.simulation.parameters.PopulationParameters;
 import uk.co.ramp.covid.simulation.population.Shifts;
 import uk.co.ramp.covid.simulation.util.RNG;
 import uk.co.ramp.covid.simulation.util.RoundRobinAllocator;
@@ -16,7 +16,7 @@ public class Restaurant extends CommunalPlace {
 
     public Restaurant(Size s) {
         super(s);
-        transAdjustment = PopulationParameters.get().getpRestaurantTrans();
+        transAdjustment = PopulationParameters.get().buildingProperties.restaurantTransmissionConstant;
         keyPremises = false;
         setOpeningHours();
     }
@@ -71,7 +71,7 @@ public class Restaurant extends CommunalPlace {
                 nPers.returnHome();
                 left.addAll(sendFamilyHome(nPers, this, t));
             }
-            else if (rng.nextUniform(0, 1) < PopulationParameters.get().getpLeaveRestaurant()
+            else if (PopulationParameters.get().buildingProperties.pLeaveRestaurant.sample()
                     || !times.isOpenNextHour(t)) {
                 left.add(nPers);
                 nPers.returnHome();

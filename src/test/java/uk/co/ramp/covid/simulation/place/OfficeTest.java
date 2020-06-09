@@ -5,6 +5,7 @@ import org.junit.Test;
 import com.google.gson.JsonParseException;
 import uk.co.ramp.covid.simulation.DailyStats;
 import uk.co.ramp.covid.simulation.Time;
+import uk.co.ramp.covid.simulation.parameters.PopulationParameters;
 import uk.co.ramp.covid.simulation.population.*;
 import uk.co.ramp.covid.simulation.testutil.PopulationGenerator;
 import uk.co.ramp.covid.simulation.util.SimulationTest;
@@ -19,9 +20,9 @@ public class OfficeTest extends SimulationTest {
     @Test
     public void testOfficeTransProb() throws JsonParseException {
         Office office = new Office(CommunalPlace.Size.MED);
-        double expProb = PopulationParameters.get().getpBaseTrans();
+        double expProb = PopulationParameters.get().buildingProperties.baseTransmissionConstant;
         double delta = 0.01;
-        assertEquals("Unexpected office TransProb", expProb, office.transProb, delta);
+        assertEquals("Unexpected office TransProb", expProb, office.transConstant, delta);
     }
 
     @Test

@@ -3,11 +3,13 @@ package uk.co.ramp.covid.simulation;
 import org.junit.After;
 import org.junit.Test;
 import uk.co.ramp.covid.simulation.covid.Covid;
-import uk.co.ramp.covid.simulation.covid.CovidParameters;
+import uk.co.ramp.covid.simulation.parameters.CovidParameters;
+import uk.co.ramp.covid.simulation.parameters.PopulationParameters;
 import uk.co.ramp.covid.simulation.place.Household;
 import uk.co.ramp.covid.simulation.place.householdtypes.SingleOlder;
 import uk.co.ramp.covid.simulation.place.householdtypes.SmallFamily;
 import uk.co.ramp.covid.simulation.population.*;
+import uk.co.ramp.covid.simulation.util.Probability;
 import uk.co.ramp.covid.simulation.util.SimulationTest;
 
 import static org.junit.Assert.assertEquals;
@@ -20,9 +22,9 @@ public class CovidTest extends SimulationTest {
     @Test
     public void testStepInfectionSymptomatic() {
         //Use the default parameters with a mortality rate of 100
-        CovidParameters.get().setMortalityRate(100.0);
-        CovidParameters.get().setSymptomProbability(100.0);
-        CovidParameters.get().setPensionerProgressionPhase2(100.0);
+        CovidParameters.get().diseaseParameters.mortalityRate = 100.0;
+        CovidParameters.get().diseaseParameters.pSymptomaticCase = new Probability(1.0);
+        CovidParameters.get().diseaseParameters.pensionerProgressionPhase2 = 100.0;
 
         CStatus cStatus = null;
         Person pensioner = new Pensioner(65, Person.Sex.MALE);
@@ -82,7 +84,7 @@ public class CovidTest extends SimulationTest {
     //Test that a child steps through the infection from Asymtomatic to recovered
     @Test
     public void testStepInfectionAsymptomatic() {
-        CovidParameters.get().setSymptomProbability(0.0);
+        CovidParameters.get().diseaseParameters.pSymptomaticCase = new Probability(0);
         Person child = new Child(5, Person.Sex.FEMALE);
         Time t = new Time();
         Covid virus = new Covid(child);

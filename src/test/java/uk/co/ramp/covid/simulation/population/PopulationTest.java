@@ -3,6 +3,7 @@ package uk.co.ramp.covid.simulation.population;
 import org.junit.Before;
 import org.junit.Test;
 import uk.co.ramp.covid.simulation.DailyStats;
+import uk.co.ramp.covid.simulation.parameters.PopulationParameters;
 import uk.co.ramp.covid.simulation.place.*;
 import uk.co.ramp.covid.simulation.place.householdtypes.*;
 import uk.co.ramp.covid.simulation.testutil.PopulationGenerator;
@@ -117,14 +118,14 @@ public class PopulationTest extends SimulationTest {
 
     @Test (expected = ImpossibleAllocationException.class )
     public void testBadHouseholdRatioExceptional() throws ImpossibleAllocationException, ImpossibleWorkerDistributionException {
-        PopulationParameters.get().setHouseholdRatio(50.0);
+        PopulationParameters.get().householdDistribution.householdRatio = 50.0;
         new Population(10);
     }
 
     @Test (expected = ImpossibleWorkerDistributionException.class)
     public void testImpossibleWorkerDistribution() throws ImpossibleAllocationException, ImpossibleWorkerDistributionException {
         int populationSize = 10000;
-        PopulationParameters.get().setConstructionSiteRatio(10);
+        PopulationParameters.get().buildingDistribution.populationToConstructionSitesRatio = 10;
         Population p = new Population(populationSize);
         p.allocatePeople();
     }
@@ -217,7 +218,7 @@ public class PopulationTest extends SimulationTest {
 
         //Get the mean number of neighbours per household and compare against the expected
         double meanNeighbours = (double)totalNeighbours / (double) pop.getNumHouseholds();
-        int expectedNeighbours = PopulationParameters.get().getExpectedNeighbours();
+        int expectedNeighbours = PopulationParameters.get().householdProperties.expectedNeighbours;
         assertEquals("Unexpected mean number of neighbours", meanNeighbours, expectedNeighbours, 0.5);
     }
 

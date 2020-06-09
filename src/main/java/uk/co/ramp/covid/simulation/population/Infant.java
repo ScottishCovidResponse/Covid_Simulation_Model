@@ -1,11 +1,12 @@
 package uk.co.ramp.covid.simulation.population;
 
-import uk.co.ramp.covid.simulation.covid.CovidParameters;
+import uk.co.ramp.covid.simulation.parameters.CovidParameters;
 import uk.co.ramp.covid.simulation.DailyStats;
+import uk.co.ramp.covid.simulation.parameters.PopulationParameters;
 
 public class Infant extends Person {
 
-    private boolean goesToNursery;
+    private boolean goesToNursery = false;
 
     public Infant(int age, Sex sex) {
         super(age, sex);
@@ -17,10 +18,8 @@ public class Infant extends Person {
     }
 
     private void setNursery() {
-        if (rng.nextUniform(0, 1) < PopulationParameters.get().getpAttendsNursery()) {
+        if (PopulationParameters.get().infantProperties.pAttendsNursery.sample()) {
             goesToNursery = true;
-        } else {
-            goesToNursery = false;
         }
     }
 
@@ -48,7 +47,7 @@ public class Infant extends Person {
 
     @Override
     public boolean avoidsPhase2(double testP) {
-        return testP > CovidParameters.get().getChildProgressionPhase2();
+        return testP > CovidParameters.get().diseaseParameters.childProgressionPhase2;
     }
 
     // Infants don't get tested

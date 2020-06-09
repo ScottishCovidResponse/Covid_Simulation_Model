@@ -7,6 +7,7 @@ import com.google.gson.JsonParseException;
 import uk.co.ramp.covid.simulation.DailyStats;
 import uk.co.ramp.covid.simulation.Model;
 import uk.co.ramp.covid.simulation.Time;
+import uk.co.ramp.covid.simulation.parameters.PopulationParameters;
 import uk.co.ramp.covid.simulation.population.*;
 import uk.co.ramp.covid.simulation.testutil.PopulationGenerator;
 import uk.co.ramp.covid.simulation.util.SimulationTest;
@@ -21,16 +22,16 @@ public class ConstructionSiteTest extends SimulationTest {
     @Test
     public void testConstructionSiteTransProb() throws JsonParseException {
         ConstructionSite constructionSite = new ConstructionSite(CommunalPlace.Size.MED);
-        double expProb = PopulationParameters.get().getpBaseTrans();
+        double expProb = PopulationParameters.get().buildingProperties.baseTransmissionConstant;
         double delta = 0.01;
-        assertEquals("Unexpected construction site TransProb", expProb, constructionSite.transProb, delta);
+        assertEquals("Unexpected construction site TransProb", expProb, constructionSite.transConstant, delta);
     }
 
     @Test
     public void testNoConstructionSites() throws JsonParseException {
         //The input ConstructionSites ratio is set very high so that there are no construction sites.
         //Check that each person's primary place is never set to construction site
-        PopulationParameters.get().setConstructionSiteRatio(100000);
+        PopulationParameters.get().buildingDistribution.populationToConstructionSitesRatio = 100000;
         Population p = PopulationGenerator.genValidPopulation(10000);
 
         ArrayList<Person> allPeople = p.getAllPeople();
@@ -44,7 +45,7 @@ public class ConstructionSiteTest extends SimulationTest {
     public void testNoCSInfections() throws JsonParseException {
         //The input ConstructionSites ratio is set very high so that there are no construction sites.
         //Check that there are no infections on construction sites
-        PopulationParameters.get().setConstructionSiteRatio(100000);
+        PopulationParameters.get().buildingDistribution.populationToConstructionSitesRatio = 100000;
         int population = 10000;
         int nInfections = 100;
 

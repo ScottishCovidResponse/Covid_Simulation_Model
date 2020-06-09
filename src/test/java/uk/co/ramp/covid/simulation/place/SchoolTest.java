@@ -4,6 +4,7 @@ package uk.co.ramp.covid.simulation.place;
 import org.junit.Test;
 import uk.co.ramp.covid.simulation.DailyStats;
 import uk.co.ramp.covid.simulation.Time;
+import uk.co.ramp.covid.simulation.parameters.PopulationParameters;
 import uk.co.ramp.covid.simulation.population.*;
 import uk.co.ramp.covid.simulation.testutil.PopulationGenerator;
 import uk.co.ramp.covid.simulation.util.SimulationTest;
@@ -18,9 +19,9 @@ public class SchoolTest extends SimulationTest {
     @Test
     public void testSchoolTransProb(){
         School school = new School(CommunalPlace.Size.MED);
-        double expProb = PopulationParameters.get().getpBaseTrans();
+        double expProb = PopulationParameters.get().buildingProperties.baseTransmissionConstant;
         double delta = 0.01;
-        assertEquals("Unexpected school TransProb", expProb, school.transProb, delta);
+        assertEquals("Unexpected school TransProb", expProb, school.transConstant, delta);
     }
 
     @Test

@@ -3,16 +3,16 @@ package uk.co.ramp.covid.simulation.place;
 import uk.co.ramp.covid.simulation.DailyStats;
 import uk.co.ramp.covid.simulation.Time;
 import uk.co.ramp.covid.simulation.population.Person;
-import uk.co.ramp.covid.simulation.population.PopulationParameters;
+import uk.co.ramp.covid.simulation.parameters.PopulationParameters;
 import uk.co.ramp.covid.simulation.population.Shifts;
 
 public class Office extends CommunalPlace {
 
     public Office(Size s)  {
         super(s);
-        transAdjustment = PopulationParameters.get().getpOfficeTrans();
-        keyProb = PopulationParameters.get().getpOfficeKey();
-        if (rng.nextUniform(0, 1) > keyProb) keyPremises = true;
+        transAdjustment = PopulationParameters.get().buildingProperties.officeTransmissionConstant;
+        keyProb = PopulationParameters.get().buildingProperties.pOfficeKey;
+        if (keyProb.sample()) keyPremises = true;
         times = OpeningTimes.nineFiveWeekdays();
     }
 

@@ -5,11 +5,13 @@ import org.junit.Ignore;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-import uk.co.ramp.covid.simulation.covid.CovidParameters;
+import uk.co.ramp.covid.simulation.parameters.CovidParameters;
+import uk.co.ramp.covid.simulation.parameters.PopulationParameters;
 import uk.co.ramp.covid.simulation.place.*;
 import uk.co.ramp.covid.simulation.place.householdtypes.SingleAdult;
 import uk.co.ramp.covid.simulation.population.*;
 import uk.co.ramp.covid.simulation.testutil.PopulationGenerator;
+import uk.co.ramp.covid.simulation.util.Probability;
 import uk.co.ramp.covid.simulation.util.SimulationTest;
 
 import java.util.HashSet;
@@ -25,7 +27,7 @@ public class MovementTest extends SimulationTest {
 
     @Before
     public void initialiseTestModel() {
-        PopulationParameters.get().setpHouseholdWillIsolate(100.0);
+        PopulationParameters.get().householdProperties.pWillIsolate = new Probability(1.0);
 
         p = PopulationGenerator.genValidPopulation(populationSize);
         p.seedVirus(nInfections);
@@ -355,7 +357,7 @@ public class MovementTest extends SimulationTest {
     public void somePeopleGetTested() {
         // As most tests are positive we force lots of infections to check some go negative.
         p.seedVirus(100);
-        CovidParameters.get().setpDiagnosticTestAvailable(1.0);
+        CovidParameters.get().testParameters.pDiagnosticTestAvailable = new Probability(1.0);
         p.simulate(50);
 
         int numTested = 0;
@@ -405,7 +407,7 @@ public class MovementTest extends SimulationTest {
         }
         per.cStatus();
 
-        CovidParameters.get().setDiagnosticTestSensitivity(0.0);
+        CovidParameters.get().testParameters.pDiagnosticTestDetectsSuccessfully = new Probability(0.0);
         per.getTested();
         assertTrue(per.wasTested());
         assertFalse(per.getTestOutcome().get());
@@ -438,7 +440,7 @@ public class MovementTest extends SimulationTest {
         }
         per.cStatus();
 
-        CovidParameters.get().setDiagnosticTestSensitivity(1.0);
+        CovidParameters.get().testParameters.pDiagnosticTestDetectsSuccessfully = new Probability(1.0);
         per.getTested();
         assertTrue(per.wasTested());
         assertTrue(per.getTestOutcome().get());

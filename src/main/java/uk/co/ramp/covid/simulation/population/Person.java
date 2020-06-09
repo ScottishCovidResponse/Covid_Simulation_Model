@@ -6,11 +6,13 @@ package uk.co.ramp.covid.simulation.population;
 
 import org.apache.commons.math3.random.RandomDataGenerator;
 import uk.co.ramp.covid.simulation.covid.Covid;
-import uk.co.ramp.covid.simulation.covid.CovidParameters;
+import uk.co.ramp.covid.simulation.parameters.CovidParameters;
 import uk.co.ramp.covid.simulation.DailyStats;
 import uk.co.ramp.covid.simulation.Time;
+import uk.co.ramp.covid.simulation.parameters.PopulationParameters;
 import uk.co.ramp.covid.simulation.place.CommunalPlace;
 import uk.co.ramp.covid.simulation.place.Household;
+import uk.co.ramp.covid.simulation.util.Probability;
 import uk.co.ramp.covid.simulation.util.RNG;
 
 import java.util.Optional;
@@ -33,7 +35,7 @@ public abstract class Person {
     private Covid cVirus;
     private final double transmissionProb;
     private boolean quarantine;
-    private final double quarantineProb; // Needs more thought. The probability that the person will go into quarantine
+    private final Probability quarantineProb; // Needs more thought. The probability that the person will go into quarantine
     private final double quarantineVal;
     private Optional<Boolean> testOutcome = Optional.empty();
     protected final RandomDataGenerator rng;
@@ -47,8 +49,8 @@ public abstract class Person {
         this.age = age;
         this.sex = sex;
         this.rng = RNG.get();
-        this.transmissionProb = PopulationParameters.get().getpTransmission();
-        this.quarantineProb = PopulationParameters.get().getpQuarantine();
+        this.transmissionProb = PopulationParameters.get().personProperties.pTransmission.asDouble();
+        this.quarantineProb = PopulationParameters.get().personProperties.pQuarantinesIfSymptomatic;
         this.quarantineVal = rng.nextUniform(0, 1);
     }
 
@@ -144,7 +146,7 @@ public abstract class Person {
     }
     
     public void enterQuarantine() {
-        quarantine = quarantineProb > quarantineVal;
+        quarantine = quarantineProb.asDouble() > quarantineVal;
     }
 
     public void forceQuarantine() {
@@ -259,7 +261,7 @@ public abstract class Person {
         }
 
         // Negative test
-        if (RNG.get().nextUniform(0,1) >= CovidParameters.get().getDiagnosticTestSensitivity()) {
+        if (!CovidParameters.get().testParameters.pDiagnosticTestDetectsSuccessfully.sample()) {
             exitQuarantine();
             home.stopIsolating();
             testOutcome = Optional.of(false);
