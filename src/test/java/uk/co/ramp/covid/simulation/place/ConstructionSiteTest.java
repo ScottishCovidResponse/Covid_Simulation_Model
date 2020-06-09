@@ -10,7 +10,7 @@ import uk.co.ramp.covid.simulation.Time;
 import uk.co.ramp.covid.simulation.parameters.PopulationParameters;
 import uk.co.ramp.covid.simulation.population.*;
 import uk.co.ramp.covid.simulation.testutil.PopulationGenerator;
-import uk.co.ramp.covid.simulation.util.SimulationTest;
+import uk.co.ramp.covid.simulation.testutil.SimulationTest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -68,11 +68,8 @@ public class ConstructionSiteTest extends SimulationTest {
     @Test
     public void testConstructionSiteWorkers() throws ImpossibleWorkerDistributionException {
         int populationSize = 10000;
-        int nInfections = 10;
-
         Population p = PopulationGenerator.genValidPopulation(populationSize);
         p.allocatePeople();
-        p.seedVirus(nInfections);
         List<Person> staff;
         Time t = new Time(0);
         //Run for a whole week

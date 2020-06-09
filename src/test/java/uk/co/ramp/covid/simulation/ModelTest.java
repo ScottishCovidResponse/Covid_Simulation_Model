@@ -8,7 +8,7 @@ import com.google.gson.JsonParseException;
 import uk.co.ramp.covid.simulation.parameters.CovidParameters;
 import uk.co.ramp.covid.simulation.parameters.PopulationParameters;
 import uk.co.ramp.covid.simulation.util.Probability;
-import uk.co.ramp.covid.simulation.util.SimulationTest;
+import uk.co.ramp.covid.simulation.testutil.SimulationTest;
 
 import java.io.IOException;
 import java.util.List;
@@ -160,7 +160,7 @@ public class ModelTest extends SimulationTest {
         //Run the model with no lockdown
         Model m1 = new Model()
                 .setPopulationSize(population)
-                .setnInitialInfections(nInfections)
+                .setnInitialInfections(nInfections * 10)
                 .setExternalInfectionDays(0)
                 .setIters(nIter)
                 .setnDays(nDays)
@@ -172,7 +172,7 @@ public class ModelTest extends SimulationTest {
         //Re-run the model with partial lockdown
         Model m2 = new Model()
                 .setPopulationSize(population)
-                .setnInitialInfections(nInfections)
+                .setnInitialInfections(nInfections * 10)
                 .setExternalInfectionDays(0)
                 .setIters(nIter)
                 .setnDays(nDays)
@@ -182,13 +182,18 @@ public class ModelTest extends SimulationTest {
 
         List<List<DailyStats>> stats2 = m2.run(0);
 
-        //Check that there are fewer infections in the lockdown scenario
-        int inf1 = stats1.get(0).get(nDays - 1).getTotalInfected();
-        int inf2 = stats2.get(0).get(nDays - 1).getTotalInfected();
-        assertTrue("Unexpected more infections under lockdown", inf1 > inf2);
+        //Check that there are the same number of infections in both scenarios before lockdown starts
+        int inf1 = stats1.get(0).get(29).getTotalInfected();
+        int inf2 = stats2.get(0).get(29).getTotalInfected();
+        assertTrue("infection numbers don't match before lockdown", Math.abs(inf1 - inf2) == 0);
 
-        //Test that the total number of infections before and after lockdown
-        //is higher than during lockdown (ignoring the first 10 days after start and end of lockdown)
+        //Check that there are fewer infections in the lockdown scenario
+        inf1 = stats1.get(0).get(nDays - 1).getTotalInfected();
+        inf2 = stats2.get(0).get(nDays - 1).getTotalInfected();
+        assertTrue("Unexpected more infections under lockdown." + inf1 + " > " + inf2, inf1 > inf2);
+
+        //Test that the total number of infections before lockdown
+        //is higher than during lockdown (ignoring the first 10 days after start of lockdown)
         int totInfBeforeLockdown = 0;
         int totInfDuringLockdown = 0;
         for (int i = 0; i < stats2.get(0).size(); i++) {
@@ -221,7 +226,7 @@ public class ModelTest extends SimulationTest {
         //Run the model
         Model m1 = new Model()
                 .setPopulationSize(population)
-                .setnInitialInfections(nInfections)
+                .setnInitialInfections(nInfections * 10)
                 .setExternalInfectionDays(0)
                 .setIters(nIter)
                 .setnDays(nDays)

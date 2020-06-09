@@ -4,7 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 import uk.co.ramp.covid.simulation.population.Population;
 import uk.co.ramp.covid.simulation.testutil.PopulationGenerator;
-import uk.co.ramp.covid.simulation.util.SimulationTest;
+import uk.co.ramp.covid.simulation.testutil.SimulationTest;
 
 import static org.junit.Assert.*;
 
@@ -37,5 +37,15 @@ public class RStatsTest extends SimulationTest {
         RStats rs = new RStats(pop);
 
         assertTrue(rs.getMeanRBefore(30) > 0);
+    }
+
+    @Test
+    public void testSecInfections() {
+        pop.seedVirus(20);
+        pop.simulate(10);
+        RStats rs = new RStats(pop);
+
+        assertTrue(rs.getSecInfections(0) > 0);
+        assertTrue(rs.getMeanGenerationTime(0) > 0);
     }
 }

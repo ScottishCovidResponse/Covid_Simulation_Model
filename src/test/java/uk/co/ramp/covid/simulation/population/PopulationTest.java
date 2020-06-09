@@ -7,7 +7,7 @@ import uk.co.ramp.covid.simulation.parameters.PopulationParameters;
 import uk.co.ramp.covid.simulation.place.*;
 import uk.co.ramp.covid.simulation.place.householdtypes.*;
 import uk.co.ramp.covid.simulation.testutil.PopulationGenerator;
-import uk.co.ramp.covid.simulation.util.SimulationTest;
+import uk.co.ramp.covid.simulation.testutil.SimulationTest;
 
 import java.util.List;
 
@@ -67,7 +67,7 @@ public class PopulationTest extends SimulationTest {
                 assertTrue(numChildren == 1 || numChildren == 2 );
             }
 
-            if (h instanceof LargeTwoAdultFamiy) {
+            if (h instanceof LargeTwoAdultFamily) {
                 long numAdults = h.getInhabitants().stream()
                         .filter(per -> per instanceof Adult || per instanceof Pensioner).count();
                 long numChildren = h.getInhabitants().stream()
@@ -351,71 +351,4 @@ public class PopulationTest extends SimulationTest {
 
         assertTrue(child > infant);
     }
-
-    @Test
-    public void secondaryInfectionsAreLogged() {
-        pop.seedVirus(10);
-        pop.simulate(20);
-        int totalSecondary = 0;
-        for (Person p : pop.getAllPeople()) {
-            if (p.getcVirus() != null) {
-                totalSecondary += p.getcVirus().getInfectionLog().getSecondaryInfections().size();
-            }
-        }
-        assertTrue(totalSecondary > 0);
-    }
-
-    @Test
-    public void symptomaticCasesAreLogged() {
-        pop.seedVirus(1);
-
-        Person infected = null;
-        for (Person p : pop.getAllPeople()) {
-            if (p.getcVirus() != null) {
-                infected = p;
-            }
-        }
-        
-        infected.getcVirus().forceSymptomatic(true);
-        
-        pop.simulate(50);
-        
-        assertNotNull(infected.getcVirus().getInfectionLog().getSymptomaticTime());
-    }
-
-    @Test
-    public void externalSeedingCausesInfections() {
-        pop.seedVirus(0);
-        pop.setExternalInfectionDays(30);
-        List<DailyStats> s = pop.simulate(30);
-        DailyStats st = s.get(s.size() - 1);
-        assertTrue(st.getTotalInfected() > 0);
-
-        // Infections should mostly increase over time
-        assertTrue(s.get(1).getSeedInfections() < s.get(15).getSeedInfections());
-        assertTrue(s.get(15).getSeedInfections() < s.get(29).getSeedInfections());
-    }
-
-
-    @Test
-    public void externalSeedingStopsAfterSomeTime() {
-        pop.seedVirus(0);
-        int daysToSeed = 20;
-        pop.setExternalInfectionDays(daysToSeed);
-        List<DailyStats> stats = pop.simulate(50);
-        for (int i = 0; i < stats.size(); i++) {
-            if (i > daysToSeed) {
-                assertEquals(0, stats.get(i).getSeedInfections());
-            }
-        }
-    }
-
-    @Test
-    public void noSeedInfectionsOnDayZero() {
-        pop.seedVirus(0);
-        pop.setExternalInfectionDays(10);
-        List<DailyStats> stats = pop.simulate(5);
-        assertEquals(0, stats.get(0).getSeedInfections());
-    }
-
 }

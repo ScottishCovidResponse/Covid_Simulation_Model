@@ -4,9 +4,9 @@ import uk.co.ramp.covid.simulation.place.Household;
 import uk.co.ramp.covid.simulation.population.Places;
 
 /** LargeTwoAdultFamily: two adults of any age and three or more children */
-public class LargeTwoAdultFamiy extends Household {
+public class LargeTwoAdultFamily extends Household {
     
-    public LargeTwoAdultFamiy(Places places) {
+    public LargeTwoAdultFamily(Places places) {
         super(places);
     }
 

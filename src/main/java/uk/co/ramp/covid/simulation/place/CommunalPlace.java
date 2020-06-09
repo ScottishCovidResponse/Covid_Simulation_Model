@@ -110,4 +110,6 @@ public abstract class CommunalPlace extends Place {
     }
     
     public abstract boolean isFullyStaffed();
+
+    public OpeningTimes getTimes() { return times; }
 }
