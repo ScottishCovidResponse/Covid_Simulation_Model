@@ -27,12 +27,10 @@ public class ProbabilityDistribution<T> {
     private List<ProbPair> pmap;
     private double totalProb;
     private final double EPSILON = 0.0000001;
-    private final RandomDataGenerator rng;
 
     public ProbabilityDistribution() {
         pmap = new ArrayList<>();
         totalProb = 0.0;
-        this.rng = RNG.get();
     }
 
     /**
@@ -55,7 +53,7 @@ public class ProbabilityDistribution<T> {
         assert isValid()
                 : "Trying to sample from a distribution that does not have a total probability of 1";
 
-        double rand = rng.nextUniform(0, 1);
+        double rand = RNG.get().nextUniform(0, 1);
         for (ProbPair p : pmap) {
             if (rand <= p.prob) {
                 return p.val;
