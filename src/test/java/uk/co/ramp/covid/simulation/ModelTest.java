@@ -31,7 +31,7 @@ public class ModelTest extends SimulationTest {
         population = 10000;
         nInfections = 10;
         nIter = 1;
-        nDays = 90;
+        nDays = 60;
         RNGSeed = 42;
     }
 
@@ -152,7 +152,8 @@ public class ModelTest extends SimulationTest {
     public void testLockdown() {
 
         int startLock = 30;
-        int endLock = 90;
+        int endLock = 60;
+        nInfections = 100;
 
         //Run the model with no lockdown
         Model m1 = new Model()
@@ -217,7 +218,7 @@ public class ModelTest extends SimulationTest {
         CovidParameters.get().diseaseParameters.aSymptomaticTransAdjustment = 100.0;
         PopulationParameters.get().personProperties.pTransmission = new Probability(1.0);
         PopulationParameters.get().personProperties.pQuarantinesIfSymptomatic = new Probability(0.0);
-        nDays = 200;
+        nDays = 100;
         //Run the model
         Model m1 = new Model()
                 .setPopulationSize(population)

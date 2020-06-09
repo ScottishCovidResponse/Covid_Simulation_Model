@@ -29,25 +29,23 @@ public class CommunalPlaceTest extends SimulationTest {
     }
 
     @Test
-    public void testAllPlaces() throws Exception {
+    public void testAllPlaces() {
         //Run for 7 days
         for (int day = 0; day < 7; day++) {
             for (int i = 0; i < 24; i++) {
                 p.timeStep(t, s);
                 t = t.advance();
                 for (CommunalPlace place : p.getPlaces().getAllPlaces()) {
-                    // Get shop opening and closing time
+                    // Get place opening and closing time
                     int open = place.getTimes().getOpen();
                     int close = place.getTimes().getClose();
 
                     if (place instanceof Shop || place instanceof Restaurant) {
                         testShopOrRestaurant(place, open, close, day);
-                    } else if (place instanceof Office || place instanceof Nursery || place instanceof School || place instanceof ConstructionSite) {
-                        testOfficeHours(place, open, close, day);
                     } else if (place instanceof Hospital){
                         testHospital(place, day);
                     } else {
-                        throw new Exception("Type of Place not found");
+                        testOfficeHours(place, open, close, day);
                     }
                 }
             }
@@ -71,7 +69,7 @@ public class CommunalPlaceTest extends SimulationTest {
     }
 
     private void testOfficeHours(CommunalPlace place, int open, int close, int day) {
-        //Test if place is open or closed
+        //Test if place with 9-5 hours is open or closed
         if (t.getHour() >= open && t.getHour() < close && day < 5) {
             assertTrue("Day " + day + " Time " + t.getHour() + " " + place.toString() + " unexpectedly closed", place.isOpen(day, t.getHour()));
         } else {
