@@ -66,7 +66,7 @@ public class PopulationTest extends SimulationTest {
                 assertTrue(numChildren == 1 || numChildren == 2 );
             }
 
-            if (h instanceof LargeTwoAdultFamiy) {
+            if (h instanceof LargeTwoAdultFamily) {
                 long numAdults = h.getInhabitants().stream()
                         .filter(per -> per instanceof Adult || per instanceof Pensioner).count();
                 long numChildren = h.getInhabitants().stream()

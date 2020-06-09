@@ -46,7 +46,7 @@ public class PopulationParameters {
             p.add(pSmallAdult, SmallAdult::new);
             p.add(pSingleParent, SingleParent::new);
             p.add(pSmallFamily, SmallFamily::new);
-            p.add(pLargeTwoAdultFamily, LargeTwoAdultFamiy::new);
+            p.add(pLargeTwoAdultFamily, LargeTwoAdultFamily::new);
             p.add(pLargeManyAdultFamily, LargeManyAdultFamily::new);
             p.add(pLargeAdult, LargeAdult::new);
             p.add(pAdultPensioner, AdultPensioner::new);
