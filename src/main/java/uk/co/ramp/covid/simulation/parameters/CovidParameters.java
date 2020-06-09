@@ -5,7 +5,7 @@ import org.apache.logging.log4j.Logger;
 import uk.co.ramp.covid.simulation.util.InvalidParametersException;
 
 /**
- * PopulationParameters is a singleton class for reading and storing the covid disease parameters
+ * CovidParameters is a singleton class for reading and storing the covid disease parameters
  *
  * Note: This use of the singleton pattern is not thread safe
  */
