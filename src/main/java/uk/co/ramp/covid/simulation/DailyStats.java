@@ -40,6 +40,7 @@ public class DailyStats {
     private int schoolInfectionsVisitor = 0;
     private int shopInfectionsWorker = 0;
     private int shopInfectionsVisitor = 0;
+    private int seedInfections = 0;
 
     // Age Statistics
     private int adultInfected = 0;
@@ -96,7 +97,7 @@ public class DailyStats {
 
     public void appendCSV(CSVPrinter csv, int iter) throws IOException {
         csv.printRecord(iter, day, healthy, exposed, asymptomatic,
-                phase1, phase2, dead, recovered,
+                phase1, phase2, dead, recovered, seedInfections,
                 constructionSiteInfectionsWorker, hospitalInfectionsWorker, 
                 nurseryInfectionsWorker, officeInfectionsWorker, restaurantInfectionsWorker, schoolInfectionsWorker, 
                 shopInfectionsWorker, homeInfectionsInhabitant,
@@ -122,7 +123,8 @@ public class DailyStats {
                 nurseryInfectionsVisitor +
                 nurseryInfectionsWorker +
                 homeInfectionsInhabitant +
-                homeInfectionsVisitor;
+                homeInfectionsVisitor +
+                seedInfections;
     }
 
     public int getHealthy() {
@@ -221,6 +223,12 @@ public class DailyStats {
                 pensionerDeaths == that.pensionerDeaths &&
                 childDeaths == that.childDeaths &&
                 infantDeaths == that.infantDeaths;
+    }
+    
+    public int getSeedInfections() { return seedInfections; }
+
+    public void incSeedInfections() {
+        seedInfections++;
     }
 
     public void incDeathsAdult() {

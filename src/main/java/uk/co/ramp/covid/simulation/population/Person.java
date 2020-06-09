@@ -19,7 +19,6 @@ import java.util.Optional;
 
 public abstract class Person {
 
-
     public enum Sex {
         MALE, FEMALE
     }
@@ -273,4 +272,16 @@ public abstract class Person {
     public Optional<Boolean> getTestOutcome() {
         return testOutcome;
     }
+
+    public void seedInfectionChallenge(Time t, DailyStats s) {
+        Probability infectionChance = new Probability(getInfectionSeedRate() * t.getAbsDay());
+        if (infectionChance.sample()) {
+            cVirus = new Covid(this);
+            cVirus.getInfectionLog().registerInfected(t);
+            s.incSeedInfections();
+        }
+    }
+
+    protected abstract double getInfectionSeedRate();
+
 }

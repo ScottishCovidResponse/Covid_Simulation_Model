@@ -53,4 +53,9 @@ public class Infant extends Person {
     // Infants don't get tested
     @Override
     public void getTested() { }
+
+    @Override
+    protected double getInfectionSeedRate() {
+        return CovidParameters.get().infectionSeedProperties.infectionRateIncreaseInfantChild;
+    }
 }

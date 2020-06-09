@@ -51,7 +51,8 @@ public class ConstructionSiteTest extends SimulationTest {
 
         Model m = new Model()
                 .setPopulationSize(population)
-                .setnInfections(nInfections)
+                .setnInitialInfections(nInfections)
+                .setExternalInfectionDays(0)
                 .setIters(1)
                 .setnDays(90)
                 .setRNGSeed(42)

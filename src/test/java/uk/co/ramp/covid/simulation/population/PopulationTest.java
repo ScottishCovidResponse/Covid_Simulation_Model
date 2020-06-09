@@ -383,4 +383,39 @@ public class PopulationTest extends SimulationTest {
         assertNotNull(infected.getcVirus().getInfectionLog().getSymptomaticTime());
     }
 
+    @Test
+    public void externalSeedingCausesInfections() {
+        pop.seedVirus(0);
+        pop.setExternalInfectionDays(30);
+        List<DailyStats> s = pop.simulate(30);
+        DailyStats st = s.get(s.size() - 1);
+        assertTrue(st.getTotalInfected() > 0);
+
+        // Infections should mostly increase over time
+        assertTrue(s.get(1).getSeedInfections() < s.get(15).getSeedInfections());
+        assertTrue(s.get(15).getSeedInfections() < s.get(29).getSeedInfections());
+    }
+
+
+    @Test
+    public void externalSeedingStopsAfterSomeTime() {
+        pop.seedVirus(0);
+        int daysToSeed = 20;
+        pop.setExternalInfectionDays(daysToSeed);
+        List<DailyStats> stats = pop.simulate(50);
+        for (int i = 0; i < stats.size(); i++) {
+            if (i > daysToSeed) {
+                assertEquals(0, stats.get(i).getSeedInfections());
+            }
+        }
+    }
+
+    @Test
+    public void noSeedInfectionsOnDayZero() {
+        pop.seedVirus(0);
+        pop.setExternalInfectionDays(10);
+        List<DailyStats> stats = pop.simulate(5);
+        assertEquals(0, stats.get(0).getSeedInfections());
+    }
+
 }

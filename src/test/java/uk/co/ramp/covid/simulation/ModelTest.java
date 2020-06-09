@@ -40,7 +40,8 @@ public class ModelTest extends SimulationTest {
 
         Model m = new Model()
                 .setPopulationSize(population)
-                .setnInfections(nInfections)
+                .setnInitialInfections(nInfections)
+                .setExternalInfectionDays(0)
                 .setIters(nIter)
                 .setnDays(nDays)
                 .setRNGSeed(RNGSeed)
@@ -97,7 +98,8 @@ public class ModelTest extends SimulationTest {
 
         Model run1 = new Model()
                 .setPopulationSize(population)
-                .setnInfections(nInfections)
+                .setnInitialInfections(nInfections)
+                .setExternalInfectionDays(0)
                 .setIters(nIter)
                 .setnDays(nDays)
                 .setRNGSeed(RNGSeed)
@@ -107,7 +109,8 @@ public class ModelTest extends SimulationTest {
 
         Model run2 = new Model()
                 .setPopulationSize(population)
-                .setnInfections(nInfections)
+                .setnInitialInfections(nInfections)
+                .setExternalInfectionDays(0)
                 .setIters(nIter)
                 .setnDays(nDays)
                 .setRNGSeed(RNGSeed)
@@ -157,7 +160,8 @@ public class ModelTest extends SimulationTest {
         //Run the model with no lockdown
         Model m1 = new Model()
                 .setPopulationSize(population)
-                .setnInfections(nInfections)
+                .setnInitialInfections(nInfections)
+                .setExternalInfectionDays(0)
                 .setIters(nIter)
                 .setnDays(nDays)
                 .setRNGSeed(RNGSeed)
@@ -168,7 +172,8 @@ public class ModelTest extends SimulationTest {
         //Re-run the model with partial lockdown
         Model m2 = new Model()
                 .setPopulationSize(population)
-                .setnInfections(nInfections)
+                .setnInitialInfections(nInfections)
+                .setExternalInfectionDays(0)
                 .setIters(nIter)
                 .setnDays(nDays)
                 .setRNGSeed(RNGSeed)
@@ -216,7 +221,8 @@ public class ModelTest extends SimulationTest {
         //Run the model
         Model m1 = new Model()
                 .setPopulationSize(population)
-                .setnInfections(nInfections)
+                .setnInitialInfections(nInfections)
+                .setExternalInfectionDays(0)
                 .setIters(nIter)
                 .setnDays(nDays)
                 .setRNGSeed(RNGSeed)

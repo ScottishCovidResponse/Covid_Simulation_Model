@@ -19,6 +19,10 @@
           "childProgressionPhase2":0.02,
           "adultProgressionPhase2":0.15,
           "pensionerProgressionPhase2":0.8
+      },
+      "infectionSeedProperties": {
+          "infectionRateIncreaseAdultPensioner":0.0001,
+          "infectionRateIncreaseInfantChild":0.0002
       }
     },
     "population":{
