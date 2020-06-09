@@ -1,8 +1,9 @@
 package uk.co.ramp.covid.simulation.parameters;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import uk.co.ramp.covid.simulation.covid.Covid;
 import uk.co.ramp.covid.simulation.util.InvalidParametersException;
+
+import java.util.HashMap;
 
 /**
  * CovidParameters is a singleton class for reading and storing the covid disease parameters
@@ -20,13 +21,15 @@ public class CovidParameters {
     }
 
     public CovidTestParameters testParameters = null;
-    public DiseaseParameters diseaseParameters= null;
+    public DiseaseParameters diseaseParameters = null;
+    public InfectionSeedingProperties infectionSeedProperties = null;
 
     public CovidParameters() {
-        diseaseParameters = new DiseaseParameters();
         testParameters = new CovidTestParameters();
+        diseaseParameters = new DiseaseParameters();
+        infectionSeedProperties = new InfectionSeedingProperties();
     }
-
+    
     public static void setParameters(CovidParameters p) {
         cparams = p;
     }
@@ -36,7 +39,9 @@ public class CovidParameters {
 
     public boolean isValid() {
         ParameterInitialisedChecker checker = new ParameterInitialisedChecker();
-        return checker.isValid(diseaseParameters) && checker.isValid(testParameters);
+        return checker.isValid(diseaseParameters)
+                && checker.isValid(testParameters)
+                && checker.isValid(infectionSeedProperties);
     }
 
 }

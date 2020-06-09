@@ -54,7 +54,8 @@ public class Model {
 
     private boolean outputDisabled;
     private Integer populationSize = null;
-    private Integer nInfections = null;
+    private Integer nInitialInfections = null;
+    private Integer externalInfectionDays = null;
     private Integer nDays = null;
     private Integer nIters = null;
     private Integer rngSeed = null;
@@ -70,8 +71,13 @@ public class Model {
         return this;
     }
 
-    public Model setnInfections(int nInfections) {
-        this.nInfections = nInfections;
+    public Model setnInitialInfections(int nInitialInfections) {
+        this.nInitialInfections = nInitialInfections;
+        return this;
+    }
+
+    public Model setExternalInfectionDays(int n) {
+        this.externalInfectionDays = n;
         return this;
     }
 
@@ -125,8 +131,12 @@ public class Model {
             LOGGER.warn("Uninitialised model parameter: nIters");
             valid = false;
         }
-        if (nInfections == null) {
-            LOGGER.warn("Uninitialised model parameter: nInfections");
+        if (nInitialInfections == null) {
+            LOGGER.warn("Uninitialised model parameter: nInitialInfections");
+            valid = false;
+        }
+        if (externalInfectionDays == null) {
+            LOGGER.warn("Uninitialised model parameter: externalInfectionDays");
             valid = false;
         }
         if (nDays == null) {
@@ -186,7 +196,8 @@ public class Model {
             }
 
 
-            p.seedVirus(nInfections);
+            p.setExternalInfectionDays(externalInfectionDays);
+            p.seedVirus(nInitialInfections);
             if (lockDown != null) {
                 p.setLockdown(lockDown.start, lockDown.end, lockDown.socialDistance);
             }
@@ -214,7 +225,7 @@ public class Model {
     }
 
     public void outputCSV(int startIterID, List<List<DailyStats>> stats) {
-    final String[] headers = {"iter", "day", "H", "L", "A", "P1", "P2", "D", "R",
+    final String[] headers = {"iter", "day", "H", "L", "A", "P1", "P2", "D", "R", "ISeed",
                               "ICs_W","IHos_W","INur_W","IOff_W","IRes_W","ISch_W","ISho_W","IHome_I",
                               "ICs_V","IHos_V","INur_V","IOff_V","IRes_V","ISch_V","ISho_V","IHome_V",
                               "IAdu","IPen","IChi","IInf",
