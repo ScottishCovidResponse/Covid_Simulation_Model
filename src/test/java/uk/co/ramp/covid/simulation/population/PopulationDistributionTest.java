@@ -1,6 +1,8 @@
 package uk.co.ramp.covid.simulation.population;
 
 import org.junit.Test;
+import uk.co.ramp.covid.simulation.parameters.PopulationDistribution;
+import uk.co.ramp.covid.simulation.parameters.PopulationParameters;
 import uk.co.ramp.covid.simulation.util.InvalidParametersException;
 import uk.co.ramp.covid.simulation.testutil.SimulationTest;
 
@@ -63,7 +65,7 @@ public class PopulationDistributionTest extends SimulationTest {
     @Test
     public void seeAllAgesInALargeSample() {
         PopulationDistribution dist = new PopulationDistribution();
-        dist.readFromMap(PopulationParameters.get().getPopulation());
+        dist.readFromMap(PopulationParameters.get().populationDistribution);
 
         int SAMPLES = 1000000;
         int[] seen = new int[101];

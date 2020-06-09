@@ -3,7 +3,7 @@ package uk.co.ramp.covid.simulation.place;
 import uk.co.ramp.covid.simulation.DailyStats;
 import uk.co.ramp.covid.simulation.Time;
 import uk.co.ramp.covid.simulation.population.Person;
-import uk.co.ramp.covid.simulation.population.PopulationParameters;
+import uk.co.ramp.covid.simulation.parameters.PopulationParameters;
 import uk.co.ramp.covid.simulation.population.Shifts;
 import uk.co.ramp.covid.simulation.util.RoundRobinAllocator;
 
@@ -13,10 +13,10 @@ public class Hospital extends CommunalPlace {
 
     public Hospital(Size s) {
         super(s);
-        transAdjustment = PopulationParameters.get().getpHospitalTrans();
-        keyProb = PopulationParameters.get().getpHospitalKey();
+        transAdjustment = PopulationParameters.get().buildingProperties.hospitalTransmissionConstant;
+        keyProb = PopulationParameters.get().buildingProperties.pHospitalKey;
         times = OpeningTimes.twentyfourSeven();
-        if (rng.nextUniform(0, 1) > keyProb) keyPremises = true;
+        if (keyProb.sample()) keyPremises = true;
         allocateShifts();
     }
 

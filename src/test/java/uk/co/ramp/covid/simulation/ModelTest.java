@@ -5,8 +5,9 @@ import org.junit.Test;
 
 import com.google.gson.JsonParseException;
 
-import uk.co.ramp.covid.simulation.covid.CovidParameters;
-import uk.co.ramp.covid.simulation.population.PopulationParameters;
+import uk.co.ramp.covid.simulation.parameters.CovidParameters;
+import uk.co.ramp.covid.simulation.parameters.PopulationParameters;
+import uk.co.ramp.covid.simulation.util.Probability;
 import uk.co.ramp.covid.simulation.testutil.SimulationTest;
 
 import java.io.IOException;
@@ -82,10 +83,10 @@ public class ModelTest extends SimulationTest {
             childDeaths += s.getChildDeaths();
         }
 
-        if (CovidParameters.get().getAdultProgressionPhase2() < CovidParameters.get().getPensionerProgressionPhase2()) {
+        if (CovidParameters.get().diseaseParameters.adultProgressionPhase2 < (double) CovidParameters.get().diseaseParameters.pensionerProgressionPhase2) {
             assertTrue(adultDeaths <= pensionerDeaths);
         }
-        if (CovidParameters.get().getChildProgressionPhase2() < CovidParameters.get().getAdultProgressionPhase2()) {
+        if (CovidParameters.get().diseaseParameters.childProgressionPhase2 < (double) CovidParameters.get().diseaseParameters.adultProgressionPhase2) {
             assertTrue(childDeaths <= pensionerDeaths);
         }
 
@@ -204,18 +205,18 @@ public class ModelTest extends SimulationTest {
     public void testMortality() {
         //Mortality and transmission rates are set to 100%
         //Check that everyone is infected and progresses to death
-        CovidParameters.get().setSymptomProbability(100.0);
-        CovidParameters.get().setMeanSymptomDelay(-5.0);
-        CovidParameters.get().setMeanLatentPeriod(50.0);
-        CovidParameters.get().setMeanInfectiousPeriod(100.0);
-        CovidParameters.get().setMortalityRate(100.0);
-        CovidParameters.get().setChildProgressionPhase2(100.0);
-        CovidParameters.get().setAdultProgressionPhase2(100.0);
-        CovidParameters.get().setPensionerProgressionPhase2(100.0);
-        CovidParameters.get().setSymptomaticTransAdjustment(100.0);
-        CovidParameters.get().setAsymptomaticTransAdjustment(100.0);
-        PopulationParameters.get().setPTransmission(1.0);
-        PopulationParameters.get().setPQuarantine(0.0);
+        CovidParameters.get().diseaseParameters.pSymptomaticCase = new Probability(1.0);
+        CovidParameters.get().diseaseParameters.meanSymptomDelay = -5.0;
+        CovidParameters.get().diseaseParameters.meanLatentPeriod = 50.0;
+        CovidParameters.get().diseaseParameters.meanInfectiousDuration = 100.0;
+        CovidParameters.get().diseaseParameters.mortalityRate = 100.0;
+        CovidParameters.get().diseaseParameters.childProgressionPhase2 = 100.0;
+        CovidParameters.get().diseaseParameters.adultProgressionPhase2 = 100.0;
+        CovidParameters.get().diseaseParameters.pensionerProgressionPhase2 = 100.0;
+        CovidParameters.get().diseaseParameters.symptomaticTransAdjustment = 100.0;
+        CovidParameters.get().diseaseParameters.aSymptomaticTransAdjustment = 100.0;
+        PopulationParameters.get().personProperties.pTransmission = new Probability(1.0);
+        PopulationParameters.get().personProperties.pQuarantinesIfSymptomatic = new Probability(0.0);
         nDays = 200;
         //Run the model
         Model m1 = new Model()

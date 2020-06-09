@@ -46,9 +46,13 @@ public class ProbabilityDistribution<T> {
         Collections.sort(pmap, Collections.reverseOrder());
     }
 
+    public void add(Probability prob, T val) {
+        add(prob.asDouble(), val);
+    }
+
     /** sample the current probability distribution. Returns null on failure */
     public T sample() {
-        assert totalProb > 1 - EPSILON || totalProb < 1 + EPSILON
+        assert isValid()
                 : "Trying to sample from a distribution that does not have a total probability of 1";
 
         double rand = rng.nextUniform(0, 1);
@@ -67,6 +71,11 @@ public class ProbabilityDistribution<T> {
             l.add(p.val);
         }
         return l;
+    }
+
+    /** Determine if the total probability equals 1, i.e. the distribution is valid to use */
+    public boolean isValid() {
+        return totalProb > 1 - EPSILON || totalProb < 1 + EPSILON;
     }
 
 }

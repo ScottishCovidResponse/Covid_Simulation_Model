@@ -12,7 +12,8 @@ import uk.co.ramp.covid.simulation.place.householdtypes.SmallFamily;
 import uk.co.ramp.covid.simulation.population.Adult;
 import uk.co.ramp.covid.simulation.population.Child;
 import uk.co.ramp.covid.simulation.population.Person;
-import uk.co.ramp.covid.simulation.population.PopulationParameters;
+import uk.co.ramp.covid.simulation.parameters.PopulationParameters;
+import uk.co.ramp.covid.simulation.util.Probability;
 import uk.co.ramp.covid.simulation.testutil.SimulationTest;
 
 import static org.junit.Assert.assertEquals;
@@ -73,7 +74,7 @@ public class HouseholdTest extends SimulationTest {
 
     @Test
     public void testSendNeighboursHome() {
-        PopulationParameters.get().setHouseholdVisitorLeaveRate(1.0);
+        PopulationParameters.get().householdProperties.pVisitorsLeaveHousehold = new Probability(1.0);
         Household h = new SmallFamily(null);
         Person p1 = new Adult(22, Person.Sex.FEMALE);
         p1.setHome(household);

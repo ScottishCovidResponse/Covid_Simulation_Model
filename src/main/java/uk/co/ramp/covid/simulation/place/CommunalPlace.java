@@ -8,6 +8,7 @@ import org.apache.commons.math3.random.RandomDataGenerator;
 import uk.co.ramp.covid.simulation.Time;
 import uk.co.ramp.covid.simulation.population.Person;
 import uk.co.ramp.covid.simulation.population.Shifts;
+import uk.co.ramp.covid.simulation.util.Probability;
 import uk.co.ramp.covid.simulation.util.RNG;
 
 import java.util.ArrayList;
@@ -22,7 +23,7 @@ public abstract class CommunalPlace extends Place {
     protected Size size;
     protected OpeningTimes times;
     protected boolean keyPremises;
-    protected double keyProb;
+    protected Probability keyProb;
 
     protected int nStaff = 0;
 
@@ -40,9 +41,7 @@ public abstract class CommunalPlace extends Place {
         super();
         this.rng = RNG.get();
         this.times = new OpeningTimes(8,17,1,5, OpeningTimes.getAllDays());
-
-        this.keyProb = 1.0;
-        if (rng.nextUniform(0, 1) > this.keyProb) this.keyPremises = true;
+        this.keyPremises = false;
     }
 
     public void overrideKeyPremises(boolean overR) {

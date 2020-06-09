@@ -6,6 +6,7 @@ import com.google.gson.JsonParseException;
 
 import uk.co.ramp.covid.simulation.DailyStats;
 import uk.co.ramp.covid.simulation.Time;
+import uk.co.ramp.covid.simulation.parameters.PopulationParameters;
 import uk.co.ramp.covid.simulation.population.*;
 import uk.co.ramp.covid.simulation.testutil.SimulationTest;
 
@@ -19,9 +20,9 @@ public class HospitalTest extends SimulationTest {
     @Test
     public void testHospitalTransProb() throws JsonParseException {
         Hospital hospital = new Hospital(CommunalPlace.Size.MED);
-        double expProb = PopulationParameters.get().getpBaseTrans();
+        double expProb = PopulationParameters.get().buildingProperties.baseTransmissionConstant;
         double delta = 0.01;
-        assertEquals("Unexpected hospital TransProb", expProb, hospital.transProb, delta);
+        assertEquals("Unexpected hospital TransProb", expProb, hospital.transConstant, delta);
     }
 
     @Test

@@ -6,8 +6,8 @@ import org.junit.Before;
 
 import com.google.gson.JsonParseException;
 
-import uk.co.ramp.covid.simulation.io.ParameterReader;
 import uk.co.ramp.covid.simulation.util.RNG;
+import uk.co.ramp.covid.simulation.parameters.ParameterReader;
 
 /**
  * SimulationTest is a base class for setting up tests

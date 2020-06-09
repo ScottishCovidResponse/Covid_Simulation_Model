@@ -2,8 +2,10 @@ package uk.co.ramp.covid.simulation.place;
 
 import uk.co.ramp.covid.simulation.DailyStats;
 import uk.co.ramp.covid.simulation.Time;
-import uk.co.ramp.covid.simulation.covid.CovidParameters;
+import uk.co.ramp.covid.simulation.parameters.CovidParameters;
+import uk.co.ramp.covid.simulation.parameters.PopulationParameters;
 import uk.co.ramp.covid.simulation.population.*;
+import uk.co.ramp.covid.simulation.util.Probability;
 import uk.co.ramp.covid.simulation.util.RNG;
 
 import java.util.*;
@@ -21,10 +23,10 @@ public abstract class Household extends Place {
     public Household(Places places) {
         this.neighbours = new ArrayList<>();
         this.places = places;
-        if (RNG.get().nextUniform(0,1) < PopulationParameters.get().getpHouseholdWillIsolate()) {
+        if (PopulationParameters.get().householdProperties.pWillIsolate.sample()) {
             willIsolate = true;
         }
-        if (RNG.get().nextUniform(0,1) < PopulationParameters.get().getpLockCompliance()) {
+        if (PopulationParameters.get().householdProperties.pLockCompliance.sample()) {
         	lockCompliant = true;
         }
 
@@ -48,8 +50,8 @@ public abstract class Household extends Place {
     }
     
     @Override
-    protected double getTransProb() {
-    	return transProb;
+    protected double getTransConstant() {
+    	return transConstant;
     }
 
     public void addNeighbour(Household n) {
@@ -60,7 +62,7 @@ public abstract class Household extends Place {
     
     public void isolate() {
         if (willIsolate) {
-            isolationTimer = PopulationParameters.get().getHouseholdIsolationPeriod();
+            isolationTimer = PopulationParameters.get().householdProperties.householdIsolationPeriod;
         }
     }
     
@@ -99,7 +101,7 @@ public abstract class Household extends Place {
                 p.returnHome();
                 left.addAll(sendFamilyHome(p, null, t));
             }
-            else if (RNG.get().nextUniform(0, 1) < PopulationParameters.get().getHouseholdVisitorLeaveRate()) {
+            else if (PopulationParameters.get().householdProperties.pVisitorsLeaveHousehold.sample()) {
                 left.add(p);
                 left.addAll(sendFamilyHome(p, null, t));
                 if (p.cStatus() != CStatus.DEAD) {
@@ -177,7 +179,7 @@ public abstract class Household extends Place {
                 Time symptomaticTime = p.getcVirus().getInfectionLog().getSymptomaticTime();
                 if (symptomaticTime != null
                         && symptomaticTime.getAbsTime() <= t.getAbsTime() + 24
-                        && RNG.get().nextUniform(0,1) <= CovidParameters.get().getpDiagnosticTestAvailable()) {
+                        && CovidParameters.get().testParameters.pDiagnosticTestAvailable.sample()) {
                     p.getTested();
                 }
             }
@@ -192,8 +194,8 @@ public abstract class Household extends Place {
 	            if (n.isIsolating()) {
 	                continue;
 	            }
-	
-	            if (RNG.get().nextUniform(0, 1) < PopulationParameters.get().getNeighbourVisitFreq()) {
+
+                if (PopulationParameters.get().householdProperties.pHouseholdVisitsNeighbour.sample()) {
 	                // We visit neighbours as a family
 	                for (Person p : getInhabitants()) {
 	                    if (!p.getQuarantine()) {
@@ -211,12 +213,12 @@ public abstract class Household extends Place {
     private void moveShop(Time t, boolean lockdown) {
         List<Person> left = new ArrayList<>();
 
-        double visitProb = PopulationParameters.get().getpGoShopping();
+        Probability visitProb = PopulationParameters.get().householdProperties.pGoShopping;
         if (lockdown) {
-            visitProb = visitProb * 0.5;
+            visitProb = new Probability(visitProb.asDouble() * 0.5);
         }
 
-        if (RNG.get().nextUniform(0, 1) < visitProb) {
+        if (visitProb.sample()) {
             Shop s = places.getRandomShop();
             if (s == null) {
                 return;
@@ -247,9 +249,7 @@ public abstract class Household extends Place {
     private void moveRestaurant(Time t) {
         List<Person> left = new ArrayList<>();
 
-        double visitProb = PopulationParameters.get().getpGoRestaurant();
-
-        if (RNG.get().nextUniform(0, 1) < visitProb) {
+        if (PopulationParameters.get().householdProperties.pGoRestaurant.sample()) {
             Restaurant r = places.getRandomRestaurant();
             if (r == null) {
                 return;

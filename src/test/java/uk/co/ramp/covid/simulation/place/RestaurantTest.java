@@ -6,10 +6,12 @@ import org.junit.Test;
 import com.google.gson.JsonParseException;
 import uk.co.ramp.covid.simulation.DailyStats;
 import uk.co.ramp.covid.simulation.Time;
+import uk.co.ramp.covid.simulation.parameters.PopulationParameters;
 import uk.co.ramp.covid.simulation.place.householdtypes.SmallFamily;
 import uk.co.ramp.covid.simulation.population.*;
 import uk.co.ramp.covid.simulation.testutil.PopulationGenerator;
 import uk.co.ramp.covid.simulation.testutil.SimulationTest;
+import uk.co.ramp.covid.simulation.util.Probability;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,9 +42,9 @@ public class RestaurantTest extends SimulationTest {
     @Test
     public void testRestaurantTransProb() throws JsonParseException {
         Restaurant restaurant = new Restaurant(CommunalPlace.Size.MED);
-        double expProb = PopulationParameters.get().getpBaseTrans();
+        double expProb = PopulationParameters.get().buildingProperties.baseTransmissionConstant;
         double delta = 0.01;
-        assertEquals("Unexpected restaurant TransProb", expProb, restaurant.transProb, delta);
+        assertEquals("Unexpected restaurant TransProb", expProb, restaurant.transConstant, delta);
     }
 
     @Test
@@ -56,7 +58,7 @@ public class RestaurantTest extends SimulationTest {
 
     @Test
     public void testSendHome() {
-        PopulationParameters.get().setpLeaveRestaurant(1.0);
+        PopulationParameters.get().buildingProperties.pLeaveRestaurant = new Probability(1.0);
         int time = restaurant.times.getClose() - 1;
         int left = restaurant.sendHome(new Time(time));
         int expPeople = 2;
