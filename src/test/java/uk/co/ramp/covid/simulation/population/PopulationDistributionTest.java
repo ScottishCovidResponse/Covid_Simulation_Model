@@ -4,7 +4,7 @@ import org.junit.Test;
 import uk.co.ramp.covid.simulation.parameters.PopulationDistribution;
 import uk.co.ramp.covid.simulation.parameters.PopulationParameters;
 import uk.co.ramp.covid.simulation.util.InvalidParametersException;
-import uk.co.ramp.covid.simulation.util.SimulationTest;
+import uk.co.ramp.covid.simulation.testutil.SimulationTest;
 
 import java.util.HashMap;
 import java.util.Map;

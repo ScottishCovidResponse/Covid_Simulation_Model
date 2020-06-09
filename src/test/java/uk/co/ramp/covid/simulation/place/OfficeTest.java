@@ -8,7 +8,7 @@ import uk.co.ramp.covid.simulation.Time;
 import uk.co.ramp.covid.simulation.parameters.PopulationParameters;
 import uk.co.ramp.covid.simulation.population.*;
 import uk.co.ramp.covid.simulation.testutil.PopulationGenerator;
-import uk.co.ramp.covid.simulation.util.SimulationTest;
+import uk.co.ramp.covid.simulation.testutil.SimulationTest;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -28,11 +28,8 @@ public class OfficeTest extends SimulationTest {
     @Test
     public void testOfficeWorkers() throws ImpossibleWorkerDistributionException {
         int populationSize = 10000;
-        int nInfections = 10;
-
         Population p = PopulationGenerator.genValidPopulation(populationSize);
         p.allocatePeople();
-        p.seedVirus(nInfections);
         List<Person> staff;
         Time t = new Time(0);
         //Run for a whole week

@@ -1,4 +1,4 @@
-package uk.co.ramp.covid.simulation;
+package uk.co.ramp.covid.simulation.covid;
 
 import org.junit.Test;
 import uk.co.ramp.covid.simulation.parameters.CovidParameters;
