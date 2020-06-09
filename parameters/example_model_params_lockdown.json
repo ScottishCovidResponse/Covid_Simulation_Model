@@ -2,6 +2,7 @@
     "populationSize":10000,
     "nHouseholds":3000,
     "nInfections":10,
+    "externalInfectionsDays":20,
     "nDays":365,
     "nIters":1,
     "rngSeed":42,

@@ -40,7 +40,8 @@ public class ModelTest extends SimulationTest {
 
         Model m = new Model()
                 .setPopulationSize(population)
-                .setnInfections(nInfections)
+                .setnInitialInfections(nInfections)
+                .setExternalInfectionDays(0)
                 .setIters(nIter)
                 .setnDays(nDays)
                 .setRNGSeed(RNGSeed)
@@ -97,7 +98,8 @@ public class ModelTest extends SimulationTest {
 
         Model run1 = new Model()
                 .setPopulationSize(population)
-                .setnInfections(nInfections)
+                .setnInitialInfections(nInfections)
+                .setExternalInfectionDays(0)
                 .setIters(nIter)
                 .setnDays(nDays)
                 .setRNGSeed(RNGSeed)
@@ -107,7 +109,8 @@ public class ModelTest extends SimulationTest {
 
         Model run2 = new Model()
                 .setPopulationSize(population)
-                .setnInfections(nInfections)
+                .setnInitialInfections(nInfections)
+                .setExternalInfectionDays(0)
                 .setIters(nIter)
                 .setnDays(nDays)
                 .setRNGSeed(RNGSeed)
@@ -158,7 +161,8 @@ public class ModelTest extends SimulationTest {
         //Run the model with no lockdown
         Model m1 = new Model()
                 .setPopulationSize(population)
-                .setnInfections(nInfections)
+                .setnInitialInfections(nInfections * 10)
+                .setExternalInfectionDays(0)
                 .setIters(nIter)
                 .setnDays(nDays)
                 .setRNGSeed(RNGSeed)
@@ -169,7 +173,8 @@ public class ModelTest extends SimulationTest {
         //Re-run the model with partial lockdown
         Model m2 = new Model()
                 .setPopulationSize(population)
-                .setnInfections(nInfections)
+                .setnInitialInfections(nInfections * 10)
+                .setExternalInfectionDays(0)
                 .setIters(nIter)
                 .setnDays(nDays)
                 .setRNGSeed(RNGSeed)
@@ -186,7 +191,7 @@ public class ModelTest extends SimulationTest {
         //Check that there are fewer infections in the lockdown scenario
         inf1 = stats1.get(0).get(nDays - 1).getTotalInfected();
         inf2 = stats2.get(0).get(nDays - 1).getTotalInfected();
-        assertTrue("Unexpected more infections under lockdown", inf1 > inf2);
+        assertTrue("Unexpected more infections under lockdown." + inf1 + " > " + inf2, inf1 > inf2);
 
         //Test that the total number of infections before lockdown
         //is higher than during lockdown (ignoring the first 10 days after start of lockdown)
@@ -222,7 +227,8 @@ public class ModelTest extends SimulationTest {
         //Run the model
         Model m1 = new Model()
                 .setPopulationSize(population)
-                .setnInfections(nInfections)
+                .setnInitialInfections(nInfections * 10)
+                .setExternalInfectionDays(0)
                 .setIters(nIter)
                 .setnDays(nDays)
                 .setRNGSeed(RNGSeed)

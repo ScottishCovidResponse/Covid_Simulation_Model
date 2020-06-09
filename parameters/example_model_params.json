@@ -1,6 +1,7 @@
 {
     "populationSize":10000,
-    "nInfections":10,
+    "nInitialInfections":0,
+    "externalInfectionDays":55,
     "nDays":365,
     "nIters":1,
     "rngSeed":42,

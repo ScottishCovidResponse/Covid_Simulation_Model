@@ -77,4 +77,9 @@ public class Adult extends Person {
     public boolean avoidsPhase2(double testP) {
         return testP > CovidParameters.get().diseaseParameters.adultProgressionPhase2;
     }
+
+    @Override
+    protected double getInfectionSeedRate() {
+        return CovidParameters.get().infectionSeedProperties.infectionRateIncreaseAdultPensioner;
+    }
 }
