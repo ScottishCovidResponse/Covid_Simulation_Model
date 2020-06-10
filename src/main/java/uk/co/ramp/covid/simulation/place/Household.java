@@ -205,8 +205,9 @@ public abstract class Household extends Place {
     }
 
     private void moveNeighbour(Time t, boolean lockdown) {
-        // We only visit neighbours between 9 - 20
-        if (!visitsNeighbourToday || t.getHour() < 8 || t.getHour() >= 19) {
+       if (!visitsNeighbourToday
+                || t.getHour() + 1 < PopulationParameters.get().householdProperties.neighbourOpeningTime
+                || t.getHour() + 1 >= PopulationParameters.get().householdProperties.neighbourClosingTime) {
             return;
         }
 
@@ -218,8 +219,10 @@ public abstract class Household extends Place {
 	            }
 
 	            // Since we determine if we should try to visit a neighbour a the star of the day, we have
-                // equal oppertunity of visiting a neighbour each hour they are open
-                if (new Probability(1.0 / (18 - 8)).sample()) {
+                // equal opportunity of visiting a neighbour each hour they are open
+                int openT = PopulationParameters.get().householdProperties.neighbourOpeningTime;
+                int closeT = PopulationParameters.get().householdProperties.neighbourClosingTime;
+                if (new Probability(1.0 / (closeT - openT)).sample()) {
 	                // We visit neighbours as a family
 	                for (Person p : people) {
 	                    if (isInhabitant(p) && !p.getQuarantine()) {

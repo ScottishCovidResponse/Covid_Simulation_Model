@@ -12,4 +12,7 @@ public class HouseholdProperties {
     public Integer householdIsolationPeriod = null;
     public Probability pWillIsolate = null;
     public Probability pLockCompliance = null;
+    
+    public Integer neighbourOpeningTime = null;
+    public Integer neighbourClosingTime = null;
 }

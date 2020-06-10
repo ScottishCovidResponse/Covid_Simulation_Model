@@ -161,6 +161,8 @@
             "pAttendsNursery":0.8
         },
         "householdProperties":{
+            "neighbourOpeningTime":9,
+            "neighbourClosingTime":20,
             "pHouseholdVisitsNeighbourDaily":0.144,
             "pVisitorsLeaveHousehold":0.8,
             "expectedNeighbours":2,
