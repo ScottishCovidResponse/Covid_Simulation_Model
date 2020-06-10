@@ -65,6 +65,7 @@ public class Model {
     private String outputDirectory = null;
     private Lockdown lockDown = null;
     private Lockdown schoolLockDown = null;
+    private String networkOutputDir = null;
 
     public Model() {}
 
@@ -120,6 +121,11 @@ public class Model {
 
     public Model setOutputDirectory(String fname) {
         this.outputDirectory = fname;
+        return this;
+    }
+
+    public Model setNetworkOutputDir(String path) {
+        this.networkOutputDir = path;
         return this;
     }
 
@@ -198,6 +204,14 @@ public class Model {
                 break;
             }
 
+            if (networkOutputDir != null) {
+                try {
+                    NetworkGenerator.startNetworkGeneration(p.getAllPeople(), networkOutputDir);
+                } catch (IOException e) {
+                    LOGGER.error("Error starting network generation", e);
+                    break;
+                }
+            }
 
             p.setExternalInfectionDays(externalInfectionDays);
             p.seedVirus(nInitialInfections);
