@@ -38,6 +38,9 @@ public abstract class Person {
     private final double quarantineVal;
     private Optional<Boolean> testOutcome = Optional.empty();
     protected final RandomDataGenerator rng;
+
+    private boolean needsHospitalised = false;
+    private boolean isHospitalised = false;
     
     public abstract void reportInfection(DailyStats s);
     public abstract void reportDeath (DailyStats s);
@@ -57,8 +60,9 @@ public abstract class Person {
         return recovered;
     }
 
-    public void setRecovered(boolean recovered) {
-        this.recovered = recovered;
+    public void recover() {
+        isHospitalised = false;
+        recovered = true;
     }
 
     public CommunalPlace getPrimaryCommunalPlace() {
@@ -80,6 +84,24 @@ public abstract class Person {
     public void returnHome() {
         home.addPersonNext(this);
     }
+    
+    public void hospitalise() {
+        needsHospitalised = true;
+    }
+
+    public void hospitalised() {
+        needsHospitalised = false;
+        isHospitalised = true;
+    }
+
+    public boolean isHospitalised() {
+        return isHospitalised;
+    }
+
+    public boolean needsHospitalised() {
+        return needsHospitalised;
+    }
+
 
     public boolean getQuarantine() {
         return this.quarantine;
@@ -161,7 +183,7 @@ public abstract class Person {
                 || cStatus() == CStatus.PHASE1
                 || cStatus() == CStatus.PHASE2;
     }
-    
+
     public double getTransAdjustment() {
     	return this.cVirus.getTransAdjustment();
     }

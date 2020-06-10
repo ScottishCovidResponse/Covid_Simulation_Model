@@ -168,6 +168,10 @@ public class Covid {
             }
             if (rVal >= mortalityRate / 24) {
                 status = CStatus.PHASE2;
+                // Some Phase 2 cases go to hospital
+                if (CovidParameters.get().hospitalisationParameters.pPhase2GoesToHosptial.sample()) {
+                    ccase.hospitalise();
+                }
             }
         } else if ((latentPeriod + p1 + p2) <= infCounter) {
             recovered = true;

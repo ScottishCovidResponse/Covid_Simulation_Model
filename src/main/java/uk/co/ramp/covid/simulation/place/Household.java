@@ -146,10 +146,24 @@ public abstract class Household extends Place {
             s.incInfectionsHomeVisitor();
         }
     }
-
+    
+    public void goToHospital() {
+        List<Person> left = new ArrayList<>();
+        for (Person p : people) {
+            if (p.needsHospitalised()) {
+                Hospital h = places.getRandomHospital();
+                h.addPersonNext(p);
+                p.hospitalised();
+                left.add(p);
+            }
+        }
+        people.removeAll(left);
+    }
 
     @Override
     public void doMovement(Time t, boolean lockdown) {
+        goToHospital();
+
         if (!isIsolating()) {
             // Ordering here implies work takes highest priority, then shopping trips have higher priority
             // than neighbour and restaurant trips
@@ -362,6 +376,11 @@ public abstract class Household extends Place {
         } else {
             throw new InvalidHouseholdAllocationException("Cannot add pensioner to household");
         }
+    }
+
+    @Override
+    public void reportDeath(DailyStats s) {
+        s.incHomeDeaths();
     }
 
 }

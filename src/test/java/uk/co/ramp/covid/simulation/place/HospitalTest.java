@@ -5,6 +5,7 @@ import org.junit.Test;
 import com.google.gson.JsonParseException;
 
 import uk.co.ramp.covid.simulation.DailyStats;
+import uk.co.ramp.covid.simulation.Model;
 import uk.co.ramp.covid.simulation.Time;
 import uk.co.ramp.covid.simulation.parameters.PopulationParameters;
 import uk.co.ramp.covid.simulation.population.*;
@@ -51,6 +52,32 @@ public class HospitalTest extends SimulationTest {
                 t.advance();
             }
         }
+    }
+
+    @Test
+    public void somePeopleDieInHospital() {
+        int population = 10000;
+        int nInfections = 300;
+        int nIter = 1;
+        int nDays = 60;
+        int RNGSeed = 42;
+
+        Model m = new Model()
+                .setPopulationSize(population)
+                .setnInitialInfections(nInfections)
+                .setExternalInfectionDays(0)
+                .setIters(nIter)
+                .setnDays(nDays)
+                .setRNGSeed(RNGSeed)
+                .setNoOutput();
+
+        List<List<DailyStats>> stats = m.run(0);
+
+        int totalHospitalDeaths = 0;
+        for (DailyStats s : stats.get(0)) {
+            totalHospitalDeaths += s.getHospitalDeaths();
+        }
+        assertTrue("Some people should die in hospital", totalHospitalDeaths > 0);
     }
 
 }

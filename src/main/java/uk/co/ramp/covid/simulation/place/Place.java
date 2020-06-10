@@ -2,6 +2,8 @@ package uk.co.ramp.covid.simulation.place;
 
 import uk.co.ramp.covid.simulation.DailyStats;
 import uk.co.ramp.covid.simulation.Time;
+import uk.co.ramp.covid.simulation.parameters.CovidParameters;
+import uk.co.ramp.covid.simulation.parameters.DiseaseParameters;
 import uk.co.ramp.covid.simulation.population.CStatus;
 import uk.co.ramp.covid.simulation.population.Person;
 import uk.co.ramp.covid.simulation.parameters.PopulationParameters;
@@ -23,6 +25,10 @@ public abstract class Place {
 
     abstract public void reportInfection(Time t, Person p, DailyStats s);
 
+    protected  void reportDeath(DailyStats s) {
+
+    }
+
     public Place() {
         this.people = new ArrayList<>();
         this.nextPeople = new ArrayList<>();
@@ -42,7 +48,14 @@ public abstract class Place {
     private void registerInfection(Time t, Person p, DailyStats s) {
         reportInfection(t, p, s);
         p.reportInfection(s);
-    } 
+    }
+
+
+    private void registerDeath(Person p, DailyStats stats) {
+        reportDeath(stats);
+        p.reportDeath(stats);
+    }
+
     protected double getTransConstant() {
     	if(people.size() == 0) {
     	   return 0.0;
@@ -65,7 +78,12 @@ public abstract class Place {
                     for (Person nPers : people) {
                         if (cPers != nPers) {
                             if (!nPers.getInfectionStatus()) {
-                                boolean infected = nPers.infChallenge(this.getTransConstant() * this.sDistance * cPers.getTransAdjustment());
+                                // Temporary test
+                                double transP = this.getTransConstant() * this.sDistance * cPers.getTransAdjustment();
+                                if (cPers.isHospitalised()) {
+                                    transP *= CovidParameters.get().hospitalisationParameters.hospitalisationTransmissionReduction;
+                                }
+                                boolean infected = nPers.infChallenge(transP);
                                 if (infected) {
                                     registerInfection(t, nPers, stats);
                                     nPers.getcVirus().getInfectionLog().registerInfected(t);
@@ -76,17 +94,18 @@ public abstract class Place {
                     }
                 }
                 if (cPers.cStatus() == CStatus.DEAD) {
-                    cPers.reportDeath(stats);
+                    registerDeath(cPers, stats);
                     deaths.add(cPers);
                 }
                 if (cPers.cStatus() == CStatus.RECOVERED) {
-                    cPers.setRecovered(true);
+                    cPers.recover();
                 }
             }
         }
         people.removeAll(deaths);
     }
-    
+
+
     /** Do a timestep by switching to the new set of people */
     public void stepPeople() {
         // Anyone who didn't move should remain.

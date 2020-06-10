@@ -7,6 +7,8 @@ import uk.co.ramp.covid.simulation.parameters.PopulationParameters;
 import uk.co.ramp.covid.simulation.population.Shifts;
 import uk.co.ramp.covid.simulation.util.RoundRobinAllocator;
 
+import java.util.ArrayList;
+
 public class Hospital extends CommunalPlace {
     
     private RoundRobinAllocator<Shifts> shifts;
@@ -46,5 +48,31 @@ public class Hospital extends CommunalPlace {
         } else {
             s.incInfectionsHospitalVisitor();
         }
+    }
+
+    public void sendHome(Time t) {
+        ArrayList<Person> left = new ArrayList<>();
+        for (Person nPers : people) {
+            if (nPers.worksNextHour(this, t, false)) {
+                continue;
+            }
+
+            // Let recovered patients go home
+            if (!nPers.isHospitalised()) {
+                nPers.returnHome();
+            }
+        }
+        people.removeAll(left);
+    }
+
+    @Override
+    public void doMovement(Time t, boolean lockdown) {
+        moveShifts(t, lockdown);
+        sendHome(t);
+    }
+
+    @Override
+    public void reportDeath(DailyStats s) {
+        s.incHospitalDeaths();
     }
 }

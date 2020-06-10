@@ -153,11 +153,9 @@ public class MovementTest extends SimulationTest {
         assertTrue("No-one visits restaurants", eating.size() > 0);
     }
 
-    // This should be fixed as part of
-    //   https://github.com/ScottishCovidResponse/SCRCIssueTracking/issues/314
-    @Ignore("Failing test - no-one visits hospitals")
     @Test
     public void someNonWorkersGoToHospital() {
+        p.seedVirus(200);
         Set<Person> visiting = new HashSet<>();
         Time t = new Time(24);
         DailyStats s = new DailyStats(t);
