@@ -1,10 +1,7 @@
-package uk.co.ramp.covid.simulation.io;
+package uk.co.ramp.covid.simulation.parameters;
 
 import org.junit.After;
 import org.junit.Test;
-import uk.co.ramp.covid.simulation.parameters.CovidParameters;
-import uk.co.ramp.covid.simulation.parameters.ParameterReader;
-import uk.co.ramp.covid.simulation.parameters.PopulationParameters;
 import uk.co.ramp.covid.simulation.util.Probability;
 
 import java.io.IOException;
@@ -30,7 +27,7 @@ public class ParameterReaderTest {
         assertEquals(1.0, CovidParameters.get().diseaseParameters.pensionerProgressionPhase2, EPSILON);
 
         // Test Parameters
-        assertEqualsP(0.9, CovidParameters.get().testParameters.pDiagnosticTestDetectsSuccessfully, EPSILON);
+        assertEqualsP(0.9, CovidParameters.get().testParameters.pDiagnosticTestDetectsSuccessfully);
 
         // Population Parameters
         assertEquals(42, PopulationParameters.get().populationDistribution.size());
@@ -45,12 +42,12 @@ public class ParameterReaderTest {
         assertEquals(3000, (int) PopulationParameters.get().buildingDistribution.populationToNurseriesRatio);
         assertEquals(800, (int) PopulationParameters.get().buildingDistribution.populationToRestaurantsRatio);
 
-        assertEqualsP(0.1, PopulationParameters.get().workerDistribution.pOffice, EPSILON);
-        assertEqualsP(0.2, PopulationParameters.get().workerDistribution.pShop, EPSILON);
-        assertEqualsP(0.2, PopulationParameters.get().workerDistribution.pHospital, EPSILON);
-        assertEqualsP(0.1, PopulationParameters.get().workerDistribution.pConstruction, EPSILON);
-        assertEqualsP(0.2, PopulationParameters.get().workerDistribution.pRestaurant, EPSILON);
-        assertEqualsP(0.1, PopulationParameters.get().workerDistribution.pUnemployed, EPSILON);
+        assertEqualsP(0.1, PopulationParameters.get().workerDistribution.pOffice);
+        assertEqualsP(0.2, PopulationParameters.get().workerDistribution.pShop);
+        assertEqualsP(0.2, PopulationParameters.get().workerDistribution.pHospital);
+        assertEqualsP(0.1, PopulationParameters.get().workerDistribution.pConstruction);
+        assertEqualsP(0.2, PopulationParameters.get().workerDistribution.pRestaurant);
+        assertEqualsP(0.1, PopulationParameters.get().workerDistribution.pUnemployed);
 
         assertEquals(0.8, PopulationParameters.get().buildingProperties.baseTransmissionConstant, EPSILON);
         assertEquals(0.2, PopulationParameters.get().buildingProperties.hospitalTransmissionConstant, EPSILON);
@@ -61,33 +58,33 @@ public class ParameterReaderTest {
         assertEquals(0.05, PopulationParameters.get().buildingProperties.schoolTransmissionConstant, EPSILON);
         assertEquals(0.2, PopulationParameters.get().buildingProperties.shopTransmissionConstant, EPSILON);
 
-        assertEqualsP(0.1, PopulationParameters.get().buildingProperties.pHospitalKey, EPSILON);
-        assertEqualsP(0.6, PopulationParameters.get().buildingProperties.pConstructionSiteKey, EPSILON);
-        assertEqualsP(0.2, PopulationParameters.get().buildingProperties.pShopKey, EPSILON);
-        assertEqualsP(0.9, PopulationParameters.get().buildingProperties.pOfficeKey, EPSILON);
+        assertEqualsP(0.1, PopulationParameters.get().buildingProperties.pHospitalKey);
+        assertEqualsP(0.6, PopulationParameters.get().buildingProperties.pConstructionSiteKey);
+        assertEqualsP(0.2, PopulationParameters.get().buildingProperties.pShopKey);
+        assertEqualsP(0.9, PopulationParameters.get().buildingProperties.pOfficeKey);
 
-        assertEqualsP(0.8, PopulationParameters.get().infantProperties.pAttendsNursery, EPSILON);
+        assertEqualsP(0.8, PopulationParameters.get().infantProperties.pAttendsNursery);
 
-        assertEqualsP(0.05, PopulationParameters.get().householdProperties.pHouseholdVisitsNeighbour, EPSILON);
+        assertEqualsP(0.05, PopulationParameters.get().householdProperties.pHouseholdVisitsNeighbour);
         assertEquals(2, (int) PopulationParameters.get().householdProperties.expectedNeighbours);
 
-        assertEqualsP(0.9, PopulationParameters.get().personProperties.pTransmission, EPSILON);
-        assertEqualsP(0.7, PopulationParameters.get().personProperties.pQuarantinesIfSymptomatic, EPSILON);
+        assertEqualsP(0.9, PopulationParameters.get().personProperties.pTransmission);
+        assertEqualsP(0.7, PopulationParameters.get().personProperties.pQuarantinesIfSymptomatic);
 
-        assertEqualsP(0.8, PopulationParameters.get().householdProperties.pVisitorsLeaveHousehold, EPSILON);
+        assertEqualsP(0.8, PopulationParameters.get().householdProperties.pVisitorsLeaveHousehold);
 
-        assertEqualsP(0.25, PopulationParameters.get().buildingDistribution.officeSizeDistribution.pSmall, EPSILON);
-        assertEqualsP(0.4, PopulationParameters.get().buildingDistribution.officeSizeDistribution.pMed, EPSILON);
-        assertEqualsP(0.35, PopulationParameters.get().buildingDistribution.officeSizeDistribution.pLarge, EPSILON);
+        assertEqualsP(0.25, PopulationParameters.get().buildingDistribution.officeSizeDistribution.pSmall);
+        assertEqualsP(0.4, PopulationParameters.get().buildingDistribution.officeSizeDistribution.pMed);
+        assertEqualsP(0.35, PopulationParameters.get().buildingDistribution.officeSizeDistribution.pLarge);
 
-        assertEqualsP(0.4, PopulationParameters.get().buildingProperties.pLeaveRestaurant, EPSILON);
-        assertEqualsP(0.5, PopulationParameters.get().buildingProperties.pLeaveShop, EPSILON);
-        assertEqualsP(0.01786, PopulationParameters.get().householdProperties.pGoShopping, EPSILON);
-        assertEqualsP(0.01190, PopulationParameters.get().householdProperties.pGoRestaurant, EPSILON);
+        assertEqualsP(0.4, PopulationParameters.get().buildingProperties.pLeaveRestaurant);
+        assertEqualsP(0.5, PopulationParameters.get().buildingProperties.pLeaveShop);
+        assertEqualsP(0.01786, PopulationParameters.get().householdProperties.pGoShopping);
+        assertEqualsP(0.01190, PopulationParameters.get().householdProperties.pGoRestaurant);
     }
 
-    private void assertEqualsP(double v, Probability p, double epsilon) {
-        assertEquals(v, p.asDouble(), epsilon);
+    private void assertEqualsP(double v, Probability p) {
+        assertEquals(v, p.asDouble(), EPSILON);
     }
 
     @After
