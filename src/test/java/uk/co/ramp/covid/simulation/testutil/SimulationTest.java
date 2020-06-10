@@ -7,7 +7,7 @@ import org.junit.Before;
 import com.google.gson.JsonParseException;
 
 import uk.co.ramp.covid.simulation.util.RNG;
-import uk.co.ramp.covid.simulation.parameters.ParameterReader;
+import uk.co.ramp.covid.simulation.parameters.ParameterIO;
 
 /**
  * SimulationTest is a base class for setting up tests
@@ -15,7 +15,7 @@ import uk.co.ramp.covid.simulation.parameters.ParameterReader;
 public class SimulationTest {
     @Before
     public void readDefaultParams() throws JsonParseException, IOException {
-        ParameterReader.readParametersFromFile("src/test/resources/default_params.json");
+        ParameterIO.readParametersFromFile("src/test/resources/default_params.json");
     }
 
     @Before

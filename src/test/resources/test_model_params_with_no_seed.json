@@ -4,5 +4,5 @@
     "externalInfectionDays":0,
     "nDays":10,
     "nIters":1,
-    "outputFile":"./example.csv"
+    "outputDirectory":"."
 }
