@@ -90,7 +90,12 @@ public abstract class Household extends Place {
     public int sendNeighboursHome(Time t) {
         ArrayList<Person> left = new ArrayList<>();
 
-        for (Person p : getVisitors()) {
+        for (Person p : people) {
+
+            if (!isVisitor(p)) {
+                continue;
+            }
+
             // People may have already left if their family has
             if (left.contains(p)) {
                 continue;
@@ -222,6 +227,10 @@ public abstract class Household extends Place {
 	                        left.add(p);
 	                    }
 	                }
+
+	                // One neighbour visit max per day
+	                visitsNeighbourToday = false;
+
 	                break;
 	            }
 	        }
