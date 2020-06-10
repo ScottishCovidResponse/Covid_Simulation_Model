@@ -19,5 +19,8 @@ public class ExampleParametersTest {
 
         Model m  = Model.readModelFromFile("parameters/example_model_params.json");
         assertTrue(m.isValid());
+
+        m  = Model.readModelFromFile("parameters/example_model_params_lockdown.json");
+        assertTrue(m.isValid());
     }
 }
