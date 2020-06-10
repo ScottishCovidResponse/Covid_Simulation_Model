@@ -1,7 +1,5 @@
 package uk.co.ramp.covid.simulation.util;
 
-import org.apache.commons.math3.random.RandomDataGenerator;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;

@@ -5,9 +5,6 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 import uk.co.ramp.covid.simulation.Model;
-import uk.co.ramp.covid.simulation.parameters.CovidParameters;
-import uk.co.ramp.covid.simulation.parameters.ParameterIO;
-import uk.co.ramp.covid.simulation.parameters.PopulationParameters;
 
 public class ExampleParametersTest {
 
