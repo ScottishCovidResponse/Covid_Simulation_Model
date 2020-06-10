@@ -302,6 +302,8 @@ public class Population {
             DailyStats dStats = new DailyStats(t);
             implementLockdown(t);
 
+            // ExternalSeeding runs from 0-externalInfectionDays inclusive.
+            // As infections on day 0 are 0 this gives a full externalInfectionsDays worth of infections.
             if (t.getAbsDay() <= externalInfectionDays) {
                 seedInfections(t, dStats);
             }
