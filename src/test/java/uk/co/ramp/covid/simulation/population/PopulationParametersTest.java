@@ -2,7 +2,7 @@ package uk.co.ramp.covid.simulation.population;
 
 import org.junit.After;
 import org.junit.Test;
-import uk.co.ramp.covid.simulation.parameters.ParameterReader;
+import uk.co.ramp.covid.simulation.parameters.ParameterIO;
 import uk.co.ramp.covid.simulation.parameters.PopulationParameters;
 import uk.co.ramp.covid.simulation.util.InvalidParametersException;
 
@@ -16,14 +16,14 @@ public class PopulationParametersTest {
     @Test
     public void testIsValid() throws IOException {
         //Test that valid parameters are handled correctly
-        ParameterReader.readParametersFromFile("src/test/resources/default_params.json");
+        ParameterIO.readParametersFromFile("src/test/resources/default_params.json");
         assertTrue(PopulationParameters.get().isValid());
     }
 
     @Test
     public void testIsInValid() throws IOException {
         //Test that invalid parameters are handled correctly
-        ParameterReader.readParametersFromFile("src/test/resources/test_invalid_params.json");
+        ParameterIO.readParametersFromFile("src/test/resources/test_invalid_params.json");
         assertFalse(PopulationParameters.get().isValid());
     }
 

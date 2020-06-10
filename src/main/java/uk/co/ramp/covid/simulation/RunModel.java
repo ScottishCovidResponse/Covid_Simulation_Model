@@ -10,7 +10,7 @@ import com.google.gson.JsonParseException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import uk.co.ramp.covid.simulation.parameters.CovidParameters;
-import uk.co.ramp.covid.simulation.parameters.ParameterReader;
+import uk.co.ramp.covid.simulation.parameters.ParameterIO;
 import uk.co.ramp.covid.simulation.parameters.PopulationParameters;
 
 import java.io.IOException;
@@ -53,7 +53,7 @@ public class RunModel {
 
     public static void readParameters(String fpath) {
         try {
-            ParameterReader.readParametersFromFile(fpath);
+            ParameterIO.readParametersFromFile(fpath);
         } catch (IOException e) {
             System.err.println("Chould not read from parameters file: " + fpath);
             System.err.println(e);

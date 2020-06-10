@@ -7,7 +7,7 @@ import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import uk.co.ramp.covid.simulation.parameters.ParameterWriter;
+import uk.co.ramp.covid.simulation.parameters.ParameterIO;
 import uk.co.ramp.covid.simulation.population.ImpossibleAllocationException;
 import uk.co.ramp.covid.simulation.population.ImpossibleWorkerDistributionException;
 import uk.co.ramp.covid.simulation.population.Population;
@@ -219,36 +219,40 @@ public class Model {
         }
 
         if (!outputDisabled) {
-            if (outputDirectory != null) {
-                writeOutput(simulationID, stats);
-            }
+            writeOutput(simulationID, stats);
         }
 
         return stats;
     }
     
     private void writeOutput(int iterId, List<List<DailyStats>> s) {
-        DateTimeFormatter tsFormatter = DateTimeFormatter.ofPattern("yyyyMMdd_hhmmss");
-        String timeStamp = tsFormatter.format(LocalDateTime.now());
+        Path outP;
 
-        Path outP = FileSystems.getDefault().getPath(outputDirectory, timeStamp);
-        File outF = outP.toFile();
-
-        if (outF.mkdirs()) {
-            outputCSV(outP.resolve("out.csv"), iterId, s);
-            ParameterWriter.writeParameersToFile(outP.resolve("population_params.json"));
-            outputModelParams(outP.resolve("model_params.json"));
+        if (outputDirectory.equals("")) {
+            outP = FileSystems.getDefault().getPath(".");
         } else {
-            LOGGER.error("Could not create output directory: " + outP);
+            DateTimeFormatter tsFormatter = DateTimeFormatter.ofPattern("yyyyMMdd_hhmmss");
+            String timeStamp = tsFormatter.format(LocalDateTime.now());
+            outP = FileSystems.getDefault().getPath(outputDirectory, timeStamp);
+            if (!outP.toFile().mkdirs()) {
+                LOGGER.error("Could not create output directory: " + outP);
+                return;
+            }
         }
+        
+        // By here the output directory will be available
+        outputCSV(outP.resolve("out.csv"), iterId, s);
+        ParameterIO.writeParametersToFile(outP.resolve("population_params.json"));
+        outputModelParams(outP.resolve("model_params.json"));
+       
     }
 
     private void outputModelParams(Path outF) {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         try (Writer writer = new FileWriter(outF.toFile())) {
             gson.toJson(this, writer);
-        } catch (IOException ioException) {
-            ioException.printStackTrace();
+        } catch (IOException e) {
+            LOGGER.error(e);
         }
     }
 

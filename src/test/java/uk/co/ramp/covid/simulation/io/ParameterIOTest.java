@@ -3,7 +3,7 @@ package uk.co.ramp.covid.simulation.io;
 import org.junit.After;
 import org.junit.Test;
 import uk.co.ramp.covid.simulation.parameters.CovidParameters;
-import uk.co.ramp.covid.simulation.parameters.ParameterReader;
+import uk.co.ramp.covid.simulation.parameters.ParameterIO;
 import uk.co.ramp.covid.simulation.parameters.PopulationParameters;
 import uk.co.ramp.covid.simulation.util.Probability;
 
@@ -11,7 +11,7 @@ import java.io.IOException;
 
 import static org.junit.Assert.*;
 
-public class ParameterReaderTest {
+public class ParameterIOTest {
 
     private final static double EPSILON = 0.000001;
 
@@ -19,7 +19,7 @@ public class ParameterReaderTest {
     public void readParametersFromFile() throws IOException {
         // Note the parameters in the test file are sufficiently different from the defaults to allow testing
         // and do not necessarily represent real world parameters
-        ParameterReader.readParametersFromFile("src/test/resources/test_params.json");
+        ParameterIO.readParametersFromFile("src/test/resources/test_params.json");
 
         // Disease Parameters (Tests CovidParameters as a side effect)
         assertEquals(123.12, CovidParameters.get().diseaseParameters.meanLatentPeriod, EPSILON);

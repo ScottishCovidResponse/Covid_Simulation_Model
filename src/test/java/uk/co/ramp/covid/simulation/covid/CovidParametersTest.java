@@ -2,7 +2,7 @@ package uk.co.ramp.covid.simulation.covid;
 
 import org.junit.Test;
 import uk.co.ramp.covid.simulation.parameters.CovidParameters;
-import uk.co.ramp.covid.simulation.parameters.ParameterReader;
+import uk.co.ramp.covid.simulation.parameters.ParameterIO;
 
 import java.io.IOException;
 
@@ -13,7 +13,7 @@ public class CovidParametersTest {
 
     @Test
     public void testIsValid() throws IOException {
-        ParameterReader.readParametersFromFile("src/test/resources/test_params.json");
+        ParameterIO.readParametersFromFile("src/test/resources/test_params.json");
 
         //Test that valid parameters are handled correctly
         assertTrue(CovidParameters.get().isValid());
