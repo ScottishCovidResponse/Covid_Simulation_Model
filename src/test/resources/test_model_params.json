@@ -5,5 +5,5 @@
     "nDays":10,
     "nIters":1,
     "rngSeed":42,
-    "outputFile":"./example.csv"
+    "outputDirectory":"./example.csv"
 }

@@ -7,8 +7,7 @@ import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import uk.co.ramp.covid.simulation.parameters.CovidParameters;
-import uk.co.ramp.covid.simulation.parameters.PopulationParameters;
+import uk.co.ramp.covid.simulation.parameters.ParameterWriter;
 import uk.co.ramp.covid.simulation.population.ImpossibleAllocationException;
 import uk.co.ramp.covid.simulation.population.ImpossibleWorkerDistributionException;
 import uk.co.ramp.covid.simulation.population.Population;
@@ -18,10 +17,6 @@ import uk.co.ramp.covid.simulation.util.RNG;
 import java.io.*;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
-import java.text.DateFormat;
-import java.text.FieldPosition;
-import java.text.ParsePosition;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -241,20 +236,10 @@ public class Model {
 
         if (outF.mkdirs()) {
             outputCSV(outP.resolve("out.csv"), iterId, s);
-            outputPopulationParams(outP.resolve("population_params.json"));
+            ParameterWriter.writeParameersToFile(outP.resolve("population_params.json"));
             outputModelParams(outP.resolve("model_params.json"));
-            outputCovidParams(outP.resolve("covid_params.json"));
         } else {
             LOGGER.error("Could not create output directory: " + outP);
-        }
-    }
-
-    private void outputPopulationParams(Path outF) {
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        try (Writer writer = new FileWriter(outF.toFile())) {
-            gson.toJson(PopulationParameters.get(), writer);
-        } catch (IOException ioException) {
-            ioException.printStackTrace();
         }
     }
 
@@ -267,14 +252,6 @@ public class Model {
         }
     }
 
-    private void outputCovidParams(Path outF) {
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        try (Writer writer = new FileWriter(outF.toFile())) {
-            gson.toJson(CovidParameters.get(), writer);
-        } catch (IOException ioException) {
-            ioException.printStackTrace();
-        }
-    }
 
     public void outputCSV(Path outF, int startIterID, List<List<DailyStats>> stats) {
     final String[] headers = {"iter", "day", "H", "L", "A", "P1", "P2", "D", "R", "ISeed",
