@@ -175,6 +175,10 @@ public class DailyStats {
 
     public int getInfantDeaths() { return infantDeaths; }
 
+    public int getTotalDeaths() {
+        return adultDeaths + pensionerDeaths + childDeaths + infantDeaths;
+    }
+
     @Override
     public int hashCode() {
         return Objects.hash(day, healthy, exposed, asymptomatic, phase1, phase2, dead, recovered,
