@@ -68,7 +68,7 @@ public class ParameterReaderTest {
 
         assertEqualsP(0.8, PopulationParameters.get().infantProperties.pAttendsNursery, EPSILON);
 
-        assertEqualsP(0.05, PopulationParameters.get().householdProperties.pHouseholdVisitsNeighbour, EPSILON);
+        assertEqualsP(0.144, PopulationParameters.get().householdProperties.pHouseholdVisitsNeighbourDaily, EPSILON);
         assertEquals(2, (int) PopulationParameters.get().householdProperties.expectedNeighbours);
 
         assertEqualsP(0.9, PopulationParameters.get().personProperties.pTransmission, EPSILON);

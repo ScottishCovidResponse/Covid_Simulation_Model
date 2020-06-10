@@ -293,6 +293,9 @@ public class Population {
         List<DailyStats> stats = new ArrayList<>(nDays);
         Time t = new Time();
         boolean rprinted = false;
+
+        households.forEach(h -> h.determineDailyNeighbourVisit());
+
         for (int i = 0; i < nDays; i++) {
             DailyStats dStats = new DailyStats(t);
             implementLockdown(t);
