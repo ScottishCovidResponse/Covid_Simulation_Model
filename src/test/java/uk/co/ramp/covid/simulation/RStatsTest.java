@@ -11,10 +11,10 @@ import static org.junit.Assert.*;
 public class RStatsTest extends SimulationTest {
 
     private Population pop;
-    private final int populationSize = 10000;
 
     @Before
     public void setupParams() {
+        int populationSize = 10000;
         pop = PopulationGenerator.genValidPopulation(populationSize);
     }
 
@@ -33,19 +33,12 @@ public class RStatsTest extends SimulationTest {
     @Test
     public void meanRPositiveWhenInfectionsOccur() {
         pop.seedVirus(20);
-        pop.simulate(30);
+        pop.simulate(20);
         RStats rs = new RStats(pop);
 
-        assertTrue(rs.getMeanRBefore(30) > 0);
+        assertTrue("Mean R unexpectedly = 0", rs.getMeanRBefore(20) > 0);
+        assertTrue("Secondary Infections unexpectedly = 0", rs.getSecInfections(0) > 0);
+        assertTrue("Mean generation time unexpectedly = 0", rs.getMeanGenerationTime(0) > 0);
     }
 
-    @Test
-    public void testSecInfections() {
-        pop.seedVirus(20);
-        pop.simulate(10);
-        RStats rs = new RStats(pop);
-
-        assertTrue(rs.getSecInfections(0) > 0);
-        assertTrue(rs.getMeanGenerationTime(0) > 0);
-    }
 }

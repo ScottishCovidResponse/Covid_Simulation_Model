@@ -1,4 +1,4 @@
-package uk.co.ramp.covid.simulation.integrationTests;
+package uk.co.ramp.covid.simulation.parameters;
 
 import static org.junit.Assert.assertTrue;
 
