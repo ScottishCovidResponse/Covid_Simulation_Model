@@ -12,6 +12,7 @@ import org.apache.logging.log4j.Logger;
 import uk.co.ramp.covid.simulation.DailyStats;
 import uk.co.ramp.covid.simulation.RStats;
 import uk.co.ramp.covid.simulation.Time;
+import uk.co.ramp.covid.simulation.parameters.CovidParameters;
 import uk.co.ramp.covid.simulation.parameters.PopulationDistribution;
 import uk.co.ramp.covid.simulation.parameters.PopulationParameters;
 import uk.co.ramp.covid.simulation.place.*;
@@ -40,6 +41,7 @@ public class Population {
     private double socialDist;
     private boolean schoolL;
     private final RandomDataGenerator rng;
+    private Integer externalInfectionDays = 0;
 
     public Population(int populationSize) throws ImpossibleAllocationException, ImpossibleWorkerDistributionException {
         this.rng = RNG.get();
@@ -299,6 +301,11 @@ public class Population {
         for (int i = 0; i < nDays; i++) {
             DailyStats dStats = new DailyStats(t);
             implementLockdown(t);
+
+            if (t.getAbsDay() <= externalInfectionDays) {
+                seedInfections(t, dStats);
+            }
+            
             LOGGER.info("Day = {}, Lockdown = {}", t.getAbsDay(), lockdown);
             for (int k = 0; k < 24; k++) {
                 timeStep(t, dStats);
@@ -313,6 +320,12 @@ public class Population {
 
         }
         return stats;
+    }
+
+    private void seedInfections(Time t, DailyStats s) {
+        for (Person p : getAllPeople()) {
+            p.seedInfectionChallenge(t, s);
+        }
     }
 
     /** Log the R value for the first 5% of recoveries or lockdown */
@@ -427,5 +440,9 @@ public class Population {
 
     public Places getPlaces() {
         return places;
+    }
+
+    public void setExternalInfectionDays(Integer days) {
+        externalInfectionDays = days;
     }
 }
