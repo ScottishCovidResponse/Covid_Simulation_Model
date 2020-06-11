@@ -90,7 +90,7 @@
                 "pMed":1.0,
                 "pLarge":0
             },
-            "populationToSchoolsRatio":2000,
+            "populationToSchoolsRatio":2500,
             "schoolSizeDistribution":{
                 "pSmall":0,
                 "pMed":1.0,
@@ -114,7 +114,7 @@
                 "pMed":0.2,
                 "pLarge":0.1
             },
-            "populationToNurseriesRatio":2000,
+            "populationToNurseriesRatio":2500,
             "nurserySizeDistribution":{
                 "pSmall":0,
                 "pMed":1,
@@ -131,10 +131,10 @@
             "pOffice":0.3,
             "pShop":0.2,
             "pHospital":0.08,
-            "pConstruction":0.1,
-            "pTeacher":0.12,
-            "pRestaurant":0.1,
-            "pNursery":0.05,
+            "pConstruction":0.14,
+            "pTeacher":0.08,
+            "pRestaurant":0.12,
+            "pNursery":0.03,
             "pUnemployed":0.05,
             "sizeAllocation":{
                 "pSmall": 0.2,

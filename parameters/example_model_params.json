@@ -4,6 +4,6 @@
     "externalInfectionDays":55,
     "nDays":365,
     "nIters":1,
-    "rngSeed":2,
+    "rngSeed":42,
     "outputDirectory": "."
 }
