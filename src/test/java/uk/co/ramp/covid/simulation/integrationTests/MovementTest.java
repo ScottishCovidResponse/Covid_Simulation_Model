@@ -238,6 +238,9 @@ public class MovementTest extends SimulationTest {
     private void doesNotGoOut(Household iso, List<Person> isolating) {
         for (CommunalPlace place : p.getPlaces().getAllPlaces()) {
             for (Person per : isolating) {
+                if (per.isHospitalised()) {
+                    continue;
+                }
                 assertFalse(place.getPeople().contains(per));
             }
         }
@@ -423,8 +426,10 @@ public class MovementTest extends SimulationTest {
 
     @Test
     public void positiveTestsStayInQuarantine() {
-        Time t = new Time(24);
+        Time t = new Time(0);
         PopulationParameters.get().personProperties.pQuarantinesIfSymptomatic = new Probability(1.0);
+        p = PopulationGenerator.genValidPopulation(populationSize);
+        p.seedVirus(nInfections);
 
         Household iso = null;
         for (Household h : p.getHouseholds()) {
