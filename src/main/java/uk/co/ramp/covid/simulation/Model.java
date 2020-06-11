@@ -7,6 +7,8 @@ import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import uk.co.ramp.covid.simulation.output.DailyStats;
+import uk.co.ramp.covid.simulation.output.NetworkGenerator;
 import uk.co.ramp.covid.simulation.parameters.ParameterIO;
 import uk.co.ramp.covid.simulation.population.ImpossibleAllocationException;
 import uk.co.ramp.covid.simulation.population.ImpossibleWorkerDistributionException;
@@ -27,9 +29,9 @@ public class Model {
     private static final Logger LOGGER = LogManager.getLogger(Model.class);
 
     private class Lockdown {
-        public Integer start = null;
-        public Integer end = null;
-        public Double socialDistance = null;
+        public Integer start;
+        public Integer end;
+        public Double socialDistance;
 
         public Lockdown(int start, int end, double socialDistance) {
             this.start = start;

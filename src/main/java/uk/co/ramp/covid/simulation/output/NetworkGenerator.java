@@ -1,4 +1,4 @@
-package uk.co.ramp.covid.simulation;
+package uk.co.ramp.covid.simulation.output;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 
+import uk.co.ramp.covid.simulation.Time;
 import uk.co.ramp.covid.simulation.place.Place;
 import uk.co.ramp.covid.simulation.population.Person;
 

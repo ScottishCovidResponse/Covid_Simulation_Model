@@ -1,7 +1,7 @@
 package uk.co.ramp.covid.simulation.population;
 
 import uk.co.ramp.covid.simulation.parameters.CovidParameters;
-import uk.co.ramp.covid.simulation.DailyStats;
+import uk.co.ramp.covid.simulation.output.DailyStats;
 
 public class Child extends Person {
 

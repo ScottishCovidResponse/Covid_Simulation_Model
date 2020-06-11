@@ -1,20 +1,21 @@
-package uk.co.ramp.covid.simulation;
+package uk.co.ramp.covid.simulation.output;
 
 import org.apache.commons.csv.CSVPrinter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import uk.co.ramp.covid.simulation.Time;
 import uk.co.ramp.covid.simulation.population.*;
 
-/** DailyStatis accumluates statistics, e.g. healthy/dead, for a particular day */
 import java.io.IOException;
 import java.util.Objects;
 
+/** DailyStats accumulates statistics, e.g. healthy/dead, for a particular day */
 public class DailyStats {
     private static final Logger LOGGER = LogManager.getLogger(DailyStats.class);
 
     private int day;
 
-    // Daily cummulative statistics
+    // Daily cumulative statistics
     private int healthy = 0;
     private int exposed = 0;
     private int asymptomatic = 0;
