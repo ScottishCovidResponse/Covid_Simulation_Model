@@ -9,7 +9,7 @@
           "meanAsymptomaticPeriod":192,
           "pSymptomaticCase": 0.692,
           "meanSymptomDelay": -16.08,
-           "meanSymptomDelaySD": 30,
+          "meanSymptomDelaySD": 30,
           "meanInfectiousDuration": 321.6,
           "phase1Betaa": 25.0,
           "phase1Betab": 30.0,
@@ -21,8 +21,8 @@
           "pensionerProgressionPhase2":0.8
       },
       "infectionSeedProperties": {
-          "infectionRateIncreaseAdultPensioner":0.0001,
-          "infectionRateIncreaseInfantChild":0.0002
+        "infectionRateIncreaseAdult":0.000005,
+        "infectionRateIncreaseInfantChildPensioner":0.0000025
       }
     },
     "population":{
@@ -90,7 +90,7 @@
                 "pMed":1.0,
                 "pLarge":0
             },
-            "populationToSchoolsRatio":2000,
+            "populationToSchoolsRatio":2500,
             "schoolSizeDistribution":{
                 "pSmall":0,
                 "pMed":1.0,
@@ -114,7 +114,7 @@
                 "pMed":0.2,
                 "pLarge":0.1
             },
-            "populationToNurseriesRatio":2000,
+            "populationToNurseriesRatio":2500,
             "nurserySizeDistribution":{
                 "pSmall":0,
                 "pMed":1,
@@ -131,10 +131,10 @@
             "pOffice":0.3,
             "pShop":0.2,
             "pHospital":0.08,
-            "pConstruction":0.1,
-            "pTeacher":0.12,
-            "pRestaurant":0.1,
-            "pNursery":0.05,
+            "pConstruction":0.14,
+            "pTeacher":0.08,
+            "pRestaurant":0.12,
+            "pNursery":0.03,
             "pUnemployed":0.05,
             "sizeAllocation":{
                 "pSmall": 0.2,
@@ -143,7 +143,7 @@
             }
         },
         "buildingProperties":{
-           "baseTransmissionConstant":0.5,
+           "baseTransmissionConstant":0.7,
            "hospitalTransmissionConstant":10.0,
            "constructionSiteTransmissionConstant":5.0,
            "nurseryTransmissionConstant":10.0,
@@ -164,17 +164,17 @@
         "householdProperties":{
             "neighbourOpeningTime":9,
             "neighbourClosingTime":20,
-            "pVisitorsLeaveHousehold":0.5,
-            "pHouseholdVisitsNeighbourDaily":0.144,
-            "expectedNeighbours":3,
-            "pGoShopping":0.01786,
-            "pGoRestaurant": 0.01190,
+            "pVisitorsLeaveHousehold":0.333,
+            "householdVisitsNeighbourDaily":0.2,
+            "expectedNeighbours":7,
+            "pGoShopping":0.071,
+            "pGoRestaurant": 0.071,
             "pWillIsolate": 0.5,
             "householdIsolationPeriod": 14,
             "pLockCompliance": 0.8
         },
         "personProperties":{
-            "pTransmission":0.45,
+            "pTransmission":0.7,
             "pQuarantinesIfSymptomatic":0.9
         }
     }

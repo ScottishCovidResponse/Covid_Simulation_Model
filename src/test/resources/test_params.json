@@ -21,8 +21,8 @@
           "pensionerProgressionPhase2":1.0
       },
       "infectionSeedProperties": {
-        "infectionRateIncreaseAdultPensioner":0.0001,
-        "infectionRateIncreaseInfantChild":0.0002
+        "infectionRateIncreaseAdult":0.0001,
+        "infectionRateIncreaseInfantChildPensioner":0.0002
       }
     },
   "population":{
@@ -163,7 +163,7 @@
         "householdProperties":{
             "neighbourOpeningTime":9,
             "neighbourClosingTime":20,
-            "pHouseholdVisitsNeighbourDaily":0.144,
+            "householdVisitsNeighbourDaily":0.144,
             "pVisitorsLeaveHousehold":0.8,
             "expectedNeighbours":2,
             "pGoShopping":0.01786,

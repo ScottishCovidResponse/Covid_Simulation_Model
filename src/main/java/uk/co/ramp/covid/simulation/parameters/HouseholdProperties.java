@@ -4,7 +4,7 @@ import uk.co.ramp.covid.simulation.util.Probability;
 
 public class HouseholdProperties {
     public Probability pVisitorsLeaveHousehold = null;
-    public Probability pHouseholdVisitsNeighbourDaily = null;
+    public Double householdVisitsNeighbourDaily = null;
     public Integer expectedNeighbours = null;
 
     public Probability pGoShopping = null;
