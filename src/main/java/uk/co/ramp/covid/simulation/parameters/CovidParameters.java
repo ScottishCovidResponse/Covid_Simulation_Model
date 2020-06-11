@@ -1,9 +1,6 @@
 package uk.co.ramp.covid.simulation.parameters;
 
-import uk.co.ramp.covid.simulation.covid.Covid;
 import uk.co.ramp.covid.simulation.util.InvalidParametersException;
-
-import java.util.HashMap;
 
 /**
  * CovidParameters is a singleton class for reading and storing the covid disease parameters

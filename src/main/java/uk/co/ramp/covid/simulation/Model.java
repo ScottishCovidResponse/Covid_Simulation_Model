@@ -242,6 +242,7 @@ public class Model {
         
         // By here the output directory will be available
         outputCSV(outP.resolve("out.csv"), iterId, s);
+        extraOutputsForThibaud(outP, s);
         ParameterIO.writeParametersToFile(outP.resolve("population_params.json"));
         outputModelParams(outP.resolve("model_params.json"));
        
@@ -257,7 +258,7 @@ public class Model {
     }
 
 
-    public void outputCSV(Path outF, int startIterID, List<List<DailyStats>> stats) {
+    private void outputCSV(Path outF, int startIterID, List<List<DailyStats>> stats) {
     final String[] headers = {"iter", "day", "H", "L", "A", "P1", "P2", "D", "R", "ISeed",
                               "ICs_W","IHos_W","INur_W","IOff_W","IRes_W","ISch_W","ISho_W","IHome_I",
                               "ICs_V","IHos_V","INur_V","IOff_V","IRes_V","ISch_V","ISho_V","IHome_V",
@@ -272,6 +273,25 @@ public class Model {
                 }
             }
             out.close();
+        } catch (IOException e) {
+            LOGGER.error(e);
+        }
+    }
+
+    private void extraOutputsForThibaud(Path outputDir, List<List<DailyStats>> stats) {
+        try {
+            CSVPrinter dailyInfectionsCSV = new CSVPrinter(new FileWriter(outputDir.resolve("dailyInfections.csv").toFile()), CSVFormat.DEFAULT);
+            CSVPrinter deathsCSV = new CSVPrinter(new FileWriter(outputDir.resolve("deaths.csv").toFile()), CSVFormat.DEFAULT);
+            for (int i = 0; i < nIters; i++) {
+                for (DailyStats s : stats.get(i)) {
+                    dailyInfectionsCSV.print(s.getTotalDailyInfections());
+                    deathsCSV.print(s.getTotalDeaths());
+                }
+                dailyInfectionsCSV.println();
+                deathsCSV.println();
+            }
+            dailyInfectionsCSV.close(true);
+            deathsCSV.close(true);
         } catch (IOException e) {
             LOGGER.error(e);
         }

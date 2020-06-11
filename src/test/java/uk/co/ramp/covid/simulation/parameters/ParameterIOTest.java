@@ -2,9 +2,6 @@ package uk.co.ramp.covid.simulation.parameters;
 
 import org.junit.After;
 import org.junit.Test;
-import uk.co.ramp.covid.simulation.parameters.CovidParameters;
-import uk.co.ramp.covid.simulation.parameters.ParameterIO;
-import uk.co.ramp.covid.simulation.parameters.PopulationParameters;
 import uk.co.ramp.covid.simulation.util.Probability;
 
 import java.io.IOException;
