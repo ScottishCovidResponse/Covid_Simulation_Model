@@ -39,6 +39,9 @@ public abstract class Person {
     private Optional<Boolean> testOutcome = Optional.empty();
     protected final RandomDataGenerator rng;
     
+    private static int nPeople = 0;
+    private final int idForNetworkGenerator;
+
     public abstract void reportInfection(DailyStats s);
     public abstract void reportDeath (DailyStats s);
     public abstract void allocateCommunalPlace(Places p);
@@ -51,6 +54,7 @@ public abstract class Person {
         this.transmissionProb = PopulationParameters.get().personProperties.pTransmission.asDouble();
         this.quarantineProb = PopulationParameters.get().personProperties.pQuarantinesIfSymptomatic;
         this.quarantineVal = rng.nextUniform(0, 1);
+        this.idForNetworkGenerator = nPeople++;
     }
 
     public boolean isRecovered() {
@@ -266,6 +270,10 @@ public abstract class Person {
 
     public Optional<Boolean> getTestOutcome() {
         return testOutcome;
+    }
+
+    public int getID() {
+        return idForNetworkGenerator;
     }
 
     public void seedInfectionChallenge(Time t, DailyStats s) {

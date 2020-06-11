@@ -1,6 +1,7 @@
 package uk.co.ramp.covid.simulation.place;
 
 import uk.co.ramp.covid.simulation.DailyStats;
+import uk.co.ramp.covid.simulation.NetworkGenerator;
 import uk.co.ramp.covid.simulation.Time;
 import uk.co.ramp.covid.simulation.population.CStatus;
 import uk.co.ramp.covid.simulation.population.Person;
@@ -55,8 +56,23 @@ public abstract class Place {
         return transConstant * transAdjustment / people.size();
     }
     
+    private void writeContact(Time t) {
+        for (Person a : people) {
+            for (Person b : people) {
+                if (a != b) {
+                    NetworkGenerator.writeContact(t, a, b, this, this.getTransConstant());
+                }
+            }
+        }
+    }
+
     /** Handles infections between all people in this place */
     public void doInfect(Time t, DailyStats stats) {
+        if (NetworkGenerator.generating()) {
+            writeContact(t);
+            return; // don't do infections
+        }
+
         List<Person> deaths = new ArrayList<>();
         for (Person cPers : people) {
             if (cPers.getInfectionStatus() && !cPers.isRecovered()) {
