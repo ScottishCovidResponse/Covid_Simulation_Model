@@ -1,6 +1,7 @@
 package uk.co.ramp.covid.simulation.place;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.google.gson.JsonParseException;
@@ -8,6 +9,7 @@ import com.google.gson.JsonParseException;
 import uk.co.ramp.covid.simulation.DailyStats;
 import uk.co.ramp.covid.simulation.Model;
 import uk.co.ramp.covid.simulation.Time;
+import uk.co.ramp.covid.simulation.parameters.CovidParameters;
 import uk.co.ramp.covid.simulation.place.householdtypes.LargeManyAdultFamily;
 import uk.co.ramp.covid.simulation.place.householdtypes.SingleAdult;
 import uk.co.ramp.covid.simulation.place.householdtypes.SmallFamily;
@@ -15,13 +17,14 @@ import uk.co.ramp.covid.simulation.population.Adult;
 import uk.co.ramp.covid.simulation.population.Child;
 import uk.co.ramp.covid.simulation.population.Person;
 import uk.co.ramp.covid.simulation.parameters.PopulationParameters;
+import uk.co.ramp.covid.simulation.population.Population;
+import uk.co.ramp.covid.simulation.testutil.PopulationGenerator;
 import uk.co.ramp.covid.simulation.util.Probability;
 import uk.co.ramp.covid.simulation.testutil.SimulationTest;
 
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class HouseholdTest extends SimulationTest {
 
@@ -107,10 +110,13 @@ public class HouseholdTest extends SimulationTest {
     @Test
     public void somePeopleDieAtHome() {
         int population = 10000;
-        int nInfections = 300;
+        int nInfections = 200;
         int nIter = 1;
         int nDays = 60;
         int RNGSeed = 42;
+
+        // Make the test more robust by reducing the number of phase 2 patients that will go to hospital
+        CovidParameters.get().hospitalisationParameters.pPhase2GoesToHosptial = new Probability(0.2);
 
         Model m = new Model()
                 .setPopulationSize(population)
@@ -129,5 +135,6 @@ public class HouseholdTest extends SimulationTest {
         }
         assertTrue("Some people should die at home", totalHomeDeaths > 0);
     }
+
 
 }

@@ -281,8 +281,8 @@ public class Population {
         households.forEach(h -> h.doTesting(t));
 
         // Movement places people in "next" buffers (to avoid people moving twice in an hour)
-        households.forEach(h -> h.doMovement(t, lockdown));
-        places.getAllPlaces().forEach(p -> p.doMovement(t, lockdown));
+        households.forEach(h -> h.doMovement(t, lockdown, getPlaces()));
+        places.getAllPlaces().forEach(p -> p.doMovement(t, lockdown, getPlaces()));
 
         households.forEach(h -> h.stepPeople());
         places.getAllPlaces().forEach(p -> p.stepPeople());

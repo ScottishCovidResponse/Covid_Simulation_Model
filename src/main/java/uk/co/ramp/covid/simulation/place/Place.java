@@ -7,6 +7,7 @@ import uk.co.ramp.covid.simulation.parameters.DiseaseParameters;
 import uk.co.ramp.covid.simulation.population.CStatus;
 import uk.co.ramp.covid.simulation.population.Person;
 import uk.co.ramp.covid.simulation.parameters.PopulationParameters;
+import uk.co.ramp.covid.simulation.population.Places;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -125,6 +126,7 @@ public abstract class Place {
         return left;
     }
 
+
     /** Handles movement between people in this place */
-    public abstract void doMovement(Time t, boolean lockdown);
+    public abstract void doMovement(Time t, boolean lockdown, Places places);
 }

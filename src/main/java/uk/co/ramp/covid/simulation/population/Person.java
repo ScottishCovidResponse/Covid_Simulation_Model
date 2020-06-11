@@ -19,6 +19,7 @@ import java.util.Optional;
 
 public abstract class Person {
 
+
     public enum Sex {
         MALE, FEMALE
     }
@@ -39,8 +40,8 @@ public abstract class Person {
     private Optional<Boolean> testOutcome = Optional.empty();
     protected final RandomDataGenerator rng;
 
-    private boolean needsHospitalised = false;
     private boolean isHospitalised = false;
+    private boolean goesToHospitalInPhase2;
     
     public abstract void reportInfection(DailyStats s);
     public abstract void reportDeath (DailyStats s);
@@ -54,6 +55,7 @@ public abstract class Person {
         this.transmissionProb = PopulationParameters.get().personProperties.pTransmission.asDouble();
         this.quarantineProb = PopulationParameters.get().personProperties.pQuarantinesIfSymptomatic;
         this.quarantineVal = rng.nextUniform(0, 1);
+        this.goesToHospitalInPhase2 = CovidParameters.get().hospitalisationParameters.pPhase2GoesToHosptial.sample();
     }
 
     public boolean isRecovered() {
@@ -62,7 +64,6 @@ public abstract class Person {
 
     public void recover() {
         isHospitalised = false;
-        needsHospitalised = false;
         recovered = true;
     }
 
@@ -85,24 +86,10 @@ public abstract class Person {
     public void returnHome() {
         home.addPersonNext(this);
     }
-    
-    public void hospitalise() {
-        needsHospitalised = true;
-    }
-
-    public void hospitalised() {
-        needsHospitalised = false;
-        isHospitalised = true;
-    }
 
     public boolean isHospitalised() {
         return isHospitalised;
     }
-
-    public boolean needsHospitalised() {
-        return needsHospitalised;
-    }
-
 
     public boolean getQuarantine() {
         return this.quarantine;
@@ -116,6 +103,14 @@ public abstract class Person {
         }
 
         return inf;
+    }
+
+    public void hospitalise() {
+        isHospitalised = true;
+    }
+
+    public boolean goesToHosptialInPhase2() {
+        return goesToHospitalInPhase2;
     }
 
     public boolean isinfected() {

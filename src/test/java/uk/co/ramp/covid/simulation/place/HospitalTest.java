@@ -7,14 +7,17 @@ import com.google.gson.JsonParseException;
 import uk.co.ramp.covid.simulation.DailyStats;
 import uk.co.ramp.covid.simulation.Model;
 import uk.co.ramp.covid.simulation.Time;
+import uk.co.ramp.covid.simulation.parameters.CovidParameters;
 import uk.co.ramp.covid.simulation.parameters.PopulationParameters;
 import uk.co.ramp.covid.simulation.population.*;
+import uk.co.ramp.covid.simulation.testutil.PopulationGenerator;
 import uk.co.ramp.covid.simulation.testutil.SimulationTest;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import uk.co.ramp.covid.simulation.util.Probability;
 
 import java.util.List;
+
+import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
 
 public class HospitalTest extends SimulationTest {
 
@@ -79,5 +82,63 @@ public class HospitalTest extends SimulationTest {
         }
         assertTrue("Some people should die in hospital", totalHospitalDeaths > 0);
     }
+
+    @Test
+    public void recoveredPeopleLeaveHospital() {
+        int populationSize = 10000;
+        int nInfections = 100;
+        CovidParameters.get().hospitalisationParameters.pPhase2GoesToHosptial = new Probability(1.0);
+        CovidParameters.get().diseaseParameters.adultProgressionPhase2 = 100.0;
+        CovidParameters.get().diseaseParameters.mortalityRate = 0.0;
+
+        Population pop = PopulationGenerator.genValidPopulation(populationSize);
+        pop.seedVirus(nInfections);
+
+        Person inf = pop.getAllPeople().get(0);
+        inf.infect();
+        inf.getcVirus().forceSymptomatic(true);
+
+        Time t = new Time();
+        while (!inf.isHospitalised()) {
+            pop.timeStep(t, new DailyStats(t));
+            t.advance();
+        }
+        assertTrue(inf.isHospitalised());
+        assertFalse(inf.isRecovered());
+
+        boolean inHospital = false;
+        for (Hospital h : pop.getPlaces().getHospitals()) {
+            if (h.people.contains(inf) && inf.isHospitalised()) {
+                inHospital = true;
+            }
+        }
+        assertTrue(inHospital);
+
+        double time = inf.getcVirus().getP2() + 48;
+
+        while (!inf.isRecovered()) {
+            pop.timeStep(t, new DailyStats(t));
+            t.advance();
+        }
+
+        // Give some time to let them get home
+        for (int i = 0; i < 10; i++) {
+            pop.timeStep(t, new DailyStats(t));
+            t.advance();
+        }
+
+        assertTrue(inf.isRecovered());
+        assertFalse(inf.isHospitalised());
+
+        // Don't check explicitly for atHome since they could be back at work already
+        inHospital = false;
+        for (Hospital h : pop.getPlaces().getHospitals()) {
+            if (h.people.contains(inf) && inf.isHospitalised()) {
+                inHospital = true;
+            }
+        }
+        assertFalse(inHospital);
+    }
+
 
 }

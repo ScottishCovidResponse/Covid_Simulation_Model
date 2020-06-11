@@ -150,18 +150,20 @@ public abstract class Household extends Place {
     public void goToHospital() {
         List<Person> left = new ArrayList<>();
         for (Person p : people) {
-            if (p.needsHospitalised()) {
-                Hospital h = places.getRandomHospital();
-                h.addPersonNext(p);
-                p.hospitalised();
-                left.add(p);
+            if (p.cStatus() != null && p.cStatus() == CStatus.PHASE2) {
+                if (p.goesToHosptialInPhase2()) {
+                    p.hospitalise();
+                    Hospital h = places.getRandomHospital();
+                    h.addPersonNext(p);
+                    left.add(p);
+                }
             }
         }
         people.removeAll(left);
     }
 
     @Override
-    public void doMovement(Time t, boolean lockdown) {
+    public void doMovement(Time t, boolean lockdown, Places places) {
         goToHospital();
 
         if (!isIsolating()) {
