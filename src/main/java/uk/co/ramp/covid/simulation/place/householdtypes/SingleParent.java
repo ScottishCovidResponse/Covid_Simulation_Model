@@ -6,8 +6,8 @@ import uk.co.ramp.covid.simulation.population.Places;
 /** SingleParent: 1 adult of any age and any number of children */
 public class SingleParent extends Household {
 
-    public SingleParent(Places places) {
-        super(places);
+    public SingleParent() {
+        super();
     }
 
     @Override

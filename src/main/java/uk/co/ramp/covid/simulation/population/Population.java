@@ -99,10 +99,10 @@ public class Population {
 
     // Creates households based on probability of different household types
     private void createHouseholds() {
-        ProbabilityDistribution<Function<Places, Household>> p = PopulationParameters.get().householdDistribution.householdTypeDistribution();
+        ProbabilityDistribution<Supplier<Household>> p = PopulationParameters.get().householdDistribution.householdTypeDistribution();
 
         for (int i = 0; i < numHouseholds; i++) {
-            households.add(p.sample().apply(places));
+            households.add(p.sample().get());
         }
 
     }

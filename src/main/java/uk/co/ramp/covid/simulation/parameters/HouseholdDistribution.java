@@ -2,11 +2,10 @@ package uk.co.ramp.covid.simulation.parameters;
 
 import uk.co.ramp.covid.simulation.place.Household;
 import uk.co.ramp.covid.simulation.place.householdtypes.*;
-import uk.co.ramp.covid.simulation.population.Places;
 import uk.co.ramp.covid.simulation.util.Probability;
 import uk.co.ramp.covid.simulation.util.ProbabilityDistribution;
 
-import java.util.function.Function;
+import java.util.function.Supplier;
 
 // Household populations
 // These values define the probability of a household being an adult only, adult and child household etc
@@ -24,8 +23,8 @@ public class HouseholdDistribution {
     public Probability pDoubleOlder = null;
     public Probability pSingleOlder = null;
 
-    public ProbabilityDistribution<Function<Places, Household>> householdTypeDistribution() {
-        ProbabilityDistribution<Function<Places, Household>> p = new ProbabilityDistribution<>();
+    public ProbabilityDistribution<Supplier<Household>> householdTypeDistribution() {
+        ProbabilityDistribution<Supplier<Household>> p = new ProbabilityDistribution<>();
         p.add(pSingleAdult, SingleAdult::new);
         p.add(pSmallAdult, SmallAdult::new);
         p.add(pSingleParent, SingleParent::new);

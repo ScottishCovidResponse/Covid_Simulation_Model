@@ -28,7 +28,7 @@ public class CovidTest extends SimulationTest {
 
         CStatus cStatus = null;
         Person pensioner = new Pensioner(65, Person.Sex.MALE);
-        Household h = new SingleOlder(null);
+        Household h = new SingleOlder();
         pensioner.setHome(h);
         Covid virus = new Covid(pensioner);
         virus.forceSymptomatic(true);
@@ -63,7 +63,7 @@ public class CovidTest extends SimulationTest {
         CStatus cStatus = null;
         Time t = new Time();
         Person child = new Child(6, Person.Sex.FEMALE);
-        Household h = new SmallFamily(null);
+        Household h = new SmallFamily();
         child.setHome(h);
         Covid virus = new Covid(child);
         virus.forceSymptomatic(true);

@@ -37,16 +37,16 @@ public class HouseholdTest extends SimulationTest {
 
     @Before
     public void initialise() throws JsonParseException {
-        household = new LargeManyAdultFamily(null);
+        household = new LargeManyAdultFamily();
         Adult p1 = new Adult(30, Person.Sex.MALE);
         Adult p2 = new Adult(32, Person.Sex.FEMALE);
         Adult p3 = new Adult(30, Person.Sex.MALE);
         household.addAdult(p1);
         household.addAdult(p2);
         household.addAdult(p3);
-        household2 = new SmallFamily(null);
-        household3 = new SmallFamily(null);
-        household4 = new SmallFamily(null);
+        household2 = new SmallFamily();
+        household3 = new SmallFamily();
+        household4 = new SmallFamily();
     }
 
     @Test
@@ -82,7 +82,7 @@ public class HouseholdTest extends SimulationTest {
     @Test
     public void testSendNeighboursHome() {
         PopulationParameters.get().householdProperties.pVisitorsLeaveHousehold = new Probability(1.0);
-        Household h = new SmallFamily(null);
+        Household h = new SmallFamily();
         Person p1 = new Adult(22, Person.Sex.FEMALE);
         p1.setHome(household);
         h.addPersonNext(p1);
@@ -100,7 +100,7 @@ public class HouseholdTest extends SimulationTest {
 
     @Test (expected = InvalidHouseholdAllocationException.class)
     public void testInvalidHouseholdAllocation() {
-        Household house = new SingleAdult(null);
+        Household house = new SingleAdult();
         Adult p1 = new Adult(40, Person.Sex.FEMALE);
         Child c1 = new Child(10, Person.Sex.FEMALE);
         house.addAdult(p1);

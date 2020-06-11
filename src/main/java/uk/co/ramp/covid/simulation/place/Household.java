@@ -13,16 +13,14 @@ import java.util.*;
 public abstract class Household extends Place {
 
     private final List<Household> neighbours;
-    private final Places places;
     
     private boolean willIsolate = false;
     private boolean lockCompliant = false;
     private int isolationTimer = 0;
 
     // Create household defined by who lives there
-    public Household(Places places) {
+    public Household() {
         this.neighbours = new ArrayList<>();
-        this.places = places;
         if (PopulationParameters.get().householdProperties.pWillIsolate.sample()) {
             willIsolate = true;
         }
@@ -147,7 +145,7 @@ public abstract class Household extends Place {
         }
     }
     
-    public void goToHospital() {
+    public void goToHospital(Places places) {
         List<Person> left = new ArrayList<>();
         for (Person p : people) {
             if (p.cStatus() != null && p.cStatus() == CStatus.PHASE2) {
@@ -164,7 +162,7 @@ public abstract class Household extends Place {
 
     @Override
     public void doMovement(Time t, boolean lockdown, Places places) {
-        goToHospital();
+        goToHospital(places);
 
         if (!isIsolating()) {
             // Ordering here implies work takes highest priority, then shopping trips have higher priority
@@ -173,14 +171,14 @@ public abstract class Household extends Place {
 
             // Shops are only open 8-22
             if (t.getHour() + 1 >= 8 && t.getHour() + 1 < 22) {
-                moveShop(t, lockdown);
+                moveShop(t, lockdown, places);
             }
 
             moveNeighbour(lockdown);
 
             // Restaurants are only open 8-22
             if (!lockdown && t.getHour() + 1 >= 8 && t.getHour() + 1 < 22) {
-                moveRestaurant(t);
+                moveRestaurant(t, places);
             }
         }
 
@@ -226,7 +224,7 @@ public abstract class Household extends Place {
         people.removeAll(left);
     }
 
-    private void moveShop(Time t, boolean lockdown) {
+    private void moveShop(Time t, boolean lockdown, Places places) {
         List<Person> left = new ArrayList<>();
 
         Probability visitProb = PopulationParameters.get().householdProperties.pGoShopping;
@@ -262,7 +260,7 @@ public abstract class Household extends Place {
         people.removeAll(left);
     }
 
-    private void moveRestaurant(Time t) {
+    private void moveRestaurant(Time t, Places places) {
         List<Person> left = new ArrayList<>();
 
         if (PopulationParameters.get().householdProperties.pGoRestaurant.sample()) {

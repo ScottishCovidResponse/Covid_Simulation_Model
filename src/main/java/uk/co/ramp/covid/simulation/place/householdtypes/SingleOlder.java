@@ -6,8 +6,8 @@ import uk.co.ramp.covid.simulation.population.Places;
 /** SingleOlder: One pensioner */
 public class SingleOlder extends Household {
 
-    public SingleOlder(Places places) {
-        super(places);
+    public SingleOlder() {
+        super();
     }
 
     @Override
