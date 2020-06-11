@@ -21,8 +21,8 @@
           "pensionerProgressionPhase2":0.8
       },
       "infectionSeedProperties": {
-        "infectionRateIncreaseAdult":0.00002,
-        "infectionRateIncreaseInfantChildPensioner":0.00001
+        "infectionRateIncreaseAdult":0.000005,
+        "infectionRateIncreaseInfantChildPensioner":0.0000025
       }
     },
     "population":{
@@ -164,11 +164,11 @@
         "householdProperties":{
             "neighbourOpeningTime":9,
             "neighbourClosingTime":20,
-            "pVisitorsLeaveHousehold":0.5,
-            "pHouseholdVisitsNeighbourDaily":0.144,
-            "expectedNeighbours":3,
-            "pGoShopping":0.01786,
-            "pGoRestaurant": 0.01190,
+            "pVisitorsLeaveHousehold":0.333,
+            "pHouseholdVisitsNeighbourDaily":0.2,
+            "expectedNeighbours":7,
+            "pGoShopping":0.071,
+            "pGoRestaurant": 0.071,
             "pWillIsolate": 0.5,
             "householdIsolationPeriod": 14,
             "pLockCompliance": 0.8
