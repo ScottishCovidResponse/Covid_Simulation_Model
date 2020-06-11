@@ -15,12 +15,12 @@ public class InfantTest extends SimulationTest {
     @Test
     public void testInfant() throws JsonParseException {
         int nNursery = 0;
-        //Test approximately 50% of infants go to nursery
+        //Test approximately 12% of infants go to nursery
         for (int i = 0; i < 1000; i++) {
             Infant infant = new Infant(2, Person.Sex.MALE);
             if (infant.isGoesToNursery()) nNursery++;
         }
-        assertEquals("Unexpected number of infants at nursery", 500, nNursery, 30);
+        assertEquals("Unexpected number of infants at nursery", 120, nNursery, 30);
     }
 
     @Test

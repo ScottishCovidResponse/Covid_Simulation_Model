@@ -13,7 +13,7 @@
           "meanInfectiousDuration": 321.6,
           "phase1Betaa": 25.0,
           "phase1Betab": 30.0,
-          "aSymptomaticTransAdjustment": 0.1,
+          "aSymptomaticTransAdjustment": 0.13,
           "symptomaticTransAdjustment": 1.0,
           "mortalityRate":0.01,
           "childProgressionPhase2":0.02,
@@ -21,8 +21,8 @@
           "pensionerProgressionPhase2":0.8
       },
       "infectionSeedProperties": {
-        "infectionRateIncreaseAdult":0.000005,
-        "infectionRateIncreaseInfantChildPensioner":0.0000025
+        "infectionRateIncreaseAdult":0.0000005,
+        "infectionRateIncreaseInfantChildPensioner":0.00000025
       }
     },
     "population":{
@@ -96,7 +96,7 @@
                 "pMed":1.0,
                 "pLarge":0
             },
-            "populationToShopsRatio":500,
+            "populationToShopsRatio":1000,
             "shopSizeDistribution":{
                 "pSmall":0.7,
                 "pMed":0.2,
