@@ -1,6 +1,7 @@
 package uk.co.ramp.covid.simulation.place;
 
-import uk.co.ramp.covid.simulation.DailyStats;
+import uk.co.ramp.covid.simulation.output.DailyStats;
+import uk.co.ramp.covid.simulation.output.NetworkGenerator;
 import uk.co.ramp.covid.simulation.Time;
 import uk.co.ramp.covid.simulation.parameters.CovidParameters;
 import uk.co.ramp.covid.simulation.parameters.DiseaseParameters;
@@ -69,8 +70,23 @@ public abstract class Place {
         return transConstant * transAdjustment / people.size();
     }
     
+    private void writeContact(Time t) {
+        for (Person a : people) {
+            for (Person b : people) {
+                if (a != b) {
+                    NetworkGenerator.writeContact(t, a, b, this, this.getTransConstant());
+                }
+            }
+        }
+    }
+
     /** Handles infections between all people in this place */
     public void doInfect(Time t, DailyStats stats) {
+        if (NetworkGenerator.generating()) {
+            writeContact(t);
+            return; // don't do infections
+        }
+
         List<Person> deaths = new ArrayList<>();
         for (Person cPers : people) {
             if (cPers.getInfectionStatus() && !cPers.isRecovered()) {
@@ -109,10 +125,15 @@ public abstract class Place {
 
     /** Do a timestep by switching to the new set of people */
     public void stepPeople() {
+
         // Anyone who didn't move should remain.
         nextPeople.addAll(people);
+
+        // Switch the movement buffers
+        List<Person> tmp = people;
         people = nextPeople;
-        nextPeople = new ArrayList<>();
+        nextPeople = tmp;
+        nextPeople.clear();
     }
 
     public List<Person> sendFamilyHome(Person p, CommunalPlace place, Time t) {

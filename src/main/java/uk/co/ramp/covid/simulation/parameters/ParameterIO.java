@@ -6,17 +6,20 @@ import org.apache.logging.log4j.Logger;
 import uk.co.ramp.covid.simulation.util.InvalidProbabilityException;
 import uk.co.ramp.covid.simulation.util.Probability;
 
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.Reader;
+import java.io.*;
+import java.nio.file.Path;
 
-/** The ParameterReader class reads parameters from a provided JSON input file and
- * creates the static parameter classes */
-public class ParameterReader {
-    private static final Logger LOGGER = LogManager.getLogger(ParameterReader.class);
+/** The ParameterIO class reads/writes parameters to/from a provided JSON input file */
+public class ParameterIO {
+    private static final Logger LOGGER = LogManager.getLogger(ParameterIO.class);
 
     private CovidParameters disease;
     private PopulationParameters population;
+
+    public ParameterIO(CovidParameters disease, PopulationParameters population) {
+        this.disease = disease;
+        this.population = population;
+    }
 
     /** Read population data from JSON file */
     public static void readParametersFromFile(String path) throws IOException, JsonParseException {
@@ -37,9 +40,24 @@ public class ParameterReader {
         };
 
         gson.registerTypeAdapter(Probability.class, pdeserializer);
-        ParameterReader r = gson.create().fromJson(file, ParameterReader.class);
+        ParameterIO r = gson.create().fromJson(file, ParameterIO.class);
 
         CovidParameters.setParameters(r.disease);
         PopulationParameters.setParameters(r.population);
+    }
+
+    public static void writeParametersToFile(Path outF) {
+        GsonBuilder gson = new GsonBuilder().setPrettyPrinting();
+
+        JsonSerializer<Probability> pserializer = (src, typeOfSrc, context) -> new JsonPrimitive(src.asDouble());
+        gson.registerTypeAdapter(Probability.class, pserializer);
+
+        ParameterIO params = new ParameterIO(CovidParameters.get(), PopulationParameters.get());
+
+        try (Writer writer = new FileWriter(outF.toFile())) {
+            gson.create().toJson(params, writer);
+        } catch (IOException e) {
+            LOGGER.error(e);
+        }
     }
 }

@@ -1,21 +1,26 @@
 package uk.co.ramp.covid.simulation;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonParseException;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import uk.co.ramp.covid.simulation.output.DailyStats;
+import uk.co.ramp.covid.simulation.output.NetworkGenerator;
+import uk.co.ramp.covid.simulation.parameters.ParameterIO;
 import uk.co.ramp.covid.simulation.population.ImpossibleAllocationException;
 import uk.co.ramp.covid.simulation.population.ImpossibleWorkerDistributionException;
 import uk.co.ramp.covid.simulation.population.Population;
 import uk.co.ramp.covid.simulation.util.InvalidParametersException;
 import uk.co.ramp.covid.simulation.util.RNG;
 
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.Reader;
+import java.io.*;
+import java.nio.file.FileSystems;
+import java.nio.file.Path;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 /** A uk.co.ramp.covid.simulation.Model represents a particular run of the model with some given parameters
@@ -24,9 +29,9 @@ public class Model {
     private static final Logger LOGGER = LogManager.getLogger(Model.class);
 
     private class Lockdown {
-        public Integer start = null;
-        public Integer end = null;
-        public Double socialDistance = null;
+        public Integer start;
+        public Integer end;
+        public Double socialDistance;
 
         public Lockdown(int start, int end, double socialDistance) {
             this.start = start;
@@ -59,9 +64,10 @@ public class Model {
     private Integer nDays = null;
     private Integer nIters = null;
     private Integer rngSeed = null;
-    private String outputFile = null;
+    private String outputDirectory = null;
     private Lockdown lockDown = null;
     private Lockdown schoolLockDown = null;
+    private String networkOutputDir = null;
 
     public Model() {}
 
@@ -115,8 +121,13 @@ public class Model {
         return this;
     }
 
-    public Model setOutputFile(String fname) {
-        this.outputFile = fname;
+    public Model setOutputDirectory(String fname) {
+        this.outputDirectory = fname;
+        return this;
+    }
+
+    public Model setNetworkOutputDir(String path) {
+        this.networkOutputDir = path;
         return this;
     }
 
@@ -148,8 +159,8 @@ public class Model {
             valid = false;
         }
         if (!outputDisabled) {
-            if (outputFile == null) {
-                LOGGER.warn("Uninitialised model parameter: outputFile");
+            if (outputDirectory == null) {
+                LOGGER.warn("Uninitialised model parameter: outputDirectory");
                 valid = false;
             }
         }
@@ -195,6 +206,14 @@ public class Model {
                 break;
             }
 
+            if (networkOutputDir != null) {
+                try {
+                    NetworkGenerator.startNetworkGeneration(p.getAllPeople(), networkOutputDir);
+                } catch (IOException e) {
+                    LOGGER.error("Error starting network generation", e);
+                    break;
+                }
+            }
 
             p.setExternalInfectionDays(externalInfectionDays);
             p.seedVirus(nInitialInfections);
@@ -216,15 +235,46 @@ public class Model {
         }
 
         if (!outputDisabled) {
-            if (outputFile != null) {
-                outputCSV(simulationID, stats);
-            }
+            writeOutput(simulationID, stats);
         }
 
         return stats;
     }
+    
+    private void writeOutput(int iterId, List<List<DailyStats>> s) {
+        Path outP;
 
-    public void outputCSV(int startIterID, List<List<DailyStats>> stats) {
+        if (outputDirectory.equals("")) {
+            outP = FileSystems.getDefault().getPath(".");
+        } else {
+            DateTimeFormatter tsFormatter = DateTimeFormatter.ofPattern("yyyyMMdd_hhmmss");
+            String timeStamp = tsFormatter.format(LocalDateTime.now());
+            outP = FileSystems.getDefault().getPath(outputDirectory, timeStamp);
+            if (!outP.toFile().mkdirs()) {
+                LOGGER.error("Could not create output directory: " + outP);
+                return;
+            }
+        }
+        
+        // By here the output directory will be available
+        outputCSV(outP.resolve("out.csv"), iterId, s);
+        extraOutputsForThibaud(outP, s);
+        ParameterIO.writeParametersToFile(outP.resolve("population_params.json"));
+        outputModelParams(outP.resolve("model_params.json"));
+       
+    }
+
+    private void outputModelParams(Path outF) {
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        try (Writer writer = new FileWriter(outF.toFile())) {
+            gson.toJson(this, writer);
+        } catch (IOException e) {
+            LOGGER.error(e);
+        }
+    }
+
+
+    private void outputCSV(Path outF, int startIterID, List<List<DailyStats>> stats) {
     final String[] headers = {"iter", "day", "H", "L", "A", "P1", "P2", "D", "R", "ISeed",
                               "ICs_W","IHos_W","INur_W","IOff_W","IRes_W","ISch_W","ISho_W","IHome_I",
                               "ICs_V","IHos_V","INur_V","IOff_V","IRes_V","ISch_V","ISho_V","IHome_V",
@@ -232,7 +282,7 @@ public class Model {
                               "DAdul","DPen","DChi","DInf","DHome", "DHospital",
                               "SecInfections", "GenerationTime" };
         try {
-            FileWriter out = new FileWriter(outputFile);
+            FileWriter out = new FileWriter(outF.toFile());
             CSVPrinter printer = new CSVPrinter(out, CSVFormat.DEFAULT.withHeader(headers));
             for (int i = 0; i < nIters; i++) {
                 for (DailyStats s : stats.get(i)) {
@@ -240,6 +290,25 @@ public class Model {
                 }
             }
             out.close();
+        } catch (IOException e) {
+            LOGGER.error(e);
+        }
+    }
+
+    private void extraOutputsForThibaud(Path outputDir, List<List<DailyStats>> stats) {
+        try {
+            CSVPrinter dailyInfectionsCSV = new CSVPrinter(new FileWriter(outputDir.resolve("dailyInfections.csv").toFile()), CSVFormat.DEFAULT);
+            CSVPrinter deathsCSV = new CSVPrinter(new FileWriter(outputDir.resolve("deaths.csv").toFile()), CSVFormat.DEFAULT);
+            for (int i = 0; i < nIters; i++) {
+                for (DailyStats s : stats.get(i)) {
+                    dailyInfectionsCSV.print(s.getTotalDailyInfections());
+                    deathsCSV.print(s.getTotalDeaths());
+                }
+                dailyInfectionsCSV.println();
+                deathsCSV.println();
+            }
+            dailyInfectionsCSV.close(true);
+            deathsCSV.close(true);
         } catch (IOException e) {
             LOGGER.error(e);
         }

@@ -1,6 +1,6 @@
 package uk.co.ramp.covid.simulation.place;
 
-import uk.co.ramp.covid.simulation.DailyStats;
+import uk.co.ramp.covid.simulation.output.DailyStats;
 import uk.co.ramp.covid.simulation.Time;
 import uk.co.ramp.covid.simulation.parameters.CovidParameters;
 import uk.co.ramp.covid.simulation.parameters.PopulationParameters;
@@ -17,6 +17,7 @@ public abstract class Household extends Place {
     private boolean willIsolate = false;
     private boolean lockCompliant = false;
     private int isolationTimer = 0;
+    private boolean visitsNeighbourToday = false;
 
     // Create household defined by who lives there
     public Household() {
@@ -87,7 +88,12 @@ public abstract class Household extends Place {
     public int sendNeighboursHome(Time t) {
         ArrayList<Person> left = new ArrayList<>();
 
-        for (Person p : getVisitors()) {
+        for (Person p : people) {
+
+            if (!isVisitor(p)) {
+                continue;
+            }
+
             // People may have already left if their family has
             if (left.contains(p)) {
                 continue;
@@ -116,6 +122,8 @@ public abstract class Household extends Place {
         return p.getHome() != this;
     }
 
+    private boolean isInhabitant(Person p) { return p.getHome() == this; }
+
     public List<Person> getVisitors() {
         List<Person> ret = new ArrayList<>();
         for (Person p : people) {
@@ -134,6 +142,16 @@ public abstract class Household extends Place {
             }
         }
         return ret;
+    }
+
+    public int getNumMovers() {
+        int n = 0;
+        for (Person p : people) {
+            if (isInhabitant(p)) {
+                n++;
+            }
+        }
+        return n;
     }
 
     @Override
@@ -164,7 +182,7 @@ public abstract class Household extends Place {
     public void doMovement(Time t, boolean lockdown, Places places) {
         goToHospital(places);
 
-        if (!isIsolating()) {
+        if (!isIsolating() && getNumMovers() > 0) {
             // Ordering here implies work takes highest priority, then shopping trips have higher priority
             // than neighbour and restaurant trips
             moveShift(t, lockdown);
@@ -174,7 +192,7 @@ public abstract class Household extends Place {
                 moveShop(t, lockdown, places);
             }
 
-            moveNeighbour(lockdown);
+            moveNeighbour(t, lockdown);
 
             // Restaurants are only open 8-22
             if (!lockdown && t.getHour() + 1 >= 8 && t.getHour() + 1 < 22) {
@@ -188,8 +206,8 @@ public abstract class Household extends Place {
     }
 
       public void doTesting(Time t) {
-        for (Person p : getInhabitants()) {
-            if (p.isinfected()) {
+        for (Person p : people) {
+            if (isInhabitant(p) && p.isinfected()) {
                 Time symptomaticTime = p.getcVirus().getInfectionLog().getSymptomaticTime();
                 if (symptomaticTime != null
                         && symptomaticTime.getAbsTime() <= t.getAbsTime() + 24
@@ -200,23 +218,36 @@ public abstract class Household extends Place {
         }
     }
 
-    private void moveNeighbour(boolean lockdown) {
+    private void moveNeighbour(Time t, boolean lockdown) {
+       if (!visitsNeighbourToday
+                || t.getHour() + 1 < PopulationParameters.get().householdProperties.neighbourOpeningTime
+                || t.getHour() + 1 >= PopulationParameters.get().householdProperties.neighbourClosingTime) {
+            return;
+        }
 
         List<Person> left = new ArrayList<>();
-        if((!lockdown) || (!this.lockCompliant)) {
+        if(!lockdown || !lockCompliant) {
 	        for (Household n : getNeighbours()) {
 	            if (n.isIsolating()) {
 	                continue;
 	            }
 
-                if (PopulationParameters.get().householdProperties.pHouseholdVisitsNeighbour.sample()) {
+	            // Since we determine if we should try to visit a neighbour a the star of the day, we have
+                // equal opportunity of visiting a neighbour each hour they are open
+                int openT = PopulationParameters.get().householdProperties.neighbourOpeningTime;
+                int closeT = PopulationParameters.get().householdProperties.neighbourClosingTime;
+                if (new Probability(1.0 / (closeT - openT)).sample()) {
 	                // We visit neighbours as a family
-	                for (Person p : getInhabitants()) {
-	                    if (!p.getQuarantine()) {
+	                for (Person p : people) {
+	                    if (isInhabitant(p) && !p.getQuarantine()) {
 	                        n.addPersonNext(p);
 	                        left.add(p);
 	                    }
 	                }
+
+	                // One neighbour visit max per day
+	                visitsNeighbourToday = false;
+
 	                break;
 	            }
 	        }
@@ -250,8 +281,8 @@ public abstract class Household extends Place {
             }
 
             // Go to restaurants as a family
-            for (Person p : getInhabitants()) {
-                if (!p.getQuarantine()) {
+            for (Person p : people) {
+                if (isInhabitant(p) && !p.getQuarantine()) {
                     s.addPersonNext(p);
                     left.add(p);
                 }
@@ -279,8 +310,8 @@ public abstract class Household extends Place {
             }
 
             // Go to restaurants as a family
-            for (Person p : getInhabitants()) {
-                if (!p.getQuarantine()) {
+            for (Person p : people) {
+                if (isInhabitant(p) && !p.getQuarantine()) {
                     r.addPersonNext(p);
                     left.add(p);
                 }
@@ -291,12 +322,11 @@ public abstract class Household extends Place {
 
     private void moveShift(Time t, boolean lockdown) {
         List<Person> left = new ArrayList<>();
-        for (Person p : getInhabitants()) {
-            if (p.worksNextHour(p.getPrimaryCommunalPlace(), t, lockdown)) {
-                if (!p.getQuarantine()) {
-                    p.visitPrimaryPlace();
-                    left.add(p);
-                }
+        for (Person p : people) {
+            if (isInhabitant(p) && !p.getQuarantine()
+                    && p.worksNextHour(p.getPrimaryCommunalPlace(), t, lockdown)) {
+                p.visitPrimaryPlace();
+                left.add(p);
             }
         }
         people.removeAll(left);
@@ -305,6 +335,17 @@ public abstract class Household extends Place {
     public void dayEnd() {
         if (isIsolating()) {
             isolationTimer--;
+        }
+
+        determineDailyNeighbourVisit();
+    }
+    
+    public void determineDailyNeighbourVisit() {
+        // Determine if we will attempt to visit a neighbour tomorrow
+        if (PopulationParameters.get().householdProperties.pHouseholdVisitsNeighbourDaily.sample()) {
+            visitsNeighbourToday = true;
+        } else {
+            visitsNeighbourToday = false;
         }
     }
 

@@ -5,7 +5,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-import uk.co.ramp.covid.simulation.DailyStats;
+import uk.co.ramp.covid.simulation.output.DailyStats;
 import uk.co.ramp.covid.simulation.Time;
 import uk.co.ramp.covid.simulation.parameters.CovidParameters;
 import uk.co.ramp.covid.simulation.parameters.PopulationParameters;
@@ -182,6 +182,8 @@ public class MovementTest extends SimulationTest {
     public void somePeopleVisitNeighbours() {
         Set<Person> visiting = new HashSet<>();
         Time t = new Time(24);
+        PopulationParameters.get().householdProperties.pHouseholdVisitsNeighbourDaily = new Probability(0.5);
+        p.getHouseholds().forEach(h -> h.determineDailyNeighbourVisit());
         DailyStats s = new DailyStats(t);
         for (int i = 0; i < 24; i++) {
             p.timeStep(t, s);

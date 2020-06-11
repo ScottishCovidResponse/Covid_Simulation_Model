@@ -5,6 +5,7 @@ import org.junit.Test;
 
 import com.google.gson.JsonParseException;
 
+import uk.co.ramp.covid.simulation.output.DailyStats;
 import uk.co.ramp.covid.simulation.parameters.CovidParameters;
 import uk.co.ramp.covid.simulation.parameters.PopulationParameters;
 import uk.co.ramp.covid.simulation.util.Probability;
@@ -232,7 +233,7 @@ public class ModelTest extends SimulationTest {
         //Run the model
         Model m1 = new Model()
                 .setPopulationSize(population)
-                .setnInitialInfections(nInfections * 10)
+                .setnInitialInfections(nInfections * 30)
                 .setExternalInfectionDays(0)
                 .setIters(nIter)
                 .setnDays(nDays)

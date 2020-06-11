@@ -7,7 +7,7 @@ package uk.co.ramp.covid.simulation.population;
 import org.apache.commons.math3.random.RandomDataGenerator;
 import uk.co.ramp.covid.simulation.covid.Covid;
 import uk.co.ramp.covid.simulation.parameters.CovidParameters;
-import uk.co.ramp.covid.simulation.DailyStats;
+import uk.co.ramp.covid.simulation.output.DailyStats;
 import uk.co.ramp.covid.simulation.Time;
 import uk.co.ramp.covid.simulation.parameters.PopulationParameters;
 import uk.co.ramp.covid.simulation.place.CommunalPlace;
@@ -43,6 +43,9 @@ public abstract class Person {
     private boolean isHospitalised = false;
     private boolean goesToHospitalInPhase2;
     
+    private static int nPeople = 0;
+    private final int idForNetworkGenerator;
+
     public abstract void reportInfection(DailyStats s);
     public abstract void reportDeath (DailyStats s);
     public abstract void allocateCommunalPlace(Places p);
@@ -56,6 +59,7 @@ public abstract class Person {
         this.quarantineProb = PopulationParameters.get().personProperties.pQuarantinesIfSymptomatic;
         this.quarantineVal = rng.nextUniform(0, 1);
         this.goesToHospitalInPhase2 = CovidParameters.get().hospitalisationParameters.pPhase2GoesToHosptial.sample();
+        this.idForNetworkGenerator = nPeople++;
     }
 
     public boolean isRecovered() {
@@ -209,8 +213,14 @@ public abstract class Person {
 
 
     public boolean worksNextHour(CommunalPlace communalPlace, Time t, boolean lockdown) {
-        if (primaryPlace == null || shifts == null) {
+        if (primaryPlace == null || shifts == null || primaryPlace != communalPlace) {
             return false;
+        }
+
+        if (lockdown) {
+            if (!communalPlace.isKeyPremises()) {
+                return false;
+            }
         }
 
         // Handle day crossovers
@@ -229,19 +239,8 @@ public abstract class Person {
             end += 24;
         }
 
-        boolean shouldWork =
-                primaryPlace == communalPlace
-                && nextHour >= start
-                && nextHour < end;
+        boolean shouldWork = nextHour >= start && nextHour < end;
 
-        if (lockdown) {
-            if (communalPlace.isKeyPremises()) {
-                return shouldWork;
-            } else {
-                return false;
-            }
-        }
-        
         return shouldWork;
     }
 
@@ -289,6 +288,10 @@ public abstract class Person {
 
     public Optional<Boolean> getTestOutcome() {
         return testOutcome;
+    }
+
+    public int getID() {
+        return idForNetworkGenerator;
     }
 
     public void seedInfectionChallenge(Time t, DailyStats s) {

@@ -11,7 +11,7 @@ public class CovidParametersTest {
 
     @Test
     public void testIsValid() throws IOException {
-        ParameterReader.readParametersFromFile("src/test/resources/test_params.json");
+        ParameterIO.readParametersFromFile("src/test/resources/test_params.json");
 
         //Test that valid parameters are handled correctly
         assertTrue(CovidParameters.get().isValid());

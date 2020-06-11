@@ -13,7 +13,7 @@ public class ExampleParametersTest {
         // This test is designed to ensure that if the list of input
         // parameters changes, then the example files are updated accordingly
        
-        ParameterReader.readParametersFromFile("parameters/example_population_params.json");
+        ParameterIO.readParametersFromFile("parameters/example_population_params.json");
         assertTrue(PopulationParameters.get().isValid());
         assertTrue(CovidParameters.get().isValid());
 
