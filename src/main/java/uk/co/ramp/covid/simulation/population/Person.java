@@ -62,6 +62,7 @@ public abstract class Person {
 
     public void recover() {
         isHospitalised = false;
+        needsHospitalised = false;
         recovered = true;
     }
 
