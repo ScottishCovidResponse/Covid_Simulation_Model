@@ -163,7 +163,7 @@ public abstract class Household extends Place {
         }
     }
     
-    public void goToHospital(Places places) {
+    public void goToHospital(Time t, Places places) {
         List<Person> left = new ArrayList<>();
         for (Person p : people) {
             if (p.cStatus() != null && p.cStatus() == CStatus.PHASE2) {
@@ -172,6 +172,10 @@ public abstract class Household extends Place {
                     Hospital h = places.getRandomHospital();
                     h.addPersonNext(p);
                     left.add(p);
+                } else if (isVisitor(p)) {
+                    p.returnHome();
+                    left.add(p);
+                    left.addAll(sendFamilyHome(p, null, t));
                 }
             }
         }
@@ -180,7 +184,7 @@ public abstract class Household extends Place {
 
     @Override
     public void doMovement(Time t, boolean lockdown, Places places) {
-        goToHospital(places);
+        goToHospital(t, places);
 
         if (!isIsolating() && getNumMovers() > 0) {
             // Ordering here implies work takes highest priority, then shopping trips have higher priority
