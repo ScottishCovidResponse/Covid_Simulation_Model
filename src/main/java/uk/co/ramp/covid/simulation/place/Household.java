@@ -328,7 +328,7 @@ public abstract class Household extends Place {
     
     private double getNeighbourProbability() {
     	if(nNeighbours() == 0) return 0.0;
-    	return 1.0 - (Math.pow((1.0 - PopulationParameters.get().householdProperties.pHouseholdVisitsNeighbourDaily), (double) nNeighbours()));
+    	return 1.0 - (Math.pow((1.0 - PopulationParameters.get().householdProperties.householdVisitsNeighbourDaily), (double) nNeighbours()));
     }
     
     public void determineDailyNeighbourVisit() {

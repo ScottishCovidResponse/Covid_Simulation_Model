@@ -180,7 +180,7 @@ public class MovementTest extends SimulationTest {
     public void somePeopleVisitNeighbours() {
         Set<Person> visiting = new HashSet<>();
         Time t = new Time(24);
-        PopulationParameters.get().householdProperties.pHouseholdVisitsNeighbourDaily = 0.5;
+        PopulationParameters.get().householdProperties.householdVisitsNeighbourDaily = 0.5;
         p.getHouseholds().forEach(h -> h.determineDailyNeighbourVisit());
         DailyStats s = new DailyStats(t);
         for (int i = 0; i < 24; i++) {
