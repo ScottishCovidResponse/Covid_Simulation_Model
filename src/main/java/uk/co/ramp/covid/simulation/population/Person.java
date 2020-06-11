@@ -151,7 +151,6 @@ public abstract class Person {
             if (this.cVirus.isSymptomatic()) enterQuarantine();
             if (this.cVirus.isPhase1()) {
                 cStatus = CStatus.PHASE1;
-          //      this.quarantine = this.quarantineProb > this.quarantineVal;
             }
             if (this.cVirus.isPhase2()) {
                 cStatus = CStatus.PHASE2;
@@ -167,7 +166,7 @@ public abstract class Person {
     }
     
     public void enterQuarantine() {
-        quarantine = quarantineProb.asDouble() > quarantineVal;
+        quarantine = quarantineProb.sample();
     }
 
     public void forceQuarantine() {

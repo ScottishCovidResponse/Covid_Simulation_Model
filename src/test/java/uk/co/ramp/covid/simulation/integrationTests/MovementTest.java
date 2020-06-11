@@ -182,7 +182,7 @@ public class MovementTest extends SimulationTest {
     public void somePeopleVisitNeighbours() {
         Set<Person> visiting = new HashSet<>();
         Time t = new Time(24);
-        PopulationParameters.get().householdProperties.pHouseholdVisitsNeighbourDaily = new Probability(0.5);
+        PopulationParameters.get().householdProperties.householdVisitsNeighbourDaily = 0.5;
         p.getHouseholds().forEach(h -> h.determineDailyNeighbourVisit());
         DailyStats s = new DailyStats(t);
         for (int i = 0; i < 24; i++) {
@@ -424,6 +424,7 @@ public class MovementTest extends SimulationTest {
     @Test
     public void positiveTestsStayInQuarantine() {
         Time t = new Time(24);
+        PopulationParameters.get().personProperties.pQuarantinesIfSymptomatic = new Probability(1.0);
 
         Household iso = null;
         for (Household h : p.getHouseholds()) {
