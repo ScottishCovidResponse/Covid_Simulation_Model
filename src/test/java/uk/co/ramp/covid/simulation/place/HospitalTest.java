@@ -94,7 +94,14 @@ public class HospitalTest extends SimulationTest {
         Population pop = PopulationGenerator.genValidPopulation(populationSize);
         pop.seedVirus(nInfections);
 
-        Person inf = pop.getAllPeople().get(0);
+        Person inf = null;
+        for (Person p : pop.getAllPeople()) {
+            if (p instanceof Adult) {
+                inf = p;
+                break;
+            }
+        }
+
         inf.infect();
         inf.getcVirus().forceSymptomatic(true);
 
