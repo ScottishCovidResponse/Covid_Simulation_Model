@@ -191,8 +191,14 @@ public abstract class Person {
 
 
     public boolean worksNextHour(CommunalPlace communalPlace, Time t, boolean lockdown) {
-        if (primaryPlace == null || shifts == null) {
+        if (primaryPlace == null || shifts == null || primaryPlace != communalPlace) {
             return false;
+        }
+
+        if (lockdown) {
+            if (!communalPlace.isKeyPremises()) {
+                return false;
+            }
         }
 
         // Handle day crossovers
@@ -211,19 +217,8 @@ public abstract class Person {
             end += 24;
         }
 
-        boolean shouldWork =
-                primaryPlace == communalPlace
-                && nextHour >= start
-                && nextHour < end;
+        boolean shouldWork = nextHour >= start && nextHour < end;
 
-        if (lockdown) {
-            if (communalPlace.isKeyPremises()) {
-                return shouldWork;
-            } else {
-                return false;
-            }
-        }
-        
         return shouldWork;
     }
 

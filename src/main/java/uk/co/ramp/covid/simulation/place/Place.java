@@ -89,10 +89,15 @@ public abstract class Place {
     
     /** Do a timestep by switching to the new set of people */
     public void stepPeople() {
+
         // Anyone who didn't move should remain.
         nextPeople.addAll(people);
+
+        // Switch the movement buffers
+        List<Person> tmp = people;
         people = nextPeople;
-        nextPeople = new ArrayList<>();
+        nextPeople = tmp;
+        nextPeople.clear();
     }
 
     public List<Person> sendFamilyHome(Person p, CommunalPlace place, Time t) {

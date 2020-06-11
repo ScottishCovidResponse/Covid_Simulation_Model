@@ -6,7 +6,7 @@
     "nDays":365,
     "nIters":1,
     "rngSeed":42,
-    "outputFile":"./example-lockdown.csv",
+    "outputDirectory":".",
     "lockDown":{
         "start":20,
         "end":50,

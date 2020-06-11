@@ -270,22 +270,24 @@ public class Population {
     }
     
     public void timeStep(Time t, DailyStats dStats) {
-        households.forEach(h -> h.doInfect(t, dStats));
-        places.getAllPlaces().forEach(p -> p.doInfect(t, dStats));
-
-        // There is a potential to introduce parallelism here if required by using parallelStream (see below).
-        // Note we currently cannot parallelise movement as the ArrayLists for capturing moves are not thread safe
-        // households.parallelStream().forEach(h -> h.doInfect(dStats));
-        // places.getAllPlaces().parallelStream().forEach(p -> p.doInfect(dStats));
-
-        households.forEach(h -> h.doTesting(t));
-
         // Movement places people in "next" buffers (to avoid people moving twice in an hour)
-        households.forEach(h -> h.doMovement(t, lockdown));
-        places.getAllPlaces().forEach(p -> p.doMovement(t, lockdown));
+        for (Household h : households) {
+            h.doTesting(t);
+            h.doInfect(t, dStats);
+            h.doMovement(t, lockdown);
+        }
+        for (Place p : places.getAllPlaces()) {
+            p.doInfect(t, dStats);
+            p.doMovement(t, lockdown);
+        };
 
-        households.forEach(h -> h.stepPeople());
-        places.getAllPlaces().forEach(p -> p.stepPeople());
+        for (Household h : households) {
+            h.stepPeople();
+        }
+
+        for (Place p : places.getAllPlaces()) {
+            p.stepPeople();
+        };
     }
 
     // Step through nDays in 1 hour time steps
@@ -293,6 +295,9 @@ public class Population {
         List<DailyStats> stats = new ArrayList<>(nDays);
         Time t = new Time();
         boolean rprinted = false;
+
+        households.forEach(h -> h.determineDailyNeighbourVisit());
+
         for (int i = 0; i < nDays; i++) {
             DailyStats dStats = new DailyStats(t);
             implementLockdown(t);

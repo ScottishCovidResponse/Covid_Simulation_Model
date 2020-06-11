@@ -227,7 +227,7 @@ public class ModelTest extends SimulationTest {
         //Run the model
         Model m1 = new Model()
                 .setPopulationSize(population)
-                .setnInitialInfections(nInfections * 10)
+                .setnInitialInfections(nInfections * 30)
                 .setExternalInfectionDays(0)
                 .setIters(nIter)
                 .setnDays(nDays)
