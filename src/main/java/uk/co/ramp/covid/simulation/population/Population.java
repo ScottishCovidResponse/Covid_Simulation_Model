@@ -6,23 +6,30 @@
 
 package uk.co.ramp.covid.simulation.population;
 
-import org.apache.commons.math3.random.RandomDataGenerator;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import uk.co.ramp.covid.simulation.DailyStats;
-import uk.co.ramp.covid.simulation.RStats;
-import uk.co.ramp.covid.simulation.Time;
-import uk.co.ramp.covid.simulation.parameters.CovidParameters;
-import uk.co.ramp.covid.simulation.parameters.PopulationDistribution;
-import uk.co.ramp.covid.simulation.parameters.PopulationParameters;
-import uk.co.ramp.covid.simulation.place.*;
-import uk.co.ramp.covid.simulation.util.ProbabilityDistribution;
-import uk.co.ramp.covid.simulation.util.RNG;
-
-import java.util.*;
+import java.util.ArrayList;
+import java.util.BitSet;
+import java.util.Collection;
+import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
+
+import org.apache.commons.math3.random.RandomDataGenerator;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import uk.co.ramp.covid.simulation.DailyStats;
+import uk.co.ramp.covid.simulation.RStats;
+import uk.co.ramp.covid.simulation.Time;
+import uk.co.ramp.covid.simulation.parameters.PopulationDistribution;
+import uk.co.ramp.covid.simulation.parameters.PopulationParameters;
+import uk.co.ramp.covid.simulation.place.CommunalPlace;
+import uk.co.ramp.covid.simulation.place.Household;
+import uk.co.ramp.covid.simulation.place.Nursery;
+import uk.co.ramp.covid.simulation.place.Place;
+import uk.co.ramp.covid.simulation.place.School;
+import uk.co.ramp.covid.simulation.util.ProbabilityDistribution;
+import uk.co.ramp.covid.simulation.util.RNG;
 
 public class Population {
 
@@ -270,6 +277,7 @@ public class Population {
     }
     
     public void timeStep(Time t, DailyStats dStats) {
+    	// TODO - I feel that households should be a type in places
         households.forEach(h -> h.doInfect(t, dStats));
         places.getAllPlaces().forEach(p -> p.doInfect(t, dStats));
 
@@ -281,13 +289,52 @@ public class Population {
         households.forEach(h -> h.doTesting(t));
 
         // Movement places people in "next" buffers (to avoid people moving twice in an hour)
-        households.forEach(h -> h.doMovement(t, lockdown));
-        places.getAllPlaces().forEach(p -> p.doMovement(t, lockdown));
+        households.forEach(h -> h.decideOnMovement(t, lockdown));
+        places.getAllPlaces().forEach(p -> p.decideOnMovement(t, lockdown));
 
-        households.forEach(h -> h.stepPeople());
-        places.getAllPlaces().forEach(p -> p.stepPeople());
+        // do infections while travelling
+        doAllTravelInfect(t, dStats);
+
+        // apply movements
+        households.forEach(h -> h.implementMovement());
+        places.getAllPlaces().forEach(p -> p.implementMovement());
     }
 
+    
+	public void doAllTravelInfect(Time t, DailyStats dStats) {
+		// look for similar journeys - currently simple but could be made more complex considering travel types and other aspects
+		
+		for (Place place : places.getAllPlaces()) {
+			// People going to the same place
+			doTravelInfect(place.getPeopleMovingToHere(), t, dStats);
+			
+			// People going from the same place
+			doTravelInfect(place.getPeopleMovingFromHere(), t, dStats);
+		}
+	}
+
+	// this method could might not be best place in the class
+	public void doTravelInfect(Collection<Person> peopleOnSimilarJourneys, Time t, DailyStats dStats) {
+		for (Person cPers : peopleOnSimilarJourneys) {
+			if (cPers.isInfectious()) {
+				for (Person nPers : peopleOnSimilarJourneys) {
+					if (cPers != nPers) {
+						if (!nPers.getInfectionStatus()) {
+							// TODO apply appropriate parameters
+							
+							boolean infected = nPers.infChallenge(cPers.getTransAdjustment());
+							if (infected) {
+								// TODO   registerInfection(t, nPers, dStats);
+								nPers.getcVirus().getInfectionLog().registerInfected(t);
+								cPers.getcVirus().getInfectionLog().registerSecondaryInfection(t, nPers);
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+	
     // Step through nDays in 1 hour time steps
     public List<DailyStats> simulate(int nDays) {
         List<DailyStats> stats = new ArrayList<>(nDays);

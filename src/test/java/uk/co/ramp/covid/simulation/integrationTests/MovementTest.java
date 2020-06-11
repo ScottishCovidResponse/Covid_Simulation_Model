@@ -201,11 +201,11 @@ public class MovementTest extends SimulationTest {
 
             int npeople = 0;
             for (Place place : p.getPlaces().getAllPlaces()) {
-                npeople += place.getPeople().size();
+                npeople += place.getNumberOfPeople();
             }
 
             for (Household hld : p.getHouseholds()) {
-                npeople += hld.getPeople().size();
+                npeople += hld.getNumberOfPeople();
             }
             assertEquals("People have been lost", populationSize, npeople);
             t = t.advance();

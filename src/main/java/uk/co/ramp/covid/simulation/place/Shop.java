@@ -1,13 +1,13 @@
 package uk.co.ramp.covid.simulation.place;
 
+import java.util.ArrayList;
+
 import uk.co.ramp.covid.simulation.DailyStats;
 import uk.co.ramp.covid.simulation.Time;
-import uk.co.ramp.covid.simulation.population.Person;
 import uk.co.ramp.covid.simulation.parameters.PopulationParameters;
+import uk.co.ramp.covid.simulation.population.Person;
 import uk.co.ramp.covid.simulation.population.Shifts;
 import uk.co.ramp.covid.simulation.util.RoundRobinAllocator;
-
-import java.util.ArrayList;
 
 public class Shop extends CommunalPlace {
     
@@ -42,13 +42,9 @@ public class Shop extends CommunalPlace {
         return shifts.getNext();
     }
 
-    public void shoppingTrip(ArrayList<Person> vHouse) {
-       people.addAll(vHouse);
-    }
-
-    public int sendHome(Time t) {
+    public void sendHome(Time t) {
         ArrayList<Person> left = new ArrayList<>();
-        for (Person nPers : people) {
+        for (Person nPers : getPeople()) {
             // People may have already left if their family has
             if (left.contains(nPers)) {
                 continue;
@@ -61,18 +57,16 @@ public class Shop extends CommunalPlace {
             // Under certain conditions we must go home, e.g. if there is a shift starting soon
             if (nPers.mustGoHome(t)) {
                 left.add(nPers);
-                nPers.returnHome();
-                left.addAll(sendFamilyHome(nPers, this, t));
+                left.addAll(getFamilyToSendHome(nPers, this, t));
             }
             else if (PopulationParameters.get().buildingProperties.pLeaveShop.sample()
                     || !times.isOpenNextHour(t)) {
-                nPers.returnHome();
                 left.add(nPers);
-                left.addAll(sendFamilyHome(nPers, this, t));
+                left.addAll(getFamilyToSendHome(nPers, this, t));
             }
         }
-        people.removeAll(left);
-        return left.size();
+        
+        left.forEach(p -> p.returnHome(this));
     }
 
     @Override
@@ -85,7 +79,7 @@ public class Shop extends CommunalPlace {
     }
 
     @Override
-    public void doMovement(Time t, boolean lockdown) {
+    public void decideOnMovement(Time t, boolean lockdown) {
         moveShifts(t, lockdown);
         sendHome(t);
     }

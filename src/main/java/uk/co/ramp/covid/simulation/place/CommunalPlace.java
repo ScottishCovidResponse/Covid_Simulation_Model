@@ -62,13 +62,12 @@ public abstract class CommunalPlace extends Place {
     /** Move everyone based on their shift patterns */
     public void moveShifts(Time t, boolean lockdown) {
         List<Person> left = new ArrayList<>();
-        for (Person p : people) {
+        for (Person p : getPeople()) {
             if (!p.worksNextHour(this, t, lockdown)) {
-                p.returnHome();
                 left.add(p);
             }
         }
-        people.removeAll(left);
+        left.forEach(p -> p.returnHome(this));
     }
     
     public boolean isVisitorOpenNextHour(Time t) {
@@ -88,7 +87,7 @@ public abstract class CommunalPlace extends Place {
 
     public List<Person> getStaff(Time t) {
         List<Person> res = new ArrayList<>();
-        for (Person p : people) {
+        for (Person p : getPeople()) {
             if (p.isWorking(this, t)) {
                 res.add(p);
             }
@@ -97,7 +96,7 @@ public abstract class CommunalPlace extends Place {
     }
 
     @Override
-    public void doMovement(Time t, boolean lockdown) {
+    public void decideOnMovement(Time t, boolean lockdown) {
         moveShifts(t, lockdown);
     }
 

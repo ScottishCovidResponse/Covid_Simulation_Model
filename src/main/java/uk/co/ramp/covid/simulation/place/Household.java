@@ -86,7 +86,7 @@ public abstract class Household extends Place {
         return false;
     }
 
-    public int sendNeighboursHome(Time t) {
+    public void sendNeighboursHome(Time t) {
         ArrayList<Person> left = new ArrayList<>();
 
         for (Person p : getVisitors()) {
@@ -98,20 +98,16 @@ public abstract class Household extends Place {
             // Under certain conditions we must go home, e.g. if there is a shift starting soon
             if (p.mustGoHome(t)) {
                 left.add(p);
-                p.returnHome();
-                left.addAll(sendFamilyHome(p, null, t));
+                p.returnHome(this);
+                left.addAll(getFamilyToSendHome(p, null, t));
             }
             else if (PopulationParameters.get().householdProperties.pVisitorsLeaveHousehold.sample()) {
                 left.add(p);
-                left.addAll(sendFamilyHome(p, null, t));
-                if (p.cStatus() != CStatus.DEAD) {
-                   p.returnHome();
-                }
+                left.addAll(getFamilyToSendHome(p, null, t));
             }
         }
 
-        people.removeAll(left);
-        return left.size();
+        left.forEach(p -> p.returnHome(this));
     }
     
     private boolean isVisitor(Person p) {
@@ -120,7 +116,7 @@ public abstract class Household extends Place {
 
     public List<Person> getVisitors() {
         List<Person> ret = new ArrayList<>();
-        for (Person p : people) {
+        for (Person p : getPeople()) {
             if (isVisitor(p)) {
                 ret.add(p);
             }
@@ -130,7 +126,7 @@ public abstract class Household extends Place {
 
     public List<Person> getInhabitants() {
         List<Person> ret = new ArrayList<>();
-        for (Person p : people) {
+        for (Person p : getPeople()) {
             if (!isVisitor(p)) {
                 ret.add(p);
             }
@@ -149,7 +145,7 @@ public abstract class Household extends Place {
 
 
     @Override
-    public void doMovement(Time t, boolean lockdown) {
+    public void decideOnMovement(Time t, boolean lockdown) {
         if (!isIsolating()) {
             // Ordering here implies work takes highest priority, then shopping trips have higher priority
             // than neighbour and restaurant trips
@@ -188,7 +184,6 @@ public abstract class Household extends Place {
 
     private void moveNeighbour(boolean lockdown) {
 
-        List<Person> left = new ArrayList<>();
         if((!lockdown) || (!this.lockCompliant)) {
 	        for (Household n : getNeighbours()) {
 	            if (n.isIsolating()) {
@@ -199,20 +194,16 @@ public abstract class Household extends Place {
 	                // We visit neighbours as a family
 	                for (Person p : getInhabitants()) {
 	                    if (!p.getQuarantine()) {
-	                        n.addPersonNext(p);
-	                        left.add(p);
+	                        movePersonToPlace(p, n);
 	                    }
 	                }
 	                break;
 	            }
 	        }
         }
-        people.removeAll(left);
     }
 
     private void moveShop(Time t, boolean lockdown) {
-        List<Person> left = new ArrayList<>();
-
         Probability visitProb = PopulationParameters.get().householdProperties.pGoShopping;
         if (lockdown) {
             visitProb = new Probability(visitProb.asDouble() * 0.5);
@@ -238,16 +229,13 @@ public abstract class Household extends Place {
             // Go to restaurants as a family
             for (Person p : getInhabitants()) {
                 if (!p.getQuarantine()) {
-                    s.addPersonNext(p);
-                    left.add(p);
+                	movePersonToPlace(p, s);
                 }
             }
         }
-        people.removeAll(left);
     }
 
     private void moveRestaurant(Time t) {
-        List<Person> left = new ArrayList<>();
 
         if (PopulationParameters.get().householdProperties.pGoRestaurant.sample()) {
             Restaurant r = places.getRandomRestaurant();
@@ -267,25 +255,20 @@ public abstract class Household extends Place {
             // Go to restaurants as a family
             for (Person p : getInhabitants()) {
                 if (!p.getQuarantine()) {
-                    r.addPersonNext(p);
-                    left.add(p);
+                	movePersonToPlace(p, r);
                 }
             }
         }
-        people.removeAll(left);
     }
 
     private void moveShift(Time t, boolean lockdown) {
-        List<Person> left = new ArrayList<>();
         for (Person p : getInhabitants()) {
             if (p.worksNextHour(p.getPrimaryCommunalPlace(), t, lockdown)) {
                 if (!p.getQuarantine()) {
-                    p.visitPrimaryPlace();
-                    left.add(p);
+                    p.visitPrimaryPlace(this);
                 }
             }
         }
-        people.removeAll(left);
     }
     
     public void dayEnd() {
@@ -316,7 +299,7 @@ public abstract class Household extends Place {
     public void addAdult(Adult p) {
         if (adultRequired() || additionalAdultsAllowed()
                 || adultAnyAgeRequired() || additionalAdultAnyAgeAllowed()) {
-            people.add(p);
+            addNewPerson(p);
             p.setHome(this);
             adults++;
         } else {
@@ -329,7 +312,7 @@ public abstract class Household extends Place {
         // We need to do some type inference here to handle the fact infants are
         // treated as children for household population
         if ((childRequired() || additionalChildrenAllowed()) && (p instanceof Child || p instanceof Infant)) {
-            people.add(p);
+            addNewPerson(p);
             p.setHome(this);
             children++;
         } else {
@@ -340,7 +323,7 @@ public abstract class Household extends Place {
     public void addAdultOrPensioner(Person p) {
         // We need to do some type inference here to handle "any age" adults
         if ((adultAnyAgeRequired() || additionalAdultAnyAgeAllowed()) && (p instanceof Adult || p instanceof Pensioner)) {
-            people.add(p);
+            addNewPerson(p);
             p.setHome(this);
             if (p instanceof Adult) {
                 adults++;
@@ -356,7 +339,7 @@ public abstract class Household extends Place {
     public void addPensioner(Pensioner p) {
         if (pensionerRequired() || additionalPensionersAllowed()
                 || adultAnyAgeRequired() || additionalAdultAnyAgeAllowed()) {
-            people.add(p);
+            addNewPerson(p);
             p.setHome(this);
             pensioners++;
         } else {

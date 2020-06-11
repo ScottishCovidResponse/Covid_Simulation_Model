@@ -4,18 +4,20 @@
 
 package uk.co.ramp.covid.simulation.population;
 
+import java.util.Optional;
+
 import org.apache.commons.math3.random.RandomDataGenerator;
-import uk.co.ramp.covid.simulation.covid.Covid;
-import uk.co.ramp.covid.simulation.parameters.CovidParameters;
+
 import uk.co.ramp.covid.simulation.DailyStats;
 import uk.co.ramp.covid.simulation.Time;
+import uk.co.ramp.covid.simulation.covid.Covid;
+import uk.co.ramp.covid.simulation.parameters.CovidParameters;
 import uk.co.ramp.covid.simulation.parameters.PopulationParameters;
 import uk.co.ramp.covid.simulation.place.CommunalPlace;
 import uk.co.ramp.covid.simulation.place.Household;
+import uk.co.ramp.covid.simulation.place.Place;
 import uk.co.ramp.covid.simulation.util.Probability;
 import uk.co.ramp.covid.simulation.util.RNG;
-
-import java.util.Optional;
 
 public abstract class Person {
 
@@ -77,8 +79,9 @@ public abstract class Person {
         home = h;
     }
     
-    public void returnHome() {
-        home.addPersonNext(this);
+    public void returnHome(Place currentPlace) {
+        if (cStatus() != CStatus.DEAD)
+        	currentPlace.movePersonToPlace(this, home);
     }
 
     public boolean getQuarantine() {
@@ -227,9 +230,9 @@ public abstract class Person {
         return shouldWork;
     }
 
-    public void visitPrimaryPlace() {
+    public void visitPrimaryPlace(Place currentPlace) {
         if (primaryPlace != null) {
-            primaryPlace.addPersonNext(this);
+        	currentPlace.movePersonToPlace(this, primaryPlace);
         }
     }
 

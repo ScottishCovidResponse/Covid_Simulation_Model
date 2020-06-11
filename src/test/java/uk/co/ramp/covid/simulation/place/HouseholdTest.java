@@ -77,12 +77,19 @@ public class HouseholdTest extends SimulationTest {
         PopulationParameters.get().householdProperties.pVisitorsLeaveHousehold = new Probability(1.0);
         Household h = new SmallFamily(null);
         Person p1 = new Adult(22, Person.Sex.FEMALE);
+        
+        // make 'p1' visit 'h' from home of 'household'
         p1.setHome(household);
-        h.addPersonNext(p1);
-        h.stepPeople();
+        h.movePersonToPlace(p1, h);
+        h.implementMovement();
+        int expSizeStart = 1;
+        assertEquals("Unexpected number of visitors", expSizeStart, h.getVisitors().size());
 
-        int expSize = 1;
-        assertEquals("Unexpected number of visitors", expSize, h.sendNeighboursHome(new Time(0)));
+        h.sendNeighboursHome(new Time(0));
+        h.implementMovement();
+
+        int expSizeEnd = 0;
+        assertEquals("Unexpected number of visitors", expSizeEnd, h.getVisitors().size());
     }
 
     @Test

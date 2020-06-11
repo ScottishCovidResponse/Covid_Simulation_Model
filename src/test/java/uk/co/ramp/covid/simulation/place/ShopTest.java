@@ -1,23 +1,29 @@
 package uk.co.ramp.covid.simulation.place;
 
-import org.junit.Before;
-import org.junit.Test;
-
-import com.google.gson.JsonParseException;
-import uk.co.ramp.covid.simulation.Time;
-import uk.co.ramp.covid.simulation.DailyStats;
-import uk.co.ramp.covid.simulation.parameters.PopulationParameters;
-import uk.co.ramp.covid.simulation.place.householdtypes.SmallFamily;
-import uk.co.ramp.covid.simulation.population.*;
-import uk.co.ramp.covid.simulation.testutil.PopulationGenerator;
-import uk.co.ramp.covid.simulation.testutil.SimulationTest;
-import uk.co.ramp.covid.simulation.util.Probability;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import org.junit.Before;
+import org.junit.Test;
+
+import com.google.gson.JsonParseException;
+
+import uk.co.ramp.covid.simulation.DailyStats;
+import uk.co.ramp.covid.simulation.Time;
+import uk.co.ramp.covid.simulation.parameters.PopulationParameters;
+import uk.co.ramp.covid.simulation.place.householdtypes.SmallFamily;
+import uk.co.ramp.covid.simulation.population.Adult;
+import uk.co.ramp.covid.simulation.population.Child;
+import uk.co.ramp.covid.simulation.population.ImpossibleWorkerDistributionException;
+import uk.co.ramp.covid.simulation.population.Pensioner;
+import uk.co.ramp.covid.simulation.population.Person;
+import uk.co.ramp.covid.simulation.population.Population;
+import uk.co.ramp.covid.simulation.testutil.PopulationGenerator;
+import uk.co.ramp.covid.simulation.testutil.SimulationTest;
+import uk.co.ramp.covid.simulation.util.Probability;
 
 public class ShopTest extends SimulationTest {
 
@@ -35,8 +41,8 @@ public class ShopTest extends SimulationTest {
         Household h2 = new SmallFamily(null);
         p1.setHome(h1);
         p2.setHome(h2);
-        shop.people.add(p1);
-        shop.people.add(p2);
+        shop.addNewPerson(p1);
+        shop.addNewPerson(p2);
     }
 
     @Test
@@ -50,16 +56,22 @@ public class ShopTest extends SimulationTest {
     public void testShoppingTrip() {
         ArrayList<Person> personList = new ArrayList<>();
         personList.add(new Child(8, Person.Sex.FEMALE));
-        shop.shoppingTrip(personList);
-        int expPeople = 3;
-        assertEquals("Unexpected number of people in shop", expPeople, shop.people.size());
-    }
+        for (Person p : personList)        
+        	shop.movePersonToPlace(p, shop);
 
+        shop.implementMovement();
+        
+        int expPeople = 3;
+        assertEquals("Unexpected number of people in shop", expPeople, shop.getNumberOfPeople());
+    }
     @Test
     public void testSendHome() {
         PopulationParameters.get().buildingProperties.pLeaveShop = new Probability(1.0);
         int time = shop.times.getClose() - 1;
-        int left = shop.sendHome(new Time(time));
+        int beforeNum = shop.getNumberOfPeople();
+        shop.sendHome(new Time(time));
+        int afterNum = shop.getNumberOfPeople();
+        int left = beforeNum - afterNum;
         int expPeople = 2;
         assertEquals("Unexpected number of people sent home", expPeople, left);
     }

@@ -35,8 +35,8 @@ public class RestaurantTest extends SimulationTest {
         Household h2 = new SmallFamily(null);
         p1.setHome(h1);
         p2.setHome(h2);
-        restaurant.people.add(p1);
-        restaurant.people.add(p2);
+        restaurant.addNewPerson(p1);
+        restaurant.addNewPerson(p2);
     }
 
     @Test
@@ -51,16 +51,21 @@ public class RestaurantTest extends SimulationTest {
     public void testShoppingTrip() {
         ArrayList<Person> personList = new ArrayList<>();
         personList.add(new Child(6, Person.Sex.MALE));
-        restaurant.shoppingTrip(personList);
+        for (Person p : personList)
+        	restaurant.movePersonToPlace(p, restaurant);
+        restaurant.implementMovement();
         int expPeople = 3;
-        assertEquals("Unexpected number of people in restaurant", expPeople, restaurant.people.size());
+        assertEquals("Unexpected number of people in restaurant", expPeople, restaurant.getNumberOfPeople());
     }
 
     @Test
     public void testSendHome() {
         PopulationParameters.get().buildingProperties.pLeaveRestaurant = new Probability(1.0);
         int time = restaurant.times.getClose() - 1;
-        int left = restaurant.sendHome(new Time(time));
+        int beforeNum = restaurant.getNumberOfPeople();
+        restaurant.sendHome(new Time(time));
+        int afterNum = restaurant.getNumberOfPeople();
+        int left = beforeNum - afterNum;
         int expPeople = 2;
         assertEquals("Unexpected number of people sent home from restaurant", expPeople, left);
     }

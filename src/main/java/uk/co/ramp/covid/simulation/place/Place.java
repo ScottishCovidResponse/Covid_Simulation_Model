@@ -1,21 +1,27 @@
 package uk.co.ramp.covid.simulation.place;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import uk.co.ramp.covid.simulation.DailyStats;
 import uk.co.ramp.covid.simulation.Time;
+import uk.co.ramp.covid.simulation.parameters.PopulationParameters;
 import uk.co.ramp.covid.simulation.population.CStatus;
 import uk.co.ramp.covid.simulation.population.Person;
-import uk.co.ramp.covid.simulation.parameters.PopulationParameters;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public abstract class Place {
 
     // People are managed in 2 lists, those currently in the place "people" and
     // those who will be in the place in the next hour "nextPeople"
-    protected List<Person> people;
-    protected List<Person> nextPeople;
-    
+    private Set<Person> people;
+    private Set<Person> peopleMovingAway;
+    private Map<Person, Place> movementsToHere;  // we might want to hold more info, like transport type, in which case will need a MovementInfo class
+
     protected double sDistance;
     protected double transConstant;
     protected double transAdjustment;
@@ -24,19 +30,32 @@ public abstract class Place {
     abstract public void reportInfection(Time t, Person p, DailyStats s);
 
     public Place() {
-        this.people = new ArrayList<>();
-        this.nextPeople = new ArrayList<>();
+        this.people = new HashSet<Person>();
+        this.peopleMovingAway = new HashSet<Person>();
+        this.movementsToHere = new HashMap<Person, Place>();
         this.transConstant = PopulationParameters.get().buildingProperties.baseTransmissionConstant;
         this.sDistance = 1.0;
         this.transAdjustment = 1.0;
     }
 
-    public List<Person> getPeople() {
+    public Collection<Person> getPeople() {
         return people;
     }
 
-    public void addPersonNext(Person p) {
-        nextPeople.add(p);
+    public int getNumberOfPeople() {
+		return people.size();
+	}
+
+    /** adding people during initialisation, i.e. not movement */
+    public void addNewPerson(Person p) {
+    	people.add(p);
+    }
+
+    /** Move a person from this location to fromPlace */
+    public void movePersonToPlace(Person p, Place toPlace) {
+		people.remove(p);
+		peopleMovingAway.add(p);
+    	toPlace.movementsToHere.put(p, this);  // this puts movement in a 'buffer' that is applied by implementMovement()
     }
 
     private void registerInfection(Time t, Person p, DailyStats s) {
@@ -87,25 +106,31 @@ public abstract class Place {
         people.removeAll(deaths);
     }
     
-    /** Do a timestep by switching to the new set of people */
-    public void stepPeople() {
-        // Anyone who didn't move should remain.
-        nextPeople.addAll(people);
-        people = nextPeople;
-        nextPeople = new ArrayList<>();
+    /** Do a timestep by adding arriving people */
+    public void implementMovement() {
+    	people.addAll(movementsToHere.keySet());
+    	peopleMovingAway = new HashSet<Person>();
+    	movementsToHere = new HashMap<Person, Place>();
     }
 
-    public List<Person> sendFamilyHome(Person p, CommunalPlace place, Time t) {
-        List<Person> left = new ArrayList<>();
+    public Collection<Person> getFamilyToSendHome(Person p, CommunalPlace place, Time t) {
+    	Collection<Person> familyToSendHome = new HashSet<Person>();
         for (Person q : people) {
             if (p != q && !q.worksNextHour(place, t, false) && q.getHome() == p.getHome()) {
-                q.returnHome();
-                left.add(q);
+            	familyToSendHome.add(q);
             }
         }
-        return left;
+        return familyToSendHome;
     }
 
     /** Handles movement between people in this place */
-    public abstract void doMovement(Time t, boolean lockdown);
+    public abstract void decideOnMovement(Time t, boolean lockdown);
+
+	public Collection<Person> getPeopleMovingToHere() {
+		return movementsToHere.keySet();
+	}
+	
+	public Collection<Person> getPeopleMovingFromHere() {
+		return peopleMovingAway;
+	}
 }
