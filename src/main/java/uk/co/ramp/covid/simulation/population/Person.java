@@ -40,7 +40,7 @@ public abstract class Person {
     protected final RandomDataGenerator rng;
     
     private static int nPeople = 0;
-    private final int idForNetworkGenerator;
+    private final int personId;
 
     public abstract void reportInfection(DailyStats s);
     public abstract void reportDeath (DailyStats s);
@@ -54,7 +54,12 @@ public abstract class Person {
         this.transmissionProb = PopulationParameters.get().personProperties.pTransmission.asDouble();
         this.quarantineProb = PopulationParameters.get().personProperties.pQuarantinesIfSymptomatic;
         this.quarantineVal = rng.nextUniform(0, 1);
-        this.idForNetworkGenerator = nPeople++;
+        this.personId = nPeople++;
+    }
+
+    @Override
+    public int hashCode() {
+        return personId;
     }
 
     public boolean isRecovered() {
@@ -133,7 +138,6 @@ public abstract class Person {
             if (this.cVirus.isSymptomatic()) enterQuarantine();
             if (this.cVirus.isPhase1()) {
                 cStatus = CStatus.PHASE1;
-          //      this.quarantine = this.quarantineProb > this.quarantineVal;
             }
             if (this.cVirus.isPhase2()) {
                 cStatus = CStatus.PHASE2;
@@ -149,7 +153,7 @@ public abstract class Person {
     }
     
     public void enterQuarantine() {
-        quarantine = quarantineProb.asDouble() > quarantineVal;
+        quarantine = quarantineProb.sample();
     }
 
     public void forceQuarantine() {
@@ -161,9 +165,10 @@ public abstract class Person {
     }
 
     public boolean isInfectious() {
-        return cStatus() == CStatus.ASYMPTOMATIC
+        return cStatus() != null
+                && (cStatus() == CStatus.ASYMPTOMATIC
                 || cStatus() == CStatus.PHASE1
-                || cStatus() == CStatus.PHASE2;
+                || cStatus() == CStatus.PHASE2);
     }
     
     public double getTransAdjustment() {
@@ -273,7 +278,7 @@ public abstract class Person {
     }
 
     public int getID() {
-        return idForNetworkGenerator;
+        return personId;
     }
 
     public void seedInfectionChallenge(Time t, DailyStats s) {

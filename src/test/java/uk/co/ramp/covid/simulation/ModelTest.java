@@ -188,6 +188,9 @@ public class ModelTest extends SimulationTest {
         int inf1 = stats1.get(0).get(startLock - 1).getTotalInfected();
         int inf2 = stats2.get(0).get(startLock - 1).getTotalInfected();
         assertTrue("infection numbers don't match before lockdown", Math.abs(inf1 - inf2) == 0);
+        int inf1 = stats1.get(0).get(29).getTotalInfected();
+        int inf2 = stats2.get(0).get(29).getTotalInfected();
+        assertEquals("infection numbers don't match before lockdown", inf1, inf2);
 
         //Check that there are fewer infections in the lockdown scenario
         inf1 = stats1.get(0).get(nDays - 1).getTotalInfected();
@@ -239,8 +242,12 @@ public class ModelTest extends SimulationTest {
         int dead = stats1.get(0).get(nDays - 1).getDead();
         int recovered = stats1.get(0).get(nDays -1).getRecovered();
         int latent = stats1.get(0).get(nDays -1).getExposed();
+        int phase1 = stats1.get(0).get(nDays -1).getPhase1();
+        int phase2 = stats1.get(0).get(nDays -1).getPhase2();
         assertTrue("Too many latent remain", latent < 3);
+        assertTrue("Too many P1 remain", phase1 < 3);
+        assertTrue("Too many P2 remain", phase2 < 3);
         assertEquals("Unexpected recoveries", 0, recovered);
-        assertEquals("Unexpected number of deaths", population, dead + latent);
+        assertEquals("Unexpected number of deaths", population, dead, latent + phase1 + phase2);
     }
 }

@@ -7,15 +7,14 @@ import uk.co.ramp.covid.simulation.population.CStatus;
 import uk.co.ramp.covid.simulation.population.Person;
 import uk.co.ramp.covid.simulation.parameters.PopulationParameters;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public abstract class Place {
 
     // People are managed in 2 lists, those currently in the place "people" and
     // those who will be in the place in the next hour "nextPeople"
-    protected List<Person> people;
-    protected List<Person> nextPeople;
+    protected Set<Person> people;
+    protected Set<Person> nextPeople;
     
     protected double sDistance;
     protected double transConstant;
@@ -25,15 +24,15 @@ public abstract class Place {
     abstract public void reportInfection(Time t, Person p, DailyStats s);
 
     public Place() {
-        this.people = new ArrayList<>();
-        this.nextPeople = new ArrayList<>();
+        this.people = new LinkedHashSet<>();
+        this.nextPeople = new LinkedHashSet<>();
         this.transConstant = PopulationParameters.get().buildingProperties.baseTransmissionConstant;
         this.sDistance = 1.0;
         this.transAdjustment = 1.0;
     }
 
     public List<Person> getPeople() {
-        return people;
+        return new ArrayList<>(people);
     }
 
     public void addPersonNext(Person p) {
@@ -66,31 +65,11 @@ public abstract class Place {
         }
     }
 
-    /** Handles infections between all people in this place */
-    public void doInfect(Time t, DailyStats stats) {
-        if (NetworkGenerator.generating()) {
-            writeContact(t);
-            return; // don't do infections
-        }
-
+    private void stepInfections(Time t, DailyStats stats) {
         List<Person> deaths = new ArrayList<>();
         for (Person cPers : people) {
             if (cPers.getInfectionStatus() && !cPers.isRecovered()) {
                 cPers.stepInfection(t);
-                if (cPers.isInfectious()) {
-                    for (Person nPers : people) {
-                        if (cPers != nPers) {
-                            if (!nPers.getInfectionStatus()) {
-                                boolean infected = nPers.infChallenge(this.getTransConstant() * this.sDistance * cPers.getTransAdjustment());
-                                if (infected) {
-                                    registerInfection(t, nPers, stats);
-                                    nPers.getcVirus().getInfectionLog().registerInfected(t);
-                                    cPers.getcVirus().getInfectionLog().registerSecondaryInfection(t, nPers);
-                                }
-                            }
-                        }
-                    }
-                }
                 if (cPers.cStatus() == CStatus.DEAD) {
                     cPers.reportDeath(stats);
                     deaths.add(cPers);
@@ -102,6 +81,31 @@ public abstract class Place {
         }
         people.removeAll(deaths);
     }
+
+    /** Handles infections between all people in this place */
+    public void doInfect(Time t, DailyStats stats) {
+        if (NetworkGenerator.generating()) {
+            writeContact(t);
+            return; // don't do infections
+        }
+
+       stepInfections(t, stats);
+
+        for (Person cPers : people) {
+            if (cPers.isInfectious()) {
+                for (Person nPers : people) {
+                    if (cPers != nPers && !nPers.getInfectionStatus()) {
+                        boolean infected = nPers.infChallenge(getTransConstant() * sDistance * cPers.getTransAdjustment());
+                        if (infected) {
+                            registerInfection(t, nPers, stats);
+                            nPers.getcVirus().getInfectionLog().registerInfected(t);
+                            cPers.getcVirus().getInfectionLog().registerSecondaryInfection(t, nPers);
+                        }
+                    }
+                }
+            }
+        }
+    }
     
     /** Do a timestep by switching to the new set of people */
     public void stepPeople() {
@@ -110,7 +114,7 @@ public abstract class Place {
         nextPeople.addAll(people);
 
         // Switch the movement buffers
-        List<Person> tmp = people;
+        Set<Person> tmp = people;
         people = nextPeople;
         nextPeople = tmp;
         nextPeople.clear();
