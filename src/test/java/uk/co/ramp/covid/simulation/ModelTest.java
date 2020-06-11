@@ -187,7 +187,7 @@ public class ModelTest extends SimulationTest {
         //Check that there are the same number of infections in both scenarios before lockdown starts
         int inf1 = stats1.get(0).get(29).getTotalInfected();
         int inf2 = stats2.get(0).get(29).getTotalInfected();
-        assertTrue("infection numbers don't match before lockdown", Math.abs(inf1 - inf2) == 0);
+        assertEquals("infection numbers don't match before lockdown", inf1, inf2);
 
         //Check that there are fewer infections in the lockdown scenario
         inf1 = stats1.get(0).get(nDays - 1).getTotalInfected();
