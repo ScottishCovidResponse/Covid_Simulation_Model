@@ -1,12 +1,9 @@
 package uk.co.ramp.covid.simulation.place;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
-import java.util.Set;
 
 import uk.co.ramp.covid.simulation.DailyStats;
 import uk.co.ramp.covid.simulation.Time;
@@ -18,8 +15,8 @@ public abstract class Place {
 
     // People are managed in 2 lists, those currently in the place "people" and
     // those who will be in the place in the next hour "nextPeople"
-    private Set<Person> people;
-    private Set<Person> peopleMovingAway;
+    private Collection<Person> people;
+    private Collection<Person> peopleMovingAway;
     private Map<Person, Place> movementsToHere;  // we might want to hold more info, like transport type, in which case will need a MovementInfo class
 
     protected double sDistance;
@@ -30,9 +27,9 @@ public abstract class Place {
     abstract public void reportInfection(Time t, Person p, DailyStats s);
 
     public Place() {
-        this.people = new HashSet<Person>();
-        this.peopleMovingAway = new HashSet<Person>();
-        this.movementsToHere = new HashMap<Person, Place>();
+        this.people = new LinkedHashSet<Person>();
+        this.peopleMovingAway = new LinkedHashSet<Person>();
+        this.movementsToHere = new LinkedHashMap<Person, Place>();
         this.transConstant = PopulationParameters.get().buildingProperties.baseTransmissionConstant;
         this.sDistance = 1.0;
         this.transAdjustment = 1.0;
@@ -76,7 +73,7 @@ public abstract class Place {
     
     /** Handles infections between all people in this place */
     public void doInfect(Time t, DailyStats stats) {
-        List<Person> deaths = new ArrayList<>();
+        Collection<Person> deaths = new LinkedHashSet<>();
         for (Person cPers : people) {
             if (cPers.getInfectionStatus() && !cPers.isRecovered()) {
                 cPers.stepInfection(t);
@@ -109,12 +106,12 @@ public abstract class Place {
     /** Do a timestep by adding arriving people */
     public void implementMovement() {
     	people.addAll(movementsToHere.keySet());
-    	peopleMovingAway = new HashSet<Person>();
-    	movementsToHere = new HashMap<Person, Place>();
+    	peopleMovingAway = new LinkedHashSet<Person>();
+    	movementsToHere = new LinkedHashMap<Person, Place>();
     }
 
     public Collection<Person> getFamilyToSendHome(Person p, CommunalPlace place, Time t) {
-    	Collection<Person> familyToSendHome = new HashSet<Person>();
+    	Collection<Person> familyToSendHome = new LinkedHashSet<Person>();
         for (Person q : people) {
             if (p != q && !q.worksNextHour(place, t, false) && q.getHome() == p.getHome()) {
             	familyToSendHome.add(q);
