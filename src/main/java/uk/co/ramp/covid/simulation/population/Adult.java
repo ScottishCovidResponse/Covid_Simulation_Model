@@ -80,6 +80,6 @@ public class Adult extends Person {
 
     @Override
     protected double getInfectionSeedRate() {
-        return CovidParameters.get().infectionSeedProperties.infectionRateIncreaseAdultPensioner;
+        return CovidParameters.get().infectionSeedProperties.infectionRateIncreaseAdult;
     }
 }

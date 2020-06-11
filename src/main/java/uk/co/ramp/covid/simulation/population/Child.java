@@ -40,6 +40,6 @@ public class Child extends Person {
 
     @Override
     protected double getInfectionSeedRate() {
-        return CovidParameters.get().infectionSeedProperties.infectionRateIncreaseInfantChild;
+        return CovidParameters.get().infectionSeedProperties.infectionRateIncreaseInfantChildPensioner;
     }
 }

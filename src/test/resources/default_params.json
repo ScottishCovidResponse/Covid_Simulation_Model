@@ -21,8 +21,8 @@
           "pensionerProgressionPhase2":0.8
       },
       "infectionSeedProperties": {
-          "infectionRateIncreaseAdultPensioner":0.0001,
-          "infectionRateIncreaseInfantChild":0.0002
+        "infectionRateIncreaseAdult":0.00002,
+        "infectionRateIncreaseInfantChildPensioner":0.00001
       }
     },
     "population":{
@@ -143,7 +143,7 @@
             }
         },
         "buildingProperties":{
-           "baseTransmissionConstant":0.5,
+           "baseTransmissionConstant":0.7,
            "hospitalTransmissionConstant":10.0,
            "constructionSiteTransmissionConstant":5.0,
            "nurseryTransmissionConstant":10.0,
@@ -174,7 +174,7 @@
             "pLockCompliance": 0.8
         },
         "personProperties":{
-            "pTransmission":0.45,
+            "pTransmission":0.7,
             "pQuarantinesIfSymptomatic":0.9
         }
     }
