@@ -300,7 +300,6 @@ public class Population {
         places.getAllPlaces().forEach(p -> p.implementMovement());
     }
 
-    
 	public void doAllTravelInfect(Time t, DailyStats dStats) {
 		// look for similar journeys - currently simple but could be made more complex considering travel types and other aspects
 		
@@ -321,8 +320,9 @@ public class Population {
 					if (cPers != nPers) {
 						if (!nPers.getInfectionStatus()) {
 							// TODO apply appropriate parameters
+							double challengeProb = 0; // cPers.getTransAdjustment();
 							
-							boolean infected = nPers.infChallenge(cPers.getTransAdjustment());
+							boolean infected = nPers.infChallenge(challengeProb);
 							if (infected) {
 								// TODO   registerInfection(t, nPers, dStats);
 								nPers.getcVirus().getInfectionLog().registerInfected(t);
