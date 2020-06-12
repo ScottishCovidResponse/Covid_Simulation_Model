@@ -41,6 +41,8 @@ public class DailyStats {
     private int schoolInfectionsVisitor = 0;
     private int shopInfectionsWorker = 0;
     private int shopInfectionsVisitor = 0;
+    private int careHomeInfectionsWorker = 0;
+    private int careHomeInfectionsResident = 0;
     private int seedInfections = 0;
 
     // Age Statistics
@@ -58,6 +60,7 @@ public class DailyStats {
     // Infection rate stats
     private Double secInfections = null;
     private Double generationTime = null;
+
 
     public DailyStats(Time t) {
         this.day = t.getAbsDay();
@@ -129,7 +132,7 @@ public class DailyStats {
                 phase1, phase2, dead, recovered, seedInfections,
                 constructionSiteInfectionsWorker, hospitalInfectionsWorker, 
                 nurseryInfectionsWorker, officeInfectionsWorker, restaurantInfectionsWorker, schoolInfectionsWorker, 
-                shopInfectionsWorker, homeInfectionsInhabitant,
+                shopInfectionsWorker, careHomeInfectionsWorker, homeInfectionsInhabitant, careHomeInfectionsResident,
                 constructionSiteInfectionsVisitor, hospitalInfectionsVisitor, nurseryInfectionsVisitor, 
                 officeInfectionsVisitor, restaurantInfectionsVisitor, schoolInfectionsVisitor, shopInfectionsVisitor,
                 homeInfectionsVisitor, adultInfected, pensionerInfected, childInfected, infantInfected, adultDeaths,
@@ -151,6 +154,8 @@ public class DailyStats {
                 officeInfectionsWorker +
                 nurseryInfectionsVisitor +
                 nurseryInfectionsWorker +
+                careHomeInfectionsResident +
+                careHomeInfectionsWorker +
                 homeInfectionsInhabitant +
                 homeInfectionsVisitor +
                 seedInfections;
@@ -360,4 +365,11 @@ public class DailyStats {
         generationTime = rs.getMeanGenerationTime(day);
     }
 
+    public void incInfectionCareHomeWorker() {
+        careHomeInfectionsWorker++;
+    }
+
+    public void incInfectionCareHomeResident() {
+        careHomeInfectionsResident++;
+    }
 }

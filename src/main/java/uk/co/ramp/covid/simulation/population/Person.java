@@ -42,6 +42,8 @@ public abstract class Person {
     private static int nPeople = 0;
     private final int personId;
 
+    private boolean isInCare = false;
+
     public abstract void reportInfection(DailyStats s);
     public abstract void reportDeath (DailyStats s);
     public abstract void allocateCommunalPlace(Places p);
@@ -102,6 +104,11 @@ public abstract class Person {
         }
 
         return inf;
+    }
+
+
+    public boolean isInCare() {
+        return isInCare;
     }
 
     public boolean isinfected() {

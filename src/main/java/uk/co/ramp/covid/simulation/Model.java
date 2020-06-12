@@ -276,7 +276,8 @@ public class Model {
 
     private void outputCSV(Path outF, int startIterID, List<List<DailyStats>> stats) {
     final String[] headers = {"iter", "day", "H", "L", "A", "P1", "P2", "D", "R", "ISeed",
-                              "ICs_W","IHos_W","INur_W","IOff_W","IRes_W","ISch_W","ISho_W","IHome_I",
+                              "ICs_W","IHos_W","INur_W","IOff_W","IRes_W","ISch_W","ISho_W","ICHome_W",
+                              "IHome_I", "ICHome_R",
                               "ICs_V","IHos_V","INur_V","IOff_V","IRes_V","ISch_V","ISho_V","IHome_V",
                               "IAdu","IPen","IChi","IInf",
                               "DAdul","DPen","DChi","DInf", "SecInfections", "GenerationTime" };

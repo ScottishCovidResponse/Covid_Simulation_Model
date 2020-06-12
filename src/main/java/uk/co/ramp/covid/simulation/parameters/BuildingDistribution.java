@@ -23,6 +23,9 @@ public class BuildingDistribution {
     public Integer populationToRestaurantsRatio = null;
     public PlaceSizeDistribution restaurantSizeDistribution = null;
 
+    public Integer populationToCareHomeRatio = null;
+    public PlaceSizeDistribution careHomeSizeDistribution = null;
+
     public boolean isValid() {
         return populationToHospitalsRatio > 0
                 && populationToConstructionSitesRatio > 0
@@ -31,12 +34,14 @@ public class BuildingDistribution {
                 && populationToRestaurantsRatio > 0
                 && populationToSchoolsRatio > 0
                 && populationToShopsRatio > 0
+                && populationToCareHomeRatio > 0
                 && hospitalSizeDistribution.isValid()
                 && schoolSizeDistribution.isValid()
                 && shopSizeDistribution.isValid()
                 && officeSizeDistribution.isValid()
                 && constructionSiteSizeDistribution.isValid()
                 && nurserySizeDistribution.isValid()
+                && careHomeSizeDistribution.isValid()
                 && restaurantSizeDistribution.isValid();
     }
 }
