@@ -7,7 +7,7 @@ package uk.co.ramp.covid.simulation.population;
 import org.apache.commons.math3.random.RandomDataGenerator;
 import uk.co.ramp.covid.simulation.covid.Covid;
 import uk.co.ramp.covid.simulation.parameters.CovidParameters;
-import uk.co.ramp.covid.simulation.DailyStats;
+import uk.co.ramp.covid.simulation.output.DailyStats;
 import uk.co.ramp.covid.simulation.Time;
 import uk.co.ramp.covid.simulation.parameters.PopulationParameters;
 import uk.co.ramp.covid.simulation.place.CommunalPlace;
@@ -18,6 +18,7 @@ import uk.co.ramp.covid.simulation.util.RNG;
 import java.util.Optional;
 
 public abstract class Person {
+
 
     public enum Sex {
         MALE, FEMALE
@@ -38,7 +39,13 @@ public abstract class Person {
     private final double quarantineVal;
     private Optional<Boolean> testOutcome = Optional.empty();
     protected final RandomDataGenerator rng;
+
+    private boolean isHospitalised = false;
+    private boolean goesToHospitalInPhase2;
     
+    private static int nPeople = 0;
+    private final int personId;
+
     public abstract void reportInfection(DailyStats s);
     public abstract void reportDeath (DailyStats s);
     public abstract void allocateCommunalPlace(Places p);
@@ -51,14 +58,22 @@ public abstract class Person {
         this.transmissionProb = PopulationParameters.get().personProperties.pTransmission.asDouble();
         this.quarantineProb = PopulationParameters.get().personProperties.pQuarantinesIfSymptomatic;
         this.quarantineVal = rng.nextUniform(0, 1);
+        this.goesToHospitalInPhase2 = CovidParameters.get().hospitalisationParameters.pPhase2GoesToHosptial.sample();
+        this.personId = nPeople++;
+    }
+
+    @Override
+    public int hashCode() {
+        return personId;
     }
 
     public boolean isRecovered() {
         return recovered;
     }
 
-    public void setRecovered(boolean recovered) {
-        this.recovered = recovered;
+    public void recover() {
+        isHospitalised = false;
+        recovered = true;
     }
 
     public CommunalPlace getPrimaryCommunalPlace() {
@@ -81,6 +96,10 @@ public abstract class Person {
         home.addPersonNext(this);
     }
 
+    public boolean isHospitalised() {
+        return isHospitalised;
+    }
+
     public boolean getQuarantine() {
         return this.quarantine;
     }
@@ -93,6 +112,14 @@ public abstract class Person {
         }
 
         return inf;
+    }
+
+    public void hospitalise() {
+        isHospitalised = true;
+    }
+
+    public boolean goesToHosptialInPhase2() {
+        return goesToHospitalInPhase2;
     }
 
     public boolean isinfected() {
@@ -156,11 +183,12 @@ public abstract class Person {
     }
 
     public boolean isInfectious() {
-        return cStatus() == CStatus.ASYMPTOMATIC
+        return cStatus() != null
+                && (cStatus() == CStatus.ASYMPTOMATIC
                 || cStatus() == CStatus.PHASE1
-                || cStatus() == CStatus.PHASE2;
+                || cStatus() == CStatus.PHASE2);
     }
-    
+
     public double getTransAdjustment() {
     	return this.cVirus.getTransAdjustment();
     }
@@ -265,6 +293,10 @@ public abstract class Person {
 
     public Optional<Boolean> getTestOutcome() {
         return testOutcome;
+    }
+
+    public int getID() {
+        return personId;
     }
 
     public void seedInfectionChallenge(Time t, DailyStats s) {

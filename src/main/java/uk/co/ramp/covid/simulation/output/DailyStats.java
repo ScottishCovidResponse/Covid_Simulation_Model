@@ -1,20 +1,21 @@
-package uk.co.ramp.covid.simulation;
+package uk.co.ramp.covid.simulation.output;
 
 import org.apache.commons.csv.CSVPrinter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import uk.co.ramp.covid.simulation.Time;
 import uk.co.ramp.covid.simulation.population.*;
 
-/** DailyStatis accumluates statistics, e.g. healthy/dead, for a particular day */
 import java.io.IOException;
 import java.util.Objects;
 
+/** DailyStats accumulates statistics, e.g. healthy/dead, for a particular day */
 public class DailyStats {
     private static final Logger LOGGER = LogManager.getLogger(DailyStats.class);
 
-    private int day;
+    private final int day;
 
-    // Daily cummulative statistics
+    // Daily cumulative statistics
     private int healthy = 0;
     private int exposed = 0;
     private int asymptomatic = 0;
@@ -53,6 +54,8 @@ public class DailyStats {
     private int pensionerDeaths = 0;
     private int childDeaths = 0;
     private int infantDeaths = 0;
+    private int hospitalDeaths = 0;
+    private int homeDeaths = 0;
 
     // Infection rate stats
     private Double secInfections = null;
@@ -86,9 +89,37 @@ public class DailyStats {
         return exposed + asymptomatic + phase1 + phase2;
     }
 
-    public int getConstructionSiteInfectionsWorker() {
-        return constructionSiteInfectionsWorker;
-    }
+    public int getConstructionSiteInfectionsWorker() { return constructionSiteInfectionsWorker; }
+
+    public int getHomeInfectionsInhabitant() { return homeInfectionsInhabitant; }
+
+    public int getHomeInfectionsVisitor() { return homeInfectionsVisitor; }
+
+    public int getConstructionSiteInfectionsVisitor() { return constructionSiteInfectionsVisitor; }
+
+    public int getHospitalInfectionsWorker() { return hospitalInfectionsWorker; }
+
+    public int getHospitalInfectionsVisitor() { return hospitalInfectionsVisitor; }
+
+    public int getNurseryInfectionsWorker() { return nurseryInfectionsWorker; }
+
+    public int getNurseryInfectionsVisitor() { return nurseryInfectionsVisitor; }
+
+    public int getOfficeInfectionsWorker() { return officeInfectionsWorker; }
+
+    public int getOfficeInfectionsVisitor() { return officeInfectionsVisitor; }
+
+    public int getRestaurantInfectionsWorker() { return restaurantInfectionsWorker; }
+
+    public int getRestaurantInfectionsVisitor() { return restaurantInfectionsVisitor; }
+
+    public int getSchoolInfectionsWorker() { return schoolInfectionsWorker; }
+
+    public int getSchoolInfectionsVisitor() { return schoolInfectionsVisitor; }
+
+    public int getShopInfectionsWorker() { return shopInfectionsWorker; }
+
+    public int getShopInfectionsVisitor() { return shopInfectionsVisitor; }
 
     public void log(){
         LOGGER.info("Day = {} Healthy = {} Latent = {} Asymptomatic = {} Phase 1 = {} Phase 2 = {} Dead = {} Recovered = {}",
@@ -104,7 +135,7 @@ public class DailyStats {
                 constructionSiteInfectionsVisitor, hospitalInfectionsVisitor, nurseryInfectionsVisitor, 
                 officeInfectionsVisitor, restaurantInfectionsVisitor, schoolInfectionsVisitor, shopInfectionsVisitor,
                 homeInfectionsVisitor, adultInfected, pensionerInfected, childInfected, infantInfected, adultDeaths,
-                pensionerDeaths, childDeaths, infantDeaths, secInfections, generationTime);
+                pensionerDeaths, childDeaths, infantDeaths, homeDeaths, hospitalDeaths, secInfections, generationTime);
     }
 
     public int getTotalDailyInfections () {
@@ -175,9 +206,11 @@ public class DailyStats {
 
     public int getInfantDeaths() { return infantDeaths; }
 
-    public int getTotalDeaths() {
-        return adultDeaths + pensionerDeaths + childDeaths + infantDeaths;
-    }
+    public int getHospitalDeaths() { return hospitalDeaths; }
+
+    public int getHomeDeaths() { return homeDeaths; }
+
+    public int getTotalDeaths() { return adultDeaths + pensionerDeaths + childDeaths + infantDeaths; }
 
     @Override
     public int hashCode() {
@@ -231,13 +264,9 @@ public class DailyStats {
     
     public int getSeedInfections() { return seedInfections; }
 
-    public void incSeedInfections() {
-        seedInfections++;
-    }
+    public void incSeedInfections() { seedInfections++; }
 
-    public void incDeathsAdult() {
-        adultDeaths++;
-    }
+    public void incDeathsAdult() { adultDeaths++; }
 
     public void incDeathsChild() {
         childDeaths++;
@@ -337,4 +366,10 @@ public class DailyStats {
         generationTime = rs.getMeanGenerationTime(day);
     }
 
+    public void incHospitalDeaths() {
+        hospitalDeaths++;
+    }
+
+    public void incHomeDeaths() { homeDeaths++; }
+    
 }

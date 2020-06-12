@@ -1,11 +1,15 @@
 package uk.co.ramp.covid.simulation.place;
 
-import uk.co.ramp.covid.simulation.DailyStats;
+import uk.co.ramp.covid.simulation.output.DailyStats;
 import uk.co.ramp.covid.simulation.Time;
 import uk.co.ramp.covid.simulation.population.Person;
 import uk.co.ramp.covid.simulation.parameters.PopulationParameters;
+import uk.co.ramp.covid.simulation.population.Places;
 import uk.co.ramp.covid.simulation.population.Shifts;
 import uk.co.ramp.covid.simulation.util.RoundRobinAllocator;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Hospital extends CommunalPlace {
     
@@ -46,5 +50,48 @@ public class Hospital extends CommunalPlace {
         } else {
             s.incInfectionsHospitalVisitor();
         }
+    }
+
+    public void sendHome(Time t) {
+        ArrayList<Person> left = new ArrayList<>();
+        for (Person nPers : people) {
+            if (nPers.worksNextHour(this, t, false)) {
+                continue;
+            }
+
+            // Let recovered patients go home
+            if (!nPers.isHospitalised()) {
+                nPers.returnHome();
+            }
+        }
+        people.removeAll(left);
+    }
+
+    // Hospitals specialise moveShifts to ensure hospitalised staff don't go home
+    public void moveShifts(Time t, boolean lockdown) {
+        List<Person> left = new ArrayList<>();
+        for (Person p : people) {
+            if (p.isHospitalised()) {
+                continue;
+            }
+
+            if (!p.worksNextHour(this, t, lockdown)) {
+                p.returnHome();
+                left.add(p);
+            }
+        }
+        people.removeAll(left);
+    }
+
+    @Override
+    public void doMovement(Time t, boolean lockdown, Places places) {
+        movePhase2(t, places);
+        moveShifts(t, lockdown);
+        sendHome(t);
+    }
+
+    @Override
+    public void reportDeath(DailyStats s) {
+        s.incHospitalDeaths();
     }
 }

@@ -1,4 +1,4 @@
-package uk.co.ramp.covid.simulation;
+package uk.co.ramp.covid.simulation.output;
 
 import org.junit.Before;
 import org.junit.Test;

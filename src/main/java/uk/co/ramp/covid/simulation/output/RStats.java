@@ -1,4 +1,4 @@
-package uk.co.ramp.covid.simulation;
+package uk.co.ramp.covid.simulation.output;
 
 import uk.co.ramp.covid.simulation.covid.Covid;
 import uk.co.ramp.covid.simulation.covid.InfectionLog;

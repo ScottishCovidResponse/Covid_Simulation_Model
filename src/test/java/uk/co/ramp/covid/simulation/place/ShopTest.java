@@ -5,7 +5,7 @@ import org.junit.Test;
 
 import com.google.gson.JsonParseException;
 import uk.co.ramp.covid.simulation.Time;
-import uk.co.ramp.covid.simulation.DailyStats;
+import uk.co.ramp.covid.simulation.output.DailyStats;
 import uk.co.ramp.covid.simulation.parameters.PopulationParameters;
 import uk.co.ramp.covid.simulation.place.householdtypes.SmallFamily;
 import uk.co.ramp.covid.simulation.population.*;
@@ -31,8 +31,8 @@ public class ShopTest extends SimulationTest {
         shop = new Shop(CommunalPlace.Size.MED);
         p1 = new Adult(25, Person.Sex.MALE);
         p2 = new Pensioner(67, Person.Sex.FEMALE);
-        Household h1 = new SmallFamily(null);
-        Household h2 = new SmallFamily(null);
+        Household h1 = new SmallFamily();
+        Household h2 = new SmallFamily();
         p1.setHome(h1);
         p2.setHome(h2);
         shop.people.add(p1);

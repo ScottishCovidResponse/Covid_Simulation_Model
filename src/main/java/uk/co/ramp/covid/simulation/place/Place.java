@@ -1,13 +1,16 @@
 package uk.co.ramp.covid.simulation.place;
 
-import uk.co.ramp.covid.simulation.DailyStats;
+import uk.co.ramp.covid.simulation.output.DailyStats;
+import uk.co.ramp.covid.simulation.output.NetworkGenerator;
 import uk.co.ramp.covid.simulation.Time;
+import uk.co.ramp.covid.simulation.parameters.CovidParameters;
+import uk.co.ramp.covid.simulation.parameters.DiseaseParameters;
 import uk.co.ramp.covid.simulation.population.CStatus;
 import uk.co.ramp.covid.simulation.population.Person;
 import uk.co.ramp.covid.simulation.parameters.PopulationParameters;
+import uk.co.ramp.covid.simulation.population.Places;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public abstract class Place {
 
@@ -22,6 +25,10 @@ public abstract class Place {
 
 
     abstract public void reportInfection(Time t, Person p, DailyStats s);
+
+    protected  void reportDeath(DailyStats s) {
+
+    }
 
     public Place() {
         this.people = new ArrayList<>();
@@ -42,7 +49,14 @@ public abstract class Place {
     private void registerInfection(Time t, Person p, DailyStats s) {
         reportInfection(t, p, s);
         p.reportInfection(s);
-    } 
+    }
+
+
+    private void registerDeath(Person p, DailyStats stats) {
+        reportDeath(stats);
+        p.reportDeath(stats);
+    }
+
     protected double getTransConstant() {
     	if(people.size() == 0) {
     	   return 0.0;
@@ -55,36 +69,56 @@ public abstract class Place {
         return transConstant * transAdjustment / people.size();
     }
     
-    /** Handles infections between all people in this place */
-    public void doInfect(Time t, DailyStats stats) {
+    private void writeContact(Time t) {
+        for (Person a : people) {
+            for (Person b : people) {
+                if (a != b) {
+                    NetworkGenerator.writeContact(t, a, b, this, this.getTransConstant());
+                }
+            }
+        }
+    }
+
+    private void stepInfections(Time t, DailyStats stats) {
         List<Person> deaths = new ArrayList<>();
         for (Person cPers : people) {
             if (cPers.getInfectionStatus() && !cPers.isRecovered()) {
                 cPers.stepInfection(t);
-                if (cPers.isInfectious()) {
-                    for (Person nPers : people) {
-                        if (cPers != nPers) {
-                            if (!nPers.getInfectionStatus()) {
-                                boolean infected = nPers.infChallenge(this.getTransConstant() * this.sDistance * cPers.getTransAdjustment());
-                                if (infected) {
-                                    registerInfection(t, nPers, stats);
-                                    nPers.getcVirus().getInfectionLog().registerInfected(t);
-                                    cPers.getcVirus().getInfectionLog().registerSecondaryInfection(t, nPers);
-                                }
-                            }
-                        }
-                    }
-                }
                 if (cPers.cStatus() == CStatus.DEAD) {
-                    cPers.reportDeath(stats);
+                    registerDeath(cPers, stats);
                     deaths.add(cPers);
                 }
                 if (cPers.cStatus() == CStatus.RECOVERED) {
-                    cPers.setRecovered(true);
+                    cPers.recover();
                 }
             }
         }
         people.removeAll(deaths);
+    }
+
+    /** Handles infections between all people in this place */
+    public void doInfect(Time t, DailyStats stats) {
+        if (NetworkGenerator.generating()) {
+            writeContact(t);
+            return; // don't do infections
+        }
+
+       stepInfections(t, stats);
+
+        for (Person cPers : people) {
+            if (cPers.isInfectious()) {
+                for (Person nPers : people) {
+                    if (cPers != nPers && !nPers.getInfectionStatus()) {
+                        boolean infected = nPers.infChallenge(getTransConstant() * sDistance * cPers.getTransAdjustment());
+                        if (infected) {
+                            registerInfection(t, nPers, stats);
+                            nPers.getcVirus().getInfectionLog().registerInfected(t);
+                            cPers.getcVirus().getInfectionLog().registerSecondaryInfection(t, nPers);
+                        }
+                    }
+                }
+            }
+        }
     }
     
     /** Do a timestep by switching to the new set of people */
@@ -111,6 +145,7 @@ public abstract class Place {
         return left;
     }
 
+
     /** Handles movement between people in this place */
-    public abstract void doMovement(Time t, boolean lockdown);
+    public abstract void doMovement(Time t, boolean lockdown, Places places);
 }

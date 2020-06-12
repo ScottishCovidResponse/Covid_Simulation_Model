@@ -7,6 +7,8 @@ import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import uk.co.ramp.covid.simulation.output.DailyStats;
+import uk.co.ramp.covid.simulation.output.NetworkGenerator;
 import uk.co.ramp.covid.simulation.parameters.ParameterIO;
 import uk.co.ramp.covid.simulation.population.ImpossibleAllocationException;
 import uk.co.ramp.covid.simulation.population.ImpossibleWorkerDistributionException;
@@ -27,9 +29,9 @@ public class Model {
     private static final Logger LOGGER = LogManager.getLogger(Model.class);
 
     private class Lockdown {
-        public Integer start = null;
-        public Integer end = null;
-        public Double socialDistance = null;
+        public Integer start;
+        public Integer end;
+        public Double socialDistance;
 
         public Lockdown(int start, int end, double socialDistance) {
             this.start = start;
@@ -65,6 +67,7 @@ public class Model {
     private String outputDirectory = null;
     private Lockdown lockDown = null;
     private Lockdown schoolLockDown = null;
+    private String networkOutputDir = null;
 
     public Model() {}
 
@@ -120,6 +123,11 @@ public class Model {
 
     public Model setOutputDirectory(String fname) {
         this.outputDirectory = fname;
+        return this;
+    }
+
+    public Model setNetworkOutputDir(String path) {
+        this.networkOutputDir = path;
         return this;
     }
 
@@ -198,6 +206,14 @@ public class Model {
                 break;
             }
 
+            if (networkOutputDir != null) {
+                try {
+                    NetworkGenerator.startNetworkGeneration(p.getAllPeople(), networkOutputDir);
+                } catch (IOException e) {
+                    LOGGER.error("Error starting network generation", e);
+                    break;
+                }
+            }
 
             p.setExternalInfectionDays(externalInfectionDays);
             p.seedVirus(nInitialInfections);
@@ -263,7 +279,8 @@ public class Model {
                               "ICs_W","IHos_W","INur_W","IOff_W","IRes_W","ISch_W","ISho_W","IHome_I",
                               "ICs_V","IHos_V","INur_V","IOff_V","IRes_V","ISch_V","ISho_V","IHome_V",
                               "IAdu","IPen","IChi","IInf",
-                              "DAdul","DPen","DChi","DInf", "SecInfections", "GenerationTime" };
+                              "DAdul","DPen","DChi","DInf","DHome", "DHospital",
+                              "SecInfections", "GenerationTime" };
         try {
             FileWriter out = new FileWriter(outF.toFile());
             CSVPrinter printer = new CSVPrinter(out, CSVFormat.DEFAULT.withHeader(headers));

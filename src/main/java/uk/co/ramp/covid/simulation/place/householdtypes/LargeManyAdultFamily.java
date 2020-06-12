@@ -6,8 +6,8 @@ import uk.co.ramp.covid.simulation.population.Places;
 /** LargeManyAdultFamily: 3 or more (any age) adults + 1 or more children */
 public class LargeManyAdultFamily extends Household {
 
-    public LargeManyAdultFamily(Places places) {
-        super(places);
+    public LargeManyAdultFamily() {
+        super();
     }
 
     @Override

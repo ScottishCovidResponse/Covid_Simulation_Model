@@ -1,6 +1,6 @@
 package uk.co.ramp.covid.simulation.place;
 
-import uk.co.ramp.covid.simulation.DailyStats;
+import uk.co.ramp.covid.simulation.output.DailyStats;
 import uk.co.ramp.covid.simulation.Time;
 import uk.co.ramp.covid.simulation.parameters.CovidParameters;
 import uk.co.ramp.covid.simulation.parameters.PopulationParameters;
@@ -13,7 +13,6 @@ import java.util.*;
 public abstract class Household extends Place {
 
     private final List<Household> neighbours;
-    private final Places places;
     
     private boolean willIsolate = false;
     private boolean lockCompliant = false;
@@ -21,9 +20,8 @@ public abstract class Household extends Place {
     private boolean visitsNeighbourToday = false;
 
     // Create household defined by who lives there
-    public Household(Places places) {
+    public Household() {
         this.neighbours = new ArrayList<>();
-        this.places = places;
         if (PopulationParameters.get().householdProperties.pWillIsolate.sample()) {
             willIsolate = true;
         }
@@ -164,10 +162,30 @@ public abstract class Household extends Place {
             s.incInfectionsHomeVisitor();
         }
     }
-
+    
+    public void goToHospital(Time t, Places places) {
+        List<Person> left = new ArrayList<>();
+        for (Person p : people) {
+            if (p.cStatus() != null && p.cStatus() == CStatus.PHASE2) {
+                if (p.goesToHosptialInPhase2()) {
+                    p.hospitalise();
+                    Hospital h = places.getRandomCovidHospital();
+                    h.addPersonNext(p);
+                    left.add(p);
+                } else if (isVisitor(p)) {
+                    p.returnHome();
+                    left.add(p);
+                    left.addAll(sendFamilyHome(p, null, t));
+                }
+            }
+        }
+        people.removeAll(left);
+    }
 
     @Override
-    public void doMovement(Time t, boolean lockdown) {
+    public void doMovement(Time t, boolean lockdown, Places places) {
+        goToHospital(t, places);
+
         if (!isIsolating() && getNumMovers() > 0) {
             // Ordering here implies work takes highest priority, then shopping trips have higher priority
             // than neighbour and restaurant trips
@@ -175,14 +193,14 @@ public abstract class Household extends Place {
 
             // Shops are only open 8-22
             if (t.getHour() + 1 >= 8 && t.getHour() + 1 < 22) {
-                moveShop(t, lockdown);
+                moveShop(t, lockdown, places);
             }
 
             moveNeighbour(t, lockdown);
 
             // Restaurants are only open 8-22
             if (!lockdown && t.getHour() + 1 >= 8 && t.getHour() + 1 < 22) {
-                moveRestaurant(t);
+                moveRestaurant(t, places);
             }
         }
 
@@ -241,7 +259,7 @@ public abstract class Household extends Place {
         people.removeAll(left);
     }
 
-    private void moveShop(Time t, boolean lockdown) {
+    private void moveShop(Time t, boolean lockdown, Places places) {
         List<Person> left = new ArrayList<>();
 
         Probability visitProb = PopulationParameters.get().householdProperties.pGoShopping;
@@ -277,7 +295,7 @@ public abstract class Household extends Place {
         people.removeAll(left);
     }
 
-    private void moveRestaurant(Time t) {
+    private void moveRestaurant(Time t, Places places) {
         List<Person> left = new ArrayList<>();
 
         if (PopulationParameters.get().householdProperties.pGoRestaurant.sample()) {
@@ -408,6 +426,11 @@ public abstract class Household extends Place {
         } else {
             throw new InvalidHouseholdAllocationException("Cannot add pensioner to household");
         }
+    }
+
+    @Override
+    public void reportDeath(DailyStats s) {
+        s.incHomeDeaths();
     }
 
 }

@@ -1,9 +1,10 @@
 package uk.co.ramp.covid.simulation.place;
 
-import uk.co.ramp.covid.simulation.DailyStats;
+import uk.co.ramp.covid.simulation.output.DailyStats;
 import uk.co.ramp.covid.simulation.Time;
 import uk.co.ramp.covid.simulation.population.Person;
 import uk.co.ramp.covid.simulation.parameters.PopulationParameters;
+import uk.co.ramp.covid.simulation.population.Places;
 import uk.co.ramp.covid.simulation.population.Shifts;
 import uk.co.ramp.covid.simulation.util.RoundRobinAllocator;
 
@@ -85,7 +86,8 @@ public class Shop extends CommunalPlace {
     }
 
     @Override
-    public void doMovement(Time t, boolean lockdown) {
+    public void doMovement(Time t, boolean lockdown, Places places) {
+        movePhase2(t, places);
         moveShifts(t, lockdown);
         sendHome(t);
     }

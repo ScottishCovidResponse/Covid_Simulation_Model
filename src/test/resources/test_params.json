@@ -23,6 +23,10 @@
       "infectionSeedProperties": {
         "infectionRateIncreaseAdult":0.0001,
         "infectionRateIncreaseInfantChildPensioner":0.0002
+      },
+      "hospitalisationParameters": {
+          "pPhase2GoesToHosptial":0.52,
+          "hospitalisationTransmissionReduction":0.05
       }
     },
   "population":{
@@ -85,6 +89,7 @@
         },
         "buildingDistribution":{
           "populationToHospitalsRatio":1000,
+          "covidHospitalRatio": 5,
           "populationToSchoolsRatio":500,
           "populationToShopsRatio":200,
           "populationToOfficesRatio":100,

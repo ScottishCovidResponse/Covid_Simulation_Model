@@ -5,6 +5,7 @@ import org.junit.Test;
 
 import com.google.gson.JsonParseException;
 
+import uk.co.ramp.covid.simulation.output.DailyStats;
 import uk.co.ramp.covid.simulation.parameters.CovidParameters;
 import uk.co.ramp.covid.simulation.parameters.PopulationParameters;
 import uk.co.ramp.covid.simulation.util.Probability;
@@ -78,11 +79,17 @@ public class ModelTest extends SimulationTest {
         int adultDeaths = 0;
         int pensionerDeaths = 0;
         int childDeaths = 0;
+        
+        int totalDead = 0;
         for (DailyStats s : stats.get(0)) {
             adultDeaths = s.getAdultDeaths();
             pensionerDeaths += s.getPensionerDeaths();
             childDeaths += s.getChildDeaths();
+            totalDead += s.getHomeDeaths() + s.getHospitalDeaths();
         }
+        
+        List<DailyStats> s = stats.get(0);
+        assertEquals(s.get(s.size() - 1).getDead(), totalDead);
 
         if (CovidParameters.get().diseaseParameters.adultProgressionPhase2 < (double) CovidParameters.get().diseaseParameters.pensionerProgressionPhase2) {
             assertTrue(adultDeaths <= pensionerDeaths);
@@ -90,7 +97,6 @@ public class ModelTest extends SimulationTest {
         if (CovidParameters.get().diseaseParameters.childProgressionPhase2 < (double) CovidParameters.get().diseaseParameters.adultProgressionPhase2) {
             assertTrue(childDeaths <= pensionerDeaths);
         }
-
     }
 
     @Test
@@ -184,9 +190,9 @@ public class ModelTest extends SimulationTest {
         List<List<DailyStats>> stats2 = m2.run(0);
 
         //Check that there are the same number of infections in both scenarios before lockdown starts
-        int inf1 = stats1.get(0).get(29).getTotalInfected();
-        int inf2 = stats2.get(0).get(29).getTotalInfected();
-        assertTrue("infection numbers don't match before lockdown", Math.abs(inf1 - inf2) == 0);
+        int inf1 = stats1.get(0).get(startLock - 1).getTotalInfected();
+        int inf2 = stats2.get(0).get(startLock - 1).getTotalInfected();
+        assertEquals("infection numbers don't match before lockdown", inf1, inf2);
 
         //Check that there are fewer infections in the lockdown scenario
         inf1 = stats1.get(0).get(nDays - 1).getTotalInfected();
@@ -238,8 +244,12 @@ public class ModelTest extends SimulationTest {
         int dead = stats1.get(0).get(nDays - 1).getDead();
         int recovered = stats1.get(0).get(nDays -1).getRecovered();
         int latent = stats1.get(0).get(nDays -1).getExposed();
+        int phase1 = stats1.get(0).get(nDays -1).getPhase1();
+        int phase2 = stats1.get(0).get(nDays -1).getPhase2();
         assertTrue("Too many latent remain", latent < 3);
+        assertTrue("Too many P1 remain", phase1 < 3);
+        assertTrue("Too many P2 remain", phase2 < 3);
         assertEquals("Unexpected recoveries", 0, recovered);
-        assertEquals("Unexpected number of deaths", population, dead + latent);
+        assertEquals("Unexpected number of deaths", population, dead, latent + phase1 + phase2);
     }
 }
