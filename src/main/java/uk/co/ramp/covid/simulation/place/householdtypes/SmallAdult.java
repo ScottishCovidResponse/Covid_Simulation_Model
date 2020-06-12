@@ -6,8 +6,8 @@ import uk.co.ramp.covid.simulation.population.Places;
 /** SmallAdult: Two non-pensioner adults and no children */
 public class SmallAdult extends Household {
 
-    public SmallAdult(Places places) {
-        super(places);
+    public SmallAdult() {
+        super();
     }
 
     @Override

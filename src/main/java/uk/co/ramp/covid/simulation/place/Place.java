@@ -3,9 +3,12 @@ package uk.co.ramp.covid.simulation.place;
 import uk.co.ramp.covid.simulation.output.DailyStats;
 import uk.co.ramp.covid.simulation.output.NetworkGenerator;
 import uk.co.ramp.covid.simulation.Time;
+import uk.co.ramp.covid.simulation.parameters.CovidParameters;
+import uk.co.ramp.covid.simulation.parameters.DiseaseParameters;
 import uk.co.ramp.covid.simulation.population.CStatus;
 import uk.co.ramp.covid.simulation.population.Person;
 import uk.co.ramp.covid.simulation.parameters.PopulationParameters;
+import uk.co.ramp.covid.simulation.population.Places;
 
 import java.util.*;
 
@@ -22,6 +25,10 @@ public abstract class Place {
 
 
     abstract public void reportInfection(Time t, Person p, DailyStats s);
+
+    protected  void reportDeath(DailyStats s) {
+
+    }
 
     public Place() {
         this.people = new ArrayList<>();
@@ -42,7 +49,14 @@ public abstract class Place {
     private void registerInfection(Time t, Person p, DailyStats s) {
         reportInfection(t, p, s);
         p.reportInfection(s);
-    } 
+    }
+
+
+    private void registerDeath(Person p, DailyStats stats) {
+        reportDeath(stats);
+        p.reportDeath(stats);
+    }
+
     protected double getTransConstant() {
     	if(people.size() == 0) {
     	   return 0.0;
@@ -71,11 +85,11 @@ public abstract class Place {
             if (cPers.getInfectionStatus() && !cPers.isRecovered()) {
                 cPers.stepInfection(t);
                 if (cPers.cStatus() == CStatus.DEAD) {
-                    cPers.reportDeath(stats);
+                    registerDeath(cPers, stats);
                     deaths.add(cPers);
                 }
                 if (cPers.cStatus() == CStatus.RECOVERED) {
-                    cPers.setRecovered(true);
+                    cPers.recover();
                 }
             }
         }
@@ -131,6 +145,7 @@ public abstract class Place {
         return left;
     }
 
+
     /** Handles movement between people in this place */
-    public abstract void doMovement(Time t, boolean lockdown);
+    public abstract void doMovement(Time t, boolean lockdown, Places places);
 }

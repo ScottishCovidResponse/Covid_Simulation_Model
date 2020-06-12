@@ -6,8 +6,8 @@ import uk.co.ramp.covid.simulation.population.Places;
 /** DoublePensioner: two adults of pensionable age and no children */
 public class DoubleOlder extends Household {
     
-    public DoubleOlder(Places places) {
-        super(places);
+    public DoubleOlder() {
+        super();
     }
 
     @Override

@@ -21,8 +21,12 @@
           "pensionerProgressionPhase2":0.8
       },
       "infectionSeedProperties": {
-        "infectionRateIncreaseAdult":0.000005,
-        "infectionRateIncreaseInfantChildPensioner":0.0000025
+          "infectionRateIncreaseAdult":0.000005,
+          "infectionRateIncreaseInfantChildPensioner":0.0000025
+      },
+      "hospitalisationParameters": {
+          "pPhase2GoesToHosptial":0.52,
+          "hospitalisationTransmissionReduction":0.05
       }
     },
     "population":{
@@ -90,6 +94,7 @@
                 "pMed":1.0,
                 "pLarge":0
             },
+            "covidHospitalRatio": 5,
             "populationToSchoolsRatio":2500,
             "schoolSizeDistribution":{
                 "pSmall":0,
