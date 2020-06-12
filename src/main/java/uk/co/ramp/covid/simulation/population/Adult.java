@@ -43,25 +43,25 @@ public class Adult extends Person {
         CommunalPlace primaryPlace = null;
         switch(profession) {
             case TEACHER: {
-                primaryPlace = p.getRandomSchool();
+                primaryPlace = p.getNextSchoolJob();
             } break;
             case NURSERY: {
-                primaryPlace = p.getRandomNursery();
+                primaryPlace = p.getNextNurseryJob();
             } break;
             case SHOP: {
-                primaryPlace = p.getRandomShop();
+                primaryPlace = p.getNextShopJob();
             } break;
             case CONSTRUCTION: {
-                primaryPlace = p.getRandomConstructionSite();
+                primaryPlace = p.getNextConstructionSiteJob();
             } break;
             case OFFICE: {
-                primaryPlace = p.getRandomOffice();
+                primaryPlace = p.getNextOfficeJob();
             } break;
             case HOSPITAL: {
-                primaryPlace = p.getRandomHospital();
+                primaryPlace = p.getNextHospitalJob();
             } break;
             case RESTAURANT: {
-                primaryPlace = p.getRandomRestaurant();
+                primaryPlace = p.getNextRestaurantJob();
             } break;
             case NONE: {
                 // do nothing
