@@ -13,8 +13,8 @@ public abstract class Place {
 
     // People are managed in 2 lists, those currently in the place "people" and
     // those who will be in the place in the next hour "nextPeople"
-    protected Set<Person> people;
-    protected Set<Person> nextPeople;
+    protected List<Person> people;
+    protected List<Person> nextPeople;
     
     protected double sDistance;
     protected double transConstant;
@@ -24,15 +24,15 @@ public abstract class Place {
     abstract public void reportInfection(Time t, Person p, DailyStats s);
 
     public Place() {
-        this.people = new LinkedHashSet<>();
-        this.nextPeople = new LinkedHashSet<>();
+        this.people = new ArrayList<>();
+        this.nextPeople = new ArrayList<>();
         this.transConstant = PopulationParameters.get().buildingProperties.baseTransmissionConstant;
         this.sDistance = 1.0;
         this.transAdjustment = 1.0;
     }
 
     public List<Person> getPeople() {
-        return new ArrayList<>(people);
+        return people;
     }
 
     public void addPersonNext(Person p) {
@@ -114,7 +114,7 @@ public abstract class Place {
         nextPeople.addAll(people);
 
         // Switch the movement buffers
-        Set<Person> tmp = people;
+        List<Person> tmp = people;
         people = nextPeople;
         nextPeople = tmp;
         nextPeople.clear();
