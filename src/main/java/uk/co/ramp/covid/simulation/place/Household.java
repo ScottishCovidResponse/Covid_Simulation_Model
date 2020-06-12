@@ -169,7 +169,7 @@ public abstract class Household extends Place {
             if (p.cStatus() != null && p.cStatus() == CStatus.PHASE2) {
                 if (p.goesToHosptialInPhase2()) {
                     p.hospitalise();
-                    Hospital h = places.getRandomHospital();
+                    Hospital h = places.getRandomCovidHospital();
                     h.addPersonNext(p);
                     left.add(p);
                 } else if (isVisitor(p)) {

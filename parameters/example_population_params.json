@@ -88,12 +88,13 @@
             "pSingleOlder":0.14
         },
         "buildingDistribution":{
-            "populationToHospitalsRatio":10000,
+            "populationToHospitalsRatio":20000,
             "hospitalSizeDistribution":{
                 "pSmall":0,
                 "pMed":1.0,
                 "pLarge":0
             },
+            "covidHospitalRatio": 5,
             "populationToSchoolsRatio":2500,
             "schoolSizeDistribution":{
                 "pSmall":0,

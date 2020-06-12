@@ -94,6 +94,7 @@
                 "pMed":1.0,
                 "pLarge":0
             },
+            "covidHospitalRatio":5,
             "populationToSchoolsRatio":2500,
             "schoolSizeDistribution":{
                 "pSmall":0,

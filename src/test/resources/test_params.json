@@ -89,6 +89,7 @@
         },
         "buildingDistribution":{
           "populationToHospitalsRatio":1000,
+          "covidHospitalRatio": 5,
           "populationToSchoolsRatio":500,
           "populationToShopsRatio":200,
           "populationToOfficesRatio":100,

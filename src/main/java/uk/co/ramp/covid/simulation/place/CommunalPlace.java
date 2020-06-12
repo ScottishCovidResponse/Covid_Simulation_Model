@@ -80,7 +80,7 @@ public abstract class CommunalPlace extends Place {
         for (Person p : people) {
             if (p.cStatus() != null && p.cStatus() == CStatus.PHASE2) {
                 if (p.goesToHosptialInPhase2()) {
-                    Hospital h = places.getRandomHospital();
+                    Hospital h = places.getRandomCovidHospital();
                     p.hospitalise();
                     h.addPersonNext(p);
                     left.add(p);
