@@ -87,8 +87,66 @@ public class DailyStats {
         return exposed + asymptomatic + phase1 + phase2;
     }
 
-    public int getConstructionSiteInfectionsWorker() {
-        return constructionSiteInfectionsWorker;
+    public int getConstructionSiteInfectionsWorker() { return constructionSiteInfectionsWorker; }
+
+    public int getHomeInfectionsInhabitant() {
+        return homeInfectionsInhabitant;
+    }
+
+    public int getHomeInfectionsVisitor() {
+        return homeInfectionsVisitor;
+    }
+
+    public int getConstructionSiteInfectionsVisitor() {
+        return constructionSiteInfectionsVisitor;
+    }
+
+    public int getHospitalInfectionsWorker() {
+        return hospitalInfectionsWorker;
+    }
+
+    public int getHospitalInfectionsVisitor() {
+        return hospitalInfectionsVisitor;
+    }
+
+    public int getNurseryInfectionsWorker() {
+        return nurseryInfectionsWorker;
+    }
+
+    public int getNurseryInfectionsVisitor() {
+        return nurseryInfectionsVisitor;
+    }
+
+    public int getOfficeInfectionsWorker() {
+        return officeInfectionsWorker;
+    }
+
+    public int getOfficeInfectionsVisitor() {
+        return officeInfectionsVisitor;
+    }
+
+    public int getRestaurantInfectionsWorker() {
+        return restaurantInfectionsWorker;
+    }
+
+    public int getRestaurantInfectionsVisitor() {
+        return restaurantInfectionsVisitor;
+    }
+
+    public int getSchoolInfectionsWorker() {
+        return schoolInfectionsWorker;
+    }
+
+    public int getSchoolInfectionsVisitor() {
+        return schoolInfectionsVisitor;
+    }
+
+    public int getShopInfectionsWorker() {
+        return shopInfectionsWorker;
+    }
+
+    public int getShopInfectionsVisitor() {
+        return shopInfectionsVisitor;
     }
 
     public void log(){

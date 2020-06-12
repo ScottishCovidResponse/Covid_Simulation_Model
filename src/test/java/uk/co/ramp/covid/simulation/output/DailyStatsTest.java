@@ -29,7 +29,7 @@ public class DailyStatsTest extends SimulationTest {
         RNGSeed = 42;
     }
 
-    //Test that all statistics are collected and self consistent
+    //Test that all statistics are collected and counted correctly
     @Test
     public void testDailyStats() {
         // Daily only statistics
@@ -105,26 +105,37 @@ public class DailyStatsTest extends SimulationTest {
             dailyInfected += stats.get(0).get(i).getTotalDailyInfections();
             seedInfections += stats.get(0).get(i).getSeedInfections();
 
-            constructionSiteInfectionsWorker = stats.get(0).get(i).getConstructionSiteInfectionsWorker();
-            constructionSiteInfectionsVisitor = 0;
-            hospitalInfectionsWorker = 0;
-            hospitalInfectionsVisitor = 0;
-            nurseryInfectionsWorker = 0;
-            nurseryInfectionsVisitor = 0;
-            officeInfectionsWorker = 0;
-            officeInfectionsVisitor = 0;
-            restaurantInfectionsWorker = 0;
-            restaurantInfectionsVisitor  = 0;
-            schoolInfectionsWorker = 0;
-            schoolInfectionsVisitor = 0;
-            shopInfectionsWorker = 0;
-            shopInfectionsVisitor = 0;
+            homeInfectionsInhabitant += stats.get(0).get(i).getHomeInfectionsInhabitant();
+            homeInfectionsVisitor += stats.get(0).get(i).getHomeInfectionsVisitor();
+            constructionSiteInfectionsWorker += stats.get(0).get(i).getConstructionSiteInfectionsWorker();
+            constructionSiteInfectionsVisitor += stats.get(0).get(i).getConstructionSiteInfectionsVisitor();
+            hospitalInfectionsWorker += stats.get(0).get(i).getHospitalInfectionsWorker();
+            hospitalInfectionsVisitor += stats.get(0).get(i).getHospitalInfectionsVisitor();
+            nurseryInfectionsWorker += stats.get(0).get(i).getNurseryInfectionsWorker();
+            nurseryInfectionsVisitor += stats.get(0).get(i).getNurseryInfectionsVisitor();
+            officeInfectionsWorker += stats.get(0).get(i).getOfficeInfectionsWorker();
+            officeInfectionsVisitor += stats.get(0).get(i).getOfficeInfectionsVisitor();
+            restaurantInfectionsWorker += stats.get(0).get(i).getRestaurantInfectionsWorker();
+            restaurantInfectionsVisitor += stats.get(0).get(i).getRestaurantInfectionsVisitor();
+            schoolInfectionsWorker += stats.get(0).get(i).getSchoolInfectionsWorker();
+            schoolInfectionsVisitor += stats.get(0).get(i).getSchoolInfectionsVisitor();
+            shopInfectionsWorker += stats.get(0).get(i).getShopInfectionsWorker();
+            shopInfectionsVisitor += stats.get(0).get(i).getShopInfectionsVisitor();
         }
         int expDeaths = adultDeaths + childDeaths + pensionerDeaths + infantDeaths;
         int expInfected = adultInfected + childInfected + pensionerInfected + infantInfected + seedInfections;
+        int expPlaceInfections = homeInfectionsInhabitant + homeInfectionsVisitor +
+                constructionSiteInfectionsWorker + constructionSiteInfectionsVisitor +
+                hospitalInfectionsWorker + hospitalInfectionsVisitor +
+                nurseryInfectionsWorker + nurseryInfectionsVisitor +
+                officeInfectionsWorker + officeInfectionsVisitor +
+                restaurantInfectionsWorker + restaurantInfectionsVisitor +
+                schoolInfectionsWorker + schoolInfectionsVisitor +
+                shopInfectionsWorker + shopInfectionsVisitor +
+                seedInfections;
         assertEquals("Inconsistent number of deaths", expDeaths, stats.get(0).get(nDays - 1).getDead());
         assertEquals("Inconsistent number of infected", expInfected, dailyInfected);
-
+        assertEquals("Inconsistent number of place infections", expPlaceInfections, dailyInfected);
     }
 
     //Test the equals() method in DailyStats
