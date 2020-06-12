@@ -88,7 +88,7 @@
             "pSingleOlder":0.14
         },
         "buildingDistribution":{
-            "populationToHospitalsRatio":20000,
+            "populationToHospitalsRatio":10000,
             "hospitalSizeDistribution":{
                 "pSmall":0,
                 "pMed":1.0,
