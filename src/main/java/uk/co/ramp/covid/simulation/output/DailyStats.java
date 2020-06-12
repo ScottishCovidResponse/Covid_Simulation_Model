@@ -13,7 +13,7 @@ import java.util.Objects;
 public class DailyStats {
     private static final Logger LOGGER = LogManager.getLogger(DailyStats.class);
 
-    private int day;
+    private final int day;
 
     // Daily cumulative statistics
     private int healthy = 0;
@@ -87,9 +87,37 @@ public class DailyStats {
         return exposed + asymptomatic + phase1 + phase2;
     }
 
-    public int getConstructionSiteInfectionsWorker() {
-        return constructionSiteInfectionsWorker;
-    }
+    public int getConstructionSiteInfectionsWorker() { return constructionSiteInfectionsWorker; }
+
+    public int getHomeInfectionsInhabitant() { return homeInfectionsInhabitant; }
+
+    public int getHomeInfectionsVisitor() { return homeInfectionsVisitor; }
+
+    public int getConstructionSiteInfectionsVisitor() { return constructionSiteInfectionsVisitor; }
+
+    public int getHospitalInfectionsWorker() { return hospitalInfectionsWorker; }
+
+    public int getHospitalInfectionsVisitor() { return hospitalInfectionsVisitor; }
+
+    public int getNurseryInfectionsWorker() { return nurseryInfectionsWorker; }
+
+    public int getNurseryInfectionsVisitor() { return nurseryInfectionsVisitor; }
+
+    public int getOfficeInfectionsWorker() { return officeInfectionsWorker; }
+
+    public int getOfficeInfectionsVisitor() { return officeInfectionsVisitor; }
+
+    public int getRestaurantInfectionsWorker() { return restaurantInfectionsWorker; }
+
+    public int getRestaurantInfectionsVisitor() { return restaurantInfectionsVisitor; }
+
+    public int getSchoolInfectionsWorker() { return schoolInfectionsWorker; }
+
+    public int getSchoolInfectionsVisitor() { return schoolInfectionsVisitor; }
+
+    public int getShopInfectionsWorker() { return shopInfectionsWorker; }
+
+    public int getShopInfectionsVisitor() { return shopInfectionsVisitor; }
 
     public void log(){
         LOGGER.info("Day = {} Healthy = {} Latent = {} Asymptomatic = {} Phase 1 = {} Phase 2 = {} Dead = {} Recovered = {}",
@@ -176,9 +204,7 @@ public class DailyStats {
 
     public int getInfantDeaths() { return infantDeaths; }
 
-    public int getTotalDeaths() {
-        return adultDeaths + pensionerDeaths + childDeaths + infantDeaths;
-    }
+    public int getTotalDeaths() { return adultDeaths + pensionerDeaths + childDeaths + infantDeaths; }
 
     @Override
     public int hashCode() {
@@ -232,13 +258,9 @@ public class DailyStats {
     
     public int getSeedInfections() { return seedInfections; }
 
-    public void incSeedInfections() {
-        seedInfections++;
-    }
+    public void incSeedInfections() { seedInfections++; }
 
-    public void incDeathsAdult() {
-        adultDeaths++;
-    }
+    public void incDeathsAdult() { adultDeaths++; }
 
     public void incDeathsChild() {
         childDeaths++;
