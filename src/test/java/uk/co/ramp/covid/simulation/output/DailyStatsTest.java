@@ -3,10 +3,7 @@ package uk.co.ramp.covid.simulation.output;
 import org.junit.Before;
 import org.junit.Test;
 import uk.co.ramp.covid.simulation.Model;
-import uk.co.ramp.covid.simulation.parameters.CovidParameters;
-import uk.co.ramp.covid.simulation.parameters.PopulationParameters;
 import uk.co.ramp.covid.simulation.testutil.SimulationTest;
-import uk.co.ramp.covid.simulation.util.Probability;
 
 import java.util.List;
 
@@ -32,7 +29,7 @@ public class DailyStatsTest extends SimulationTest {
     //Test that all statistics are collected and counted correctly
     @Test
     public void testDailyStats() {
-        // Daily only statistics
+        // Place infection statistics
         int homeInfectionsInhabitant = 0;
         int homeInfectionsVisitor = 0;
         int constructionSiteInfectionsWorker = 0;
