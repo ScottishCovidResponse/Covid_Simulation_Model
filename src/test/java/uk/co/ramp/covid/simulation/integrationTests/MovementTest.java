@@ -421,7 +421,7 @@ public class MovementTest extends SimulationTest {
 
     @Test
     public void positiveTestsStayInQuarantine() {
-        Time t = new Time(24);
+        Time t = new Time(0);
         PopulationParameters.get().personProperties.pQuarantinesIfSymptomatic = new Probability(1.0);
 
         Household iso = null;
