@@ -339,6 +339,19 @@ public abstract class Household extends Place {
             visitsNeighbourToday = false;
         }
     }
+    
+    public void trySendPensionersToCare(Places places) {
+        List<Person> left = new ArrayList<>();
+        for (Person p : people) {
+            if (p.getAge() >= PopulationParameters.get().pensionerProperties.minAgeToEnterCare
+                    && PopulationParameters.get().pensionerProperties.pEntersCareHome.sample()) {
+                if (p.enterCare(places)) {
+                    left.add(p);
+                }
+            }
+        }
+        people.removeAll(left);
+    }
 
     // Household Type management
     protected int adults = 0;

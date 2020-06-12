@@ -10,6 +10,7 @@ import uk.co.ramp.covid.simulation.parameters.CovidParameters;
 import uk.co.ramp.covid.simulation.output.DailyStats;
 import uk.co.ramp.covid.simulation.Time;
 import uk.co.ramp.covid.simulation.parameters.PopulationParameters;
+import uk.co.ramp.covid.simulation.place.CareHome;
 import uk.co.ramp.covid.simulation.place.CommunalPlace;
 import uk.co.ramp.covid.simulation.place.Household;
 import uk.co.ramp.covid.simulation.util.Probability;
@@ -19,6 +20,7 @@ import java.util.Optional;
 
 public abstract class Person {
 
+   
     public enum Sex {
         MALE, FEMALE
     }
@@ -129,6 +131,18 @@ public abstract class Person {
             this.cVirus = new Covid(this);
             return true;
         }
+        return false;
+    }
+
+    // Try to place this person in a CareHome
+    public boolean enterCare(Places places) {
+        CareHome h = places.getRandomCareHome();
+        if (h != null) {
+            h.addPerson(this);
+            isInCare = true;
+            return true;
+        }
+        
         return false;
     }
 

@@ -168,6 +168,10 @@
         "infantProperties":{
             "pAttendsNursery":0.5
         },
+        "pensionerProperties":{
+            "minAgeToEnterCare" : 70,
+            "pEntersCareHome": 0.045
+        },
         "householdProperties":{
           "neighbourOpeningTime":9,
           "neighbourClosingTime":20,

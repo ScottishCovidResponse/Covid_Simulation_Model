@@ -291,4 +291,8 @@ public class Places {
     public List<Shop> getShops() {
         return shops.toList();
     }
+
+    public List<CareHome> getCareHomes() {
+        return careHomes.toList();
+    }
 }

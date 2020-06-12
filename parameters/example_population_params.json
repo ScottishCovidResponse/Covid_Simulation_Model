@@ -161,6 +161,9 @@
         "infantProperties":{
             "pAttendsNursery":0.5
         },
+        "pensionerProperties":{
+            "pEntersCareHome": 0.045
+        },
         "householdProperties":{
             "neighbourOpeningTime":9,
             "neighbourClosingTime":20,

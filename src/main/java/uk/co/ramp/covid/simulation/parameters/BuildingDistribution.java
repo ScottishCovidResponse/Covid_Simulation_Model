@@ -23,7 +23,7 @@ public class BuildingDistribution {
     public Integer populationToRestaurantsRatio = null;
     public PlaceSizeDistribution restaurantSizeDistribution = null;
 
-    public Integer populationToCareHomeRatio = null;
+    public Integer populationToCareHomesRatio = null;
     public PlaceSizeDistribution careHomeSizeDistribution = null;
 
     public boolean isValid() {
@@ -34,7 +34,7 @@ public class BuildingDistribution {
                 && populationToRestaurantsRatio > 0
                 && populationToSchoolsRatio > 0
                 && populationToShopsRatio > 0
-                && populationToCareHomeRatio > 0
+                && populationToCareHomesRatio > 0
                 && hospitalSizeDistribution.isValid()
                 && schoolSizeDistribution.isValid()
                 && shopSizeDistribution.isValid()

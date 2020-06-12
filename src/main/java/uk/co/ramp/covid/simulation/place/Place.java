@@ -34,7 +34,11 @@ public abstract class Place {
     public List<Person> getPeople() {
         return new ArrayList<>(people);
     }
+    
+    // Immediately add a new person to this place
+    public void addPerson(Person p) { people.add(p); }
 
+    // Add a person to this place in the next time step
     public void addPersonNext(Person p) {
         nextPeople.add(p);
     }
