@@ -170,7 +170,7 @@
             "neighbourOpeningTime":9,
             "neighbourClosingTime":20,
             "pVisitorsLeaveHousehold":0.333,
-            "householdVisitsNeighbourDaily":0.2,
+            "householdVisitsNeighbourDaily":0.25,
             "expectedNeighbours":7,
             "pGoShopping":0.071,
             "pGoRestaurant": 0.071,

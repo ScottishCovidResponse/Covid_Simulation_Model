@@ -33,7 +33,7 @@ public class ModelTest extends SimulationTest {
         nInfections = 10;
         nIter = 1;
         nDays = 60;
-        RNGSeed = 42;
+        RNGSeed = 402;
     }
 
     @Test

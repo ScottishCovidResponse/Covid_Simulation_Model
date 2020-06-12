@@ -9,6 +9,6 @@
     "lockDown":{
         "start":55,
         "end":150,
-        "socialDistance":0.7
+        "socialDistance":0.5
     }
 }
