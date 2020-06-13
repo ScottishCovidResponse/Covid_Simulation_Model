@@ -88,14 +88,22 @@ public abstract class Household extends Place {
     public int sendNeighboursHome(Time t) {
         ArrayList<Person> left = new ArrayList<>();
 
+        final int numInhabitants = getNumInhabitants();
         for (Person p : people) {
-
             if (!isVisitor(p)) {
                 continue;
             }
 
             // People may have already left if their family has
             if (left.contains(p)) {
+                continue;
+            }
+
+            // Go home if the house inhabitants have either left, or were never here
+            if (numInhabitants == 0) {
+                left.add(p);
+                p.returnHome();
+                left.addAll(sendFamilyHome(p, null, t));
                 continue;
             }
 
@@ -117,7 +125,7 @@ public abstract class Household extends Place {
         people.removeAll(left);
         return left.size();
     }
-    
+
     private boolean isVisitor(Person p) {
         return p.getHome() != this;
     }
@@ -144,7 +152,7 @@ public abstract class Household extends Place {
         return ret;
     }
 
-    public int getNumMovers() {
+    public int getNumInhabitants() {
         int n = 0;
         for (Person p : people) {
             if (isInhabitant(p)) {
@@ -186,7 +194,7 @@ public abstract class Household extends Place {
     public void doMovement(Time t, boolean lockdown, Places places) {
         goToHospital(t, places);
 
-        if (!isIsolating() && getNumMovers() > 0) {
+        if (!isIsolating() && getNumInhabitants() > 0) {
             // Ordering here implies work takes highest priority, then shopping trips have higher priority
             // than neighbour and restaurant trips
             moveShift(t, lockdown);
