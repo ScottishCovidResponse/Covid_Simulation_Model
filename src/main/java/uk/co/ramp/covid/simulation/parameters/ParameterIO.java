@@ -13,8 +13,8 @@ import java.nio.file.Path;
 public class ParameterIO {
     private static final Logger LOGGER = LogManager.getLogger(ParameterIO.class);
 
-    private CovidParameters disease;
-    private PopulationParameters population;
+    private final CovidParameters disease;
+    private final PopulationParameters population;
 
     public ParameterIO(CovidParameters disease, PopulationParameters population) {
         this.disease = disease;

@@ -30,7 +30,7 @@ public class InfectionLog {
 
     private Time wasInfected;
     private Time becameSymptomatic;
-    private Set<SecondaryInfection> secondaryInfections;
+    private final Set<SecondaryInfection> secondaryInfections;
 
     public InfectionLog() {
         secondaryInfections = new HashSet<SecondaryInfection>();

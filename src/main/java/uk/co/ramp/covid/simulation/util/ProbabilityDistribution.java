@@ -22,7 +22,7 @@ public class ProbabilityDistribution<T> {
     }
 
     //  pmap works as an associative list to allow us to easy assign probabilities to arbitrary types
-    private List<ProbPair> pmap;
+    private final List<ProbPair> pmap;
     private double totalProb;
     private final double EPSILON = 0.0000001;
 

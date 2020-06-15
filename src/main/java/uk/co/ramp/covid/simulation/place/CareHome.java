@@ -9,7 +9,7 @@ import uk.co.ramp.covid.simulation.util.RoundRobinAllocator;
 
 public class CareHome extends CommunalPlace implements Home {
 
-    private RoundRobinAllocator<Shifts> shifts;
+    private final RoundRobinAllocator<Shifts> shifts;
 
     public CareHome(Size s) {
         super(s);

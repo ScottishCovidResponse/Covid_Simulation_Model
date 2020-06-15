@@ -32,7 +32,7 @@ public class Shifts {
         }
     }
 
-    private Map<Integer, Shift> shifts;
+    private final Map<Integer, Shift> shifts;
 
     public Shifts() {
         shifts = new HashMap<>();

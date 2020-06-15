@@ -7,7 +7,7 @@ import java.util.List;
  *  Used primarily to assign shifts to workers
  */
 public class RoundRobinAllocator<T> {
-    private List<T> data;
+    private final List<T> data;
     private int next;
     
     public RoundRobinAllocator() {

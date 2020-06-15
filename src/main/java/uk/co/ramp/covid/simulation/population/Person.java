@@ -28,8 +28,8 @@ public abstract class Person {
     private CommunalPlace primaryPlace = null;
     protected Shifts shifts = null;
     
-    private Sex sex;
-    private int age;
+    private final Sex sex;
+    private final int age;
 
     private Home home;
     private boolean recovered;
@@ -41,7 +41,7 @@ public abstract class Person {
     protected final RandomDataGenerator rng;
 
     private boolean isHospitalised = false;
-    private boolean goesToHospitalInPhase2;
+    private final boolean goesToHospitalInPhase2;
     
     private static int nPeople = 0;
     private final int personId;

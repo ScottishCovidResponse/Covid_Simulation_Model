@@ -32,7 +32,7 @@ public class Population {
 
     private final ArrayList<Household> households;
     private final ArrayList<Person> allPeople;
-    private Places places;
+    private final Places places;
     private boolean lockdown;
     private boolean rLockdown;
     private int lockdownStart;
