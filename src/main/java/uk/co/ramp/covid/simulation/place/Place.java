@@ -151,11 +151,10 @@ public abstract class Place {
         nextPeople.clear();
     }
 
-    public List<Person> sendFamilyHome(Person p, CommunalPlace place, Time t) {
+    public List<Person> getFamilyToSendHome(Person p, CommunalPlace place, Time t) {
         List<Person> left = new ArrayList<>();
         for (Person q : people) {
             if (p != q && !q.worksNextHour(place, t, false) && q.getHome() == p.getHome()) {
-                q.returnHome();
                 left.add(q);
             }
         }

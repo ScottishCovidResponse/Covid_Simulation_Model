@@ -95,8 +95,14 @@ public abstract class Person {
         home = h;
     }
     
-    public void returnHome() {
+    public void returnHome(Place from) {
+        from.getPeople().remove(this);
         home.addPersonNext(this);
+    }
+    
+    public void moveTo(Place from, Place to) {
+        from.getPeople().remove(this);
+        to.addPersonNext(this);
     }
 
     public boolean isHospitalised() {
@@ -272,8 +278,9 @@ public abstract class Person {
         return shouldWork;
     }
 
-    public void visitPrimaryPlace() {
+    public void moveToPrimaryPlace(Place from) {
         if (primaryPlace != null) {
+            from.getPeople().remove(this);
             primaryPlace.addPersonNext(this);
         }
     }

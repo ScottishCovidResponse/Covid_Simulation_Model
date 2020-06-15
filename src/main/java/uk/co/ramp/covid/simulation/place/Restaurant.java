@@ -69,17 +69,15 @@ public class Restaurant extends CommunalPlace {
             // Under certain conditions we must go home, e.g. if there is a shift starting soon
             if (nPers.mustGoHome(t)) {
                 left.add(nPers);
-                nPers.returnHome();
-                left.addAll(sendFamilyHome(nPers, this, t));
+                left.addAll(getFamilyToSendHome(nPers, this, t));
             }
             else if (PopulationParameters.get().buildingProperties.pLeaveRestaurant.sample()
                     || !times.isOpenNextHour(t)) {
                 left.add(nPers);
-                nPers.returnHome();
-                left.addAll(sendFamilyHome(nPers, this, t));
+                left.addAll(getFamilyToSendHome(nPers, this, t));
             }
         }
-        getPeople().removeAll(left);
+        left.forEach(p -> p.returnHome(this));
         return left.size();
     }
 

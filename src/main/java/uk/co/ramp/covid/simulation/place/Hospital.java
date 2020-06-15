@@ -62,16 +62,15 @@ public class Hospital extends CommunalPlace {
 
             // Let recovered patients go home
             if (!nPers.isHospitalised()) {
-                nPers.returnHome();
                 left.add(nPers);
             }
         }
-        getPeople().removeAll(left);
+        left.forEach(p -> p.returnHome(this));
     }
     
     @Override
     public void determineMovement(Time t, boolean lockdown, Places places) {
-        movePhase2(t, places);
+        movePhase2(t, places, p -> p.isHospitalised());
         moveShifts(t, lockdown, p -> p.isHospitalised());
         sendHome(t);
     }

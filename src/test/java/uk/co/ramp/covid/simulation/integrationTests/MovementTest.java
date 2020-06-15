@@ -491,4 +491,34 @@ public class MovementTest extends SimulationTest {
             }
         }
     }
+
+    @Test
+    public void peopleAreInASinglePlace() {
+        final int simHours = 100;
+        Time t = new Time(0);
+        p = PopulationGenerator.genValidPopulation(populationSize);
+        p.seedVirus(nInfections);
+        
+        DailyStats s = new DailyStats(t);
+        for (int i = 0; i < simHours; i++) {
+            Set<Person> seen = new HashSet<>();
+
+            for (Place place : p.getPlaces().getAllPlaces()) {
+                for (Person per : place.getPeople()) {
+                    assertTrue(seen.add(per));
+                }
+            }
+
+            for (Household h : p.getHouseholds()) {
+                for (Person per : h.getPeople()) {
+                    assertTrue(seen.add(per));
+                }
+            }
+
+            p.timeStep(t, s);
+            t = t.advance();
+        }
+
+    }
+
 }

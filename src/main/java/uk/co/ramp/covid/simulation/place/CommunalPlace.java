@@ -6,6 +6,7 @@ package uk.co.ramp.covid.simulation.place;
 
 import org.apache.commons.math3.random.RandomDataGenerator;
 import uk.co.ramp.covid.simulation.Time;
+import uk.co.ramp.covid.simulation.covid.Covid;
 import uk.co.ramp.covid.simulation.population.CStatus;
 import uk.co.ramp.covid.simulation.population.Person;
 import uk.co.ramp.covid.simulation.population.Places;
@@ -71,11 +72,10 @@ public abstract class CommunalPlace extends Place {
             }
 
             if (!p.worksNextHour(this, t, lockdown)) {
-                p.returnHome();
                 left.add(p);
             }
         }
-        getPeople().removeAll(left);
+        left.forEach(p -> p.returnHome(this));
     }
     
     public void moveShifts(Time t, boolean lockdown) {
@@ -85,6 +85,8 @@ public abstract class CommunalPlace extends Place {
     /** Moves Phase2 people to either hospital or back home */
     public void movePhase2(Time t, Places places, Function<Person,Boolean> filter) {
         List<Person> left = new ArrayList<>();
+        List<Runnable> hospitalMoves = new ArrayList<>();
+
         for (Person p : getPeople()) {
             if (filter.apply(p)) {
                 continue;
@@ -92,18 +94,17 @@ public abstract class CommunalPlace extends Place {
 
             if (p.cStatus() != null && p.cStatus() == CStatus.PHASE2) {
                 if (p.goesToHosptialInPhase2()) {
-                    Hospital h = places.getRandomCovidHospital();
+                    CovidHospital h = places.getRandomCovidHospital();
                     p.hospitalise();
-                    h.addPersonNext(p);
-                    left.add(p);
+                    hospitalMoves.add(() -> p.moveTo(this, h));
                 } else {
-                    p.returnHome();
                     left.add(p);
-                    left.addAll(sendFamilyHome(p, this, t));
+                    left.addAll(getFamilyToSendHome(p, this, t));
                 }
             }
         }
-        getPeople().removeAll(left);
+        left.forEach(p -> p.returnHome(this));
+        hospitalMoves.forEach(m -> m.run());
     }
 
     public void movePhase2(Time t, Places places) {

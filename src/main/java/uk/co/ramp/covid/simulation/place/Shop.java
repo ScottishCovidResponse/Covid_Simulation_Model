@@ -62,17 +62,15 @@ public class Shop extends CommunalPlace {
             // Under certain conditions we must go home, e.g. if there is a shift starting soon
             if (nPers.mustGoHome(t)) {
                 left.add(nPers);
-                nPers.returnHome();
-                left.addAll(sendFamilyHome(nPers, this, t));
+                left.addAll(getFamilyToSendHome(nPers, this, t));
             }
             else if (PopulationParameters.get().buildingProperties.pLeaveShop.sample()
                     || !times.isOpenNextHour(t)) {
-                nPers.returnHome();
                 left.add(nPers);
-                left.addAll(sendFamilyHome(nPers, this, t));
+                left.addAll(getFamilyToSendHome(nPers, this, t));
             }
         }
-        getPeople().removeAll(left);
+        left.forEach(p -> p.returnHome(this));
         return left.size();
     }
 
