@@ -8,7 +8,8 @@ import org.apache.commons.csv.CSVPrinter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import uk.co.ramp.covid.simulation.output.DailyStats;
-import uk.co.ramp.covid.simulation.output.NetworkGenerator;
+import uk.co.ramp.covid.simulation.output.network.ContactsWriter;
+import uk.co.ramp.covid.simulation.output.network.PeopleWriter;
 import uk.co.ramp.covid.simulation.parameters.ParameterIO;
 import uk.co.ramp.covid.simulation.population.ImpossibleAllocationException;
 import uk.co.ramp.covid.simulation.population.ImpossibleWorkerDistributionException;
@@ -203,9 +204,13 @@ public class Model {
                 break;
             }
 
+            ContactsWriter contactsWriter = null;
             if (networkOutputDir != null) {
                 try {
-                    NetworkGenerator.startNetworkGeneration(p.getAllPeople(), networkOutputDir);
+                    File peopleFile = new File(networkOutputDir, "people" + i + ".csv");
+                    File contactsFile = new File(networkOutputDir, "contacts" + i + ".csv");
+                    PeopleWriter.writePeople(new FileWriter(peopleFile), p.getAllPeople());
+                    contactsWriter = new ContactsWriter(new FileWriter(contactsFile));
                 } catch (IOException e) {
                     LOGGER.error("Error starting network generation", e);
                     break;
@@ -221,7 +226,7 @@ public class Model {
                 p.setSchoolLockdown(schoolLockDown.start, schoolLockDown.end, schoolLockDown.socialDistance);
             }
 
-            List<DailyStats> iterStats = p.simulate(nDays);
+            List<DailyStats> iterStats = p.simulate(nDays, contactsWriter);
             for (DailyStats s : iterStats) {
                 s.determineRValues(p);
             }
@@ -229,6 +234,9 @@ public class Model {
             
             stats.add(iterStats);
 
+            if (contactsWriter != null) {
+                contactsWriter.close();
+            }
         }
 
         if (!outputDisabled) {

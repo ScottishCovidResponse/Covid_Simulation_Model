@@ -12,6 +12,7 @@ import org.apache.logging.log4j.Logger;
 import uk.co.ramp.covid.simulation.lockdown.LockdownController;
 import uk.co.ramp.covid.simulation.output.DailyStats;
 import uk.co.ramp.covid.simulation.output.RStats;
+import uk.co.ramp.covid.simulation.output.network.ContactsWriter;
 import uk.co.ramp.covid.simulation.util.Time;
 import uk.co.ramp.covid.simulation.parameters.HouseholdProperties;
 import uk.co.ramp.covid.simulation.parameters.PopulationDistribution;
@@ -318,15 +319,19 @@ public class Population {
     }
     
     public void timeStep(Time t, DailyStats dStats) {
+        timeStep(t, dStats, null);
+    }
+    
+    public void timeStep(Time t, DailyStats dStats, ContactsWriter contactsWriter) {
         // Movement places people in "next" buffers (to avoid people moving twice in an hour)
         for (Household h : households) {
             h.doTesting(t);
-            h.doInfect(t, dStats);
+            h.doInfect(t, dStats, contactsWriter);
             h.determineMovement(t, lockdownController.inLockdown(t), getPlaces());
         }
 
         for (Place p : places.getAllPlaces()) {
-            p.doInfect(t, dStats);
+            p.doInfect(t, dStats, contactsWriter);
             p.determineMovement(t, lockdownController.inLockdown(t), getPlaces());
         }
         
@@ -337,9 +342,18 @@ public class Population {
         for (Place p : places.getAllPlaces()) {
             p.commitMovement();
         }
+        
+        if (contactsWriter != null) {
+            contactsWriter.finishTimeStep(t);
+        }
     }
     
     public List<DailyStats> simulateFromTime(Time startTime, int nDays) {
+        return simulateFromTime(startTime, nDays, null);
+    }
+
+    // Step through nDays in 1 hour time steps
+    public List<DailyStats> simulateFromTime(Time startTime, int nDays, ContactsWriter contactsWriter) {
         List<DailyStats> stats = new ArrayList<>(nDays);
         Time t = startTime;
 
@@ -359,7 +373,7 @@ public class Population {
 
             LOGGER.info("Day = {}, Lockdown = {}", t.getAbsDay(), lockdownController.inLockdown(t));
             for (int k = 0; k < 24; k++) {
-                timeStep(t, dStats);
+                timeStep(t, dStats, contactsWriter);
                 t = t.advance();
             }
             households.forEach(Household::dayEnd);
@@ -373,9 +387,13 @@ public class Population {
         return stats;
     }
 
-    // Step through nDays in 1 hour time steps
     public List<DailyStats> simulate(int nDays) {
-        return simulateFromTime(new Time(), nDays);
+        return simulate(nDays, null);
+    }
+
+    // Step through nDays in 1 hour time steps
+    public List<DailyStats> simulate(int nDays, ContactsWriter contactsWriter) {
+        return simulateFromTime(new Time(), nDays, contactsWriter);
     }
 
     private void seedInfections(Time t, DailyStats s) {

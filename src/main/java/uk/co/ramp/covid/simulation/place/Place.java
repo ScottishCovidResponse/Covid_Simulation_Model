@@ -1,7 +1,7 @@
 package uk.co.ramp.covid.simulation.place;
 
 import uk.co.ramp.covid.simulation.output.DailyStats;
-import uk.co.ramp.covid.simulation.output.NetworkGenerator;
+import uk.co.ramp.covid.simulation.output.network.ContactsWriter;
 import uk.co.ramp.covid.simulation.util.Time;
 import uk.co.ramp.covid.simulation.population.CStatus;
 import uk.co.ramp.covid.simulation.population.Person;
@@ -80,11 +80,12 @@ public abstract class Place {
         return transConstant * transAdjustment / people.size();
     }
     
-    private void writeContact(Time t) {
+    private void addContacts(Time t, ContactsWriter contactsWriter) {
+        double weight = this.getTransConstant();
         for (Person a : people) {
             for (Person b : people) {
                 if (a != b) {
-                    NetworkGenerator.writeContact(t, a, b, this, this.getTransConstant());
+                    contactsWriter.addContact(t, a, b, this, weight);
                 }
             }
         }
@@ -108,9 +109,9 @@ public abstract class Place {
     }
 
     /** Handles infections between all people in this place */
-    public void doInfect(Time t, DailyStats stats) {
-        if (NetworkGenerator.generating()) {
-            writeContact(t);
+    public void doInfect(Time t, DailyStats stats, ContactsWriter contactsWriter) {
+        if (contactsWriter != null) {
+            addContacts(t, contactsWriter);
             return; // don't do infections
         }
 
