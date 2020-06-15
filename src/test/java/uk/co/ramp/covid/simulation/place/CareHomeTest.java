@@ -6,6 +6,7 @@ import uk.co.ramp.covid.simulation.output.DailyStats;
 import uk.co.ramp.covid.simulation.parameters.CovidParameters;
 import uk.co.ramp.covid.simulation.parameters.PopulationParameters;
 import uk.co.ramp.covid.simulation.population.ImpossibleWorkerDistributionException;
+import uk.co.ramp.covid.simulation.population.Pensioner;
 import uk.co.ramp.covid.simulation.population.Person;
 import uk.co.ramp.covid.simulation.population.Population;
 import uk.co.ramp.covid.simulation.testutil.PopulationGenerator;
@@ -74,6 +75,43 @@ public class CareHomeTest extends SimulationTest {
             careDeaths += s.getCareHomeDeaths();
         }
         assertTrue(careDeaths > 0);
+    }
+
+    @Test
+    public void sickResidentsAreQuarantined() {
+        int populationSize = 10000;
+        PopulationParameters.get().pensionerProperties.pEntersCareHome = new Probability(0.8);
+
+        Population pop = PopulationGenerator.genValidPopulation(populationSize);
+        pop.seedVirus(100);
+
+        // Find a pensioner to infect
+        Pensioner inf = null;
+        CareHome home = null;
+        for (CareHome h : pop.getPlaces().getCareHomes()) {
+            if (inf != null) {
+                break;
+            }
+            for (Person p : h.getPeople()) {
+                if (p instanceof Pensioner) {
+                    inf = (Pensioner) p;
+                    home = h;
+                    break;
+                }
+            }
+        }
+        inf.infect();
+        
+        // Check we adjust transmission
+        for (Person p : home.getPeople()) {
+            if (p == inf) { continue; }
+            if (p.isInCare()) {
+                assertEquals(0.0, home.getTransP(inf, p), 0.001);
+            } else {
+                // PPE Adjustment works
+                assertTrue(home.getTransP(inf, null) > home.getTransP(inf, p));
+            }
+        }
     }
 
 }
