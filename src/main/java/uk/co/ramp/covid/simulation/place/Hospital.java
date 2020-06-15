@@ -2,6 +2,7 @@ package uk.co.ramp.covid.simulation.place;
 
 import uk.co.ramp.covid.simulation.output.DailyStats;
 import uk.co.ramp.covid.simulation.Time;
+import uk.co.ramp.covid.simulation.parameters.CovidParameters;
 import uk.co.ramp.covid.simulation.population.Person;
 import uk.co.ramp.covid.simulation.parameters.PopulationParameters;
 import uk.co.ramp.covid.simulation.population.Places;
@@ -93,5 +94,14 @@ public class Hospital extends CommunalPlace {
     @Override
     public void reportDeath(DailyStats s) {
         s.incHospitalDeaths();
+    }
+
+    @Override
+    public double getTransP(Person infected, Person target) {
+        double transP = getBaseTransP(infected);
+        if (infected.isHospitalised()) {
+            transP *= CovidParameters.get().hospitalisationParameters.hospitalisationTransmissionReduction;
+        }
+        return transP;
     }
 }

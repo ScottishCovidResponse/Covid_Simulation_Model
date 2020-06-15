@@ -113,7 +113,8 @@ public abstract class Place {
             if (cPers.isInfectious()) {
                 for (Person nPers : people) {
                     if (cPers != nPers && !nPers.getInfectionStatus()) {
-                        boolean infected = nPers.infChallenge(getTransConstant() * sDistance * cPers.getTransAdjustment());
+                        double transP = getTransP(cPers, nPers);
+                        boolean infected = nPers.infChallenge(transP);
                         if (infected) {
                             registerInfection(t, nPers, stats);
                             nPers.getcVirus().getInfectionLog().registerInfected(t);
@@ -123,6 +124,14 @@ public abstract class Place {
                 }
             }
         }
+    }
+    
+    public double getBaseTransP(Person infected) {
+        return getTransConstant() * sDistance * infected.getTransAdjustment();
+    }
+    
+    public double getTransP(Person infected, Person target) {
+        return getBaseTransP(infected);
     }
     
     /** Do a timestep by switching to the new set of people */
