@@ -66,7 +66,7 @@ public class ShopTest extends SimulationTest {
 
     @Test
     public void testShopWorkers() throws ImpossibleWorkerDistributionException {
-        int populationSize = 10000;
+        int populationSize = 12000;
         Population p = PopulationGenerator.genValidPopulation(populationSize);
         p.allocatePeople();
         List<Person> staff;

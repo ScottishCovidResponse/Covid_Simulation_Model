@@ -14,6 +14,7 @@ public class WorkerDistribution {
     public Probability pRestaurant = null;
     public Probability pUnemployed = null;
     public Probability pNursery = null;
+    public Probability pCareHome = null;
 
     public PlaceSizeDistribution sizeAllocation = null;
 
@@ -26,6 +27,7 @@ public class WorkerDistribution {
         p.add(pTeacher, Adult.Professions.TEACHER);
         p.add(pRestaurant, Adult.Professions.RESTAURANT);
         p.add(pNursery, Adult.Professions.NURSERY);
+        p.add(pCareHome, Adult.Professions.CAREHOME);
         p.add(pUnemployed, Adult.Professions.NONE);
         return p;
     }

@@ -21,12 +21,14 @@ public class CovidParameters {
     public DiseaseParameters diseaseParameters = null;
     public InfectionSeedingProperties infectionSeedProperties = null;
     public HospitalisationParameters hospitalisationParameters = null;
+    public CareHomeParameters careHomeParameters = null;
 
     public CovidParameters() {
         testParameters = new CovidTestParameters();
         diseaseParameters = new DiseaseParameters();
         infectionSeedProperties = new InfectionSeedingProperties();
         hospitalisationParameters = new HospitalisationParameters();
+        careHomeParameters = new CareHomeParameters();
     }
     
     public static void setParameters(CovidParameters p) {

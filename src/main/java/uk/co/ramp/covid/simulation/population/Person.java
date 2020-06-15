@@ -10,8 +10,9 @@ import uk.co.ramp.covid.simulation.parameters.CovidParameters;
 import uk.co.ramp.covid.simulation.output.DailyStats;
 import uk.co.ramp.covid.simulation.Time;
 import uk.co.ramp.covid.simulation.parameters.PopulationParameters;
+import uk.co.ramp.covid.simulation.place.CareHome;
 import uk.co.ramp.covid.simulation.place.CommunalPlace;
-import uk.co.ramp.covid.simulation.place.Household;
+import uk.co.ramp.covid.simulation.place.Place;
 import uk.co.ramp.covid.simulation.util.Probability;
 import uk.co.ramp.covid.simulation.util.RNG;
 
@@ -30,7 +31,7 @@ public abstract class Person {
     private Sex sex;
     private int age;
 
-    private Household home;
+    private Home home;
     private boolean recovered;
     private Covid cVirus;
     private final double transmissionProb;
@@ -45,6 +46,8 @@ public abstract class Person {
     
     private static int nPeople = 0;
     private final int personId;
+
+    private boolean isInCare = false;
 
     public abstract void reportInfection(DailyStats s);
     public abstract void reportDeath (DailyStats s);
@@ -84,11 +87,11 @@ public abstract class Person {
         this.primaryPlace = p;
     }
 
-    public Household getHome() {
+    public Home getHome() {
         return home;
     }
 
-    public void setHome(Household h) {
+    public void setHome(Home h) {
         home = h;
     }
     
@@ -112,6 +115,10 @@ public abstract class Person {
         }
 
         return inf;
+    }
+
+    public boolean isInCare() {
+        return isInCare;
     }
 
     public void hospitalise() {
@@ -140,6 +147,22 @@ public abstract class Person {
             this.cVirus = new Covid(this);
             return true;
         }
+        return false;
+    }
+
+    // Try to place this person in a CareHome
+    public boolean enterCare(Places places) {
+        CareHome h = places.getRandomCareHome();
+        if (h != null) {
+            h.addPerson(this);
+
+            // Permanently seconded to a CareHome
+            setHome(h);
+
+            isInCare = true;
+            return true;
+        }
+        
         return false;
     }
 

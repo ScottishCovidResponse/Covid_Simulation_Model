@@ -2,6 +2,7 @@ package uk.co.ramp.covid.simulation.place;
 
 import uk.co.ramp.covid.simulation.output.DailyStats;
 import uk.co.ramp.covid.simulation.Time;
+import uk.co.ramp.covid.simulation.parameters.CovidParameters;
 import uk.co.ramp.covid.simulation.population.Person;
 import uk.co.ramp.covid.simulation.parameters.PopulationParameters;
 import uk.co.ramp.covid.simulation.population.Places;
@@ -62,36 +63,30 @@ public class Hospital extends CommunalPlace {
             // Let recovered patients go home
             if (!nPers.isHospitalised()) {
                 nPers.returnHome();
+                left.add(nPers);
             }
         }
         people.removeAll(left);
     }
-
-    // Hospitals specialise moveShifts to ensure hospitalised staff don't go home
-    public void moveShifts(Time t, boolean lockdown) {
-        List<Person> left = new ArrayList<>();
-        for (Person p : people) {
-            if (p.isHospitalised()) {
-                continue;
-            }
-
-            if (!p.worksNextHour(this, t, lockdown)) {
-                p.returnHome();
-                left.add(p);
-            }
-        }
-        people.removeAll(left);
-    }
-
+    
     @Override
     public void doMovement(Time t, boolean lockdown, Places places) {
         movePhase2(t, places);
-        moveShifts(t, lockdown);
+        moveShifts(t, lockdown, p -> p.isHospitalised());
         sendHome(t);
     }
 
     @Override
     public void reportDeath(DailyStats s) {
         s.incHospitalDeaths();
+    }
+
+    @Override
+    public double getTransP(Time t, Person infected, Person target) {
+        double transP = getBaseTransP(infected);
+        if (infected.isHospitalised()) {
+            transP *= CovidParameters.get().hospitalisationParameters.hospitalisationTransmissionReduction;
+        }
+        return transP;
     }
 }

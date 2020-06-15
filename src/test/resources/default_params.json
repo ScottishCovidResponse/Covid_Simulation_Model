@@ -27,6 +27,10 @@
       "hospitalisationParameters": {
           "pPhase2GoesToHosptial":0.52,
           "hospitalisationTransmissionReduction":0.05
+      },
+      "careHomeParameters": {
+          "PPETransmissionReduction": 0.05,
+          "hoursAfterSyptomsBeforeQuarantine": 6
       }
     },
     "population":{
@@ -130,17 +134,25 @@
                 "pSmall":0.4,
                 "pMed":0.5,
                 "pLarge":0.1
+            },
+            "populationToCareHomesRatio":5000,
+            "careHomeSizeDistribution":{
+                "pSmall":0.0,
+                "pMed":1.0,
+                "pLarge":0.0
             }
         },
         "workerDistribution":{
             "pOffice":0.31,
             "pShop":0.12,
-            "pHospital":0.16,
+            "pHospital":0.15,
             "pConstruction":0.22,
             "pTeacher":0.065,
             "pRestaurant":0.07,
             "pNursery":0.005,
+            "pCareHome":0.01,
             "pUnemployed":0.05,
+            "pCareHome":0.01,
             "sizeAllocation":{
                 "pSmall": 0.2,
                 "pMed": 0.3,
@@ -156,6 +168,7 @@
            "restaurantTransmissionConstant":10.0,
            "schoolTransmissionConstant":30.0,
            "shopTransmissionConstant":5.0,
+           "careHomeTransmissionConstant":5.0,
            "pHospitalKey":0.8,
             "pConstructionSiteKey":0.5,
             "pOfficeKey":0.5,
@@ -165,6 +178,10 @@
         },
         "infantProperties":{
             "pAttendsNursery":0.12
+        },
+        "pensionerProperties":{
+            "minAgeToEnterCare" : 70,
+            "pEntersCareHome": 0.045
         },
         "householdProperties":{
           "neighbourOpeningTime":9,

@@ -47,6 +47,8 @@ public class DailyStatsTest extends SimulationTest {
         int shopInfectionsWorker = 0;
         int shopInfectionsVisitor = 0;
         int seedInfections = 0;
+        int careHomeInfectionsWorker = 0;
+        int careHomeInfectionsResident = 0;
 
         // Age Statistics
         int adultInfected = 0;
@@ -118,6 +120,8 @@ public class DailyStatsTest extends SimulationTest {
             schoolInfectionsVisitor += stats.get(0).get(i).getSchoolInfectionsVisitor();
             shopInfectionsWorker += stats.get(0).get(i).getShopInfectionsWorker();
             shopInfectionsVisitor += stats.get(0).get(i).getShopInfectionsVisitor();
+            careHomeInfectionsWorker += stats.get(0).get(i).getCareHomeInfctionsWorker();
+            careHomeInfectionsResident += stats.get(0).get(i).getCareHomeInfectionsResident();
         }
         int expDeaths = adultDeaths + childDeaths + pensionerDeaths + infantDeaths;
         int expInfected = adultInfected + childInfected + pensionerInfected + infantInfected + seedInfections;
@@ -129,7 +133,7 @@ public class DailyStatsTest extends SimulationTest {
                 restaurantInfectionsWorker + restaurantInfectionsVisitor +
                 schoolInfectionsWorker + schoolInfectionsVisitor +
                 shopInfectionsWorker + shopInfectionsVisitor +
-                seedInfections;
+                seedInfections + careHomeInfectionsResident + careHomeInfectionsWorker;
         assertEquals("Inconsistent number of deaths", expDeaths, stats.get(0).get(nDays - 1).getDead());
         assertEquals("Inconsistent number of infected", expInfected, dailyInfected);
         assertEquals("Inconsistent number of place infections", expPlaceInfections, dailyInfected);

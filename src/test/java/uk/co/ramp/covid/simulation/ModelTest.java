@@ -1,6 +1,7 @@
 package uk.co.ramp.covid.simulation;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.google.gson.JsonParseException;
@@ -38,10 +39,10 @@ public class ModelTest extends SimulationTest {
 
     @Test
     public void testBaseLine() {
-
+        final int inf = nInfections * 5;
         Model m = new Model()
                 .setPopulationSize(population)
-                .setnInitialInfections(nInfections)
+                .setnInitialInfections(inf)
                 .setExternalInfectionDays(0)
                 .setIters(nIter)
                 .setnDays(nDays)
@@ -50,7 +51,7 @@ public class ModelTest extends SimulationTest {
 
         List<List<DailyStats>> stats = m.run(0);
 
-        int lastTotalInfected = 10;
+        int lastTotalInfected = inf;
         for (DailyStats s : stats.get(0)) {
             assertEquals(10000, s.getTotalPopulation());
 
@@ -66,7 +67,7 @@ public class ModelTest extends SimulationTest {
         }
 
         // Check all infections occurred somewhere
-        int totalDailyInfects = nInfections;
+        int totalDailyInfects = inf;
         int cummulativeI;
         for (DailyStats s : stats.get(0)) {
             cummulativeI = s.getTotalInfected() + s.getRecovered() + s.getDead();
@@ -85,7 +86,7 @@ public class ModelTest extends SimulationTest {
             adultDeaths = s.getAdultDeaths();
             pensionerDeaths += s.getPensionerDeaths();
             childDeaths += s.getChildDeaths();
-            totalDead += s.getHomeDeaths() + s.getHospitalDeaths();
+            totalDead += s.getHomeDeaths() + s.getHospitalDeaths() + s.getCareHomeDeaths();
         }
         
         List<DailyStats> s = stats.get(0);
@@ -212,7 +213,7 @@ public class ModelTest extends SimulationTest {
         }
         assertTrue("Unexpectedly fewer infections before lockdown", totInfDuringLockdown < totInfBeforeLockdown);
      }
-
+     
     @Test
     public void testMortality() {
         //Mortality and transmission rates are set to 100%

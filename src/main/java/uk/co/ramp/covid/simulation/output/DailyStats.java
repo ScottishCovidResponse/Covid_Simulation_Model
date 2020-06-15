@@ -41,6 +41,8 @@ public class DailyStats {
     private int schoolInfectionsVisitor = 0;
     private int shopInfectionsWorker = 0;
     private int shopInfectionsVisitor = 0;
+    private int careHomeInfectionsWorker = 0;
+    private int careHomeInfectionsResident = 0;
     private int seedInfections = 0;
 
     // Age Statistics
@@ -56,6 +58,7 @@ public class DailyStats {
     private int infantDeaths = 0;
     private int hospitalDeaths = 0;
     private int homeDeaths = 0;
+    private int careHomeDeaths = 0;
 
     // Infection rate stats
     private Double secInfections = null;
@@ -131,11 +134,12 @@ public class DailyStats {
                 phase1, phase2, dead, recovered, seedInfections,
                 constructionSiteInfectionsWorker, hospitalInfectionsWorker, 
                 nurseryInfectionsWorker, officeInfectionsWorker, restaurantInfectionsWorker, schoolInfectionsWorker, 
-                shopInfectionsWorker, homeInfectionsInhabitant,
+                shopInfectionsWorker, careHomeInfectionsWorker, homeInfectionsInhabitant, careHomeInfectionsResident,
                 constructionSiteInfectionsVisitor, hospitalInfectionsVisitor, nurseryInfectionsVisitor, 
                 officeInfectionsVisitor, restaurantInfectionsVisitor, schoolInfectionsVisitor, shopInfectionsVisitor,
                 homeInfectionsVisitor, adultInfected, pensionerInfected, childInfected, infantInfected, adultDeaths,
-                pensionerDeaths, childDeaths, infantDeaths, homeDeaths, hospitalDeaths, secInfections, generationTime);
+                pensionerDeaths, childDeaths, infantDeaths, homeDeaths, hospitalDeaths, careHomeDeaths,
+                secInfections, generationTime);
     }
 
     public int getTotalDailyInfections () {
@@ -153,6 +157,8 @@ public class DailyStats {
                 officeInfectionsWorker +
                 nurseryInfectionsVisitor +
                 nurseryInfectionsWorker +
+                careHomeInfectionsResident +
+                careHomeInfectionsWorker +
                 homeInfectionsInhabitant +
                 homeInfectionsVisitor +
                 seedInfections;
@@ -366,10 +372,25 @@ public class DailyStats {
         generationTime = rs.getMeanGenerationTime(day);
     }
 
+    public void incInfectionCareHomeWorker() {
+        careHomeInfectionsWorker++;
+    }
+
+    public void incInfectionCareHomeResident() {
+        careHomeInfectionsResident++;
+    }
+
+    public int getCareHomeInfectionsResident() { return careHomeInfectionsResident; }
+
+    public int getCareHomeInfctionsWorker() { return careHomeInfectionsWorker; }
+    
+    public int getCareHomeDeaths() { return careHomeDeaths; }
+
     public void incHospitalDeaths() {
         hospitalDeaths++;
     }
 
     public void incHomeDeaths() { homeDeaths++; }
-    
+
+    public void incCareHomeDeaths() { careHomeDeaths++; }
 }
