@@ -10,6 +10,7 @@ import uk.co.ramp.covid.simulation.util.RoundRobinAllocator;
 public class CareHome extends CommunalPlace implements Home {
 
     private RoundRobinAllocator<Shifts> shifts;
+    private boolean isQuarantined;
 
     public CareHome(Size s) {
         super(s);
@@ -61,14 +62,18 @@ public class CareHome extends CommunalPlace implements Home {
     }
 
     @Override
-    public double getTransP(Person infected, Person target) {
+    public double getTransP(Time t, Person infected, Person target) {
         double transP = getBaseTransP(infected);
         // In case patients only infect staff due to quarantine
-        if (infected.isInCare()) {
+        isQuarantined = infected.getcVirus().isSymptomatic()
+                && t.getAbsTime() >
+                   infected.getcVirus().getInfectionLog().getSymptomaticTime().getAbsTime()
+                           + CovidParameters.get().careHomeParameters.hoursAfterSyptomsBeforeQuarantine;
+        if (infected.isInCare() && isQuarantined) {
             if (target.isInCare()) {
                 return 0.0;
             } else {
-                return transP * CovidParameters.get().hospitalisationParameters.hospitalisationTransmissionReduction;
+                return transP * CovidParameters.get().careHomeParameters.PPETransmissionReduction;
             }
         }
         return transP;
