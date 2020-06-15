@@ -210,7 +210,7 @@ public class HospitalTest extends SimulationTest {
             }
         }
         
-        assertTrue(hosptial.getBaseTransP(inf) > hosptial.getTransP(inf, null));
+        assertTrue(hosptial.getBaseTransP(inf) > hosptial.getTransP(t, inf, null));
     }
 
 

@@ -2,6 +2,7 @@ package uk.co.ramp.covid.simulation.place;
 
 import org.junit.Test;
 import uk.co.ramp.covid.simulation.Model;
+import uk.co.ramp.covid.simulation.Time;
 import uk.co.ramp.covid.simulation.output.DailyStats;
 import uk.co.ramp.covid.simulation.parameters.CovidParameters;
 import uk.co.ramp.covid.simulation.parameters.PopulationParameters;
@@ -81,6 +82,10 @@ public class CareHomeTest extends SimulationTest {
     public void sickResidentsAreQuarantined() {
         int populationSize = 10000;
         PopulationParameters.get().pensionerProperties.pEntersCareHome = new Probability(0.8);
+        // There can be lots of people in the care home so we crank this up to avoid getting almost 0 transmission probs
+        PopulationParameters.get().buildingProperties.careHomeTransmissionConstant = 100.0;
+        CovidParameters.get().diseaseParameters.pSymptomaticCase = new Probability(1.0);
+        CovidParameters.get().diseaseParameters.pensionerProgressionPhase2 = 100.0;
 
         Population pop = PopulationGenerator.genValidPopulation(populationSize);
         pop.seedVirus(100);
@@ -101,15 +106,41 @@ public class CareHomeTest extends SimulationTest {
             }
         }
         inf.infect();
+        inf.getcVirus().forceSymptomatic(true);
         
-        // Check we adjust transmission
+        Time t = new Time(0);
+        while (inf.getcVirus().isSymptomatic()) {
+            inf.getcVirus().stepInfection(t);
+            inf.cStatus();
+            t = t.advance();
+        }
+
+        // Not quarantined instantly
+        // TODO You might have symptoms but have a trans adjustment of 0 (if you get symptom while latent).
+        /*
         for (Person p : home.getPeople()) {
             if (p == inf) { continue; }
+            
+            assertTrue(home.getTransP(t, inf, p) > 0);
+        }
+         */
+
+        // Step till quarantine
+        for (int i = 0; i <= CovidParameters.get().careHomeParameters.hoursAfterSyptomsBeforeQuarantine; i++) {
+            inf.getcVirus().stepInfection(t);
+            t = t.advance();
+        }
+
+        // Quarantined
+        for (Person p : home.getPeople()) {
+            if (p == inf) {
+                continue;
+            }
             if (p.isInCare()) {
-                assertEquals(0.0, home.getTransP(inf, p), 0.001);
+                assertEquals(0.0, home.getTransP(t, inf, p), 0.001);
             } else {
-                // PPE Adjustment works
-                assertTrue(home.getTransP(inf, null) > home.getTransP(inf, p));
+                // PPE Adjustment
+                assertTrue(home.getTransP(t, inf, null) > home.getTransP(new Time(0), inf, p));
             }
         }
     }

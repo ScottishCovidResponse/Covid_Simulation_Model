@@ -27,6 +27,10 @@
       "hospitalisationParameters": {
           "pPhase2GoesToHosptial":0.52,
           "hospitalisationTransmissionReduction":0.05
+      },
+      "careHomeParameters": {
+          "PPETransmissionReduction": 0.05,
+          "hoursAfterSyptomsBeforeQuarantine": 6
       }
     },
   "population":{

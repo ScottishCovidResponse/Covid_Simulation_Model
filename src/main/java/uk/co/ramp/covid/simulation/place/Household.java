@@ -93,14 +93,22 @@ public abstract class Household extends Place implements Home {
     public int sendNeighboursHome(Time t) {
         ArrayList<Person> left = new ArrayList<>();
 
+        final int numInhabitants = getNumInhabitants();
         for (Person p : people) {
-
             if (!isVisitor(p)) {
                 continue;
             }
 
             // People may have already left if their family has
             if (left.contains(p)) {
+                continue;
+            }
+
+            // Go home if the house inhabitants have either left, or were never here
+            if (numInhabitants == 0) {
+                left.add(p);
+                p.returnHome();
+                left.addAll(sendFamilyHome(p, null, t));
                 continue;
             }
 
@@ -122,7 +130,7 @@ public abstract class Household extends Place implements Home {
         people.removeAll(left);
         return left.size();
     }
-    
+
     private boolean isVisitor(Person p) {
         return p.getHome() != this;
     }
@@ -149,7 +157,7 @@ public abstract class Household extends Place implements Home {
         return ret;
     }
 
-    public int getNumMovers() {
+    public int getNumInhabitants() {
         int n = 0;
         for (Person p : people) {
             if (isInhabitant(p)) {
@@ -191,7 +199,7 @@ public abstract class Household extends Place implements Home {
     public void doMovement(Time t, boolean lockdown, Places places) {
         goToHospital(t, places);
 
-        if (!isIsolating() && getNumMovers() > 0) {
+        if (!isIsolating() && getNumInhabitants() > 0) {
             // Ordering here implies work takes highest priority, then shopping trips have higher priority
             // than neighbour and restaurant trips
             moveShift(t, lockdown);
@@ -201,7 +209,9 @@ public abstract class Household extends Place implements Home {
                 moveShop(t, lockdown, places);
             }
 
-            moveNeighbour(t, lockdown);
+            if (!neighbours.isEmpty()) {
+                moveNeighbour(t, lockdown);
+            }
 
             // Restaurants are only open 8-22
             if (!lockdown && t.getHour() + 1 >= 8 && t.getHour() + 1 < 22) {
@@ -236,30 +246,36 @@ public abstract class Household extends Place implements Home {
 
         List<Person> left = new ArrayList<>();
         if(!lockdown || !lockCompliant) {
-	        for (Household n : getNeighbours()) {
-	            if (n.isIsolating()) {
-	                continue;
-	            }
 
-	            // Since we determine if we should try to visit a neighbour a the star of the day, we have
-                // equal opportunity of visiting a neighbour each hour they are open
-                int openT = PopulationParameters.get().householdProperties.neighbourOpeningTime;
-                int closeT = PopulationParameters.get().householdProperties.neighbourClosingTime;
-                if (new Probability(1.0 / (closeT - openT)).sample()) {
-	                // We visit neighbours as a family
-	                for (Person p : people) {
-	                    if (isInhabitant(p) && !p.getQuarantine()) {
-	                        n.addPersonNext(p);
-	                        left.add(p);
-	                    }
-	                }
+            int openT = PopulationParameters.get().householdProperties.neighbourOpeningTime;
+            int closeT = PopulationParameters.get().householdProperties.neighbourClosingTime;
+            // If we should visit a neighbour, do so at random
+            if (new Probability(1.0 / (closeT - openT)).sample()) {
+                List<Household> neighbours = getNeighbours();
+                Household n = neighbours.get(RNG.get().nextInt(0, neighbours.size() - 1));
 
-	                // One neighbour visit max per day
-	                visitsNeighbourToday = false;
+                // Retry is neighbour is isolating
+                while (neighbours.size() > 1 && n.isIsolating()) {
+                    neighbours.remove(n);
+                    n = neighbours.get(RNG.get().nextInt(0, neighbours.size() - 1));
+                }
 
-	                break;
-	            }
-	        }
+                // Tried all neighbours and they are all isolating so don't go anywhere
+                if (n.isIsolating()) {
+                    return;
+                }
+
+                // Do the visit
+                for (Person p : people) {
+                    if (isInhabitant(p) && !p.getQuarantine()) {
+                        n.addPersonNext(p);
+                        left.add(p);
+                    }
+                }
+
+                // Enable if we want one neighbour visit max per day
+                // visitsNeighbourToday = false;
+            }
         }
         people.removeAll(left);
     }
