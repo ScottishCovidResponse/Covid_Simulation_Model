@@ -71,4 +71,9 @@ public class CareHome extends CommunalPlace implements Home {
 
     @Override
     public void stopIsolating() { }
+
+    @Override
+    public void reportDeath(DailyStats s) {
+        s.incCareHomeDeaths();
+    }
 }
