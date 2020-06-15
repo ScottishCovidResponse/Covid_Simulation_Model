@@ -105,10 +105,10 @@ public class Population {
 
     // Creates households based on probability of different household types
     private void createHouseholds() {
-        ProbabilityDistribution<Function<Places, Household>> p = PopulationParameters.get().householdDistribution.householdTypeDistribution();
+        ProbabilityDistribution<Supplier<Household>> p = PopulationParameters.get().householdDistribution.householdTypeDistribution();
 
         for (int i = 0; i < numHouseholds; i++) {
-            households.add(p.sample().apply(places));
+            households.add(p.sample().get());
         }
 
     }
@@ -282,11 +282,11 @@ public class Population {
         for (Household h : households) {
             h.doTesting(t);
             h.doInfect(t, dStats);
-            h.doMovement(t, lockdown);
+            h.doMovement(t, lockdown, getPlaces());
         }
         for (Place p : places.getAllPlaces()) {
             p.doInfect(t, dStats);
-            p.doMovement(t, lockdown);
+            p.doMovement(t, lockdown, getPlaces());
         };
 
         for (Household h : households) {

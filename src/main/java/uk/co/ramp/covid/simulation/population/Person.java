@@ -20,6 +20,7 @@ import java.util.Optional;
 
 public abstract class Person {
 
+
     public enum Sex {
         MALE, FEMALE
     }
@@ -39,6 +40,9 @@ public abstract class Person {
     private final double quarantineVal;
     private Optional<Boolean> testOutcome = Optional.empty();
     protected final RandomDataGenerator rng;
+
+    private boolean isHospitalised = false;
+    private boolean goesToHospitalInPhase2;
     
     private static int nPeople = 0;
     private final int personId;
@@ -57,6 +61,7 @@ public abstract class Person {
         this.transmissionProb = PopulationParameters.get().personProperties.pTransmission.asDouble();
         this.quarantineProb = PopulationParameters.get().personProperties.pQuarantinesIfSymptomatic;
         this.quarantineVal = rng.nextUniform(0, 1);
+        this.goesToHospitalInPhase2 = CovidParameters.get().hospitalisationParameters.pPhase2GoesToHosptial.sample();
         this.personId = nPeople++;
     }
 
@@ -69,8 +74,9 @@ public abstract class Person {
         return recovered;
     }
 
-    public void setRecovered(boolean recovered) {
-        this.recovered = recovered;
+    public void recover() {
+        isHospitalised = false;
+        recovered = true;
     }
 
     public CommunalPlace getPrimaryCommunalPlace() {
@@ -93,6 +99,10 @@ public abstract class Person {
         home.addPersonNext(this);
     }
 
+    public boolean isHospitalised() {
+        return isHospitalised;
+    }
+
     public boolean getQuarantine() {
         return this.quarantine;
     }
@@ -107,9 +117,16 @@ public abstract class Person {
         return inf;
     }
 
-
     public boolean isInCare() {
         return isInCare;
+    }
+
+    public void hospitalise() {
+        isHospitalised = true;
+    }
+
+    public boolean goesToHosptialInPhase2() {
+        return goesToHospitalInPhase2;
     }
 
     public boolean isinfected() {
@@ -194,7 +211,7 @@ public abstract class Person {
                 || cStatus() == CStatus.PHASE1
                 || cStatus() == CStatus.PHASE2);
     }
-    
+
     public double getTransAdjustment() {
     	return this.cVirus.getTransAdjustment();
     }

@@ -14,7 +14,7 @@ public class HouseholdTypeTest extends SimulationTest {
 
     @Test
     public void testAdultPensioner() {
-        Household household = new AdultPensioner(null);
+        Household household = new AdultPensioner();
         assertTrue(household.adultRequired());
         assertTrue(household.pensionerRequired());
         assertFalse(household.childRequired());
@@ -28,7 +28,7 @@ public class HouseholdTypeTest extends SimulationTest {
 
     @Test
     public void testDoubleOlder() {
-        Household household = new DoubleOlder(null);
+        Household household = new DoubleOlder();
         assertFalse(household.adultRequired());
         assertTrue(household.pensionerRequired());
         assertFalse(household.childRequired());
@@ -48,7 +48,7 @@ public class HouseholdTypeTest extends SimulationTest {
 
     @Test
     public void testLargeAdult() {
-        Household household = new LargeAdult(null);
+        Household household = new LargeAdult();
         assertTrue(household.adultAnyAgeRequired());
         assertFalse(household.pensionerRequired());
         assertFalse(household.childRequired());
@@ -62,7 +62,7 @@ public class HouseholdTypeTest extends SimulationTest {
 
     @Test
     public void testLargeManyAdult() {
-        Household household = new LargeManyAdultFamily(null);
+        Household household = new LargeManyAdultFamily();
         assertTrue(household.adultAnyAgeRequired());
         assertTrue(household.pensionerRequired());
         assertTrue(household.childRequired());
@@ -81,7 +81,7 @@ public class HouseholdTypeTest extends SimulationTest {
 
     @Test
     public void testLargeTwoAdultFamily() {
-        Household household = new LargeTwoAdultFamily(null);
+        Household household = new LargeTwoAdultFamily();
         assertTrue(household.adultAnyAgeRequired());
         assertTrue(household.childRequired());
         assertFalse(household.pensionerRequired());
@@ -102,7 +102,7 @@ public class HouseholdTypeTest extends SimulationTest {
 
     @Test
     public void testSingleAdult() {
-        Household household = new SingleAdult(null);
+        Household household = new SingleAdult();
         assertTrue(household.adultRequired());
         assertFalse(household.pensionerRequired());
         assertFalse(household.childRequired());
@@ -115,7 +115,7 @@ public class HouseholdTypeTest extends SimulationTest {
 
     @Test
     public void testSingleOlder() {
-        Household household = new SingleOlder(null);
+        Household household = new SingleOlder();
         assertFalse(household.adultRequired());
         assertTrue(household.pensionerRequired());
         assertFalse(household.childRequired());
@@ -128,7 +128,7 @@ public class HouseholdTypeTest extends SimulationTest {
 
     @Test
     public void testSingleParent() {
-        Household household = new SingleParent(null);
+        Household household = new SingleParent();
         assertTrue(household.adultAnyAgeRequired());
         assertTrue(household.childRequired());
         assertFalse(household.pensionerRequired());
@@ -147,7 +147,7 @@ public class HouseholdTypeTest extends SimulationTest {
 
     @Test
     public void testSmallAdult() {
-        Household household = new SmallAdult(null);
+        Household household = new SmallAdult();
         assertTrue(household.adultRequired());
         assertFalse(household.adultAnyAgeRequired());
         assertFalse(household.childRequired());
@@ -165,7 +165,7 @@ public class HouseholdTypeTest extends SimulationTest {
 
     @Test
     public void testSmallFamily() {
-        Household household = new SmallFamily(null);
+        Household household = new SmallFamily();
         assertTrue(household.adultAnyAgeRequired());
         assertTrue(household.childRequired());
         assertFalse(household.adultRequired());

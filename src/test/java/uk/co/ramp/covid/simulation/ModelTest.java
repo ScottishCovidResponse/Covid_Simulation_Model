@@ -33,7 +33,7 @@ public class ModelTest extends SimulationTest {
         nInfections = 10;
         nIter = 1;
         nDays = 60;
-        RNGSeed = 42;
+        RNGSeed = 402;
     }
 
     @Test
@@ -79,11 +79,17 @@ public class ModelTest extends SimulationTest {
         int adultDeaths = 0;
         int pensionerDeaths = 0;
         int childDeaths = 0;
+        
+        int totalDead = 0;
         for (DailyStats s : stats.get(0)) {
             adultDeaths = s.getAdultDeaths();
             pensionerDeaths += s.getPensionerDeaths();
             childDeaths += s.getChildDeaths();
+            totalDead += s.getHomeDeaths() + s.getHospitalDeaths();
         }
+        
+        List<DailyStats> s = stats.get(0);
+        assertEquals(s.get(s.size() - 1).getDead(), totalDead);
 
         if (CovidParameters.get().diseaseParameters.adultProgressionPhase2 < (double) CovidParameters.get().diseaseParameters.pensionerProgressionPhase2) {
             assertTrue(adultDeaths <= pensionerDeaths);
@@ -91,7 +97,6 @@ public class ModelTest extends SimulationTest {
         if (CovidParameters.get().diseaseParameters.childProgressionPhase2 < (double) CovidParameters.get().diseaseParameters.adultProgressionPhase2) {
             assertTrue(childDeaths <= pensionerDeaths);
         }
-
     }
 
     @Test

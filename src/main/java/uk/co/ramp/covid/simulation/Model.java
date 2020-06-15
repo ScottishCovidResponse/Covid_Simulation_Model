@@ -280,7 +280,8 @@ public class Model {
                               "IHome_I", "ICHome_R",
                               "ICs_V","IHos_V","INur_V","IOff_V","IRes_V","ISch_V","ISho_V","IHome_V",
                               "IAdu","IPen","IChi","IInf",
-                              "DAdul","DPen","DChi","DInf", "SecInfections", "GenerationTime" };
+                              "DAdul","DPen","DChi","DInf","DHome", "DHospital",
+                              "SecInfections", "GenerationTime" };
         try {
             FileWriter out = new FileWriter(outF.toFile());
             CSVPrinter printer = new CSVPrinter(out, CSVFormat.DEFAULT.withHeader(headers));

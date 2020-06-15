@@ -20,11 +20,13 @@ public class CovidParameters {
     public CovidTestParameters testParameters = null;
     public DiseaseParameters diseaseParameters = null;
     public InfectionSeedingProperties infectionSeedProperties = null;
+    public HospitalisationParameters hospitalisationParameters = null;
 
     public CovidParameters() {
         testParameters = new CovidTestParameters();
         diseaseParameters = new DiseaseParameters();
         infectionSeedProperties = new InfectionSeedingProperties();
+        hospitalisationParameters = new HospitalisationParameters();
     }
     
     public static void setParameters(CovidParameters p) {
@@ -38,7 +40,8 @@ public class CovidParameters {
         ParameterInitialisedChecker checker = new ParameterInitialisedChecker();
         return checker.isValid(diseaseParameters)
                 && checker.isValid(testParameters)
-                && checker.isValid(infectionSeedProperties);
+                && checker.isValid(infectionSeedProperties)
+                && checker.isValid(hospitalisationParameters);
     }
 
 }

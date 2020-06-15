@@ -6,8 +6,8 @@ import uk.co.ramp.covid.simulation.population.Places;
 /** AdultPensioner: one adult aged 16-64 and one of pensionable age and no children */
 
 public class AdultPensioner extends Household {
-    public AdultPensioner(Places places) {
-        super(places);
+    public AdultPensioner() {
+        super();
     }
 
     @Override

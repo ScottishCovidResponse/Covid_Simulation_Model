@@ -3,6 +3,7 @@ package uk.co.ramp.covid.simulation.parameters;
 // Defines the number of types of building per N people
 public class BuildingDistribution {
     public Integer populationToHospitalsRatio = null;
+    public Integer covidHospitalRatio = null;
     public PlaceSizeDistribution hospitalSizeDistribution = null;
 
     public Integer populationToSchoolsRatio = null;

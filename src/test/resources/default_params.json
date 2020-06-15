@@ -13,7 +13,7 @@
           "meanInfectiousDuration": 321.6,
           "phase1Betaa": 25.0,
           "phase1Betab": 30.0,
-          "aSymptomaticTransAdjustment": 0.1,
+          "aSymptomaticTransAdjustment": 0.13,
           "symptomaticTransAdjustment": 1.0,
           "mortalityRate":0.01,
           "childProgressionPhase2":0.02,
@@ -21,8 +21,12 @@
           "pensionerProgressionPhase2":0.8
       },
       "infectionSeedProperties": {
-        "infectionRateIncreaseAdult":0.000005,
-        "infectionRateIncreaseInfantChildPensioner":0.0000025
+          "infectionRateIncreaseAdult":0.000005,
+          "infectionRateIncreaseInfantChildPensioner":0.0000025
+      },
+      "hospitalisationParameters": {
+          "pPhase2GoesToHosptial":0.52,
+          "hospitalisationTransmissionReduction":0.05
       }
     },
     "population":{
@@ -90,6 +94,7 @@
                 "pMed":1.0,
                 "pLarge":0
             },
+            "covidHospitalRatio":5,
             "populationToSchoolsRatio":2500,
             "schoolSizeDistribution":{
                 "pSmall":0,
@@ -114,7 +119,7 @@
                 "pMed":0.2,
                 "pLarge":0.1
             },
-            "populationToNurseriesRatio":2500,
+            "populationToNurseriesRatio":5000,
             "nurserySizeDistribution":{
                 "pSmall":0,
                 "pMed":1,
@@ -134,13 +139,14 @@
             }
         },
         "workerDistribution":{
-            "pOffice":0.3,
-            "pShop":0.2,
-            "pHospital":0.07,
-            "pConstruction":0.14,
-            "pTeacher":0.08,
-            "pRestaurant":0.12,
-            "pNursery":0.03,
+            "pOffice":0.31,
+            "pShop":0.12,
+            "pHospital":0.15,
+            "pConstruction":0.22,
+            "pTeacher":0.065,
+            "pRestaurant":0.07,
+            "pNursery":0.005,
+            "pCareHome":0.01,
             "pUnemployed":0.05,
             "pCareHome":0.01,
             "sizeAllocation":{
@@ -166,7 +172,7 @@
             "pLeaveRestaurant": 0.4
         },
         "infantProperties":{
-            "pAttendsNursery":0.5
+            "pAttendsNursery":0.12
         },
         "pensionerProperties":{
             "minAgeToEnterCare" : 70,

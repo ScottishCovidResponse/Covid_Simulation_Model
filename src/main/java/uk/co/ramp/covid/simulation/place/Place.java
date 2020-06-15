@@ -3,9 +3,12 @@ package uk.co.ramp.covid.simulation.place;
 import uk.co.ramp.covid.simulation.output.DailyStats;
 import uk.co.ramp.covid.simulation.output.NetworkGenerator;
 import uk.co.ramp.covid.simulation.Time;
+import uk.co.ramp.covid.simulation.parameters.CovidParameters;
+import uk.co.ramp.covid.simulation.parameters.DiseaseParameters;
 import uk.co.ramp.covid.simulation.population.CStatus;
 import uk.co.ramp.covid.simulation.population.Person;
 import uk.co.ramp.covid.simulation.parameters.PopulationParameters;
+import uk.co.ramp.covid.simulation.population.Places;
 
 import java.util.*;
 
@@ -13,8 +16,8 @@ public abstract class Place {
 
     // People are managed in 2 lists, those currently in the place "people" and
     // those who will be in the place in the next hour "nextPeople"
-    protected Set<Person> people;
-    protected Set<Person> nextPeople;
+    protected List<Person> people;
+    protected List<Person> nextPeople;
     
     protected double sDistance;
     protected double transConstant;
@@ -23,16 +26,20 @@ public abstract class Place {
 
     abstract public void reportInfection(Time t, Person p, DailyStats s);
 
+    protected  void reportDeath(DailyStats s) {
+
+    }
+
     public Place() {
-        this.people = new LinkedHashSet<>();
-        this.nextPeople = new LinkedHashSet<>();
+        this.people = new ArrayList<>();
+        this.nextPeople = new ArrayList<>();
         this.transConstant = PopulationParameters.get().buildingProperties.baseTransmissionConstant;
         this.sDistance = 1.0;
         this.transAdjustment = 1.0;
     }
 
     public List<Person> getPeople() {
-        return new ArrayList<>(people);
+        return people;
     }
     
     // Immediately add a new person to this place
@@ -46,7 +53,14 @@ public abstract class Place {
     private void registerInfection(Time t, Person p, DailyStats s) {
         reportInfection(t, p, s);
         p.reportInfection(s);
-    } 
+    }
+
+
+    private void registerDeath(Person p, DailyStats stats) {
+        reportDeath(stats);
+        p.reportDeath(stats);
+    }
+
     protected double getTransConstant() {
     	if(people.size() == 0) {
     	   return 0.0;
@@ -75,11 +89,11 @@ public abstract class Place {
             if (cPers.getInfectionStatus() && !cPers.isRecovered()) {
                 cPers.stepInfection(t);
                 if (cPers.cStatus() == CStatus.DEAD) {
-                    cPers.reportDeath(stats);
+                    registerDeath(cPers, stats);
                     deaths.add(cPers);
                 }
                 if (cPers.cStatus() == CStatus.RECOVERED) {
-                    cPers.setRecovered(true);
+                    cPers.recover();
                 }
             }
         }
@@ -118,7 +132,7 @@ public abstract class Place {
         nextPeople.addAll(people);
 
         // Switch the movement buffers
-        Set<Person> tmp = people;
+        List<Person> tmp = people;
         people = nextPeople;
         nextPeople = tmp;
         nextPeople.clear();
@@ -135,6 +149,7 @@ public abstract class Place {
         return left;
     }
 
+
     /** Handles movement between people in this place */
-    public abstract void doMovement(Time t, boolean lockdown);
+    public abstract void doMovement(Time t, boolean lockdown, Places places);
 }

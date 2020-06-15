@@ -153,11 +153,13 @@ public class MovementTest extends SimulationTest {
         assertTrue("No-one visits restaurants", eating.size() > 0);
     }
 
-    // This should be fixed as part of
-    //   https://github.com/ScottishCovidResponse/SCRCIssueTracking/issues/314
-    @Ignore("Failing test - no-one visits hospitals")
     @Test
     public void someNonWorkersGoToHospital() {
+        // Phase 2 movement set when we construct population so we need to reconstruct it here
+        CovidParameters.get().hospitalisationParameters.pPhase2GoesToHosptial = new Probability(1.0);
+        p = PopulationGenerator.genValidPopulation(populationSize);
+        p.seedVirus(200);
+
         Set<Person> visiting = new HashSet<>();
         Time t = new Time(24);
         DailyStats s = new DailyStats(t);
@@ -165,7 +167,7 @@ public class MovementTest extends SimulationTest {
             p.timeStep(t, s);
             for (Hospital place : p.getPlaces().getHospitals()) {
                 for (Person per : place.getPeople()) {
-                    if (per.getPrimaryCommunalPlace() != place) {
+                    if (per.getPrimaryCommunalPlace() != place || per.isHospitalised()) {
                         visiting.add(per);
                     }
                 }
@@ -236,6 +238,9 @@ public class MovementTest extends SimulationTest {
     private void doesNotGoOut(Household iso, List<Person> isolating) {
         for (CommunalPlace place : p.getPlaces().getAllPlaces()) {
             for (Person per : isolating) {
+                if (per.isHospitalised()) {
+                    continue;
+                }
                 assertFalse(place.getPeople().contains(per));
             }
         }
@@ -421,8 +426,10 @@ public class MovementTest extends SimulationTest {
 
     @Test
     public void positiveTestsStayInQuarantine() {
-        Time t = new Time(24);
+        Time t = new Time(0);
         PopulationParameters.get().personProperties.pQuarantinesIfSymptomatic = new Probability(1.0);
+        p = PopulationGenerator.genValidPopulation(populationSize);
+        p.seedVirus(nInfections);
 
         Household iso = null;
         for (Household h : p.getHouseholds()) {
