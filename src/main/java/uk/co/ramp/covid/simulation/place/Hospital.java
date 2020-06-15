@@ -54,7 +54,7 @@ public class Hospital extends CommunalPlace {
     }
 
     public void sendHome(Time t) {
-        ArrayList<Person> left = new ArrayList<>();
+        List<Person> left = new ArrayList<>();
         for (Person nPers : getPeople()) {
             if (nPers.worksNextHour(this, t, false)) {
                 continue;
