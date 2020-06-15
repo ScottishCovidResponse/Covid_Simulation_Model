@@ -1,7 +1,6 @@
 package uk.co.ramp.covid.simulation.place.householdtypes;
 
 import uk.co.ramp.covid.simulation.place.Household;
-import uk.co.ramp.covid.simulation.population.Places;
 
 /** AdultPensioner: one adult aged 16-64 and one of pensionable age and no children */
 

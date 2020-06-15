@@ -1,7 +1,6 @@
 package uk.co.ramp.covid.simulation.place.householdtypes;
 
 import uk.co.ramp.covid.simulation.place.Household;
-import uk.co.ramp.covid.simulation.population.Places;
 
 /** SmallAdult: Two non-pensioner adults and no children */
 public class SmallAdult extends Household {

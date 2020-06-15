@@ -33,7 +33,7 @@ public class InfectionLog {
     private final Set<SecondaryInfection> secondaryInfections;
 
     public InfectionLog() {
-        secondaryInfections = new HashSet<SecondaryInfection>();
+        secondaryInfections = new HashSet<>();
     }
 
     public void registerInfected(Time t) {

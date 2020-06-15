@@ -1,7 +1,6 @@
 package uk.co.ramp.covid.simulation.place.householdtypes;
 
 import uk.co.ramp.covid.simulation.place.Household;
-import uk.co.ramp.covid.simulation.population.Places;
 
 /** SmallFamily: two adults of any age and one or two children */
 public class SmallFamily extends Household {

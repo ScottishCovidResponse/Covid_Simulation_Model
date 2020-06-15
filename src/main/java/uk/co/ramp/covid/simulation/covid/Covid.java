@@ -102,8 +102,9 @@ public class Covid {
     // For each infection define the duration of the infection periods
     private void setPeriods() {
         latentPeriod = Math.exp(rng.nextGaussian(Math.log(meanLatentPeriod), 1.0));
-        if(!symptomaticCase) asymptomaticPeriod = Math.exp(rng.nextGaussian(Math.log(meanAsymptomaticPeriod), 1.0));
-        else if (symptomaticCase) {
+        if (!symptomaticCase) {
+            asymptomaticPeriod = Math.exp(rng.nextGaussian(Math.log(meanAsymptomaticPeriod), 1.0));
+        } else {
             symptomDelay = latentPeriod - rng.nextGaussian(meanSymptomDelay, meanSymptomDelaySD); // Basically if symptom delay < 0 then the symptoms appear after the infectious period has started; otherwise before
             if (symptomDelay < 1.0)
                 symptomDelay = 1.0; // There could be the odd instance where we have a negative value here
@@ -113,16 +114,18 @@ public class Covid {
             p1 = infectiousPeriod * rng.nextBeta(oPhase1Betaa, oPhase1Betab);
             p2 = infectiousPeriod - p1;
 
-        if (ccase.avoidsPhase2(rng.nextUniform(0, 1)))  p2 = 0;
+            if (ccase.avoidsPhase2(rng.nextUniform(0, 1))) {
+                p2 = 0;
+            }
 
         }
     }
 
     public CStatus stepInfection(Time t) {
-    	CStatus status = null;
-    	if(symptomaticCase) status = this.stepInfectionSymptomatic(t);
-    	else if(!symptomaticCase) status = this.stepInfectionAsymptomatic();
-    	return status;
+    	if(symptomaticCase) {
+    	    return this.stepInfectionSymptomatic(t);
+        }
+    	return this.stepInfectionAsymptomatic();
     }
     
     // Cycle through the infection for that timestep

@@ -27,10 +27,9 @@ public class ParameterIO {
         GsonBuilder gson = new GsonBuilder();
 
         JsonDeserializer<Probability> pdeserializer = (json, typeOfT, context) -> {
-            Double p = json.getAsDouble();
+            double p = json.getAsDouble();
             try {
-                Probability res = new Probability(p);
-                return res;
+                return new Probability(p);
             } catch (InvalidProbabilityException e) {
                 LOGGER.error(e);
                 // There doesn't seem to be a way to get the field name here

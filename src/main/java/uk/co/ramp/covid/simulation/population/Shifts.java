@@ -43,8 +43,8 @@ public class Shifts {
 
     public Shifts(int s, int e, int... days) {
         this();
-        for (int i = 0; i < days.length; i++) {
-            shifts.put(days[i], new Shift(s, e));
+        for (int day : days) {
+            shifts.put(day, new Shift(s, e));
         }
     }
 

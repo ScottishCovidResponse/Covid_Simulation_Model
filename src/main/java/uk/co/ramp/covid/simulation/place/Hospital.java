@@ -10,7 +10,6 @@ import uk.co.ramp.covid.simulation.population.Shifts;
 import uk.co.ramp.covid.simulation.util.RoundRobinAllocator;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class Hospital extends CommunalPlace {
     
@@ -72,7 +71,7 @@ public class Hospital extends CommunalPlace {
     @Override
     public void doMovement(Time t, boolean lockdown, Places places) {
         movePhase2(t, places);
-        moveShifts(t, lockdown, p -> p.isHospitalised());
+        moveShifts(t, lockdown, Person::isHospitalised);
         sendHome(t);
     }
 

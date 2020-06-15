@@ -39,7 +39,7 @@ public class ProbabilityDistribution<T> {
         assert totalProb <= 1 + EPSILON : "Trying to create probability distribution with probability total > 1";
 
         pmap.add(new ProbPair(prob, val));
-        Collections.sort(pmap, Collections.reverseOrder());
+        pmap.sort(Collections.reverseOrder());
     }
 
     public void add(Probability prob, T val) {

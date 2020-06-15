@@ -1,7 +1,6 @@
 package uk.co.ramp.covid.simulation.place.householdtypes;
 
 import uk.co.ramp.covid.simulation.place.Household;
-import uk.co.ramp.covid.simulation.population.Places;
 
 /** SingleAdult: A single non-pensioner Adult */
 public class SingleAdult extends Household {

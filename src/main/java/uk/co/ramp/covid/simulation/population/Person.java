@@ -12,11 +12,8 @@ import uk.co.ramp.covid.simulation.Time;
 import uk.co.ramp.covid.simulation.parameters.PopulationParameters;
 import uk.co.ramp.covid.simulation.place.CareHome;
 import uk.co.ramp.covid.simulation.place.CommunalPlace;
-import uk.co.ramp.covid.simulation.place.Place;
 import uk.co.ramp.covid.simulation.util.Probability;
 import uk.co.ramp.covid.simulation.util.RNG;
-
-import java.util.Optional;
 
 public abstract class Person {
 
@@ -254,7 +251,6 @@ public abstract class Person {
         int nextHour = 0;
         if (t.getHour() + 1 == 24) {
             day = (day + 1) % 7;
-            nextHour = 0;
         } else {
             nextHour = t.getHour() + 1;
         }
@@ -265,9 +261,7 @@ public abstract class Person {
             end += 24;
         }
 
-        boolean shouldWork = nextHour >= start && nextHour < end;
-
-        return shouldWork;
+        return nextHour >= start && nextHour < end;
     }
 
     public void visitPrimaryPlace() {
