@@ -16,8 +16,8 @@ public abstract class Place {
 
     // People are managed in 2 lists, those currently in the place "people" and
     // those who will be in the place in the next hour "nextPeople"
-    protected List<Person> people;
-    protected List<Person> nextPeople;
+    private List<Person> people;
+    private List<Person> nextPeople;
     
     protected double sDistance;
     protected double transConstant;
@@ -42,7 +42,11 @@ public abstract class Place {
         return people;
     }
     
-    // Immediately add a new person to this place
+    public int numPeople() {
+        return people.size();
+    }
+    
+    // Immediately add a new person to this place (for use in initialisation. Not movement)
     public void addPerson(Person p) { people.add(p); }
 
     // Add a person to this place in the next time step
@@ -135,7 +139,7 @@ public abstract class Place {
     }
     
     /** Do a timestep by switching to the new set of people */
-    public void stepPeople() {
+    public void commitMovement() {
 
         // Anyone who didn't move should remain.
         nextPeople.addAll(people);
@@ -160,5 +164,5 @@ public abstract class Place {
 
 
     /** Handles movement between people in this place */
-    public abstract void doMovement(Time t, boolean lockdown, Places places);
+    public abstract void determineMovement(Time t, boolean lockdown, Places places);
 }

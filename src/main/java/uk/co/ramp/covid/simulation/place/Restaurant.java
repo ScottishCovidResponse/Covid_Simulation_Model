@@ -51,12 +51,12 @@ public class Restaurant extends CommunalPlace {
     }
 
     public void shoppingTrip(ArrayList<Person> vHouse) {
-        people.addAll(vHouse);
+        getPeople().addAll(vHouse);
     }
 
     public int sendHome(Time t) {
         ArrayList<Person> left = new ArrayList<>();
-        for (Person nPers : people) {
+        for (Person nPers : getPeople()) {
             // People may have already left if their family has
             if (left.contains(nPers)) {
                 continue;
@@ -79,7 +79,7 @@ public class Restaurant extends CommunalPlace {
                 left.addAll(sendFamilyHome(nPers, this, t));
             }
         }
-        people.removeAll(left);
+        getPeople().removeAll(left);
         return left.size();
     }
 
@@ -93,7 +93,7 @@ public class Restaurant extends CommunalPlace {
     }
 
     @Override
-    public void doMovement(Time t, boolean lockdown, Places places) {
+    public void determineMovement(Time t, boolean lockdown, Places places) {
         movePhase2(t, places);
         moveShifts(t, lockdown);
         sendHome(t);

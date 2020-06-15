@@ -35,8 +35,8 @@ public class RestaurantTest extends SimulationTest {
         Household h2 = new SmallFamily();
         p1.setHome(h1);
         p2.setHome(h2);
-        restaurant.people.add(p1);
-        restaurant.people.add(p2);
+        restaurant.addPerson(p1);
+        restaurant.addPerson(p2);
     }
 
     @Test
@@ -53,7 +53,7 @@ public class RestaurantTest extends SimulationTest {
         personList.add(new Child(6, Person.Sex.MALE));
         restaurant.shoppingTrip(personList);
         int expPeople = 3;
-        assertEquals("Unexpected number of people in restaurant", expPeople, restaurant.people.size());
+        assertEquals("Unexpected number of people in restaurant", expPeople, restaurant.numPeople());
     }
 
     @Test

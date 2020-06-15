@@ -55,7 +55,7 @@ public class Hospital extends CommunalPlace {
 
     public void sendHome(Time t) {
         ArrayList<Person> left = new ArrayList<>();
-        for (Person nPers : people) {
+        for (Person nPers : getPeople()) {
             if (nPers.worksNextHour(this, t, false)) {
                 continue;
             }
@@ -66,11 +66,11 @@ public class Hospital extends CommunalPlace {
                 left.add(nPers);
             }
         }
-        people.removeAll(left);
+        getPeople().removeAll(left);
     }
     
     @Override
-    public void doMovement(Time t, boolean lockdown, Places places) {
+    public void determineMovement(Time t, boolean lockdown, Places places) {
         movePhase2(t, places);
         moveShifts(t, lockdown, p -> p.isHospitalised());
         sendHome(t);

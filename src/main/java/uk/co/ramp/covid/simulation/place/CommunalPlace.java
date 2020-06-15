@@ -65,7 +65,7 @@ public abstract class CommunalPlace extends Place {
     /** Move everyone based on their shift patterns */
     public void moveShifts(Time t, boolean lockdown, Function<Person, Boolean> filter) {
         List<Person> left = new ArrayList<>();
-        for (Person p : people) {
+        for (Person p : getPeople()) {
             if (filter.apply(p)) {
                 continue;
             }
@@ -75,7 +75,7 @@ public abstract class CommunalPlace extends Place {
                 left.add(p);
             }
         }
-        people.removeAll(left);
+        getPeople().removeAll(left);
     }
     
     public void moveShifts(Time t, boolean lockdown) {
@@ -85,7 +85,7 @@ public abstract class CommunalPlace extends Place {
     /** Moves Phase2 people to either hospital or back home */
     public void movePhase2(Time t, Places places, Function<Person,Boolean> filter) {
         List<Person> left = new ArrayList<>();
-        for (Person p : people) {
+        for (Person p : getPeople()) {
             if (filter.apply(p)) {
                 continue;
             }
@@ -103,7 +103,7 @@ public abstract class CommunalPlace extends Place {
                 }
             }
         }
-        people.removeAll(left);
+        getPeople().removeAll(left);
     }
 
     public void movePhase2(Time t, Places places) {
@@ -127,7 +127,7 @@ public abstract class CommunalPlace extends Place {
 
     public List<Person> getStaff(Time t) {
         List<Person> res = new ArrayList<>();
-        for (Person p : people) {
+        for (Person p : getPeople()) {
             if (p.isWorking(this, t)) {
                 res.add(p);
             }
@@ -136,7 +136,7 @@ public abstract class CommunalPlace extends Place {
     }
 
     @Override
-    public void doMovement(Time t, boolean lockdown, Places places) {
+    public void determineMovement(Time t, boolean lockdown, Places places) {
         movePhase2(t, places);
         moveShifts(t, lockdown);
     }

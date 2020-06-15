@@ -1,7 +1,6 @@
 package uk.co.ramp.covid.simulation.place;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.google.gson.JsonParseException;
@@ -17,8 +16,6 @@ import uk.co.ramp.covid.simulation.population.Adult;
 import uk.co.ramp.covid.simulation.population.Child;
 import uk.co.ramp.covid.simulation.population.Person;
 import uk.co.ramp.covid.simulation.parameters.PopulationParameters;
-import uk.co.ramp.covid.simulation.population.Population;
-import uk.co.ramp.covid.simulation.testutil.PopulationGenerator;
 import uk.co.ramp.covid.simulation.util.Probability;
 import uk.co.ramp.covid.simulation.testutil.SimulationTest;
 
@@ -86,10 +83,11 @@ public class HouseholdTest extends SimulationTest {
         Person p1 = new Adult(22, Person.Sex.FEMALE);
         p1.setHome(household);
         h.addPersonNext(p1);
-        h.stepPeople();
+        h.commitMovement();
 
-        int expSize = 1;
-        assertEquals("Unexpected number of visitors", expSize, h.sendNeighboursHome(new Time(0)));
+        h.sendNeighboursHome(new Time(0));
+        h.commitMovement();
+        assertEquals("Unexpected number of visitors", 0,h.getVisitors().size());
     }
 
     @Test

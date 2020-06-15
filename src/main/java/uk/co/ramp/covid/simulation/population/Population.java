@@ -20,7 +20,6 @@ import uk.co.ramp.covid.simulation.util.RNG;
 
 import java.util.*;
 import java.util.function.Consumer;
-import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class Population {
@@ -282,19 +281,19 @@ public class Population {
         for (Household h : households) {
             h.doTesting(t);
             h.doInfect(t, dStats);
-            h.doMovement(t, lockdown, getPlaces());
+            h.determineMovement(t, lockdown, getPlaces());
         }
         for (Place p : places.getAllPlaces()) {
             p.doInfect(t, dStats);
-            p.doMovement(t, lockdown, getPlaces());
+            p.determineMovement(t, lockdown, getPlaces());
         };
 
         for (Household h : households) {
-            h.stepPeople();
+            h.commitMovement();
         }
 
         for (Place p : places.getAllPlaces()) {
-            p.stepPeople();
+            p.commitMovement();
         };
     }
 

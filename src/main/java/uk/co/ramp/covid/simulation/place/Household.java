@@ -90,11 +90,11 @@ public abstract class Household extends Place implements Home {
         return false;
     }
 
-    public int sendNeighboursHome(Time t) {
+    public void sendNeighboursHome(Time t) {
         ArrayList<Person> left = new ArrayList<>();
 
         final int numInhabitants = getNumInhabitants();
-        for (Person p : people) {
+        for (Person p : getPeople()) {
             if (!isVisitor(p)) {
                 continue;
             }
@@ -127,8 +127,7 @@ public abstract class Household extends Place implements Home {
             }
         }
 
-        people.removeAll(left);
-        return left.size();
+        getPeople().removeAll(left);
     }
 
     private boolean isVisitor(Person p) {
@@ -139,7 +138,7 @@ public abstract class Household extends Place implements Home {
 
     public List<Person> getVisitors() {
         List<Person> ret = new ArrayList<>();
-        for (Person p : people) {
+        for (Person p : getPeople()) {
             if (isVisitor(p)) {
                 ret.add(p);
             }
@@ -149,7 +148,7 @@ public abstract class Household extends Place implements Home {
 
     public List<Person> getInhabitants() {
         List<Person> ret = new ArrayList<>();
-        for (Person p : people) {
+        for (Person p : getPeople()) {
             if (!isVisitor(p)) {
                 ret.add(p);
             }
@@ -159,7 +158,7 @@ public abstract class Household extends Place implements Home {
 
     public int getNumInhabitants() {
         int n = 0;
-        for (Person p : people) {
+        for (Person p : getPeople()) {
             if (isInhabitant(p)) {
                 n++;
             }
@@ -178,7 +177,7 @@ public abstract class Household extends Place implements Home {
     
     public void goToHospital(Time t, Places places) {
         List<Person> left = new ArrayList<>();
-        for (Person p : people) {
+        for (Person p : getPeople()) {
             if (p.cStatus() != null && p.cStatus() == CStatus.PHASE2) {
                 if (p.goesToHosptialInPhase2()) {
                     p.hospitalise();
@@ -192,11 +191,11 @@ public abstract class Household extends Place implements Home {
                 }
             }
         }
-        people.removeAll(left);
+        getPeople().removeAll(left);
     }
 
     @Override
-    public void doMovement(Time t, boolean lockdown, Places places) {
+    public void determineMovement(Time t, boolean lockdown, Places places) {
         goToHospital(t, places);
 
         if (!isIsolating() && getNumInhabitants() > 0) {
@@ -225,7 +224,7 @@ public abstract class Household extends Place implements Home {
     }
 
       public void doTesting(Time t) {
-        for (Person p : people) {
+        for (Person p : getPeople()) {
             if (isInhabitant(p) && p.isinfected()) {
                 Time symptomaticTime = p.getcVirus().getInfectionLog().getSymptomaticTime();
                 if (symptomaticTime != null
@@ -266,7 +265,7 @@ public abstract class Household extends Place implements Home {
                 }
 
                 // Do the visit
-                for (Person p : people) {
+                for (Person p : getPeople()) {
                     if (isInhabitant(p) && !p.getQuarantine()) {
                         n.addPersonNext(p);
                         left.add(p);
@@ -277,7 +276,7 @@ public abstract class Household extends Place implements Home {
                 // visitsNeighbourToday = false;
             }
         }
-        people.removeAll(left);
+        getPeople().removeAll(left);
     }
 
     private void moveShop(Time t, boolean lockdown, Places places) {
@@ -306,14 +305,14 @@ public abstract class Household extends Place implements Home {
             }
 
             // Go to restaurants as a family
-            for (Person p : people) {
+            for (Person p : getPeople()) {
                 if (isInhabitant(p) && !p.getQuarantine()) {
                     s.addPersonNext(p);
                     left.add(p);
                 }
             }
         }
-        people.removeAll(left);
+        getPeople().removeAll(left);
     }
 
     private void moveRestaurant(Time t, Places places) {
@@ -335,26 +334,26 @@ public abstract class Household extends Place implements Home {
             }
 
             // Go to restaurants as a family
-            for (Person p : people) {
+            for (Person p : getPeople()) {
                 if (isInhabitant(p) && !p.getQuarantine()) {
                     r.addPersonNext(p);
                     left.add(p);
                 }
             }
         }
-        people.removeAll(left);
+        getPeople().removeAll(left);
     }
 
     private void moveShift(Time t, boolean lockdown) {
         List<Person> left = new ArrayList<>();
-        for (Person p : people) {
+        for (Person p : getPeople()) {
             if (isInhabitant(p) && !p.getQuarantine()
                     && p.worksNextHour(p.getPrimaryCommunalPlace(), t, lockdown)) {
                 p.visitPrimaryPlace();
                 left.add(p);
             }
         }
-        people.removeAll(left);
+        getPeople().removeAll(left);
     }
     
     public void dayEnd() {
@@ -381,7 +380,7 @@ public abstract class Household extends Place implements Home {
     
     public void trySendPensionersToCare(Places places) {
         List<Person> left = new ArrayList<>();
-        for (Person p : people) {
+        for (Person p : getPeople()) {
             if (p.getAge() >= PopulationParameters.get().pensionerProperties.minAgeToEnterCare
                     && PopulationParameters.get().pensionerProperties.pEntersCareHome.sample()) {
                 if (p.enterCare(places)) {
@@ -389,7 +388,7 @@ public abstract class Household extends Place implements Home {
                 }
             }
         }
-        people.removeAll(left);
+        getPeople().removeAll(left);
     }
 
     // Household Type management
@@ -414,7 +413,7 @@ public abstract class Household extends Place implements Home {
     public void addAdult(Adult p) {
         if (adultRequired() || additionalAdultsAllowed()
                 || adultAnyAgeRequired() || additionalAdultAnyAgeAllowed()) {
-            people.add(p);
+            addPerson(p);
             p.setHome(this);
             adults++;
         } else {
@@ -427,7 +426,7 @@ public abstract class Household extends Place implements Home {
         // We need to do some type inference here to handle the fact infants are
         // treated as children for household population
         if ((childRequired() || additionalChildrenAllowed()) && (p instanceof Child || p instanceof Infant)) {
-            people.add(p);
+            addPerson(p);
             p.setHome(this);
             children++;
         } else {
@@ -438,7 +437,7 @@ public abstract class Household extends Place implements Home {
     public void addAdultOrPensioner(Person p) {
         // We need to do some type inference here to handle "any age" adults
         if ((adultAnyAgeRequired() || additionalAdultAnyAgeAllowed()) && (p instanceof Adult || p instanceof Pensioner)) {
-            people.add(p);
+            addPerson(p);
             p.setHome(this);
             if (p instanceof Adult) {
                 adults++;
@@ -454,7 +453,7 @@ public abstract class Household extends Place implements Home {
     public void addPensioner(Pensioner p) {
         if (pensionerRequired() || additionalPensionersAllowed()
                 || adultAnyAgeRequired() || additionalAdultAnyAgeAllowed()) {
-            people.add(p);
+            addPerson(p);
             p.setHome(this);
             pensioners++;
         } else {
