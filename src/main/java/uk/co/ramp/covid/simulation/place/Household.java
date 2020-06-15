@@ -249,7 +249,7 @@ public abstract class Household extends Place implements Home {
                 List<Household> neighbours = getNeighbours();
                 Household n = neighbours.get(RNG.get().nextInt(0, neighbours.size() - 1));
 
-                // Retry is neighbour is isolating
+                // Retry if neighbour is isolating
                 while (neighbours.size() > 1 && n.isIsolating()) {
                     neighbours.remove(n);
                     n = neighbours.get(RNG.get().nextInt(0, neighbours.size() - 1));

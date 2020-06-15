@@ -42,7 +42,7 @@ public abstract class Place {
         return people;
     }
     
-    public int numPeople() {
+    public int getNumPeople() {
         return people.size();
     }
     

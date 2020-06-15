@@ -53,7 +53,7 @@ public class RestaurantTest extends SimulationTest {
         personList.add(new Child(6, Person.Sex.MALE));
         restaurant.shoppingTrip(personList);
         int expPeople = 3;
-        assertEquals("Unexpected number of people in restaurant", expPeople, restaurant.numPeople());
+        assertEquals("Unexpected number of people in restaurant", expPeople, restaurant.getNumPeople());
     }
 
     @Test
