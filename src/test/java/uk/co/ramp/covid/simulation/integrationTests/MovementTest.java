@@ -382,7 +382,7 @@ public class MovementTest extends SimulationTest {
 
             // Some tests are negatives
             if (p.wasTested()) {
-                if (!p.getTestOutcome().get()) {
+                if (!p.getTestOutcome()) {
                     numNegative++;
                 }
             }
@@ -419,7 +419,7 @@ public class MovementTest extends SimulationTest {
         CovidParameters.get().testParameters.pDiagnosticTestDetectsSuccessfully = new Probability(0.0);
         per.getTested();
         assertTrue(per.wasTested());
-        assertFalse(per.getTestOutcome().get());
+        assertFalse(per.getTestOutcome());
         assertFalse(per.getQuarantine());
         assertFalse(iso.isIsolating());
     }
@@ -455,7 +455,7 @@ public class MovementTest extends SimulationTest {
         CovidParameters.get().testParameters.pDiagnosticTestDetectsSuccessfully = new Probability(1.0);
         per.getTested();
         assertTrue(per.wasTested());
-        assertTrue(per.getTestOutcome().get());
+        assertTrue(per.getTestOutcome());
         assertTrue(per.getQuarantine());
         assertTrue(iso.isIsolating());
     }

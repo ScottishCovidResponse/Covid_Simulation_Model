@@ -38,7 +38,7 @@ public abstract class Person {
     private boolean quarantine;
     private final Probability quarantineProb; // Needs more thought. The probability that the person will go into quarantine
     private final double quarantineVal;
-    private Optional<Boolean> testOutcome = Optional.empty();
+    private Boolean testOutcome = null;
     protected final RandomDataGenerator rng;
 
     private boolean isHospitalised = false;
@@ -296,7 +296,7 @@ public abstract class Person {
     }
 
     public boolean wasTested() {
-        return testOutcome.isPresent();
+        return testOutcome != null;
     }
 
     public void getTested() {
@@ -308,13 +308,13 @@ public abstract class Person {
         if (!CovidParameters.get().testParameters.pDiagnosticTestDetectsSuccessfully.sample()) {
             exitQuarantine();
             home.stopIsolating();
-            testOutcome = Optional.of(false);
+            testOutcome = false;
         } else {
-            testOutcome = Optional.of(true);
+            testOutcome = true;
         }
     }
 
-    public Optional<Boolean> getTestOutcome() {
+    public Boolean getTestOutcome() {
         return testOutcome;
     }
 
