@@ -67,27 +67,11 @@ public class Hospital extends CommunalPlace {
         }
         people.removeAll(left);
     }
-
-    // Hospitals specialise moveShifts to ensure hospitalised staff don't go home
-    public void moveShifts(Time t, boolean lockdown) {
-        List<Person> left = new ArrayList<>();
-        for (Person p : people) {
-            if (p.isHospitalised()) {
-                continue;
-            }
-
-            if (!p.worksNextHour(this, t, lockdown)) {
-                p.returnHome();
-                left.add(p);
-            }
-        }
-        people.removeAll(left);
-    }
-
+    
     @Override
     public void doMovement(Time t, boolean lockdown, Places places) {
         movePhase2(t, places);
-        moveShifts(t, lockdown);
+        moveShifts(t, lockdown, p -> p.isHospitalised());
         sendHome(t);
     }
 
