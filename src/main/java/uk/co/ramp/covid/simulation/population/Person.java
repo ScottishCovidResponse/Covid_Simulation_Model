@@ -12,7 +12,7 @@ import uk.co.ramp.covid.simulation.Time;
 import uk.co.ramp.covid.simulation.parameters.PopulationParameters;
 import uk.co.ramp.covid.simulation.place.CareHome;
 import uk.co.ramp.covid.simulation.place.CommunalPlace;
-import uk.co.ramp.covid.simulation.place.Household;
+import uk.co.ramp.covid.simulation.place.Place;
 import uk.co.ramp.covid.simulation.util.Probability;
 import uk.co.ramp.covid.simulation.util.RNG;
 
@@ -20,7 +20,6 @@ import java.util.Optional;
 
 public abstract class Person {
 
-   
     public enum Sex {
         MALE, FEMALE
     }
@@ -31,7 +30,7 @@ public abstract class Person {
     private Sex sex;
     private int age;
 
-    private Household home;
+    private Home home;
     private boolean recovered;
     private Covid cVirus;
     private final double transmissionProb;
@@ -82,11 +81,11 @@ public abstract class Person {
         this.primaryPlace = p;
     }
 
-    public Household getHome() {
+    public Home getHome() {
         return home;
     }
 
-    public void setHome(Household h) {
+    public void setHome(Home h) {
         home = h;
     }
     
@@ -139,6 +138,10 @@ public abstract class Person {
         CareHome h = places.getRandomCareHome();
         if (h != null) {
             h.addPerson(this);
+
+            // Permanently seconded to a CareHome
+            setHome(h);
+
             isInCare = true;
             return true;
         }

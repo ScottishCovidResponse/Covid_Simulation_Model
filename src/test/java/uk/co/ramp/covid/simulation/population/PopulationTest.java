@@ -8,6 +8,7 @@ import uk.co.ramp.covid.simulation.place.*;
 import uk.co.ramp.covid.simulation.place.householdtypes.*;
 import uk.co.ramp.covid.simulation.testutil.PopulationGenerator;
 import uk.co.ramp.covid.simulation.testutil.SimulationTest;
+import uk.co.ramp.covid.simulation.util.Probability;
 
 import java.util.List;
 
@@ -31,7 +32,10 @@ public class PopulationTest extends SimulationTest {
 
     @Test
     public void populateHouseholds() {
-        // Final population size = initial population size (all people allocated)
+        // We test the initial household distribution is okay before pensioner secondment
+        PopulationParameters.get().pensionerProperties.pEntersCareHome = new Probability(0.0);
+        
+        pop = PopulationGenerator.genValidPopulation(populationSize);
         int p = 0;
         for (Household h : pop.getHouseholds()) {
            p += h.getHouseholdSize();

@@ -372,4 +372,8 @@ public class DailyStats {
     public void incInfectionCareHomeResident() {
         careHomeInfectionsResident++;
     }
+
+    public int getCareHomeInfectionsResident() { return careHomeInfectionsResident; }
+
+    public int getCareHomeInfctionsWorker() { return careHomeInfectionsWorker; }
 }

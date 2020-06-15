@@ -3,6 +3,7 @@ package uk.co.ramp.covid.simulation.place;
 import uk.co.ramp.covid.simulation.Time;
 import uk.co.ramp.covid.simulation.output.DailyStats;
 import uk.co.ramp.covid.simulation.parameters.PopulationParameters;
+import uk.co.ramp.covid.simulation.population.Home;
 import uk.co.ramp.covid.simulation.population.Person;
 import uk.co.ramp.covid.simulation.population.Shifts;
 import uk.co.ramp.covid.simulation.util.RoundRobinAllocator;
@@ -10,7 +11,7 @@ import uk.co.ramp.covid.simulation.util.RoundRobinAllocator;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CareHome extends CommunalPlace {
+public class CareHome extends CommunalPlace implements Home {
 
     private RoundRobinAllocator<Shifts> shifts;
 
@@ -19,7 +20,6 @@ public class CareHome extends CommunalPlace {
 
         transAdjustment = PopulationParameters.get().buildingProperties.hospitalTransmissionConstant;
 
-        // TODO-CHECK: Should the care homes be staffed overnight?
         shifts = new RoundRobinAllocator<>();
         shifts.put(new Shifts(6,14, 0, 1, 2));
         shifts.put(new Shifts(14,22, 0, 1, 2));
@@ -63,4 +63,10 @@ public class CareHome extends CommunalPlace {
     public void doMovement(Time t, boolean lockdown) {
         moveShifts(t, lockdown);
     }
+
+    @Override
+    public void isolate() { }
+
+    @Override
+    public void stopIsolating() { }
 }

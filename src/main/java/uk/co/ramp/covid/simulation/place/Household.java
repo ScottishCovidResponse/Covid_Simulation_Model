@@ -10,7 +10,7 @@ import uk.co.ramp.covid.simulation.util.RNG;
 
 import java.util.*;
 
-public abstract class Household extends Place {
+public abstract class Household extends Place implements Home {
 
     private final List<Household> neighbours;
     private final Places places;
@@ -77,6 +77,11 @@ public abstract class Household extends Place {
 
     public boolean seedInfection() {
         List<Person> inhabitants = getInhabitants();
+        // Homes can be empty if, for example, pensioners have all gone to care
+        if (inhabitants.isEmpty()) {
+            return false;
+        }
+
         Person cPers = inhabitants.get(RNG.get().nextInt(0, inhabitants.size() - 1));
         if (cPers.infect()) {
             // Seeding happens at the start so we use the default time here.

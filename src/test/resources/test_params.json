@@ -124,6 +124,12 @@
             "pSmall":0.3,
             "pMed":0.6,
             "pLarge":0.1
+          },
+          "populationToCareHomesRatio":5000,
+          "careHomeSizeDistribution":{
+            "pSmall":0.0,
+            "pMed":1.0,
+            "pLarge":0.0
           }
         },
         "workerDistribution":{
@@ -131,9 +137,10 @@
             "pShop":0.2,
             "pHospital":0.2,
             "pConstruction":0.1,
-            "pTeacher":0.05,
+            "pTeacher":0.04,
             "pRestaurant":0.2,
             "pUnemployed":0.1,
+            "pCareHome":0.01,
             "pNursery":0.05,
             "sizeAllocation":{
               "pSmall": 0.2,
