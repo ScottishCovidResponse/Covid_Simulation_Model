@@ -37,7 +37,6 @@ public abstract class Person {
     private final double transmissionProb;
     private boolean quarantine;
     private final Probability quarantineProb; // Needs more thought. The probability that the person will go into quarantine
-    private final double quarantineVal;
     private Boolean testOutcome = null;
     protected final RandomDataGenerator rng;
 
@@ -60,7 +59,6 @@ public abstract class Person {
         this.rng = RNG.get();
         this.transmissionProb = PopulationParameters.get().personProperties.pTransmission.asDouble();
         this.quarantineProb = PopulationParameters.get().personProperties.pQuarantinesIfSymptomatic;
-        this.quarantineVal = rng.nextUniform(0, 1);
         this.goesToHospitalInPhase2 = CovidParameters.get().hospitalisationParameters.pPhase2GoesToHosptial.sample();
         this.personId = nPeople++;
     }
