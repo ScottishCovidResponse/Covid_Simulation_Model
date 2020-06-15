@@ -147,5 +147,71 @@ public class HospitalTest extends SimulationTest {
         assertFalse(inHospital);
     }
 
+    @Test
+    public void peopleInCareNeverGoToCovidHospital() {
+        final int populationSize = 10000;
+        final int nInfections = 500;
+        final int hours = 168;
+
+        PopulationParameters.get().pensionerProperties.pEntersCareHome = new Probability(0.9);
+        CovidParameters.get().hospitalisationParameters.pPhase2GoesToHosptial = new Probability(1.0);
+        CovidParameters.get().diseaseParameters.pensionerProgressionPhase2 = 100.0;
+
+        Population pop = PopulationGenerator.genValidPopulation(populationSize);
+        pop.seedVirus(nInfections);
+
+        Time t = new Time(0);
+        DailyStats s = new DailyStats(t);
+        for (int hour = 0; hour < hours; hour++) {
+            pop.timeStep(t, s);
+            t.advance();
+            for (CovidHospital h : pop.getPlaces().getCovidHospitals()) {
+                for (Person p : h.getPeople()) {
+                    assertFalse(p.isInCare());
+                }
+            }
+        }
+    }
+
+
+    @Test
+    public void transmissionAdjustmentApplied() {
+        int populationSize = 10000;
+        int nInfections = 100;
+        CovidParameters.get().hospitalisationParameters.pPhase2GoesToHosptial = new Probability(1.0);
+        CovidParameters.get().diseaseParameters.adultProgressionPhase2 = 100.0;
+        CovidParameters.get().diseaseParameters.mortalityRate = 0.0;
+
+        Population pop = PopulationGenerator.genValidPopulation(populationSize);
+        pop.seedVirus(nInfections);
+
+        Person inf = null;
+        for (Person p : pop.getAllPeople()) {
+            if (p instanceof Adult) {
+                inf = p;
+                break;
+            }
+        }
+
+        inf.infect();
+        inf.getcVirus().forceSymptomatic(true);
+
+        Time t = new Time();
+        while (!inf.isHospitalised()) {
+            pop.timeStep(t, new DailyStats(t));
+            t.advance();
+        }
+        assertTrue(inf.isHospitalised());
+
+        CovidHospital hosptial = null;
+        for (CovidHospital h : pop.getPlaces().getCovidHospitals()) {
+            if (h.getPeople().contains(inf)) {
+                hosptial = h;
+            }
+        }
+        
+        assertTrue(hosptial.getBaseTransP(inf) > hosptial.getTransP(inf, null));
+    }
+
 
 }

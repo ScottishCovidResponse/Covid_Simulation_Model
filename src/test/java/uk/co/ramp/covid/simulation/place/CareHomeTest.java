@@ -3,6 +3,7 @@ package uk.co.ramp.covid.simulation.place;
 import org.junit.Test;
 import uk.co.ramp.covid.simulation.Model;
 import uk.co.ramp.covid.simulation.output.DailyStats;
+import uk.co.ramp.covid.simulation.parameters.CovidParameters;
 import uk.co.ramp.covid.simulation.parameters.PopulationParameters;
 import uk.co.ramp.covid.simulation.population.ImpossibleWorkerDistributionException;
 import uk.co.ramp.covid.simulation.population.Person;
@@ -55,12 +56,14 @@ public class CareHomeTest extends SimulationTest {
     public void somePeopleDieInCareHomes() {
         int populationSize = 10000;
         PopulationParameters.get().pensionerProperties.pEntersCareHome = new Probability(0.8);
+        CovidParameters.get().diseaseParameters.pensionerProgressionPhase2 = 100.0;
+        CovidParameters.get().diseaseParameters.mortalityRate = 100.0;
         Model m = new Model()
                 .setPopulationSize(populationSize)
-                .setnInitialInfections(200)
+                .setnInitialInfections(500)
                 .setExternalInfectionDays(0)
                 .setIters(1)
-                .setnDays(40)
+                .setnDays(60)
                 .setRNGSeed(42)
                 .setNoOutput();
         

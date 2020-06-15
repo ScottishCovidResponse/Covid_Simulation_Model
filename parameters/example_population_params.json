@@ -163,6 +163,7 @@
            "restaurantTransmissionConstant":10.0,
            "schoolTransmissionConstant":30.0,
            "shopTransmissionConstant":5.0,
+           "careHomeTransmissionConstant":5.0,
            "pHospitalKey":0.8,
             "pConstructionSiteKey":0.5,
             "pOfficeKey":0.5,
