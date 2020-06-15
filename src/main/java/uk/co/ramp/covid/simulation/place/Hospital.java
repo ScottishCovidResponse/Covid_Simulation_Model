@@ -63,6 +63,7 @@ public class Hospital extends CommunalPlace {
             // Let recovered patients go home
             if (!nPers.isHospitalised()) {
                 nPers.returnHome();
+                left.add(nPers);
             }
         }
         people.removeAll(left);
