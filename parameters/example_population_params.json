@@ -30,7 +30,7 @@
       },
       "careHomeParameters": {
           "PPETransmissionReduction": 0.05,
-          "hoursAfterSyptomsBeforeQuarantine": 6
+          "hoursAfterSymptomsBeforeQuarantine": 6
       }
     },
     "population":{

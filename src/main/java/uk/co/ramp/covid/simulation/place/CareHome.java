@@ -66,7 +66,7 @@ public class CareHome extends CommunalPlace implements Home {
         // In case patients only infect staff due to quarantine
         boolean isQuarantined = infected.getcVirus().isSymptomatic()
                 && t.getAbsTime() > infected.getcVirus().getInfectionLog().getSymptomaticTime().getAbsTime()
-                                     + CovidParameters.get().careHomeParameters.hoursAfterSyptomsBeforeQuarantine;
+                                     + CovidParameters.get().careHomeParameters.hoursAfterSymptomsBeforeQuarantine;
         if (infected.isInCare() && isQuarantined) {
             if (target.isInCare()) {
                 return 0.0;

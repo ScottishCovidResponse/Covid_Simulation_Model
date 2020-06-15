@@ -382,7 +382,7 @@ public class DailyStats {
 
     public int getCareHomeInfectionsResident() { return careHomeInfectionsResident; }
 
-    public int getCareHomeInfctionsWorker() { return careHomeInfectionsWorker; }
+    public int getCareHomeInfectionsWorker() { return careHomeInfectionsWorker; }
     
     public int getCareHomeDeaths() { return careHomeDeaths; }
 

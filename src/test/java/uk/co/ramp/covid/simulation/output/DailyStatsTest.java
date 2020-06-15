@@ -120,7 +120,7 @@ public class DailyStatsTest extends SimulationTest {
             schoolInfectionsVisitor += stats.get(0).get(i).getSchoolInfectionsVisitor();
             shopInfectionsWorker += stats.get(0).get(i).getShopInfectionsWorker();
             shopInfectionsVisitor += stats.get(0).get(i).getShopInfectionsVisitor();
-            careHomeInfectionsWorker += stats.get(0).get(i).getCareHomeInfctionsWorker();
+            careHomeInfectionsWorker += stats.get(0).get(i).getCareHomeInfectionsWorker();
             careHomeInfectionsResident += stats.get(0).get(i).getCareHomeInfectionsResident();
         }
         int expDeaths = adultDeaths + childDeaths + pensionerDeaths + infantDeaths;

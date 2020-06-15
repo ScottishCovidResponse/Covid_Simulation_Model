@@ -6,7 +6,6 @@ import uk.co.ramp.covid.simulation.Time;
 import uk.co.ramp.covid.simulation.output.DailyStats;
 import uk.co.ramp.covid.simulation.parameters.CovidParameters;
 import uk.co.ramp.covid.simulation.parameters.PopulationParameters;
-import uk.co.ramp.covid.simulation.population.ImpossibleWorkerDistributionException;
 import uk.co.ramp.covid.simulation.population.Pensioner;
 import uk.co.ramp.covid.simulation.population.Person;
 import uk.co.ramp.covid.simulation.population.Population;
@@ -126,7 +125,7 @@ public class CareHomeTest extends SimulationTest {
          */
 
         // Step till quarantine
-        for (int i = 0; i <= CovidParameters.get().careHomeParameters.hoursAfterSyptomsBeforeQuarantine; i++) {
+        for (int i = 0; i <= CovidParameters.get().careHomeParameters.hoursAfterSymptomsBeforeQuarantine; i++) {
             inf.getcVirus().stepInfection(t);
             t = t.advance();
         }
