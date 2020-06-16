@@ -54,18 +54,13 @@ public class Hospital extends CommunalPlace {
     }
 
     public void sendHome(Time t) {
-        List<Person> left = new ArrayList<>();
-        for (Person nPers : getPeople()) {
-            if (nPers.worksNextHour(this, t, false)) {
-                continue;
-            }
-
-            // Let recovered patients go home
-            if (!nPers.isHospitalised()) {
-                left.add(nPers);
+        for (Person p : getPeople()) {
+            if (!p.hasMoved()
+                    && !p.isHospitalised()
+                    && !p.worksNextHour(this, t, false)) {
+                p.returnHome(this);
             }
         }
-        left.forEach(p -> p.returnHome(this));
     }
     
     @Override
@@ -73,6 +68,7 @@ public class Hospital extends CommunalPlace {
         movePhase2(t, places, p -> p.isHospitalised());
         moveShifts(t, lockdown, p -> p.isHospitalised());
         sendHome(t);
+        remainInPlace();
     }
 
     @Override

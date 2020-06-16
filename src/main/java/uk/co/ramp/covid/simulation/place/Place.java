@@ -38,7 +38,8 @@ public abstract class Place {
         this.transAdjustment = 1.0;
     }
 
-    public List<Person> getPeople() {
+    // We use iterable here to make it harder to accidentally modify people (which is effectively immutable)
+    public Iterable<Person> getPeople() {
         return people;
     }
     
@@ -48,6 +49,10 @@ public abstract class Place {
     
     // Immediately add a new person to this place (for use in initialisation. Not movement)
     public void addPerson(Person p) { people.add(p); }
+    
+    public void removePerson(Person p) { people.remove(p); }
+    
+    public boolean personInPlace(Person p) { return people.contains(p); }
 
     // Add a person to this place in the next time step
     public void addPersonNext(Person p) {
@@ -140,32 +145,38 @@ public abstract class Place {
     
     /** Do a timestep by switching to the new set of people */
     public void commitMovement() {
-
-        // Anyone who didn't move should remain.
-        nextPeople.addAll(people);
-
         // Switch the movement buffers
         List<Person> tmp = people;
         people = nextPeople;
         nextPeople = tmp;
         nextPeople.clear();
+        
+        for (Person p : people) {
+            p.unsetMoved();
+        }
+        
     }
 
-    public List<Person> getFamilyToSendHome(Person p, CommunalPlace place, Time t) {
-        List<Person> left = new ArrayList<>();
+    public void sendFamilyHome(Person p, CommunalPlace place, Time t) {
         for (Person q : people) {
-            if (p != q && !q.worksNextHour(place, t, false) && q.getHome() == p.getHome()) {
-                left.add(q);
+            if (p != q
+                    && q.getHome() == p.getHome()
+                    && !p.hasMoved()
+                    && !q.worksNextHour(place, t, false)) {
+                q.returnHome(this);
             }
         }
-        return left;
+    }
+
+    protected void remainInPlace() {
+        for (Person p : getPeople() ) {
+            if (!p.hasMoved()) {
+                p.stayInPlace(this);
+            }
+        }
     }
 
 
     /** Handles movement between people in this place */
     public abstract void determineMovement(Time t, boolean lockdown, Places places);
-
-    public void removePerson(Person person) {
-        people.remove(person);
-    }
 }

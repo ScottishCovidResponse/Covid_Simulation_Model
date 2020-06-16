@@ -241,14 +241,14 @@ public class MovementTest extends SimulationTest {
                 if (per.isHospitalised()) {
                     continue;
                 }
-                assertFalse(place.getPeople().contains(per));
+                assertFalse(place.personInPlace(per));
             }
         }
 
         for (Household h : p.getHouseholds()) {
             if (h != iso) {
                 for (Person per : isolating) {
-                    assertFalse(h.getPeople().contains(per));
+                    assertFalse(h.personInPlace(per));
                 }
             }
         }
@@ -301,7 +301,7 @@ public class MovementTest extends SimulationTest {
 
             for (CommunalPlace place : p.getPlaces().getAllPlaces()) {
                 for (Person per : isolating) {
-                    if (place.getPeople().contains(per)) {
+                    if (place.personInPlace(per)) {
                         excursions++;
                     }
                 }
@@ -310,7 +310,7 @@ public class MovementTest extends SimulationTest {
             for (Household h : p.getHouseholds()) {
                 if (h != iso) {
                     for (Person per : isolating) {
-                        if (h.getPeople().contains(per)) {
+                        if (h.personInPlace(per)) {
                             excursions++;
                         }
                     }
@@ -519,5 +519,4 @@ public class MovementTest extends SimulationTest {
         }
 
     }
-
 }

@@ -6,7 +6,6 @@ package uk.co.ramp.covid.simulation.place;
 
 import org.apache.commons.math3.random.RandomDataGenerator;
 import uk.co.ramp.covid.simulation.Time;
-import uk.co.ramp.covid.simulation.covid.Covid;
 import uk.co.ramp.covid.simulation.population.CStatus;
 import uk.co.ramp.covid.simulation.population.Person;
 import uk.co.ramp.covid.simulation.population.Places;
@@ -64,18 +63,17 @@ public abstract class CommunalPlace extends Place {
     }
 
     /** Move everyone based on their shift patterns */
+    // Everone who has been hospitalised (and their families) will have left at this point
     public void moveShifts(Time t, boolean lockdown, Function<Person, Boolean> filter) {
-        List<Person> left = new ArrayList<>();
-        for (Person p : getPeople()) {
-            if (filter.apply(p)) {
+        for (Person p : getPeople() ) {
+            if (p.hasMoved() || filter.apply(p)) {
                 continue;
             }
 
             if (!p.worksNextHour(this, t, lockdown)) {
-                left.add(p);
+                p.returnHome(this);
             }
         }
-        left.forEach(p -> p.returnHome(this));
     }
     
     public void moveShifts(Time t, boolean lockdown) {
@@ -84,11 +82,8 @@ public abstract class CommunalPlace extends Place {
 
     /** Moves Phase2 people to either hospital or back home */
     public void movePhase2(Time t, Places places, Function<Person,Boolean> filter) {
-        List<Person> left = new ArrayList<>();
-        List<Runnable> hospitalMoves = new ArrayList<>();
-
         for (Person p : getPeople()) {
-            if (filter.apply(p)) {
+            if (p.hasMoved() || filter.apply(p)) {
                 continue;
             }
 
@@ -96,16 +91,15 @@ public abstract class CommunalPlace extends Place {
                 if (p.goesToHosptialInPhase2()) {
                     CovidHospital h = places.getRandomCovidHospital();
                     p.hospitalise();
-                    hospitalMoves.add(() -> p.moveTo(this, h));
+                    p.moveTo(this, h);
                 } else {
-                    left.add(p);
-                    left.addAll(getFamilyToSendHome(p, this, t));
+                    p.returnHome(this);
                 }
+                sendFamilyHome(p, this, t);
             }
         }
-        left.forEach(p -> p.returnHome(this));
-        hospitalMoves.forEach(m -> m.run());
     }
+
 
     public void movePhase2(Time t, Places places) {
         movePhase2(t, places, p -> false);
@@ -140,6 +134,7 @@ public abstract class CommunalPlace extends Place {
     public void determineMovement(Time t, boolean lockdown, Places places) {
         movePhase2(t, places);
         moveShifts(t, lockdown);
+        remainInPlace();
     }
 
     public boolean isKeyPremises() {

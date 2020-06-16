@@ -48,6 +48,8 @@ public abstract class Person {
     private final int personId;
 
     private boolean isInCare = false;
+    
+    private boolean moved = false;
 
     public abstract void reportInfection(DailyStats s);
     public abstract void reportDeath (DailyStats s);
@@ -100,8 +102,12 @@ public abstract class Person {
     }
     
     public void moveTo(Place from, Place to) {
-        from.removePerson(this);
         to.addPersonNext(this);
+        moved = true;
+    }
+    
+    public void stayInPlace(Place from) {
+        moveTo(from, from);
     }
 
     public boolean isHospitalised() {
@@ -334,6 +340,14 @@ public abstract class Person {
             cVirus.getInfectionLog().registerInfected(t);
             s.incSeedInfections();
         }
+    }
+    
+    public boolean hasMoved() {
+        return moved;
+    }
+    
+    public void unsetMoved() {
+        moved = false;
     }
 
     protected abstract double getInfectionSeedRate();

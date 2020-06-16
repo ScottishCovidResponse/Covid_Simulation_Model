@@ -8,8 +8,6 @@ import uk.co.ramp.covid.simulation.population.Places;
 import uk.co.ramp.covid.simulation.population.Shifts;
 import uk.co.ramp.covid.simulation.util.RoundRobinAllocator;
 
-import java.util.ArrayList;
-
 public class Shop extends CommunalPlace {
     
     private RoundRobinAllocator<Shifts> shifts;
@@ -43,31 +41,29 @@ public class Shop extends CommunalPlace {
         return shifts.getNext();
     }
 
-    public int sendHome(Time t) {
-        ArrayList<Person> left = new ArrayList<>();
-        for (Person nPers : getPeople()) {
+    public void sendHome(Time t) {
+       
+        for (Person p : getPeople()) {
             // People may have already left if their family has
-            if (left.contains(nPers)) {
+            if (p.hasMoved()) {
                 continue;
             }
 
-            if (nPers.worksNextHour(this, t, false)) {
+            if (p.worksNextHour(this, t, false)) {
                 continue;
             }
 
             // Under certain conditions we must go home, e.g. if there is a shift starting soon
-            if (nPers.mustGoHome(t)) {
-                left.add(nPers);
-                left.addAll(getFamilyToSendHome(nPers, this, t));
+            if (p.mustGoHome(t)) {
+                p.returnHome(this);
+                sendFamilyHome(p, this, t);
             }
             else if (PopulationParameters.get().buildingProperties.pLeaveShop.sample()
                     || !times.isOpenNextHour(t)) {
-                left.add(nPers);
-                left.addAll(getFamilyToSendHome(nPers, this, t));
+                p.returnHome(this);
+                sendFamilyHome(p, this, t);
             }
         }
-        left.forEach(p -> p.returnHome(this));
-        return left.size();
     }
 
     @Override
@@ -84,6 +80,7 @@ public class Shop extends CommunalPlace {
         movePhase2(t, places);
         moveShifts(t, lockdown);
         sendHome(t);
+        remainInPlace();
     }
 
     @Override

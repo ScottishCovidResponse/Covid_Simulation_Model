@@ -286,15 +286,15 @@ public class Population {
         for (Place p : places.getAllPlaces()) {
             p.doInfect(t, dStats);
             p.determineMovement(t, lockdown, getPlaces());
-        };
-
+        }
+        
         for (Household h : households) {
             h.commitMovement();
         }
 
         for (Place p : places.getAllPlaces()) {
             p.commitMovement();
-        };
+        }
     }
 
     // Step through nDays in 1 hour time steps
