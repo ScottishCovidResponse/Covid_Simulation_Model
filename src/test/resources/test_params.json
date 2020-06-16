@@ -13,6 +13,7 @@
           "meanSymptomDelay": -16.08,
           "meanSymptomDelaySD": 30,
           "meanInfectiousDuration": 321.6,
+          "sdInfectiousDuration": 0.4,
           "phase1Betaa": 25.0,
           "phase1Betab": 30.0,
           "aSymptomaticTransAdjustment": 0.1,
@@ -32,7 +33,7 @@
       },
       "careHomeParameters": {
           "PPETransmissionReduction": 0.05,
-          "hoursAfterSyptomsBeforeQuarantine": 6
+          "hoursAfterSyptomsBeforeQuarantine": 12
       }
     },
   "population":{
