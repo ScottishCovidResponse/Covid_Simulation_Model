@@ -70,7 +70,14 @@ public class Population {
         populateHouseholds();
         createMixing();
         allocatePeople();
+        allocateCareHomes();
         assignNeighbours();
+    }
+
+    private void allocateCareHomes() {
+        for (Household h : getHouseholds()) {
+            h.trySendPensionersToCare(getPlaces());
+        }
     }
 
     // Creates the population of People based on the probabilities of age groups above
@@ -202,6 +209,7 @@ public class Population {
         int nConstructionSites = populationSize / PopulationParameters.get().buildingDistribution.populationToConstructionSitesRatio;
         int nNurseries = populationSize / PopulationParameters.get().buildingDistribution.populationToNurseriesRatio;
         int nRestaurants = populationSize / PopulationParameters.get().buildingDistribution.populationToRestaurantsRatio;
+        int nCareHomes = populationSize / PopulationParameters.get().buildingDistribution.populationToCareHomesRatio;
 
         places.createNHospitals(nHospitals);
         places.createNSchools(nSchools);
@@ -210,6 +218,7 @@ public class Population {
         places.createNConstructionSites(nConstructionSites);
         places.createNNurseries(nNurseries);
         places.createNRestaurants(nRestaurants);
+        places.createNCareHomes(nCareHomes);
 
         LOGGER.info("Total number of establishments = {}", places.getAllPlaces().size());
     }

@@ -94,6 +94,10 @@ public class Shop extends CommunalPlace {
 
     @Override
     public boolean isFullyStaffed() {
-        return nStaff >= 4;
+        if (size == Size.SMALL)
+            return nStaff >= 2;
+        else {
+            return nStaff >= 4;
+        }
     }
 }

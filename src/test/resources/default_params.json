@@ -13,7 +13,7 @@
           "meanInfectiousDuration": 321.6,
           "phase1Betaa": 25.0,
           "phase1Betab": 30.0,
-          "aSymptomaticTransAdjustment": 0.1,
+          "aSymptomaticTransAdjustment": 0.13,
           "symptomaticTransAdjustment": 1.0,
           "mortalityRate":0.01,
           "childProgressionPhase2":0.02,
@@ -27,6 +27,10 @@
       "hospitalisationParameters": {
           "pPhase2GoesToHosptial":0.52,
           "hospitalisationTransmissionReduction":0.05
+      },
+      "careHomeParameters": {
+          "PPETransmissionReduction": 0.05,
+          "hoursAfterSyptomsBeforeQuarantine": 6
       }
     },
     "population":{
@@ -119,7 +123,7 @@
                 "pMed":0.2,
                 "pLarge":0.1
             },
-            "populationToNurseriesRatio":2500,
+            "populationToNurseriesRatio":5000,
             "nurserySizeDistribution":{
                 "pSmall":0,
                 "pMed":1,
@@ -130,17 +134,25 @@
                 "pSmall":0.4,
                 "pMed":0.5,
                 "pLarge":0.1
+            },
+            "populationToCareHomesRatio":5000,
+            "careHomeSizeDistribution":{
+                "pSmall":0.0,
+                "pMed":1.0,
+                "pLarge":0.0
             }
         },
         "workerDistribution":{
-            "pOffice":0.3,
-            "pShop":0.2,
-            "pHospital":0.08,
-            "pConstruction":0.14,
-            "pTeacher":0.08,
-            "pRestaurant":0.12,
-            "pNursery":0.03,
+            "pOffice":0.31,
+            "pShop":0.12,
+            "pHospital":0.15,
+            "pConstruction":0.22,
+            "pTeacher":0.065,
+            "pRestaurant":0.07,
+            "pNursery":0.005,
+            "pCareHome":0.01,
             "pUnemployed":0.05,
+            "pCareHome":0.01,
             "sizeAllocation":{
                 "pSmall": 0.2,
                 "pMed": 0.3,
@@ -156,6 +168,7 @@
            "restaurantTransmissionConstant":10.0,
            "schoolTransmissionConstant":30.0,
            "shopTransmissionConstant":5.0,
+           "careHomeTransmissionConstant":5.0,
            "pHospitalKey":0.8,
             "pConstructionSiteKey":0.5,
             "pOfficeKey":0.5,
@@ -164,7 +177,11 @@
             "pLeaveRestaurant": 0.4
         },
         "infantProperties":{
-            "pAttendsNursery":0.5
+            "pAttendsNursery":0.12
+        },
+        "pensionerProperties":{
+            "minAgeToEnterCare" : 70,
+            "pEntersCareHome": 0.045
         },
         "householdProperties":{
           "neighbourOpeningTime":9,

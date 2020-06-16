@@ -33,16 +33,17 @@ public class ModelTest extends SimulationTest {
         nInfections = 10;
         nIter = 1;
         nDays = 60;
-        RNGSeed = 42;
+        RNGSeed = 402;
     }
 
     @Test
     public void testBaseLine() {
+        final int inf = nInfections * 5;
 
         Long startTime = System.currentTimeMillis();
         Model m = new Model()
                 .setPopulationSize(population)
-                .setnInitialInfections(nInfections)
+                .setnInitialInfections(inf)
                 .setExternalInfectionDays(0)
                 .setIters(nIter)
                 .setnDays(nDays)
@@ -51,12 +52,12 @@ public class ModelTest extends SimulationTest {
 
         List<List<DailyStats>> stats = m.run(0);
 
+        int lastTotalInfected = inf;
         //Output model performance
         double runLength = (System.currentTimeMillis() - startTime)/1000.0;
         System.out.printf("Total run time (secs): %.3f\n", runLength);
         System.out.printf("Mean run time per day: %.3f\n", runLength/nDays);
 
-        int lastTotalInfected = 10;
         for (DailyStats s : stats.get(0)) {
             assertEquals(10000, s.getTotalPopulation());
 
@@ -72,7 +73,7 @@ public class ModelTest extends SimulationTest {
         }
 
         // Check all infections occurred somewhere
-        int totalDailyInfects = nInfections;
+        int totalDailyInfects = inf;
         int cummulativeI;
         for (DailyStats s : stats.get(0)) {
             cummulativeI = s.getTotalInfected() + s.getRecovered() + s.getDead();
@@ -91,7 +92,7 @@ public class ModelTest extends SimulationTest {
             adultDeaths = s.getAdultDeaths();
             pensionerDeaths += s.getPensionerDeaths();
             childDeaths += s.getChildDeaths();
-            totalDead += s.getHomeDeaths() + s.getHospitalDeaths();
+            totalDead += s.getHomeDeaths() + s.getHospitalDeaths() + s.getCareHomeDeaths();
         }
         
         List<DailyStats> s = stats.get(0);

@@ -11,6 +11,7 @@ public class BuildingProperties {
     public Double restaurantTransmissionConstant = null;
     public Double schoolTransmissionConstant = null;
     public Double shopTransmissionConstant = null;
+    public Double careHomeTransmissionConstant = null;
 
     public Probability pHospitalKey = null;
     public Probability pConstructionSiteKey = null;

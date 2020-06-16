@@ -21,6 +21,7 @@ public class Places {
     private ProbabilityDistribution<Restaurant> restaurants;
     private ProbabilityDistribution<School> schools;
     private ProbabilityDistribution<Shop> shops;
+    private ProbabilityDistribution<CareHome> careHomes;
     
     private boolean officesUnallocated = false;
     private boolean constructionSitesUnallocated = false;
@@ -29,6 +30,7 @@ public class Places {
     private boolean restaurantsUnallocated = false;
     private boolean schoolsUnallocated = false;
     private boolean shopsUnallocated = false;
+    private boolean careHomeUnallocated = false;
 
     private List<CommunalPlace> all;
 
@@ -41,6 +43,7 @@ public class Places {
         restaurants = new ProbabilityDistribution<>();
         schools = new ProbabilityDistribution<>();
         shops = new ProbabilityDistribution<>();
+        careHomes = new ProbabilityDistribution<>();
         all = new ArrayList<>();
     }
 
@@ -74,6 +77,10 @@ public class Places {
 
     public Shop getRandomShop() {
         return shops.sample();
+    }
+
+    public CareHome getRandomCareHome() {
+        return careHomes.sample();
     }
     
     private <T extends CommunalPlace> T getNextWorkplace(ProbabilityDistribution<T> places,
@@ -124,6 +131,11 @@ public class Places {
     public Restaurant getNextRestaurantJob() {
         return getNextWorkplace(restaurants, () -> restaurantsUnallocated,
                 o -> restaurantsUnallocated = o, this::getRandomRestaurant);
+    }
+
+    public CareHome getNextCareHomeJob() {
+        return getNextWorkplace(careHomes, () -> careHomeUnallocated,
+                o -> careHomeUnallocated = o, this::getRandomCareHome);
     }
 
     private <T extends CommunalPlace> void createNGeneric(
@@ -289,6 +301,12 @@ public class Places {
         createNGeneric((s, x) -> new ConstructionSite(s), n, p, constructionSites);
     }
 
+    public void createNCareHomes(int n) {
+        ProbabilityDistribution<CommunalPlace.Size> p =
+                PopulationParameters.get().buildingDistribution.careHomeSizeDistribution.sizeDistribution();
+        createNGeneric((s, x) -> new CareHome(s), n, p, careHomes);
+    }
+
     public List<CommunalPlace> getAllPlaces() {
         return this.all;
     }
@@ -323,5 +341,9 @@ public class Places {
 
     public List<Shop> getShops() {
         return shops.toList();
+    }
+
+    public List<CareHome> getCareHomes() {
+        return careHomes.toList();
     }
 }

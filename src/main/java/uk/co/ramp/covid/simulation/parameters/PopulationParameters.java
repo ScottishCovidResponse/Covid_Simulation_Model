@@ -20,6 +20,7 @@ public class PopulationParameters {
     public final WorkerDistribution workerDistribution;
     public final BuildingProperties buildingProperties;
     public InfantProperties infantProperties;
+    public PensionerProperties pensionerProperties;
     public final PersonProperties personProperties;
     public HouseholdProperties householdProperties;
 
@@ -30,6 +31,7 @@ public class PopulationParameters {
         workerDistribution = new WorkerDistribution();
         buildingProperties = new BuildingProperties();
         infantProperties = new InfantProperties();
+        pensionerProperties = new PensionerProperties();
         personProperties = new PersonProperties();
         householdProperties = new HouseholdProperties();
     }
@@ -45,6 +47,7 @@ public class PopulationParameters {
         valid = valid && checker.isValid(workerDistribution) && workerDistribution.isValid();
         valid = valid && checker.isValid(buildingProperties);
         valid = valid && checker.isValid(infantProperties);
+        valid = valid && checker.isValid(pensionerProperties);
         valid = valid && checker.isValid(personProperties);
         valid = valid && checker.isValid(householdProperties);
         return valid;

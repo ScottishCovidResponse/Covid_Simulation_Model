@@ -15,6 +15,7 @@ import uk.co.ramp.covid.simulation.testutil.PopulationGenerator;
 import uk.co.ramp.covid.simulation.testutil.SimulationTest;
 import uk.co.ramp.covid.simulation.util.Probability;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -461,5 +462,36 @@ public class MovementTest extends SimulationTest {
         assertTrue(per.getTestOutcome().get());
         assertTrue(per.getQuarantine());
         assertTrue(iso.isIsolating());
+    }
+
+    @Test
+    public void neighboursShouldLeaveEmptyHouses() {
+        final int simHours = 100;
+        Time t = new Time(0);
+        p = PopulationGenerator.genValidPopulation(populationSize);
+        p.seedVirus(nInfections);
+
+        // Going to an empty neighbours house is okay, but only for 1 hour (when you discover they aren't in)
+        List<Set<Person>> inEmptyNeighbourHouse = new ArrayList<>();
+        DailyStats s = new DailyStats(t);
+        for (int i = 0; i < simHours; i++) {
+            inEmptyNeighbourHouse.add(new HashSet<>());
+
+            p.timeStep(t, s);
+            t = t.advance();
+
+            for (Household h : p.getHouseholds()) {
+                if (h.getNumInhabitants() == 0) {
+                    inEmptyNeighbourHouse.get(i).addAll(h.getVisitors());
+                }
+            }
+
+        }
+
+        for (int i = 0; i < simHours - 1; i++) {
+            for (Person p : inEmptyNeighbourHouse.get(i)) {
+                assertFalse(inEmptyNeighbourHouse.get(i+1).contains(p));
+            }
+        }
     }
 }

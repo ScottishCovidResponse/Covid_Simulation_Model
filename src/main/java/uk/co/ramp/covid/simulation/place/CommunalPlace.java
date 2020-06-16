@@ -15,6 +15,7 @@ import uk.co.ramp.covid.simulation.util.RNG;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 
 public abstract class CommunalPlace extends Place {
 
@@ -62,9 +63,13 @@ public abstract class CommunalPlace extends Place {
     }
 
     /** Move everyone based on their shift patterns */
-    public void moveShifts(Time t, boolean lockdown) {
+    public void moveShifts(Time t, boolean lockdown, Function<Person, Boolean> filter) {
         List<Person> left = new ArrayList<>();
         for (Person p : people) {
+            if (filter.apply(p)) {
+                continue;
+            }
+
             if (!p.worksNextHour(this, t, lockdown)) {
                 p.returnHome();
                 left.add(p);
@@ -72,12 +77,19 @@ public abstract class CommunalPlace extends Place {
         }
         people.removeAll(left);
     }
-
+    
+    public void moveShifts(Time t, boolean lockdown) {
+        moveShifts(t, lockdown, p -> false);
+    }
 
     /** Moves Phase2 people to either hospital or back home */
-    public void movePhase2(Time t, Places places) {
+    public void movePhase2(Time t, Places places, Function<Person,Boolean> filter) {
         List<Person> left = new ArrayList<>();
         for (Person p : people) {
+            if (filter.apply(p)) {
+                continue;
+            }
+
             if (p.cStatus() != null && p.cStatus() == CStatus.PHASE2) {
                 if (p.goesToHosptialInPhase2()) {
                     Hospital h = places.getRandomCovidHospital();
@@ -92,6 +104,10 @@ public abstract class CommunalPlace extends Place {
             }
         }
         people.removeAll(left);
+    }
+
+    public void movePhase2(Time t, Places places) {
+        movePhase2(t, places, p -> false);
     }
     
     public boolean isVisitorOpenNextHour(Time t) {

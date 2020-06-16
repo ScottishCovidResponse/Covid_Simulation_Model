@@ -44,6 +44,8 @@ public class CommunalPlaceTest extends SimulationTest {
                         testShopOrRestaurant(place, open, close, day);
                     } else if (place instanceof Hospital){
                         testHospital(place, day);
+                    } else if (place instanceof CareHome){
+                        testCarehome(place, open, close, day);
                     } else {
                         testOfficeHours(place, open, close, day);
                     }
@@ -71,6 +73,15 @@ public class CommunalPlaceTest extends SimulationTest {
     private void testOfficeHours(CommunalPlace place, int open, int close, int day) {
         //Test if place with 9-5 hours is open or closed
         if (t.getHour() >= open && t.getHour() < close && day < 5) {
+            assertTrue("Day " + day + " Time " + t.getHour() + " " + place.toString() + " unexpectedly closed", place.isOpen(day, t.getHour()));
+        } else {
+            assertFalse("Day " + day + " Time " + t.getHour() + " " + place.toString() + " unexpectedly open", place.isOpen(day, t.getHour()));
+        }
+    }
+
+
+    private void testCarehome(CommunalPlace place, int open, int close, int day) {
+        if (t.getHour() >= open && t.getHour() < close) {
             assertTrue("Day " + day + " Time " + t.getHour() + " " + place.toString() + " unexpectedly closed", place.isOpen(day, t.getHour()));
         } else {
             assertFalse("Day " + day + " Time " + t.getHour() + " " + place.toString() + " unexpectedly open", place.isOpen(day, t.getHour()));
