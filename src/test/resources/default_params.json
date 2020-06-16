@@ -10,6 +10,7 @@
           "meanAsymptomaticPeriod":192,
           "sdAsymptomaticPeriod":0.5,
           "pSymptomaticCase": 0.692,
+          "pSymptomaticCasePensioner": 0.821,
           "meanSymptomDelay": -16.08,
           "meanSymptomDelaySD": 30,
           "meanInfectiousDuration": 321.6,
