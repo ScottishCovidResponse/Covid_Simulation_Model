@@ -15,7 +15,7 @@ public class RStatsTest extends SimulationTest {
 
     @Before
     public void setupParams() {
-        int populationSize = 10000;
+        int populationSize = 50000;
         pop = PopulationGenerator.genValidPopulation(populationSize);
     }
 
@@ -42,12 +42,9 @@ public class RStatsTest extends SimulationTest {
         assertTrue("Mean generation time unexpectedly = 0", rs.getMeanGenerationTime(0) > 0);
     }
 
-    //This test consistently fails. Peak R value always occurs more than 5 days after lockdown has started.
-    //Not sure if this is a failing of the test or a failing of the model.
-    @Ignore
-    @Test
     public void testMeanRWithLockdown() {
-
+        int populationSize = 50000;
+        pop = PopulationGenerator.genValidPopulation(populationSize);
         int startLock = 30;
         int endLock = 90;
         int nDays = 90;
@@ -65,5 +62,6 @@ public class RStatsTest extends SimulationTest {
                 assertTrue("Peak R occurred at Day " + i, rs.getMeanRBefore(i + 1) < peakR);
             }
         }
+
     }
 }
