@@ -144,12 +144,12 @@
         },
         "workerDistribution":{
             "pCareHome":0.01,
-            "pOffice":0.31,
-            "pShop":0.12,
-            "pHospital":0.15,
+            "pOffice":0.33,
+            "pShop":0.14,
+            "pHospital":0.09,
             "pConstruction":0.22,
             "pTeacher":0.065,
-            "pRestaurant":0.07,
+            "pRestaurant":0.09,
             "pNursery":0.005,
             "pUnemployed":0.05,
             "sizeAllocation":{
