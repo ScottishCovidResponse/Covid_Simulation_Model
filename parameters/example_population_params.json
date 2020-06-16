@@ -6,11 +6,15 @@
       },
       "diseaseParameters":{
           "meanLatentPeriod":123.12,
+          "sdLatentPeriod":0.5,
           "meanAsymptomaticPeriod":192,
+          "sdAsymptomaticPeriod":0.5,
           "pSymptomaticCase": 0.692,
+          "pSymptomaticCasePensioner": 0.821,
           "meanSymptomDelay": -16.08,
           "meanSymptomDelaySD": 30,
           "meanInfectiousDuration": 321.6,
+          "sdInfectiousDuration": 0.4,
           "phase1Betaa": 25.0,
           "phase1Betab": 30.0,
           "aSymptomaticTransAdjustment": 0.13,
@@ -30,7 +34,7 @@
       },
       "careHomeParameters": {
           "PPETransmissionReduction": 0.05,
-          "hoursAfterSyptomsBeforeQuarantine": 6
+          "hoursAfterSyptomsBeforeQuarantine": 12
       }
     },
     "population":{
@@ -105,7 +109,7 @@
                 "pMed":1.0,
                 "pLarge":0
             },
-            "populationToShopsRatio":1000,
+            "populationToShopsRatio":500,
             "shopSizeDistribution":{
                 "pSmall":0.7,
                 "pMed":0.2,
@@ -129,7 +133,7 @@
                 "pMed":1,
                 "pLarge":0
             },
-            "populationToRestaurantsRatio":1000,
+            "populationToRestaurantsRatio":750,
             "restaurantSizeDistribution":{
                 "pSmall":0.4,
                 "pMed":0.5,
@@ -144,12 +148,12 @@
         },
         "workerDistribution":{
             "pCareHome":0.01,
-            "pOffice":0.31,
-            "pShop":0.12,
-            "pHospital":0.15,
+            "pOffice":0.33,
+            "pShop":0.14,
+            "pHospital":0.09,
             "pConstruction":0.22,
             "pTeacher":0.065,
-            "pRestaurant":0.07,
+            "pRestaurant":0.09,
             "pNursery":0.005,
             "pUnemployed":0.05,
             "sizeAllocation":{
