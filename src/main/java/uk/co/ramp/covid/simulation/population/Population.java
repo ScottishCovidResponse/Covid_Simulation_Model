@@ -239,28 +239,71 @@ public class Population {
         }
     }
 
+    private void createNeighbourGroupDistributions(ProbabilityDistribution<List<Household>> adultDist,
+                                                   ProbabilityDistribution<List<Household>> familyDist,
+                                                   ProbabilityDistribution<List<Household>> pensionerDist) {
+        List<Household> adultGroup = new ArrayList<>();
+        List<Household> familyGroup = new ArrayList<>();
+        List<Household> pensionerGroup = new ArrayList<>();
+
+        for (Household h : households) {
+            switch (h.getNeighbourGroup()) {
+                case ADULT: adultGroup.add(h); break;
+                case FAMILY: familyGroup.add(h); break;
+                case PENSIONER: pensionerGroup.add(h); break;
+            }
+        }
+
+        adultDist.add(0.6, adultGroup);
+        adultDist.add(0.2, pensionerGroup);
+        adultDist.add(0.2, familyGroup);
+
+        familyDist.add(0.6, familyGroup);
+        familyDist.add(0.2, pensionerGroup);
+        familyDist.add(0.2, adultGroup);
+
+        pensionerDist.add(0.6, pensionerGroup);
+        pensionerDist.add(0.2, familyGroup);
+        pensionerDist.add(0.2, adultGroup);
+    }
+
     // This method assigns a random number of neighbours to each Household
     public void assignNeighbours() {
-        for (Household cHouse : households) {
+        ProbabilityDistribution<List<Household>> adultDist = new ProbabilityDistribution<>();
+        ProbabilityDistribution<List<Household>> familyDist = new ProbabilityDistribution<>();
+        ProbabilityDistribution<List<Household>> pensionerDist = new ProbabilityDistribution<>();
+
+        createNeighbourGroupDistributions(adultDist, familyDist, pensionerDist);
+
+        for (Household h : households) {
             int expectedNeighbours = PopulationParameters.get().householdProperties.expectedNeighbours;
             int nneighbours = (int) rng.nextPoisson(expectedNeighbours);
-            for (int k = 0; k < nneighbours; k++) {
 
-                Household neighbour = households.get(rng.nextInt(0, households.size() - 1));
+            ProbabilityDistribution<List<Household>> dist = null;
+            switch (h.getNeighbourGroup()) {
+                case ADULT: dist = adultDist; break;
+                case FAMILY: dist = familyDist; break;
+                case PENSIONER: dist = pensionerDist; break;
+            }
+
+            for (int k = 0; k < nneighbours; k++) {
+                List<Household> neighbourGroup = dist.sample();
+                
+                Household neighbour = neighbourGroup.get(rng.nextInt(0, neighbourGroup.size() - 1));
 
                 // Cannot be a neighbour of ourselves
-                if (neighbour == cHouse) {
+                if (neighbour == h) {
                     k--;
                     continue;
                 }
 
                 // Avoid duplicate neighbours
-                if (cHouse.isNeighbour(neighbour)) {
+                if (h.isNeighbour(neighbour)) {
                     k--;
                     continue;
                 }
 
-                cHouse.addNeighbour(neighbour);
+                h.addNeighbour(neighbour);
             }
         }
     }
