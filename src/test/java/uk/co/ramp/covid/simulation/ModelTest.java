@@ -39,6 +39,7 @@ public class ModelTest extends SimulationTest {
     @Test
     public void testBaseLine() {
 
+        Long startTime = System.currentTimeMillis();
         Model m = new Model()
                 .setPopulationSize(population)
                 .setnInitialInfections(nInfections)
@@ -49,6 +50,11 @@ public class ModelTest extends SimulationTest {
                 .setNoOutput();
 
         List<List<DailyStats>> stats = m.run(0);
+
+        //Output model performance
+        double runLength = (System.currentTimeMillis() - startTime)/1000.0;
+        System.out.printf("Total run time (secs): %.3f\n", runLength);
+        System.out.printf("Mean run time per day: %.3f\n", runLength/nDays);
 
         int lastTotalInfected = 10;
         for (DailyStats s : stats.get(0)) {
