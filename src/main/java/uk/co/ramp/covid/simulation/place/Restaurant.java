@@ -50,10 +50,6 @@ public class Restaurant extends CommunalPlace {
         return nStaff >= 4;
     }
 
-    public void shoppingTrip(ArrayList<Person> vHouse) {
-        getPeople().addAll(vHouse);
-    }
-
     public int sendHome(Time t) {
         ArrayList<Person> left = new ArrayList<>();
         for (Person nPers : getPeople()) {

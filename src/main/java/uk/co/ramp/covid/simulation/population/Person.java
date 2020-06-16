@@ -96,12 +96,11 @@ public abstract class Person {
     }
     
     public void returnHome(Place from) {
-        from.getPeople().remove(this);
-        home.addPersonNext(this);
+        moveTo(from, (Place) home);
     }
     
     public void moveTo(Place from, Place to) {
-        from.getPeople().remove(this);
+        from.removePerson(this);
         to.addPersonNext(this);
     }
 
@@ -280,8 +279,7 @@ public abstract class Person {
 
     public void moveToPrimaryPlace(Place from) {
         if (primaryPlace != null) {
-            from.getPeople().remove(this);
-            primaryPlace.addPersonNext(this);
+            moveTo(from, primaryPlace);
         }
     }
 

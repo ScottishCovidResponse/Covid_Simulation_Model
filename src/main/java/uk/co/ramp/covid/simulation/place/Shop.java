@@ -43,10 +43,6 @@ public class Shop extends CommunalPlace {
         return shifts.getNext();
     }
 
-    public void shoppingTrip(ArrayList<Person> vHouse) {
-       getPeople().addAll(vHouse);
-    }
-
     public int sendHome(Time t) {
         ArrayList<Person> left = new ArrayList<>();
         for (Person nPers : getPeople()) {

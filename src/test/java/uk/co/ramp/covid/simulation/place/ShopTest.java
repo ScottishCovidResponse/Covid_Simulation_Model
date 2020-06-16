@@ -47,15 +47,6 @@ public class ShopTest extends SimulationTest {
     }
 
     @Test
-    public void testShoppingTrip() {
-        ArrayList<Person> personList = new ArrayList<>();
-        personList.add(new Child(8, Person.Sex.FEMALE));
-        shop.shoppingTrip(personList);
-        int expPeople = 3;
-        assertEquals("Unexpected number of people in shop", expPeople, shop.getNumPeople());
-    }
-
-    @Test
     public void testSendHome() {
         PopulationParameters.get().buildingProperties.pLeaveShop = new Probability(1.0);
         int time = shop.times.getClose() - 1;

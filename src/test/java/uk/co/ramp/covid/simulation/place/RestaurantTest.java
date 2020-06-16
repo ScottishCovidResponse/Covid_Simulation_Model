@@ -48,15 +48,6 @@ public class RestaurantTest extends SimulationTest {
     }
 
     @Test
-    public void testShoppingTrip() {
-        ArrayList<Person> personList = new ArrayList<>();
-        personList.add(new Child(6, Person.Sex.MALE));
-        restaurant.shoppingTrip(personList);
-        int expPeople = 3;
-        assertEquals("Unexpected number of people in restaurant", expPeople, restaurant.getNumPeople());
-    }
-
-    @Test
     public void testSendHome() {
         PopulationParameters.get().buildingProperties.pLeaveRestaurant = new Probability(1.0);
         int time = restaurant.times.getClose() - 1;

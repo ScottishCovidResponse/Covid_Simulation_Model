@@ -164,4 +164,8 @@ public abstract class Place {
 
     /** Handles movement between people in this place */
     public abstract void determineMovement(Time t, boolean lockdown, Places places);
+
+    public void removePerson(Person person) {
+        people.remove(person);
+    }
 }
