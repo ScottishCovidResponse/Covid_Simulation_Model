@@ -6,10 +6,12 @@
       },
       "diseaseParameters":{
           "meanLatentPeriod":123.12,
+          "sdLatentPeriod":0.5,
           "meanAsymptomaticPeriod":192,
+          "sdAsymptomaticPeriod":0.5,
           "pSymptomaticCase": 0.692,
           "meanSymptomDelay": -16.08,
-           "meanSymptomDelaySD": 30,
+          "meanSymptomDelaySD": 30,
           "meanInfectiousDuration": 321.6,
           "phase1Betaa": 25.0,
           "phase1Betab": 30.0,

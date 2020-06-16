@@ -6,6 +6,7 @@ public class DiseaseParameters {
     public Double meanLatentPeriod = null;
     public Double sdLatentPeriod = null;
     public Double meanAsymptomaticPeriod = null;
+    public Double sdAsymptomaticPeriod = null;
     public Probability pSymptomaticCase = null;
     public Double meanSymptomDelay = null;
     public Double meanSymptomDelaySD = null;
