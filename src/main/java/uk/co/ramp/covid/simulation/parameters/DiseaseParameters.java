@@ -11,6 +11,7 @@ public class DiseaseParameters {
     public Double meanSymptomDelay = null;
     public Double meanSymptomDelaySD = null;
     public Double meanInfectiousDuration = null;
+    public Double sdInfectiousDuration = null;
     public Double phase1Betaa = null;
     public Double phase1Betab = null;
     public Double aSymptomaticTransAdjustment = null;

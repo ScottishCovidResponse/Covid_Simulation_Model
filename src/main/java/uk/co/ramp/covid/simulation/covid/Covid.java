@@ -28,6 +28,7 @@ public class Covid {
     private final double meanSymptomDelay;
     private final double meanSymptomDelaySD;    
     private final double meanInfectiousDuration;
+    private final double sdInfectiousDuration;
     private final double oPhase1Betaa;
     private final double oPhase1Betab;
     private final double asymptomaticTransAdjustment;
@@ -55,6 +56,7 @@ public class Covid {
         this.meanSymptomDelay = CovidParameters.get().diseaseParameters.meanSymptomDelay;
         this.meanSymptomDelaySD = CovidParameters.get().diseaseParameters.meanSymptomDelaySD;
         this.meanInfectiousDuration = CovidParameters.get().diseaseParameters.meanInfectiousDuration;
+        this.sdInfectiousDuration = CovidParameters.get().diseaseParameters.sdInfectiousDuration;
         this.oPhase1Betaa = CovidParameters.get().diseaseParameters.phase1Betaa;
         this.oPhase1Betab = CovidParameters.get().diseaseParameters.phase1Betab;
         this.asymptomaticTransAdjustment = CovidParameters.get().diseaseParameters.aSymptomaticTransAdjustment;
@@ -112,7 +114,7 @@ public class Covid {
         	symptomDelay = latentPeriod - rng.nextGaussian(meanSymptomDelay, meanSymptomDelaySD); // Basically if symptom delay < 0 then the symptoms appear after the infectious period has started; otherwise before
         	if(symptomDelay < 1.0) symptomDelay = 1.0; // There could be the odd instance where we have a negative value here 
         
-        	infectiousPeriod = Math.exp(rng.nextGaussian(Math.log(meanInfectiousDuration), 1.0));
+        	infectiousPeriod = Math.exp(rng.nextGaussian(Math.log(meanInfectiousDuration), sdInfectiousDuration));
         
         p1 = infectiousPeriod * rng.nextBeta(oPhase1Betaa, oPhase1Betab);
         p2 = infectiousPeriod - p1;
