@@ -4,6 +4,7 @@ import uk.co.ramp.covid.simulation.util.Probability;
 
 public class DiseaseParameters {
     public Double meanLatentPeriod = null;
+    public Double sdLatentPeriod = null;
     public Double meanAsymptomaticPeriod = null;
     public Probability pSymptomaticCase = null;
     public Double meanSymptomDelay = null;

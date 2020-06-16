@@ -21,6 +21,7 @@ public class Covid {
     private boolean recovered;
     private boolean dead;
     private final double meanLatentPeriod;
+    private final double sdLatentPeriod;
     private final double meanAsymptomaticPeriod;
     private final Probability pSymptoms;
     private final double meanSymptomDelay;
@@ -46,6 +47,7 @@ public class Covid {
     public Covid(Person ccase) {
         this.rng = RNG.get();
         this.meanLatentPeriod = CovidParameters.get().diseaseParameters.meanLatentPeriod;
+        this.sdLatentPeriod = CovidParameters.get().diseaseParameters.sdLatentPeriod;
         this.meanAsymptomaticPeriod = CovidParameters.get().diseaseParameters.meanAsymptomaticPeriod;
         this.pSymptoms = CovidParameters.get().diseaseParameters.pSymptomaticCase;
         this.meanSymptomDelay = CovidParameters.get().diseaseParameters.meanSymptomDelay;
@@ -102,7 +104,7 @@ public class Covid {
 
     // For each infection define the duration of the infection periods
     private void setPeriods() {
-        latentPeriod = Math.exp(rng.nextGaussian(Math.log(meanLatentPeriod), 1.0));
+        latentPeriod = Math.exp(rng.nextGaussian(Math.log(meanLatentPeriod), sdLatentPeriod));
         if(!symptomaticCase) asymptomaticPeriod = Math.exp(rng.nextGaussian(Math.log(meanAsymptomaticPeriod), 1.0));
         else if(symptomaticCase) {
         	symptomDelay = latentPeriod - rng.nextGaussian(meanSymptomDelay, meanSymptomDelaySD); // Basically if symptom delay < 0 then the symptoms appear after the infectious period has started; otherwise before
