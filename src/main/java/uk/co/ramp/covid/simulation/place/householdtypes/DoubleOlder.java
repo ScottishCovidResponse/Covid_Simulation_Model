@@ -49,4 +49,9 @@ public class DoubleOlder extends Household {
     public boolean additionalAdultAnyAgeAllowed() {
         return false;
     }
+
+    @Override
+    public NeighbourGroup getNeighbourGroup() {
+        return NeighbourGroup.PENSIONER;
+    }
 }

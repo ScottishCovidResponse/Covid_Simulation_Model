@@ -325,6 +325,7 @@ public class MovementTest extends SimulationTest {
     @Test
     public void newInfectionsResetIsolationTimer() {
         int daysIsolated = 2;
+        CovidParameters.get().testParameters.pDiagnosticTestAvailable = new Probability(0.0);
 
         Time t = new Time(24);
         DailyStats s = new DailyStats(t);
