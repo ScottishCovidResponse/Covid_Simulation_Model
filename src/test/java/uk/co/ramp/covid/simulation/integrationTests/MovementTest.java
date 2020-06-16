@@ -157,13 +157,20 @@ public class MovementTest extends SimulationTest {
     public void someNonWorkersGoToHospital() {
         // Phase 2 movement set when we construct population so we need to reconstruct it here
         CovidParameters.get().hospitalisationParameters.pPhase2GoesToHosptial = new Probability(1.0);
+        CovidParameters.get().diseaseParameters.adultProgressionPhase2 = 100.0;
+        CovidParameters.get().diseaseParameters.childProgressionPhase2 = 100.0;
+        CovidParameters.get().diseaseParameters.pensionerProgressionPhase2 = 100.0;
+
+        // 10 days ensures some people are infected and move to phase 2
+        final int simTime = 24 * 10;
+
         p = PopulationGenerator.genValidPopulation(populationSize);
         p.seedVirus(200);
 
         Set<Person> visiting = new HashSet<>();
         Time t = new Time(24);
         DailyStats s = new DailyStats(t);
-        for (int i = 0; i < 120; i++) {
+        for (int i = 0; i < simTime; i++) {
             p.timeStep(t, s);
             for (Hospital place : p.getPlaces().getHospitals()) {
                 for (Person per : place.getPeople()) {
@@ -325,6 +332,7 @@ public class MovementTest extends SimulationTest {
     @Test
     public void newInfectionsResetIsolationTimer() {
         int daysIsolated = 2;
+        CovidParameters.get().testParameters.pDiagnosticTestAvailable = new Probability(0.0);
 
         Time t = new Time(24);
         DailyStats s = new DailyStats(t);

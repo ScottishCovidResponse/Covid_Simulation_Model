@@ -6,11 +6,15 @@
       },
       "diseaseParameters":{
           "meanLatentPeriod":123.12,
+          "sdLatentPeriod":0.5,
           "meanAsymptomaticPeriod":192,
+          "sdAsymptomaticPeriod":0.5,
           "pSymptomaticCase": 0.692,
+          "pSymptomaticCasePensioner": 0.821,
           "meanSymptomDelay": -16.08,
-           "meanSymptomDelaySD": 30,
+          "meanSymptomDelaySD": 30,
           "meanInfectiousDuration": 321.6,
+          "sdInfectiousDuration": 0.4,
           "phase1Betaa": 25.0,
           "phase1Betab": 30.0,
           "aSymptomaticTransAdjustment": 0.13,
@@ -30,7 +34,7 @@
       },
       "careHomeParameters": {
           "PPETransmissionReduction": 0.05,
-          "hoursAfterSyptomsBeforeQuarantine": 6
+          "hoursAfterSyptomsBeforeQuarantine": 12
       }
     },
     "population":{
@@ -187,7 +191,7 @@
           "neighbourOpeningTime":9,
           "neighbourClosingTime":20,
           "pVisitorsLeaveHousehold":0.333,
-          "householdVisitsNeighbourDaily":0.2,
+          "householdVisitsNeighbourDaily":0.25,
           "expectedNeighbours":7,
           "pGoShopping":0.071,
           "pGoRestaurant": 0.071,
