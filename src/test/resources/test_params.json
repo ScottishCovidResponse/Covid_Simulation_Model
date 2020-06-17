@@ -191,7 +191,9 @@
             "pGoRestaurant": 0.01190,
             "pWillIsolate": 0.5,
             "householdIsolationPeriod": 14,
-            "pLockCompliance": 0.8
+            "pLockCompliance": 0.8,
+            "pNeighbourFromSameGroup":0.6,
+            "pNeighbourFromOtherGroup":0.2
         },
         "personProperties":{
             "pTransmission":0.9,

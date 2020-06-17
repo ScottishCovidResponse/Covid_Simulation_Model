@@ -189,6 +189,8 @@
           "pVisitorsLeaveHousehold":0.333,
           "householdVisitsNeighbourDaily":0.2,
           "expectedNeighbours":7,
+          "pNeighbourFromSameGroup":0.6,
+          "pNeighbourFromOtherGroup":0.2,
           "pGoShopping":0.071,
           "pGoRestaurant": 0.071,
           "pWillIsolate": 0.5,

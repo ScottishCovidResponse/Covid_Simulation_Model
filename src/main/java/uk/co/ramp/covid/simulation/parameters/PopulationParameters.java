@@ -49,7 +49,7 @@ public class PopulationParameters {
         valid = valid && checker.isValid(infantProperties);
         valid = valid && checker.isValid(pensionerProperties);
         valid = valid && checker.isValid(personProperties);
-        valid = valid && checker.isValid(householdProperties);
+        valid = valid && checker.isValid(householdProperties) && householdProperties.isValid();
         return valid;
     }
 
