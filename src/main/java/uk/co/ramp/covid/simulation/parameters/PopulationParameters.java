@@ -38,10 +38,10 @@ public class PopulationParameters {
 
     public boolean isValid() {
         ParameterInitialisedChecker checker = new ParameterInitialisedChecker();
-        boolean valid = true;
+        
         // We don't do this in a single statement to ensure that all the "uninitalised" parameter warnings are printed
         // in one go instead of being short circuited
-        valid = valid && checker.isValid(populationDistribution);
+        boolean valid = checker.isValid(populationDistribution);
         valid = valid && checker.isValid(householdDistribution) && householdDistribution.isValid();
         valid = valid && checker.isValid(buildingDistribution) && buildingDistribution.isValid();
         valid = valid && checker.isValid(workerDistribution) && workerDistribution.isValid();
@@ -49,7 +49,7 @@ public class PopulationParameters {
         valid = valid && checker.isValid(infantProperties);
         valid = valid && checker.isValid(pensionerProperties);
         valid = valid && checker.isValid(personProperties);
-        valid = valid && checker.isValid(householdProperties);
+        valid = valid && checker.isValid(householdProperties) && householdProperties.isValid();
         return valid;
     }
 

@@ -198,10 +198,7 @@ public class Model {
             Population p;
             try {
                 p = new Population(populationSize);
-            } catch (ImpossibleAllocationException e) {
-                LOGGER.error(e);
-                break;
-            } catch (ImpossibleWorkerDistributionException e) {
+            } catch (ImpossibleAllocationException | ImpossibleWorkerDistributionException e) {
                 LOGGER.error(e);
                 break;
             }
@@ -319,8 +316,7 @@ public class Model {
     public static Model readModelFromFile(String path) throws IOException, JsonParseException {
         Reader file = new FileReader(path);
         Gson gson = new Gson();
-        Model m = gson.fromJson(file, Model.class);
-        return m;
+        return gson.fromJson(file, Model.class);
     }
 
     public void optionallyGenerateRNGSeed() {

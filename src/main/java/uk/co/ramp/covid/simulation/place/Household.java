@@ -4,6 +4,7 @@ import uk.co.ramp.covid.simulation.output.DailyStats;
 import uk.co.ramp.covid.simulation.Time;
 import uk.co.ramp.covid.simulation.parameters.CovidParameters;
 import uk.co.ramp.covid.simulation.parameters.PopulationParameters;
+import uk.co.ramp.covid.simulation.place.householdtypes.NeighbourGroup;
 import uk.co.ramp.covid.simulation.population.*;
 import uk.co.ramp.covid.simulation.util.Probability;
 import uk.co.ramp.covid.simulation.util.RNG;
@@ -331,16 +332,12 @@ public abstract class Household extends Place implements Home {
     
     private double getNeighbourProbability() {
     	if(nNeighbours() == 0) return 0.0;
-    	return 1.0 - (Math.pow((1.0 - PopulationParameters.get().householdProperties.householdVisitsNeighbourDaily), (double) nNeighbours()));
+    	return 1.0 - (Math.pow((1.0 - PopulationParameters.get().householdProperties.householdVisitsNeighbourDaily), nNeighbours()));
     }
     
     public void determineDailyNeighbourVisit() {
         // Determine if we will attempt to visit a neighbour tomorrow
-        if (new Probability(getNeighbourProbability()).sample()) {
-            visitsNeighbourToday = true;
-        } else {
-            visitsNeighbourToday = false;
-        }
+        visitsNeighbourToday = new Probability(getNeighbourProbability()).sample();
     }
     
     public void trySendPensionersToCare(Places places) {
@@ -376,6 +373,7 @@ public abstract class Household extends Place implements Home {
     public abstract boolean additionalPensionersAllowed();
     public abstract boolean adultAnyAgeRequired();
     public abstract boolean additionalAdultAnyAgeAllowed();
+    public abstract NeighbourGroup getNeighbourGroup();
 
     public void addAdult(Adult p) {
         if (adultRequired() || additionalAdultsAllowed()

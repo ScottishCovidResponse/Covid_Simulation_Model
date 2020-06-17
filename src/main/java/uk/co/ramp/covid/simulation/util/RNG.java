@@ -6,7 +6,7 @@ import org.apache.commons.math3.random.RandomDataGenerator;
 public class RNG {
     private static RandomDataGenerator rng = null;
 
-    private RNG () {};
+    private RNG () {}
 
     public static RandomDataGenerator get() {
         if (rng == null) {

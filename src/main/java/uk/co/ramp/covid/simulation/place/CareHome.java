@@ -9,13 +9,12 @@ import uk.co.ramp.covid.simulation.util.RoundRobinAllocator;
 
 public class CareHome extends CommunalPlace implements Home {
 
-    private RoundRobinAllocator<Shifts> shifts;
-    private boolean isQuarantined;
+    private final RoundRobinAllocator<Shifts> shifts;
 
     public CareHome(Size s) {
         super(s);
 
-        transAdjustment = PopulationParameters.get().buildingProperties.careHomeTransmissionConstant;
+        transConstant = PopulationParameters.get().buildingProperties.careHomeTransmissionConstant;
 
         shifts = new RoundRobinAllocator<>();
         shifts.put(new Shifts(6,14, 0, 1, 2));
@@ -46,8 +45,8 @@ public class CareHome extends CommunalPlace implements Home {
 
     @Override
     public void determineMovement(Time t, boolean lockdown, Places places) {
-        movePhase2(t, places, p -> p.isInCare());
-        moveShifts(t, lockdown, p -> p.isInCare());
+        movePhase2(t, places, Person::isInCare);
+        moveShifts(t, lockdown, Person::isInCare);
         remainInPlace();
     }
 
@@ -66,10 +65,9 @@ public class CareHome extends CommunalPlace implements Home {
     public double getTransP(Time t, Person infected, Person target) {
         double transP = getBaseTransP(infected);
         // In case patients only infect staff due to quarantine
-        isQuarantined = infected.getcVirus().isSymptomatic()
-                && t.getAbsTime() >
-                   infected.getcVirus().getInfectionLog().getSymptomaticTime().getAbsTime()
-                           + CovidParameters.get().careHomeParameters.hoursAfterSyptomsBeforeQuarantine;
+        boolean isQuarantined = infected.getcVirus().isSymptomatic()
+                && t.getAbsTime() > infected.getcVirus().getInfectionLog().getSymptomaticTime().getAbsTime()
+                                     + CovidParameters.get().careHomeParameters.hoursAfterSymptomsBeforeQuarantine;
         if (infected.isInCare() && isQuarantined) {
             if (target.isInCare()) {
                 return 0.0;

@@ -9,7 +9,7 @@ import uk.co.ramp.covid.simulation.util.ProbabilityDistribution;
 public class Adult extends Person {
 
     public enum Professions {
-        OFFICE, SHOP, HOSPITAL, CONSTRUCTION, TEACHER, RESTAURANT, NURSERY, CAREHOME, NONE;
+        OFFICE, SHOP, HOSPITAL, CONSTRUCTION, TEACHER, RESTAURANT, NURSERY, CAREHOME, NONE
     }
 
     Professions profession;

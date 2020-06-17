@@ -6,11 +6,15 @@
       },
       "diseaseParameters":{
           "meanLatentPeriod":123.12,
+          "sdLatentPeriod":0.5,
           "meanAsymptomaticPeriod":192,
+          "sdAsymptomaticPeriod":0.5,
           "pSymptomaticCase": 0.692,
+          "pSymptomaticCasePensioner": 0.821,
           "meanSymptomDelay": -16.08,
           "meanSymptomDelaySD": 30,
           "meanInfectiousDuration": 321.6,
+          "sdInfectiousDuration": 0.4,
           "phase1Betaa": 25.0,
           "phase1Betab": 30.0,
           "aSymptomaticTransAdjustment": 0.1,
@@ -30,7 +34,7 @@
       },
       "careHomeParameters": {
           "PPETransmissionReduction": 0.05,
-          "hoursAfterSyptomsBeforeQuarantine": 6
+          "hoursAfterSymptomsBeforeQuarantine": 12
       }
     },
   "population":{
@@ -191,7 +195,9 @@
             "pGoRestaurant": 0.01190,
             "pWillIsolate": 0.5,
             "householdIsolationPeriod": 14,
-            "pLockCompliance": 0.8
+            "pLockCompliance": 0.8,
+            "pNeighbourFromSameGroup":0.6,
+            "pNeighbourFromOtherGroup":0.2
         },
         "personProperties":{
             "pTransmission":0.9,

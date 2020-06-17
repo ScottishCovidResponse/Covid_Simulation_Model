@@ -355,4 +355,23 @@ public class PopulationTest extends SimulationTest {
 
         assertTrue(child > infant);
     }
+
+    @Test
+    public void neighbourDistributionsAreBasedOnHouseholdTypes() {
+        int sameGroup = 0;
+        int otherGroups = 0;
+        
+        for (Household h : pop.getHouseholds()) {
+            for (Household o : h.getNeighbours()) {
+                if (h.getNeighbourGroup() == o.getNeighbourGroup()) {
+                    sameGroup++;
+                } else {
+                    otherGroups++;
+                }
+            }
+        }
+        
+        assertTrue("Neighbours of the same group should be more than other groups: " + sameGroup + ">" + otherGroups,
+                sameGroup > otherGroups);
+    }
 }

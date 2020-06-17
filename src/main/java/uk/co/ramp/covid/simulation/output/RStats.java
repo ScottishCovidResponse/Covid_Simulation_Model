@@ -40,7 +40,7 @@ public class RStats {
     /** Returns the mean R for a given day */
     public Double getSecInfections(int absDay) {
     	rflag = false;
-        return getMeanRGeneric(absDay, (a, b) -> a.equals(b));
+        return getMeanRGeneric(absDay, Integer::equals);
     }
 
     /** Returns the mean R up to a given day */

@@ -1,7 +1,6 @@
 package uk.co.ramp.covid.simulation.place.householdtypes;
 
 import uk.co.ramp.covid.simulation.place.Household;
-import uk.co.ramp.covid.simulation.population.Places;
 
 /** DoublePensioner: two adults of pensionable age and no children */
 public class DoubleOlder extends Household {
@@ -48,5 +47,10 @@ public class DoubleOlder extends Household {
     @Override
     public boolean additionalAdultAnyAgeAllowed() {
         return false;
+    }
+
+    @Override
+    public NeighbourGroup getNeighbourGroup() {
+        return NeighbourGroup.PENSIONER;
     }
 }

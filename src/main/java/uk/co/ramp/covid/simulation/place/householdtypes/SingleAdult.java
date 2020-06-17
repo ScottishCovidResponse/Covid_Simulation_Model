@@ -1,7 +1,6 @@
 package uk.co.ramp.covid.simulation.place.householdtypes;
 
 import uk.co.ramp.covid.simulation.place.Household;
-import uk.co.ramp.covid.simulation.population.Places;
 
 /** SingleAdult: A single non-pensioner Adult */
 public class SingleAdult extends Household {
@@ -48,5 +47,10 @@ public class SingleAdult extends Household {
     @Override
     public boolean additionalAdultAnyAgeAllowed() {
         return false;
+    }
+
+    @Override
+    public NeighbourGroup getNeighbourGroup() {
+        return NeighbourGroup.ADULT;
     }
 }
