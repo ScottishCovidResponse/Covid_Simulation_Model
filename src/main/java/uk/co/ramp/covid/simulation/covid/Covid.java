@@ -224,7 +224,7 @@ public class Covid {
     public double getTransAdjustment() {
     	double transAdjustment = 0.0;
     	if(asymptomatic) transAdjustment = this.asymptomaticTransAdjustment;
-    	else if(phase1 && !this.isSymptomatic()) transAdjustment = this.asymptomaticTransAdjustment;
+    	else if(phase1 && !this.isSymptomatic()) transAdjustment = this.symptomaticTransAdjustment; // Slight adjustment to this to set higher levels of pre-symptomatic transmission
     	else if(phase1 && this.isSymptomatic()) transAdjustment = this.symptomaticTransAdjustment;
     	else if(phase2 && this.isSymptomatic()) transAdjustment = this.symptomaticTransAdjustment;
     	
