@@ -9,6 +9,7 @@ package uk.co.ramp.covid.simulation.population;
 import org.apache.commons.math3.random.RandomDataGenerator;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import uk.co.ramp.covid.simulation.lockdown.LockdownController;
 import uk.co.ramp.covid.simulation.output.DailyStats;
 import uk.co.ramp.covid.simulation.output.RStats;
 import uk.co.ramp.covid.simulation.Time;
@@ -347,12 +348,21 @@ public class Population {
         List<DailyStats> stats = new ArrayList<>(nDays);
         Time t = new Time();
         boolean rprinted = false;
+        
+        LockdownController lockdownController = null;
+        if (lockdownStart > 0 && lockdownEnd > 0) {
+            lockdownController = new LockdownController(this,
+                    Time.timeFromDay(lockdownStart), Time.timeFromDay(lockdownEnd));
+        } else {
+            lockdownController = new LockdownController(this);
+        }
 
         households.forEach(Household::determineDailyNeighbourVisit);
 
         for (int i = 0; i < nDays; i++) {
             DailyStats dStats = new DailyStats(t);
-            implementLockdown(t);
+            //implementLockdown(t);
+            lockdownController.implementLockdown(t);
 
             // ExternalSeeding runs from 0-externalInfectionDays inclusive.
             // As infections on day 0 are 0 this gives a full externalInfectionsDays worth of infections.

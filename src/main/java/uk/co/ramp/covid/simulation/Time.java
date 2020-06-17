@@ -53,4 +53,8 @@ public class Time {
     public int hashCode() {
         return Objects.hash(absTime);
     }
+    
+    public static Time timeFromDay(int absDay) {
+        return new Time(absDay*24);
+    }
 }
