@@ -9,6 +9,7 @@ import uk.co.ramp.covid.simulation.util.Probability;
 import uk.co.ramp.covid.simulation.util.RNG;
 
 import java.util.*;
+import java.util.function.Supplier;
 
 public abstract class Household extends Place implements Home {
 
@@ -91,14 +92,13 @@ public abstract class Household extends Place implements Home {
     }
 
     public void sendNeighboursHome(Time t) {
-        final int numInhabitants = getNumInhabitants();
         for (Person p : getPeople()) {
             if (p.hasMoved() || !isVisitor(p)) {
                 continue;
             }
             
             // Go home if the house inhabitants have either left, or were never here
-            if (numInhabitants == 0) {
+            if (getNumInhabitants() == 0) {
                 p.returnHome(this);
                 sendFamilyHome(p, null, t);
                 continue;
@@ -108,10 +108,15 @@ public abstract class Household extends Place implements Home {
             if (p.mustGoHome(t)) {
                 p.returnHome(this);
                 sendFamilyHome(p, null, t);
+                continue;
             }
-            else if (PopulationParameters.get().householdProperties.pVisitorsLeaveHousehold.sample()) {
+
+            if (PopulationParameters.get().householdProperties.pVisitorsLeaveHousehold.sample()) {
                 p.returnHome(this);
                 sendFamilyHome(p, null, t);
+            } else {
+                p.stayInPlace(this);
+                keepFamilyInPlace(p, null, t);
             }
         }
     }
@@ -265,63 +270,42 @@ public abstract class Household extends Place implements Home {
             }
         }
     }
+    
+    private void familyTrip(Time t, Supplier<CommunalPlace> randPlace, Probability pVisit) {
+        if (pVisit.sample()) {
+            CommunalPlace place = randPlace.get();
+            if (place == null) {
+                return;
+            }
+
+            int retries = 5;
+            while (!place.isVisitorOpenNextHour(t)) {
+                place = randPlace.get();
+                retries--;
+                if (retries == 0) {
+                    return;
+                }
+            }
+
+            for (Person p : getPeople()) {
+                if (!p.hasMoved() && isInhabitant(p) && !p.getQuarantine()) {
+                    p.moveTo(this, place);
+                }
+            }
+        }
+    }
 
     private void moveShop(Time t, boolean lockdown, Places places) {
         Probability visitProb = PopulationParameters.get().householdProperties.pGoShopping;
         if (lockdown) {
             visitProb = new Probability(visitProb.asDouble() * 0.5);
         }
-
-        if (visitProb.sample()) {
-            Shop s = places.getRandomShop();
-            if (s == null) {
-                return;
-            }
-
-            // Sometimes we can get a case where there are only small shops (open 9-5) so we fail to find a shop
-            // In this case we time out the search.
-            int retries = 5;
-            while (!s.isVisitorOpenNextHour(t)) {
-                s = places.getRandomShop();
-                retries--;
-                if (retries == 0) {
-                    return;
-                }
-            }
-
-            // Go to restaurants as a family
-            for (Person p : getPeople()) {
-                if (!p.hasMoved() && isInhabitant(p) && !p.getQuarantine()) {
-                    p.moveTo(this, s);
-                }
-            }
-        }
-
+        familyTrip(t, places::getRandomShop, visitProb);
     }
 
     private void moveRestaurant(Time t, Places places) {
-        if (PopulationParameters.get().householdProperties.pGoRestaurant.sample()) {
-            Restaurant r = places.getRandomRestaurant();
-            if (r == null) {
-                return;
-            }
-
-            int retries = 5;
-            while (!r.isVisitorOpenNextHour(t)) {
-                r = places.getRandomRestaurant();
-                retries--;
-                if (retries == 0) {
-                    return;
-                }
-            }
-
-            // Go to restaurants as a family
-            for (Person p : getPeople()) {
-                if (!p.hasMoved() && isInhabitant(p) && !p.getQuarantine()) {
-                    p.moveTo(this, r);
-                }
-            }
-        }
+        Probability visitProb = PopulationParameters.get().householdProperties.pGoRestaurant;
+        familyTrip(t, places::getRandomRestaurant, visitProb);
     }
 
     private void moveShift(Time t, boolean lockdown) {

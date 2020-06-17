@@ -102,6 +102,9 @@ public abstract class Person {
     }
     
     public void moveTo(Place from, Place to) {
+        //We can turn off this asserting during main runs, but it's a nice sanity check to have
+        assert !hasMoved();
+
         to.addPersonNext(this);
         moved = true;
     }

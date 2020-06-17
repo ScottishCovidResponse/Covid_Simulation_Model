@@ -168,6 +168,14 @@ public abstract class Place {
         }
     }
 
+    public void keepFamilyInPlace(Person p, CommunalPlace place, Time t) {
+        for (Person q : people) {
+            if (p != q && q.getHome() == p.getHome() && !p.hasMoved()) {
+                q.stayInPlace(this);
+            }
+        }
+    }
+
     protected void remainInPlace() {
         for (Person p : getPeople() ) {
             if (!p.hasMoved()) {

@@ -9,9 +9,6 @@ import uk.co.ramp.covid.simulation.population.Places;
 import uk.co.ramp.covid.simulation.population.Shifts;
 import uk.co.ramp.covid.simulation.util.RoundRobinAllocator;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class Hospital extends CommunalPlace {
     
     private RoundRobinAllocator<Shifts> shifts;
@@ -53,11 +50,15 @@ public class Hospital extends CommunalPlace {
         }
     }
 
-    public void sendHome(Time t) {
+    public void movePatients(Time t) {
         for (Person p : getPeople()) {
-            if (!p.hasMoved()
-                    && !p.isHospitalised()
-                    && !p.worksNextHour(this, t, false)) {
+            if (p.hasMoved() || p.isWorking(this, t)) {
+                continue;
+            }
+            
+            if (p.isHospitalised()) {
+                p.stayInPlace(this);
+            } else {
                 p.returnHome(this);
             }
         }
@@ -67,8 +68,7 @@ public class Hospital extends CommunalPlace {
     public void determineMovement(Time t, boolean lockdown, Places places) {
         movePhase2(t, places, p -> p.isHospitalised());
         moveShifts(t, lockdown, p -> p.isHospitalised());
-        sendHome(t);
-        remainInPlace();
+        movePatients(t);
     }
 
     @Override

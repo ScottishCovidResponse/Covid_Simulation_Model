@@ -49,31 +49,7 @@ public class Restaurant extends CommunalPlace {
     public boolean isFullyStaffed() {
         return nStaff >= 4;
     }
-
-    public void sendHome(Time t) {
-        for (Person p : getPeople() ) {
-            // People may have already left if their family has
-            if (p.hasMoved()) {
-                continue;
-            }
-
-            if (p.worksNextHour(this, t, false)) {
-                continue;
-            }
-
-            // Under certain conditions we must go home, e.g. if there is a shift starting soon
-            if (p.mustGoHome(t)) {
-                p.returnHome(this);
-                sendFamilyHome(p, this, t);
-            }
-            else if (PopulationParameters.get().buildingProperties.pLeaveRestaurant.sample()
-                    || !times.isOpenNextHour(t)) {
-                p.returnHome(this);
-                sendFamilyHome(p, this, t);
-            }
-        }
-    }
-
+    
     @Override
     public void reportInfection(Time t, Person p, DailyStats s) {
         if (p.isWorking(this, t)) {
@@ -87,8 +63,7 @@ public class Restaurant extends CommunalPlace {
     public void determineMovement(Time t, boolean lockdown, Places places) {
         movePhase2(t, places);
         moveShifts(t, lockdown);
-        sendHome(t);
-        remainInPlace();
+        moveVisitors(t, PopulationParameters.get().buildingProperties.pLeaveRestaurant);
     }
 
 }

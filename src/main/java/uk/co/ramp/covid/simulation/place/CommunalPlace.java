@@ -6,6 +6,7 @@ package uk.co.ramp.covid.simulation.place;
 
 import org.apache.commons.math3.random.RandomDataGenerator;
 import uk.co.ramp.covid.simulation.Time;
+import uk.co.ramp.covid.simulation.parameters.PopulationParameters;
 import uk.co.ramp.covid.simulation.population.CStatus;
 import uk.co.ramp.covid.simulation.population.Person;
 import uk.co.ramp.covid.simulation.population.Places;
@@ -66,11 +67,13 @@ public abstract class CommunalPlace extends Place {
     // Everone who has been hospitalised (and their families) will have left at this point
     public void moveShifts(Time t, boolean lockdown, Function<Person, Boolean> filter) {
         for (Person p : getPeople() ) {
-            if (p.hasMoved() || filter.apply(p)) {
+            if (p.hasMoved() || filter.apply(p) || !p.isWorking(this, t)) {
                 continue;
             }
 
-            if (!p.worksNextHour(this, t, lockdown)) {
+            if (p.worksNextHour(this, t, lockdown)) {
+                p.stayInPlace(this);
+            } else {
                 p.returnHome(this);
             }
         }
@@ -95,7 +98,36 @@ public abstract class CommunalPlace extends Place {
                 } else {
                     p.returnHome(this);
                 }
+
+                if (!p.isWorking(this, t)) {
+                    sendFamilyHome(p, this, t);
+                }
+
+            }
+        }
+    }
+
+
+    public void moveVisitors(Time t, Probability pLeave) {
+        for (Person p : getPeople()) {
+            // People may have already left if their family has
+            if (p.hasMoved() || p.isWorking(this, t)) {
+                continue;
+            }
+
+            // Under certain conditions we must go home, e.g. if there is a shift starting soon
+            if (p.mustGoHome(t)) {
+                p.returnHome(this);
                 sendFamilyHome(p, this, t);
+                continue;
+            }
+
+            if (pLeave.sample() || !times.isOpenNextHour(t)) {
+                p.returnHome(this);
+                sendFamilyHome(p, this, t);
+            } else {
+                p.stayInPlace(this);
+                keepFamilyInPlace(p, this, t);
             }
         }
     }
@@ -134,7 +166,6 @@ public abstract class CommunalPlace extends Place {
     public void determineMovement(Time t, boolean lockdown, Places places) {
         movePhase2(t, places);
         moveShifts(t, lockdown);
-        remainInPlace();
     }
 
     public boolean isKeyPremises() {
