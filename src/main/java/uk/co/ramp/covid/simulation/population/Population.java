@@ -34,12 +34,9 @@ public class Population {
     private final ArrayList<Household> households;
     private final ArrayList<Person> allPeople;
     private final Places places;
-    private boolean lockdown;
-    private boolean rLockdown;
-    private int lockdownStart;
-    private int lockdownEnd;
-    private double socialDist;
-    private boolean schoolL;
+
+    private LockdownController lockdownController;
+
     private final RandomDataGenerator rng;
     private Integer externalInfectionDays = 0;
 
@@ -59,10 +56,8 @@ public class Population {
         this.households = new ArrayList<>(numHouseholds);
         this.allPeople = new ArrayList<>(populationSize);
         this.places = new Places();
-        this.lockdownStart = (-1);
-        this.lockdownEnd = (-1);
-        this.socialDist = 1.0;
-        this.schoolL = false;
+
+        lockdownController = new LockdownController(this);
 
         allocatePopulation();
     }
@@ -327,11 +322,11 @@ public class Population {
         for (Household h : households) {
             h.doTesting(t);
             h.doInfect(t, dStats);
-            h.doMovement(t, lockdown, getPlaces());
+            h.doMovement(t, lockdownController.inLockdown(t), getPlaces());
         }
         for (Place p : places.getAllPlaces()) {
             p.doInfect(t, dStats);
-            p.doMovement(t, lockdown, getPlaces());
+            p.doMovement(t, lockdownController.inLockdown(t), getPlaces());
         }
 
         for (Household h : households) {
@@ -342,26 +337,17 @@ public class Population {
             p.stepPeople();
         }
     }
-
-    // Step through nDays in 1 hour time steps
-    public List<DailyStats> simulate(int nDays) {
+    
+    public List<DailyStats> simulateFromTime(Time startTime, int nDays) {
         List<DailyStats> stats = new ArrayList<>(nDays);
-        Time t = new Time();
+        Time t = startTime;
+
         boolean rprinted = false;
-        
-        LockdownController lockdownController = null;
-        if (lockdownStart > 0 && lockdownEnd > 0) {
-            lockdownController = new LockdownController(this,
-                    Time.timeFromDay(lockdownStart), Time.timeFromDay(lockdownEnd));
-        } else {
-            lockdownController = new LockdownController(this);
-        }
 
         households.forEach(Household::determineDailyNeighbourVisit);
 
         for (int i = 0; i < nDays; i++) {
             DailyStats dStats = new DailyStats(t);
-            //implementLockdown(t);
             lockdownController.implementLockdown(t);
 
             // ExternalSeeding runs from 0-externalInfectionDays inclusive.
@@ -369,8 +355,8 @@ public class Population {
             if (t.getAbsDay() <= externalInfectionDays) {
                 seedInfections(t, dStats);
             }
-            
-            LOGGER.info("Day = {}, Lockdown = {}", t.getAbsDay(), lockdown);
+
+            LOGGER.info("Day = {}, Lockdown = {}", t.getAbsDay(), lockdownController.inLockdown(t));
             for (int k = 0; k < 24; k++) {
                 timeStep(t, dStats);
                 t = t.advance();
@@ -386,6 +372,11 @@ public class Population {
         return stats;
     }
 
+    // Step through nDays in 1 hour time steps
+    public List<DailyStats> simulate(int nDays) {
+        return simulateFromTime(new Time(), nDays);
+    }
+
     private void seedInfections(Time t, DailyStats s) {
         for (Person p : getAllPeople()) {
             p.seedInfectionChallenge(t, s);
@@ -394,7 +385,7 @@ public class Population {
 
     /** Log the R value for the first 5% of recoveries or lockdown */
     private boolean handleR(DailyStats s, int absDay) {
-        if (s.getRecovered() >= populationSize * 0.05 || isLockdown()) {
+        if (s.getRecovered() >= populationSize * 0.05 || lockdownController.inLockdown(Time.timeFromDay(absDay))) {
             RStats rs = new RStats(this);
             LOGGER.info("R0 in initial stage: " + rs.getMeanRBefore(absDay));
             return true;
@@ -404,43 +395,12 @@ public class Population {
 
     // Basically a method to set the instance variables. Could also do this through an overloaded constructor, but I rather prefer this way of doing things
     public void setLockdown(int start, int end, double socialDist) {
-        if (start >= 0) {
-            this.lockdownStart = start;
-        }
-        if (end >= 0) this.lockdownEnd = end;
-        this.socialDist = socialDist;
+       lockdownController.setLockdown(Time.timeFromDay(start), Time.timeFromDay(end), socialDist);
     }
 
     // This is a really cack handed way of implementing the school lockdown. IT needs improving
-// TODO Sort this out 
     public void setSchoolLockdown(int start, int end, double socialDist) {
-        if (start >= 0) {
-            this.lockdownStart = start;
-        }
-        if (end >= 0) this.lockdownEnd = end;
-        this.socialDist = socialDist;
-        this.schoolL = true;
-    }
-
-    // Tests on each daily time step whether to do anything with the lockdown
-    private void implementLockdown(Time t) {
-        int day = t.getAbsDay();
-        if (day == this.lockdownStart) {
-            this.lockdown = true;
-            this.rLockdown = true;
-            this.socialDistancing();
-        }
-        if (day == this.lockdownEnd) {
-            if (!this.schoolL) this.lockdown = false;
-            if (this.schoolL) this.schoolExemption();
-        }
-    }
-
-    // Sets the social distancing to parameters within the CommunalPlaces
-    private void socialDistancing() {
-        for (CommunalPlace cPlace : places.getAllPlaces()) {
-            cPlace.adjustSDist(this.socialDist);
-        }
+       lockdownController.setSchoolLockdown(Time.timeFromDay(start), Time.timeFromDay(end), socialDist);
     }
 
     // This method generates output at the end of each day
@@ -478,35 +438,15 @@ public class Population {
         return allPeople;
     }
 
-    public boolean isLockdown() {
-        return lockdown;
-    }
-
-    public boolean isrLockdown() {
-        return rLockdown;
-    }
-
-    public int getLockdownStart() {
-        return lockdownStart;
-    }
-
-    public int getLockdownEnd() {
-        return lockdownEnd;
-    }
-
-    public double getSocialDist() {
-        return socialDist;
-    }
-
-    public boolean isSchoolL() {
-        return schoolL;
-    }
-
     public Places getPlaces() {
         return places;
     }
 
     public void setExternalInfectionDays(Integer days) {
         externalInfectionDays = days;
+    }
+
+    public LockdownController getLockdownController() {
+        return lockdownController;
     }
 }
