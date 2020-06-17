@@ -22,7 +22,7 @@ public class ProbabilityDistribution<T> {
     }
 
     //  pmap works as an associative list to allow us to easy assign probabilities to arbitrary types
-    private List<ProbPair> pmap;
+    private final List<ProbPair> pmap;
     private double totalProb;
     private final double EPSILON = 0.0000001;
 
@@ -39,7 +39,7 @@ public class ProbabilityDistribution<T> {
         assert totalProb <= 1 + EPSILON : "Trying to create probability distribution with probability total > 1";
 
         pmap.add(new ProbPair(prob, val));
-        Collections.sort(pmap, Collections.reverseOrder());
+        pmap.sort(Collections.reverseOrder());
     }
 
     public void add(Probability prob, T val) {

@@ -12,11 +12,8 @@ import uk.co.ramp.covid.simulation.Time;
 import uk.co.ramp.covid.simulation.parameters.PopulationParameters;
 import uk.co.ramp.covid.simulation.place.CareHome;
 import uk.co.ramp.covid.simulation.place.CommunalPlace;
-import uk.co.ramp.covid.simulation.place.Place;
 import uk.co.ramp.covid.simulation.util.Probability;
 import uk.co.ramp.covid.simulation.util.RNG;
-
-import java.util.Optional;
 
 public abstract class Person {
 
@@ -28,8 +25,8 @@ public abstract class Person {
     private CommunalPlace primaryPlace = null;
     protected Shifts shifts = null;
     
-    private Sex sex;
-    private int age;
+    private final Sex sex;
+    private final int age;
 
     private Home home;
     private boolean recovered;
@@ -37,12 +34,11 @@ public abstract class Person {
     private final double transmissionProb;
     private boolean quarantine;
     private final Probability quarantineProb; // Needs more thought. The probability that the person will go into quarantine
-    private final double quarantineVal;
-    private Optional<Boolean> testOutcome = Optional.empty();
+    private Boolean testOutcome = null;
     protected final RandomDataGenerator rng;
 
     private boolean isHospitalised = false;
-    private boolean goesToHospitalInPhase2;
+    private final boolean goesToHospitalInPhase2;
     
     private static int nPeople = 0;
     private final int personId;
@@ -60,7 +56,6 @@ public abstract class Person {
         this.rng = RNG.get();
         this.transmissionProb = PopulationParameters.get().personProperties.pTransmission.asDouble();
         this.quarantineProb = PopulationParameters.get().personProperties.pQuarantinesIfSymptomatic;
-        this.quarantineVal = rng.nextUniform(0, 1);
         this.goesToHospitalInPhase2 = CovidParameters.get().hospitalisationParameters.pPhase2GoesToHosptial.sample();
         this.personId = nPeople++;
     }
@@ -256,7 +251,6 @@ public abstract class Person {
         int nextHour = 0;
         if (t.getHour() + 1 == 24) {
             day = (day + 1) % 7;
-            nextHour = 0;
         } else {
             nextHour = t.getHour() + 1;
         }
@@ -267,9 +261,7 @@ public abstract class Person {
             end += 24;
         }
 
-        boolean shouldWork = nextHour >= start && nextHour < end;
-
-        return shouldWork;
+        return nextHour >= start && nextHour < end;
     }
 
     public void visitPrimaryPlace() {
@@ -296,7 +288,7 @@ public abstract class Person {
     }
 
     public boolean wasTested() {
-        return testOutcome.isPresent();
+        return testOutcome != null;
     }
 
     public void getTested() {
@@ -308,13 +300,13 @@ public abstract class Person {
         if (!CovidParameters.get().testParameters.pDiagnosticTestDetectsSuccessfully.sample()) {
             exitQuarantine();
             home.stopIsolating();
-            testOutcome = Optional.of(false);
+            testOutcome = false;
         } else {
-            testOutcome = Optional.of(true);
+            testOutcome = true;
         }
     }
 
-    public Optional<Boolean> getTestOutcome() {
+    public Boolean getTestOutcome() {
         return testOutcome;
     }
 

@@ -13,15 +13,15 @@ import java.util.function.Supplier;
 /** Helper class to manage communal places of particular types */
 public class Places {
 
-    private ProbabilityDistribution<Office> offices;
-    private ProbabilityDistribution<ConstructionSite> constructionSites;
-    private ProbabilityDistribution<Hospital> hospitals;
-    private ProbabilityDistribution<CovidHospital> covidHospitals;
-    private ProbabilityDistribution<Nursery> nurseries;
-    private ProbabilityDistribution<Restaurant> restaurants;
-    private ProbabilityDistribution<School> schools;
-    private ProbabilityDistribution<Shop> shops;
-    private ProbabilityDistribution<CareHome> careHomes;
+    private final ProbabilityDistribution<Office> offices;
+    private final ProbabilityDistribution<ConstructionSite> constructionSites;
+    private final ProbabilityDistribution<Hospital> hospitals;
+    private final ProbabilityDistribution<CovidHospital> covidHospitals;
+    private final ProbabilityDistribution<Nursery> nurseries;
+    private final ProbabilityDistribution<Restaurant> restaurants;
+    private final ProbabilityDistribution<School> schools;
+    private final ProbabilityDistribution<Shop> shops;
+    private final ProbabilityDistribution<CareHome> careHomes;
     
     private boolean officesUnallocated = false;
     private boolean constructionSitesUnallocated = false;
@@ -32,7 +32,7 @@ public class Places {
     private boolean shopsUnallocated = false;
     private boolean careHomeUnallocated = false;
 
-    private List<CommunalPlace> all;
+    private final List<CommunalPlace> all;
 
     public Places() {
         offices = new ProbabilityDistribution<>();

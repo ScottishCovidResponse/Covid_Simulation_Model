@@ -9,8 +9,8 @@ import java.util.Map;
 public class PopulationDistribution {
 
     public class SexAge {
-        private Person.Sex sex;
-        private int age;
+        private final Person.Sex sex;
+        private final int age;
 
         public SexAge(Person.Sex sex, int age) {
             this.sex = sex;
@@ -26,7 +26,7 @@ public class PopulationDistribution {
         }
     }
     
-    private ProbabilityDistribution<SexAge> dist;
+    private final ProbabilityDistribution<SexAge> dist;
     
     public PopulationDistribution() {
         dist = new ProbabilityDistribution<>();

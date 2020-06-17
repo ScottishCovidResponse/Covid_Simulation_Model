@@ -21,7 +21,6 @@ import uk.co.ramp.covid.simulation.util.RNG;
 
 import java.util.*;
 import java.util.function.Consumer;
-import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class Population {
@@ -33,7 +32,7 @@ public class Population {
 
     private final ArrayList<Household> households;
     private final ArrayList<Person> allPeople;
-    private Places places;
+    private final Places places;
     private boolean lockdown;
     private boolean rLockdown;
     private int lockdownStart;
@@ -332,7 +331,7 @@ public class Population {
         for (Place p : places.getAllPlaces()) {
             p.doInfect(t, dStats);
             p.doMovement(t, lockdown, getPlaces());
-        };
+        }
 
         for (Household h : households) {
             h.stepPeople();
@@ -340,7 +339,7 @@ public class Population {
 
         for (Place p : places.getAllPlaces()) {
             p.stepPeople();
-        };
+        }
     }
 
     // Step through nDays in 1 hour time steps
@@ -349,7 +348,7 @@ public class Population {
         Time t = new Time();
         boolean rprinted = false;
 
-        households.forEach(h -> h.determineDailyNeighbourVisit());
+        households.forEach(Household::determineDailyNeighbourVisit);
 
         for (int i = 0; i < nDays; i++) {
             DailyStats dStats = new DailyStats(t);
@@ -366,7 +365,7 @@ public class Population {
                 timeStep(t, dStats);
                 t = t.advance();
             }
-            households.forEach(h -> h.dayEnd());
+            households.forEach(Household::dayEnd);
             stats.add(this.processCases(dStats));
 
             if (!rprinted) {
