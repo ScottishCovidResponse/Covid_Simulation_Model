@@ -108,7 +108,7 @@ public class CareHomeTest extends SimulationTest {
         inf.getcVirus().forceSymptomatic(true);
         
         Time t = new Time(0);
-        while (inf.getcVirus().isSymptomatic()) {
+        while (!inf.getcVirus().isSymptomatic()) {
             inf.getcVirus().stepInfection(t);
             inf.cStatus();
             t = t.advance();
