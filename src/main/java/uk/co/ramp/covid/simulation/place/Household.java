@@ -4,6 +4,7 @@ import uk.co.ramp.covid.simulation.output.DailyStats;
 import uk.co.ramp.covid.simulation.Time;
 import uk.co.ramp.covid.simulation.parameters.CovidParameters;
 import uk.co.ramp.covid.simulation.parameters.PopulationParameters;
+import uk.co.ramp.covid.simulation.place.householdtypes.NeighbourGroup;
 import uk.co.ramp.covid.simulation.population.*;
 import uk.co.ramp.covid.simulation.util.Probability;
 import uk.co.ramp.covid.simulation.util.RNG;
@@ -406,6 +407,7 @@ public abstract class Household extends Place implements Home {
     public abstract boolean additionalPensionersAllowed();
     public abstract boolean adultAnyAgeRequired();
     public abstract boolean additionalAdultAnyAgeAllowed();
+    public abstract NeighbourGroup getNeighbourGroup();
 
     public void addAdult(Adult p) {
         if (adultRequired() || additionalAdultsAllowed()

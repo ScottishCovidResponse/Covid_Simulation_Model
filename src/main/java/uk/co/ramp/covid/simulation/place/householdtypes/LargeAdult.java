@@ -46,4 +46,9 @@ public class LargeAdult extends Household {
     public boolean additionalAdultAnyAgeAllowed() {
         return true;
     }
+
+    @Override
+    public NeighbourGroup getNeighbourGroup() {
+        return NeighbourGroup.ADULT;
+    }
 }

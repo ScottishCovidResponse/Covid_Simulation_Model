@@ -48,4 +48,9 @@ public class SingleParent extends Household {
     public boolean additionalAdultAnyAgeAllowed() {
         return false;
     }
+
+    @Override
+    public NeighbourGroup getNeighbourGroup() {
+        return NeighbourGroup.FAMILY;
+    }
 }
