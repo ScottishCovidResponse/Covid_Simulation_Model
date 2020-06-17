@@ -51,6 +51,12 @@ public class LockdownController {
             p.furlough();
         }
     }
+
+    private void unFurloughStaff() {
+        for (Person p : population.getAllPeople()) {
+            p.furlough();
+        }
+    }
     
     private void increaseSocialDistancing() {
         for (CommunalPlace cPlace : population.getPlaces().getAllPlaces()) {
@@ -79,6 +85,7 @@ public class LockdownController {
         if (schoolLockdown) {
             schoolExemption();
         } else {
+            unFurloughStaff();
             inLockdown = false;
         }
     }
