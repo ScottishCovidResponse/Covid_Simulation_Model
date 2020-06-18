@@ -37,7 +37,6 @@ public class Covid {
     private double latentPeriod;
     private double asymptomaticPeriod;
     private double symptomDelay;
-    private double infectiousPeriod;
     private double p1;
     private double p2;
     private final double mortalityRate;
@@ -112,26 +111,28 @@ public class Covid {
     // For each infection define the duration of the infection periods
     private void setPeriods() {
         latentPeriod = Math.exp(rng.nextGaussian(Math.log(meanLatentPeriod), sdLatentPeriod));
-        if(!symptomaticCase) asymptomaticPeriod = Math.exp(rng.nextGaussian(Math.log(meanAsymptomaticPeriod), sdAsymptomaticPeriod));
-        else if(symptomaticCase) {
+        if(!symptomaticCase) {
+            asymptomaticPeriod = Math.exp(rng.nextGaussian(Math.log(meanAsymptomaticPeriod), sdAsymptomaticPeriod));
+        } else {
         	symptomDelay = latentPeriod - rng.nextGaussian(meanSymptomDelay, meanSymptomDelaySD); // Basically if symptom delay < 0 then the symptoms appear after the infectious period has started; otherwise before
         	if(symptomDelay < 1.0) symptomDelay = 1.0; // There could be the odd instance where we have a negative value here 
         
-        	infectiousPeriod = Math.exp(rng.nextGaussian(Math.log(meanInfectiousDuration), sdInfectiousDuration));
+        	double infectiousPeriod = Math.exp(rng.nextGaussian(Math.log(meanInfectiousDuration), sdInfectiousDuration));
         
-        p1 = infectiousPeriod * rng.nextBeta(oPhase1Betaa, oPhase1Betab);
-        p2 = infectiousPeriod - p1;
+            p1 = infectiousPeriod * rng.nextBeta(oPhase1Betaa, oPhase1Betab);
+            p2 = infectiousPeriod - p1;
 
-        if (ccase.avoidsPhase2(rng.nextUniform(0, 1)))  p2 = 0;
-       
+            if (ccase.avoidsPhase2(rng.nextUniform(0, 1))) {
+                p2 = 0;
+            }
         }
     }
 
     public CStatus stepInfection(Time t) {
-    	CStatus status = null;
-    	if(symptomaticCase) status = this.stepInfectionSymptomatic(t);
-    	else if(!symptomaticCase) status = this.stepInfectionAsymptomatic();
-    	return status;
+    	if(symptomaticCase) {
+    	    return this.stepInfectionSymptomatic(t);
+        }
+    	return this.stepInfectionAsymptomatic();
     }
     
     // Cycle through the infection for that timestep
@@ -224,9 +225,7 @@ public class Covid {
     public double getTransAdjustment() {
     	double transAdjustment = 0.0;
     	if(asymptomatic) transAdjustment = this.asymptomaticTransAdjustment;
-    	else if(phase1 && !this.isSymptomatic()) transAdjustment = this.asymptomaticTransAdjustment;
-    	else if(phase1 && this.isSymptomatic()) transAdjustment = this.symptomaticTransAdjustment;
-    	else if(phase2 && this.isSymptomatic()) transAdjustment = this.symptomaticTransAdjustment;
+    	else transAdjustment = this.symptomaticTransAdjustment;
     	
     	return transAdjustment;
     	

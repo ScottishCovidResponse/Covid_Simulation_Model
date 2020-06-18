@@ -392,6 +392,7 @@ public class MovementTest extends SimulationTest {
             if (p.wasTested()) {
                 numTested++;
                 if (!p.getTestOutcome().get()) {
+                if (!p.getTestOutcome()) {
                     numNegative++;
                 } else {
                     numPositive++;
@@ -431,7 +432,7 @@ public class MovementTest extends SimulationTest {
         CovidParameters.get().testParameters.pDiagnosticTestDetectsSuccessfully = new Probability(0.0);
         per.getTested();
         assertTrue(per.wasTested());
-        assertFalse(per.getTestOutcome().get());
+        assertFalse(per.getTestOutcome());
         assertFalse(per.getQuarantine());
         assertFalse(iso.isIsolating());
     }
@@ -440,6 +441,7 @@ public class MovementTest extends SimulationTest {
     public void positiveTestsStayInQuarantine() {
         Time t = new Time(0);
         PopulationParameters.get().personProperties.pQuarantinesIfSymptomatic = new Probability(1.0);
+        CovidParameters.get().diseaseParameters.adultProgressionPhase2 = 100.0;
         p = PopulationGenerator.genValidPopulation(populationSize);
         p.seedVirus(nInfections);
 
@@ -457,9 +459,9 @@ public class MovementTest extends SimulationTest {
 
         per.infect();
         per.getcVirus().forceSymptomatic(true);
-        // Usually there's a delay before symptonms but we just force it here
-        double time = per.getcVirus().getSymptomDelay() + 1;
-        for (int j = 0; j < time; j++) {
+
+        //  Usually there's a delay before symptonms but we just force it here
+        while (!per.getcVirus().isSymptomatic()) {
             per.getcVirus().stepInfection(t);
         }
         per.cStatus();
@@ -467,7 +469,7 @@ public class MovementTest extends SimulationTest {
         CovidParameters.get().testParameters.pDiagnosticTestDetectsSuccessfully = new Probability(1.0);
         per.getTested();
         assertTrue(per.wasTested());
-        assertTrue(per.getTestOutcome().get());
+        assertTrue(per.getTestOutcome());
         assertTrue(per.getQuarantine());
         assertTrue(iso.isIsolating());
     }

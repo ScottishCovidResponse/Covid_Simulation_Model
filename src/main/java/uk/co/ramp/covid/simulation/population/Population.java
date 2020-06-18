@@ -12,6 +12,7 @@ import org.apache.logging.log4j.Logger;
 import uk.co.ramp.covid.simulation.output.DailyStats;
 import uk.co.ramp.covid.simulation.output.RStats;
 import uk.co.ramp.covid.simulation.Time;
+import uk.co.ramp.covid.simulation.parameters.HouseholdProperties;
 import uk.co.ramp.covid.simulation.parameters.PopulationDistribution;
 import uk.co.ramp.covid.simulation.parameters.PopulationParameters;
 import uk.co.ramp.covid.simulation.place.*;
@@ -20,7 +21,6 @@ import uk.co.ramp.covid.simulation.util.RNG;
 
 import java.util.*;
 import java.util.function.Consumer;
-import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class Population {
@@ -32,7 +32,7 @@ public class Population {
 
     private final ArrayList<Household> households;
     private final ArrayList<Person> allPeople;
-    private Places places;
+    private final Places places;
     private boolean lockdown;
     private boolean rLockdown;
     private int lockdownStart;
@@ -254,17 +254,18 @@ public class Population {
             }
         }
 
-        adultDist.add(0.6, adultGroup);
-        adultDist.add(0.2, pensionerGroup);
-        adultDist.add(0.2, familyGroup);
+        HouseholdProperties hprops = PopulationParameters.get().householdProperties;
+        adultDist.add(hprops.pNeighbourFromSameGroup, adultGroup);
+        adultDist.add(hprops.pNeighbourFromOtherGroup, pensionerGroup);
+        adultDist.add(hprops.pNeighbourFromOtherGroup, familyGroup);
 
-        familyDist.add(0.6, familyGroup);
-        familyDist.add(0.2, pensionerGroup);
-        familyDist.add(0.2, adultGroup);
+        familyDist.add(hprops.pNeighbourFromSameGroup, familyGroup);
+        familyDist.add(hprops.pNeighbourFromOtherGroup, pensionerGroup);
+        familyDist.add(hprops.pNeighbourFromOtherGroup, adultGroup);
 
-        pensionerDist.add(0.6, pensionerGroup);
-        pensionerDist.add(0.2, familyGroup);
-        pensionerDist.add(0.2, adultGroup);
+        pensionerDist.add(hprops.pNeighbourFromSameGroup, pensionerGroup);
+        pensionerDist.add(hprops.pNeighbourFromOtherGroup, familyGroup);
+        pensionerDist.add(hprops.pNeighbourFromOtherGroup, adultGroup);
     }
 
     // This method assigns a random number of neighbours to each Household
@@ -330,7 +331,7 @@ public class Population {
         for (Place p : places.getAllPlaces()) {
             p.doInfect(t, dStats);
             p.doMovement(t, lockdown, getPlaces());
-        };
+        }
 
         for (Household h : households) {
             h.stepPeople();
@@ -338,7 +339,7 @@ public class Population {
 
         for (Place p : places.getAllPlaces()) {
             p.stepPeople();
-        };
+        }
     }
 
     // Step through nDays in 1 hour time steps
@@ -347,7 +348,7 @@ public class Population {
         Time t = new Time();
         boolean rprinted = false;
 
-        households.forEach(h -> h.determineDailyNeighbourVisit());
+        households.forEach(Household::determineDailyNeighbourVisit);
 
         for (int i = 0; i < nDays; i++) {
             DailyStats dStats = new DailyStats(t);
@@ -364,7 +365,7 @@ public class Population {
                 timeStep(t, dStats);
                 t = t.advance();
             }
-            households.forEach(h -> h.dayEnd());
+            households.forEach(Household::dayEnd);
             stats.add(this.processCases(dStats));
 
             if (!rprinted) {

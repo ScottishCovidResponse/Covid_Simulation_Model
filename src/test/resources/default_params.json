@@ -17,9 +17,9 @@
           "sdInfectiousDuration": 0.4,
           "phase1Betaa": 25.0,
           "phase1Betab": 30.0,
-          "aSymptomaticTransAdjustment": 0.13,
+          "aSymptomaticTransAdjustment": 0.15,
           "symptomaticTransAdjustment": 1.0,
-          "mortalityRate":0.01,
+          "mortalityRate":0.015,
           "childProgressionPhase2":0.02,
           "adultProgressionPhase2":0.15,
           "pensionerProgressionPhase2":0.8
@@ -34,7 +34,7 @@
       },
       "careHomeParameters": {
           "PPETransmissionReduction": 0.05,
-          "hoursAfterSyptomsBeforeQuarantine": 12
+          "hoursAfterSymptomsBeforeQuarantine": 12
       }
     },
     "population":{
@@ -109,7 +109,7 @@
                 "pMed":1.0,
                 "pLarge":0
             },
-            "populationToShopsRatio":500,
+            "populationToShopsRatio":750,
             "shopSizeDistribution":{
                 "pSmall":0.7,
                 "pMed":0.2,
@@ -147,16 +147,15 @@
             }
         },
         "workerDistribution":{
-            "pOffice":0.31,
-            "pShop":0.12,
-            "pHospital":0.15,
+            "pCareHome":0.01,
+            "pOffice":0.33,
+            "pShop":0.14,
+            "pHospital":0.09,
             "pConstruction":0.22,
             "pTeacher":0.065,
-            "pRestaurant":0.07,
+            "pRestaurant":0.09,
             "pNursery":0.005,
-            "pCareHome":0.01,
             "pUnemployed":0.05,
-            "pCareHome":0.01,
             "sizeAllocation":{
                 "pSmall": 0.2,
                 "pMed": 0.3,
@@ -193,6 +192,8 @@
           "pVisitorsLeaveHousehold":0.333,
           "householdVisitsNeighbourDaily":0.25,
           "expectedNeighbours":7,
+          "pNeighbourFromSameGroup":0.6,
+          "pNeighbourFromOtherGroup":0.2,
           "pGoShopping":0.071,
           "pGoRestaurant": 0.071,
           "pWillIsolate": 0.5,

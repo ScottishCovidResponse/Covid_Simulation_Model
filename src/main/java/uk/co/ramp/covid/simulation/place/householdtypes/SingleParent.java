@@ -1,7 +1,6 @@
 package uk.co.ramp.covid.simulation.place.householdtypes;
 
 import uk.co.ramp.covid.simulation.place.Household;
-import uk.co.ramp.covid.simulation.population.Places;
 
 /** SingleParent: 1 adult of any age and any number of children */
 public class SingleParent extends Household {

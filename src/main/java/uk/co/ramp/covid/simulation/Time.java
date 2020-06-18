@@ -6,11 +6,11 @@ import java.util.Objects;
 public class Time {
 
     /** Time in hours since the start of the simulation */
-    private int absTime;
+    private final int absTime;
     /** Current day */
-    private int day;
+    private final int day;
     /** Current hour within day */
-    private int hour;
+    private final int hour;
 
     public Time(int startingHour) {
         this.absTime = startingHour;

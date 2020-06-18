@@ -6,7 +6,6 @@ import uk.co.ramp.covid.simulation.Time;
 import uk.co.ramp.covid.simulation.output.DailyStats;
 import uk.co.ramp.covid.simulation.parameters.CovidParameters;
 import uk.co.ramp.covid.simulation.parameters.PopulationParameters;
-import uk.co.ramp.covid.simulation.population.ImpossibleWorkerDistributionException;
 import uk.co.ramp.covid.simulation.population.Pensioner;
 import uk.co.ramp.covid.simulation.population.Person;
 import uk.co.ramp.covid.simulation.population.Population;
@@ -83,8 +82,12 @@ public class CareHomeTest extends SimulationTest {
         int populationSize = 10000;
         PopulationParameters.get().pensionerProperties.pEntersCareHome = new Probability(0.8);
         // There can be lots of people in the care home so we crank this up to avoid getting almost 0 transmission probs
-        PopulationParameters.get().buildingProperties.careHomeTransmissionConstant = 200.0;
+        PopulationParameters.get().buildingProperties.careHomeTransmissionConstant = 100.0;
+        CovidParameters.get().diseaseParameters.pSymptomaticCase = new Probability(1.0);
         CovidParameters.get().diseaseParameters.pensionerProgressionPhase2 = 100.0;
+        // Makes it less likely we get symptoms before we are infectious
+        CovidParameters.get().diseaseParameters.meanSymptomDelay = 0.1;
+        CovidParameters.get().diseaseParameters.meanLatentPeriod = 0.5;
 
         Population pop = PopulationGenerator.genValidPopulation(populationSize);
         pop.seedVirus(100);
@@ -108,11 +111,12 @@ public class CareHomeTest extends SimulationTest {
         inf.getcVirus().forceSymptomatic(true);
         
         Time t = new Time(0);
+        for (int i = 0; i <= inf.getcVirus().getSymptomDelay(); i++);
         while (!inf.getcVirus().isSymptomatic()) {
             inf.getcVirus().stepInfection(t);
             t = t.advance();
         }
-        
+
         // Not quarantined instantly
         for (Person p : home.getPeople()) {
             if (p == inf) { continue; }
@@ -120,7 +124,7 @@ public class CareHomeTest extends SimulationTest {
         }
 
         // Step till quarantine
-        for (int i = 0; i <= CovidParameters.get().careHomeParameters.hoursAfterSyptomsBeforeQuarantine; i++) {
+        for (int i = 0; i <= CovidParameters.get().careHomeParameters.hoursAfterSymptomsBeforeQuarantine; i++) {
             inf.getcVirus().stepInfection(t);
             t = t.advance();
         }
