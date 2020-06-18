@@ -212,11 +212,11 @@ public class MovementTest extends SimulationTest {
 
             int npeople = 0;
             for (Place place : p.getPlaces().getAllPlaces()) {
-                npeople += place.getPeople().size();
+                npeople += place.getNumPeople();
             }
 
             for (Household hld : p.getHouseholds()) {
-                npeople += hld.getPeople().size();
+                npeople += hld.getNumPeople();
             }
             assertEquals("People have been lost", populationSize, npeople);
             t = t.advance();
@@ -249,14 +249,14 @@ public class MovementTest extends SimulationTest {
                 if (per.isHospitalised()) {
                     continue;
                 }
-                assertFalse(place.getPeople().contains(per));
+                assertFalse(place.personInPlace(per));
             }
         }
 
         for (Household h : p.getHouseholds()) {
             if (h != iso) {
                 for (Person per : isolating) {
-                    assertFalse(h.getPeople().contains(per));
+                    assertFalse(h.personInPlace(per));
                 }
             }
         }
@@ -309,7 +309,7 @@ public class MovementTest extends SimulationTest {
 
             for (CommunalPlace place : p.getPlaces().getAllPlaces()) {
                 for (Person per : isolating) {
-                    if (place.getPeople().contains(per)) {
+                    if (place.personInPlace(per)) {
                         excursions++;
                     }
                 }
@@ -318,7 +318,7 @@ public class MovementTest extends SimulationTest {
             for (Household h : p.getHouseholds()) {
                 if (h != iso) {
                     for (Person per : isolating) {
-                        if (h.getPeople().contains(per)) {
+                        if (h.personInPlace(per)) {
                             excursions++;
                         }
                     }
@@ -503,5 +503,34 @@ public class MovementTest extends SimulationTest {
                 assertFalse(inEmptyNeighbourHouse.get(i+1).contains(p));
             }
         }
+    }
+
+    @Test
+    public void peopleAreInASinglePlace() {
+        final int simHours = 100;
+        Time t = new Time(0);
+        p = PopulationGenerator.genValidPopulation(populationSize);
+        p.seedVirus(nInfections);
+        
+        DailyStats s = new DailyStats(t);
+        for (int i = 0; i < simHours; i++) {
+            Set<Person> seen = new HashSet<>();
+
+            for (Place place : p.getPlaces().getAllPlaces()) {
+                for (Person per : place.getPeople()) {
+                    assertTrue(seen.add(per));
+                }
+            }
+
+            for (Household h : p.getHouseholds()) {
+                for (Person per : h.getPeople()) {
+                    assertTrue(seen.add(per));
+                }
+            }
+
+            p.timeStep(t, s);
+            t = t.advance();
+        }
+
     }
 }

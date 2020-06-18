@@ -59,7 +59,7 @@ public class Places {
         return hospitals.sample();
     }
 
-    public Hospital getRandomCovidHospital() {
+    public CovidHospital getRandomCovidHospital() {
         return covidHospitals.sample();
     }
 
