@@ -155,11 +155,7 @@ public abstract class CommunalPlace extends Place {
             }
         }
 
-        if (!times.getOpenDays().get(t.getDay())) {
-            return false;
-        }
-
-        return t.getHour() >= times.getOpen() && t.getHour() < times.getClose();
+        return times.isOpen(t);
     }
 
     public List<Person> getStaff(Time t) {
