@@ -233,10 +233,11 @@ public class MovementTest extends SimulationTest {
             t = t.advance();
 
             for (CommunalPlace place : p.getPlaces().getAllPlaces()) {
-                // i + 1 since the ith timestep has already been (so we are in the next state)
+                List<Person> staff = place.getStaff(t);
                 if (place.isOpen(day, t.getHour())) {
-                    List<Person> staff = place.getStaff(t);
-                    assertTrue(staff.size() > 0);
+                    assertTrue("No staff found in open place", staff.size() > 0);
+                } else {
+                    assertEquals("Unexpected staff found in closed place", 0, staff.size());
                 }
             }
         }
@@ -379,24 +380,28 @@ public class MovementTest extends SimulationTest {
 
         int numTested = 0;
         int numNegative = 0;
+        int numPositive = 0;
         for (Person p : p.getAllPeople()) {
-            if (p.wasTested()) {
-                numTested++;
-            }
+
             // Only adults/pensioners get tested
             if (p instanceof Child || p instanceof Infant) {
-                assertFalse(p.wasTested());
+                assertFalse("A child was unexpectedly tested", p.wasTested());
             }
 
-            // Some tests are negatives
+            // Count the number of positive and negative tests
             if (p.wasTested()) {
+                numTested++;
+
                 if (!p.getTestOutcome()) {
                     numNegative++;
+                } else {
+                    numPositive++;
                 }
             }
         }
-        assertTrue(numTested > 0);
-        assertTrue(numNegative > 0);
+        assertTrue("No-one was tested", numTested > 0);
+        assertTrue("No-one tested negative", numNegative > 0);
+        assertEquals("Unexpected number of positive tests", numTested - numNegative, numPositive);
     }
 
     @Test
