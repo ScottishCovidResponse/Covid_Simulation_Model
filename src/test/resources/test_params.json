@@ -172,6 +172,7 @@
             "shopTransmissionConstant":0.2,
             "careHomeTransmissionConstant":0.5,
             "pHospitalKey":0.1,
+            "pHospitalStaffWillFurlough":0.5,
             "pConstructionSiteKey":0.6,
             "pOfficeKey":0.9,
             "pShopKey":0.2,

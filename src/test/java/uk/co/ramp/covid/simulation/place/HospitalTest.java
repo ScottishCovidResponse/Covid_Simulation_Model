@@ -14,7 +14,9 @@ import uk.co.ramp.covid.simulation.testutil.PopulationGenerator;
 import uk.co.ramp.covid.simulation.testutil.SimulationTest;
 import uk.co.ramp.covid.simulation.util.Probability;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static org.junit.Assert.*;
 import static org.junit.Assert.assertFalse;
@@ -213,5 +215,32 @@ public class HospitalTest extends SimulationTest {
         assertTrue(hosptial.getBaseTransP(inf) > hosptial.getTransP(t, inf, null));
     }
 
+    @Test
+    public void nonCovidHospitalsReduceStaffOnLockdown() {
+        int populationSize = 10000;
+        int nInfections = 100;
 
+        // Need to force some non-covid hospitals
+        PopulationParameters.get().buildingDistribution.populationToHospitalsRatio = 3000;
+        Population pop = PopulationGenerator.genValidPopulation(populationSize);
+        pop.seedVirus(nInfections);
+
+        Set<Person> hospitalWorkersPreLockdown = new HashSet<>();
+        pop.simulate(1);
+        for (Hospital h : pop.getPlaces().getHospitals()) {
+            hospitalWorkersPreLockdown.addAll(h.getStaff(Time.timeFromDay(1)));
+        }
+        
+        pop.getLockdownController().setLockdown(Time.timeFromDay(2), Time.timeFromDay(4), 1.0);
+        
+        Set<Person> hospitalWorkersInLockdown = new HashSet<>();
+        pop.simulateFromTime(Time.timeFromDay(1), 2);
+        for (Hospital h : pop.getPlaces().getHospitals()) {
+            hospitalWorkersInLockdown.addAll(h.getStaff(Time.timeFromDay(3)));
+        }
+        
+        assertTrue("More hospital workers during lockdown than before",
+                hospitalWorkersInLockdown.size() < hospitalWorkersPreLockdown.size());
+
+    }
 }

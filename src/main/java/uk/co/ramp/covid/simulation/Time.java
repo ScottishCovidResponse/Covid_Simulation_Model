@@ -3,7 +3,7 @@ package uk.co.ramp.covid.simulation;
 import java.util.Objects;
 
 /** Time tracks the current simulation time */
-public class Time {
+public class Time implements Comparable<Time> {
 
     /** Time in hours since the start of the simulation */
     private final int absTime;
@@ -53,4 +53,14 @@ public class Time {
     public int hashCode() {
         return Objects.hash(absTime);
     }
+    
+    public static Time timeFromDay(int absDay) {
+        return new Time(absDay*24);
+    }
+
+    @Override
+    public int compareTo(Time t) {
+        return Integer.compare(getAbsTime(), t.getAbsTime());
+    }
+
 }
