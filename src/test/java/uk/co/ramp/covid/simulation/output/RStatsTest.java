@@ -1,6 +1,7 @@
 package uk.co.ramp.covid.simulation.output;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import uk.co.ramp.covid.simulation.population.Population;
 import uk.co.ramp.covid.simulation.testutil.PopulationGenerator;
@@ -14,7 +15,7 @@ public class RStatsTest extends SimulationTest {
 
     @Before
     public void setupParams() {
-        int populationSize = 10000;
+        int populationSize = 50000;
         pop = PopulationGenerator.genValidPopulation(populationSize);
     }
 
@@ -41,4 +42,26 @@ public class RStatsTest extends SimulationTest {
         assertTrue("Mean generation time unexpectedly = 0", rs.getMeanGenerationTime(0) > 0);
     }
 
+    public void testMeanRWithLockdown() {
+        int populationSize = 50000;
+        pop = PopulationGenerator.genValidPopulation(populationSize);
+        int startLock = 30;
+        int endLock = 90;
+        int nDays = 90;
+        pop.seedVirus(10);
+        pop.setLockdown(startLock, endLock, 2.0);
+        pop.simulate(nDays);
+        RStats rs = new RStats(pop);
+        double peakR = 0.0;
+
+        for (int i = 0; i < nDays; i++) {
+            //Get the peak R value before lockdown starts
+            if (i < startLock) peakR = Math.max(peakR, rs.getMeanRBefore(i + 1));
+            //Test that the R value during lockdown is always below the peak R
+            if (i > startLock + 5) {
+                assertTrue("Peak R occurred at Day " + i, rs.getMeanRBefore(i + 1) < peakR);
+            }
+        }
+
+    }
 }

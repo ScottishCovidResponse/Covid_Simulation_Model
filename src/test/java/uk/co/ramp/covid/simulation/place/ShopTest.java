@@ -1,6 +1,7 @@
 package uk.co.ramp.covid.simulation.place;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.google.gson.JsonParseException;
@@ -35,8 +36,8 @@ public class ShopTest extends SimulationTest {
         Household h2 = new SmallFamily();
         p1.setHome(h1);
         p2.setHome(h2);
-        shop.people.add(p1);
-        shop.people.add(p2);
+        shop.addPerson(p1);
+        shop.addPerson(p2);
     }
 
     @Test
@@ -46,22 +47,14 @@ public class ShopTest extends SimulationTest {
         assertEquals("Unexpected shop TransProb", expProb, shop.transConstant, delta);
     }
 
-    @Test
-    public void testShoppingTrip() {
-        ArrayList<Person> personList = new ArrayList<>();
-        personList.add(new Child(8, Person.Sex.FEMALE));
-        shop.shoppingTrip(personList);
-        int expPeople = 3;
-        assertEquals("Unexpected number of people in shop", expPeople, shop.people.size());
-    }
-
+    @Ignore("Not valid with new movement")
     @Test
     public void testSendHome() {
         PopulationParameters.get().buildingProperties.pLeaveShop = new Probability(1.0);
         int time = shop.times.getClose() - 1;
-        int left = shop.sendHome(new Time(time));
+        //int left = shop.sendHome(new Time(time));
         int expPeople = 2;
-        assertEquals("Unexpected number of people sent home", expPeople, left);
+        //assertEquals("Unexpected number of people sent home", expPeople, left);
     }
 
     @Test

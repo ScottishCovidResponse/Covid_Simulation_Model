@@ -16,6 +16,9 @@ public class CareHome extends CommunalPlace implements Home {
 
         transConstant = PopulationParameters.get().buildingProperties.careHomeTransmissionConstant;
 
+        // Care homes are "open" to staff from 6-22 (but can have residents in them all the time)
+        times = new OpeningTimes(6, 22, OpeningTimes.getAllDays());
+
         shifts = new RoundRobinAllocator<>();
         shifts.put(new Shifts(6,14, 0, 1, 2));
         shifts.put(new Shifts(14,22, 0, 1, 2));
@@ -44,9 +47,10 @@ public class CareHome extends CommunalPlace implements Home {
     }
 
     @Override
-    public void doMovement(Time t, boolean lockdown, Places places) {
+    public void determineMovement(Time t, boolean lockdown, Places places) {
         movePhase2(t, places, Person::isInCare);
         moveShifts(t, lockdown, Person::isInCare);
+        remainInPlace();
     }
 
     @Override

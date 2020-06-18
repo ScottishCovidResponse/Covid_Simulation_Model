@@ -85,6 +85,9 @@ public class CareHomeTest extends SimulationTest {
         PopulationParameters.get().buildingProperties.careHomeTransmissionConstant = 100.0;
         CovidParameters.get().diseaseParameters.pSymptomaticCase = new Probability(1.0);
         CovidParameters.get().diseaseParameters.pensionerProgressionPhase2 = 100.0;
+        // Makes it less likely we get symptoms before we are infectious
+        CovidParameters.get().diseaseParameters.meanSymptomDelay = 0.1;
+        CovidParameters.get().diseaseParameters.meanLatentPeriod = 0.5;
 
         Population pop = PopulationGenerator.genValidPopulation(populationSize);
         pop.seedVirus(100);
@@ -108,21 +111,17 @@ public class CareHomeTest extends SimulationTest {
         inf.getcVirus().forceSymptomatic(true);
         
         Time t = new Time(0);
+        for (int i = 0; i <= inf.getcVirus().getSymptomDelay(); i++);
         while (!inf.getcVirus().isSymptomatic()) {
             inf.getcVirus().stepInfection(t);
-            inf.cStatus();
             t = t.advance();
         }
 
         // Not quarantined instantly
-        // TODO You might have symptoms but have a trans adjustment of 0 (if you get symptom while latent).
-        /*
         for (Person p : home.getPeople()) {
             if (p == inf) { continue; }
-            
             assertTrue(home.getTransP(t, inf, p) > 0);
         }
-         */
 
         // Step till quarantine
         for (int i = 0; i <= CovidParameters.get().careHomeParameters.hoursAfterSymptomsBeforeQuarantine; i++) {

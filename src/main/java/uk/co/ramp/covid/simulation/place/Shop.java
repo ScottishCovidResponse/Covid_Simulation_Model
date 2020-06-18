@@ -5,10 +5,9 @@ import uk.co.ramp.covid.simulation.Time;
 import uk.co.ramp.covid.simulation.population.Person;
 import uk.co.ramp.covid.simulation.parameters.PopulationParameters;
 import uk.co.ramp.covid.simulation.population.Places;
+import uk.co.ramp.covid.simulation.population.Population;
 import uk.co.ramp.covid.simulation.population.Shifts;
 import uk.co.ramp.covid.simulation.util.RoundRobinAllocator;
-
-import java.util.ArrayList;
 
 public class Shop extends CommunalPlace {
     
@@ -43,39 +42,6 @@ public class Shop extends CommunalPlace {
         return shifts.getNext();
     }
 
-    public void shoppingTrip(ArrayList<Person> vHouse) {
-       people.addAll(vHouse);
-    }
-
-    public int sendHome(Time t) {
-        ArrayList<Person> left = new ArrayList<>();
-        for (Person nPers : people) {
-            // People may have already left if their family has
-            if (left.contains(nPers)) {
-                continue;
-            }
-
-            if (nPers.worksNextHour(this, t, false)) {
-                continue;
-            }
-
-            // Under certain conditions we must go home, e.g. if there is a shift starting soon
-            if (nPers.mustGoHome(t)) {
-                left.add(nPers);
-                nPers.returnHome();
-                left.addAll(sendFamilyHome(nPers, this, t));
-            }
-            else if (PopulationParameters.get().buildingProperties.pLeaveShop.sample()
-                    || !times.isOpenNextHour(t)) {
-                nPers.returnHome();
-                left.add(nPers);
-                left.addAll(sendFamilyHome(nPers, this, t));
-            }
-        }
-        people.removeAll(left);
-        return left.size();
-    }
-
     @Override
     public void reportInfection(Time t, Person p, DailyStats s) {
         if (p.isWorking(this, t)) {
@@ -86,10 +52,10 @@ public class Shop extends CommunalPlace {
     }
 
     @Override
-    public void doMovement(Time t, boolean lockdown, Places places) {
+    public void determineMovement(Time t, boolean lockdown, Places places) {
         movePhase2(t, places);
         moveShifts(t, lockdown);
-        sendHome(t);
+        moveVisitors(t, PopulationParameters.get().buildingProperties.pLeaveShop);
     }
 
     @Override

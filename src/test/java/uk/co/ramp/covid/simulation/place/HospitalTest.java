@@ -117,7 +117,7 @@ public class HospitalTest extends SimulationTest {
 
         boolean inHospital = false;
         for (Hospital h : pop.getPlaces().getHospitals()) {
-            if (h.people.contains(inf) && inf.isHospitalised()) {
+            if (h.personInPlace(inf) && inf.isHospitalised()) {
                 inHospital = true;
             }
         }
@@ -142,7 +142,7 @@ public class HospitalTest extends SimulationTest {
         // Don't check explicitly for atHome since they could be back at work already
         inHospital = false;
         for (Hospital h : pop.getPlaces().getHospitals()) {
-            if (h.people.contains(inf) && inf.isHospitalised()) {
+            if (h.personInPlace(inf) && inf.isHospitalised()) {
                 inHospital = true;
             }
         }
@@ -207,7 +207,7 @@ public class HospitalTest extends SimulationTest {
 
         CovidHospital hosptial = null;
         for (CovidHospital h : pop.getPlaces().getCovidHospitals()) {
-            if (h.getPeople().contains(inf)) {
+            if (h.personInPlace(inf)) {
                 hosptial = h;
             }
         }

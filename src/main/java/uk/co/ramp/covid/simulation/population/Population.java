@@ -322,19 +322,20 @@ public class Population {
         for (Household h : households) {
             h.doTesting(t);
             h.doInfect(t, dStats);
-            h.doMovement(t, lockdownController.inLockdown(t), getPlaces());
+            h.determineMovement(t, lockdownController.inLockdown(t), getPlaces());
         }
+
         for (Place p : places.getAllPlaces()) {
             p.doInfect(t, dStats);
-            p.doMovement(t, lockdownController.inLockdown(t), getPlaces());
+            p.determineMovement(t, lockdownController.inLockdown(t), getPlaces());
         }
-
+        
         for (Household h : households) {
-            h.stepPeople();
+            h.commitMovement();
         }
 
         for (Place p : places.getAllPlaces()) {
-            p.stepPeople();
+            p.commitMovement();
         }
     }
     

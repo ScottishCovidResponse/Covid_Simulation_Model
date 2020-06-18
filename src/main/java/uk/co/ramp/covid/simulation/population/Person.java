@@ -12,6 +12,7 @@ import uk.co.ramp.covid.simulation.Time;
 import uk.co.ramp.covid.simulation.parameters.PopulationParameters;
 import uk.co.ramp.covid.simulation.place.CareHome;
 import uk.co.ramp.covid.simulation.place.CommunalPlace;
+import uk.co.ramp.covid.simulation.place.Place;
 import uk.co.ramp.covid.simulation.util.Probability;
 import uk.co.ramp.covid.simulation.util.RNG;
 
@@ -44,6 +45,8 @@ public abstract class Person {
     private final int personId;
 
     private boolean isInCare = false;
+    
+    private boolean moved = false;
 
     public abstract void reportInfection(DailyStats s);
     public abstract void reportDeath (DailyStats s);
@@ -90,8 +93,20 @@ public abstract class Person {
         home = h;
     }
     
-    public void returnHome() {
-        home.addPersonNext(this);
+    public void returnHome(Place from) {
+        moveTo(from, (Place) home);
+    }
+    
+    public void moveTo(Place from, Place to) {
+        //We can turn off this asserting during main runs, but it's a nice sanity check to have
+        assert !hasMoved();
+
+        to.addPersonNext(this);
+        moved = true;
+    }
+    
+    public void stayInPlace(Place from) {
+        moveTo(from, from);
     }
 
     public boolean isHospitalised() {
@@ -268,9 +283,9 @@ public abstract class Person {
         return nextHour >= start && nextHour < end;
     }
 
-    public void visitPrimaryPlace() {
+    public void moveToPrimaryPlace(Place from) {
         if (primaryPlace != null) {
-            primaryPlace.addPersonNext(this);
+            moveTo(from, primaryPlace);
         }
     }
 
@@ -325,6 +340,14 @@ public abstract class Person {
             cVirus.getInfectionLog().registerInfected(t);
             s.incSeedInfections();
         }
+    }
+    
+    public boolean hasMoved() {
+        return moved;
+    }
+    
+    public void unsetMoved() {
+        moved = false;
     }
 
     protected abstract double getInfectionSeedRate();

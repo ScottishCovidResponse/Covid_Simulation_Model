@@ -1,7 +1,6 @@
 package uk.co.ramp.covid.simulation.integrationTests;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -213,11 +212,11 @@ public class MovementTest extends SimulationTest {
 
             int npeople = 0;
             for (Place place : p.getPlaces().getAllPlaces()) {
-                npeople += place.getPeople().size();
+                npeople += place.getNumPeople();
             }
 
             for (Household hld : p.getHouseholds()) {
-                npeople += hld.getPeople().size();
+                npeople += hld.getNumPeople();
             }
             assertEquals("People have been lost", populationSize, npeople);
             t = t.advance();
@@ -234,10 +233,11 @@ public class MovementTest extends SimulationTest {
             t = t.advance();
 
             for (CommunalPlace place : p.getPlaces().getAllPlaces()) {
-                // i + 1 since the ith timestep has already been (so we are in the next state)
+                List<Person> staff = place.getStaff(t);
                 if (place.isOpen(day, t.getHour())) {
-                    List<Person> staff = place.getStaff(t);
-                    assertTrue(staff.size() > 0);
+                    assertTrue("No staff found in open place", staff.size() > 0);
+                } else {
+                    assertEquals("Unexpected staff found in closed place", 0, staff.size());
                 }
             }
         }
@@ -249,14 +249,14 @@ public class MovementTest extends SimulationTest {
                 if (per.isHospitalised()) {
                     continue;
                 }
-                assertFalse(place.getPeople().contains(per));
+                assertFalse(place.personInPlace(per));
             }
         }
 
         for (Household h : p.getHouseholds()) {
             if (h != iso) {
                 for (Person per : isolating) {
-                    assertFalse(h.getPeople().contains(per));
+                    assertFalse(h.personInPlace(per));
                 }
             }
         }
@@ -309,7 +309,7 @@ public class MovementTest extends SimulationTest {
 
             for (CommunalPlace place : p.getPlaces().getAllPlaces()) {
                 for (Person per : isolating) {
-                    if (place.getPeople().contains(per)) {
+                    if (place.personInPlace(per)) {
                         excursions++;
                     }
                 }
@@ -318,7 +318,7 @@ public class MovementTest extends SimulationTest {
             for (Household h : p.getHouseholds()) {
                 if (h != iso) {
                     for (Person per : isolating) {
-                        if (h.getPeople().contains(per)) {
+                        if (h.personInPlace(per)) {
                             excursions++;
                         }
                     }
@@ -380,24 +380,28 @@ public class MovementTest extends SimulationTest {
 
         int numTested = 0;
         int numNegative = 0;
+        int numPositive = 0;
         for (Person p : p.getAllPeople()) {
-            if (p.wasTested()) {
-                numTested++;
-            }
+
             // Only adults/pensioners get tested
             if (p instanceof Child || p instanceof Infant) {
-                assertFalse(p.wasTested());
+                assertFalse("A child was unexpectedly tested", p.wasTested());
             }
 
-            // Some tests are negatives
+            // Count the number of positive and negative tests
             if (p.wasTested()) {
+                numTested++;
+
                 if (!p.getTestOutcome()) {
                     numNegative++;
+                } else {
+                    numPositive++;
                 }
             }
         }
-        assertTrue(numTested > 0);
-        assertTrue(numNegative > 0);
+        assertTrue("No-one was tested", numTested > 0);
+        assertTrue("No-one tested negative", numNegative > 0);
+        assertEquals("Unexpected number of positive tests", numTested - numNegative, numPositive);
     }
 
     @Test
@@ -499,5 +503,34 @@ public class MovementTest extends SimulationTest {
                 assertFalse(inEmptyNeighbourHouse.get(i+1).contains(p));
             }
         }
+    }
+
+    @Test
+    public void peopleAreInASinglePlace() {
+        final int simHours = 100;
+        Time t = new Time(0);
+        p = PopulationGenerator.genValidPopulation(populationSize);
+        p.seedVirus(nInfections);
+        
+        DailyStats s = new DailyStats(t);
+        for (int i = 0; i < simHours; i++) {
+            Set<Person> seen = new HashSet<>();
+
+            for (Place place : p.getPlaces().getAllPlaces()) {
+                for (Person per : place.getPeople()) {
+                    assertTrue(seen.add(per));
+                }
+            }
+
+            for (Household h : p.getHouseholds()) {
+                for (Person per : h.getPeople()) {
+                    assertTrue(seen.add(per));
+                }
+            }
+
+            p.timeStep(t, s);
+            t = t.advance();
+        }
+
     }
 }
