@@ -7,7 +7,7 @@ import com.google.gson.JsonParseException;
 
 import uk.co.ramp.covid.simulation.output.DailyStats;
 import uk.co.ramp.covid.simulation.Model;
-import uk.co.ramp.covid.simulation.Time;
+import uk.co.ramp.covid.simulation.util.Time;
 import uk.co.ramp.covid.simulation.parameters.CovidParameters;
 import uk.co.ramp.covid.simulation.place.householdtypes.LargeManyAdultFamily;
 import uk.co.ramp.covid.simulation.place.householdtypes.SingleAdult;

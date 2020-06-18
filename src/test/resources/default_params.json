@@ -178,7 +178,13 @@
             "pOfficeKey":0.5,
             "pShopKey":0.5,
             "pLeaveShop": 0.5,
-            "pLeaveRestaurant": 0.4
+            "pLeaveRestaurant": 0.4,
+            "schoolHolidays": [
+                {
+                    "start": 28,
+                    "end": 32
+                }
+            ]
         },
         "infantProperties":{
             "pAttendsNursery":0.12

@@ -2,17 +2,18 @@ package uk.co.ramp.covid.simulation.place;
 
 
 import org.junit.Test;
+import uk.co.ramp.covid.simulation.util.DateRange;
 import uk.co.ramp.covid.simulation.output.DailyStats;
-import uk.co.ramp.covid.simulation.Time;
+import uk.co.ramp.covid.simulation.util.Time;
 import uk.co.ramp.covid.simulation.parameters.PopulationParameters;
 import uk.co.ramp.covid.simulation.population.*;
 import uk.co.ramp.covid.simulation.testutil.PopulationGenerator;
 import uk.co.ramp.covid.simulation.testutil.SimulationTest;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class SchoolTest extends SimulationTest {
 
@@ -61,6 +62,67 @@ public class SchoolTest extends SimulationTest {
             }
 
         }
+    }
+    
+    private void checkSchoolsPopulated(Population p) {
+        for (School s : p.getPlaces().getSchools()) {
+            assertNotEquals(0, s.getNumPeople());
+        }
+    }
+
+    private void checkSchoolsNotPopulated(Population p) {
+        for (School s : p.getPlaces().getSchools()) {
+            assertEquals(0, s.getNumPeople());
+        }
+    }
+
+    @Test
+    public void schoolsCanTakeHolidays() {
+        List<DateRange> holidays = new ArrayList<>();
+
+        // Holidays are non-inclusive
+        holidays.add(new DateRange(Time.timeFromDay(2), Time.timeFromDay(3)));
+        holidays.add(new DateRange(Time.timeFromDay(4), Time.timeFromDay(5)));
+        PopulationParameters.get().buildingProperties.schoolHolidays = holidays;
+        
+        int populationSize = 10000;
+        Population p = PopulationGenerator.genValidPopulation(populationSize);
+        
+        // Schools are open at midday so we sample then
+        Time t = new Time(0);
+        for (int i = 0; i < 12; i++) {
+            p.timeStep(t, new DailyStats(t));
+            t = t.advance();
+        }
+        checkSchoolsPopulated(p);
+
+        // Day 1 - open
+        for (int i = 0; i < 24; i++) {
+            p.timeStep(t, new DailyStats(t));
+            t = t.advance();
+        }
+        checkSchoolsPopulated(p);
+
+        // Day 2 - holiday
+        for (int i = 0; i < 24; i++) {
+            p.timeStep(t, new DailyStats(t));
+            t = t.advance();
+        }
+        checkSchoolsNotPopulated(p);
+
+        // Day 3 - open
+        for (int i = 0; i < 24; i++) {
+            p.timeStep(t, new DailyStats(t));
+            t = t.advance();
+        }
+        checkSchoolsPopulated(p);
+
+        // Day 4 - holiday
+        for (int i = 0; i < 24; i++) {
+            p.timeStep(t, new DailyStats(t));
+            t = t.advance();
+        }
+        checkSchoolsNotPopulated(p);
     }
 
 }

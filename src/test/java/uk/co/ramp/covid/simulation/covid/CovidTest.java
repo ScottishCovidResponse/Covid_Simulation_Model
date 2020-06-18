@@ -2,7 +2,7 @@ package uk.co.ramp.covid.simulation.covid;
 
 import org.junit.After;
 import org.junit.Test;
-import uk.co.ramp.covid.simulation.Time;
+import uk.co.ramp.covid.simulation.util.Time;
 import uk.co.ramp.covid.simulation.parameters.CovidParameters;
 import uk.co.ramp.covid.simulation.parameters.PopulationParameters;
 import uk.co.ramp.covid.simulation.place.Household;

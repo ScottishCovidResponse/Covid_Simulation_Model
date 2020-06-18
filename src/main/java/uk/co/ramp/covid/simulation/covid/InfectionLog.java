@@ -1,6 +1,6 @@
 package uk.co.ramp.covid.simulation.covid;
 
-import uk.co.ramp.covid.simulation.Time;
+import uk.co.ramp.covid.simulation.util.Time;
 import uk.co.ramp.covid.simulation.population.Person;
 
 import java.util.HashSet;

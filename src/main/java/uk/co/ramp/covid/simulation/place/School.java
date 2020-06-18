@@ -1,10 +1,12 @@
 package uk.co.ramp.covid.simulation.place;
 
 import uk.co.ramp.covid.simulation.output.DailyStats;
-import uk.co.ramp.covid.simulation.Time;
+import uk.co.ramp.covid.simulation.util.Time;
 import uk.co.ramp.covid.simulation.population.Person;
 import uk.co.ramp.covid.simulation.parameters.PopulationParameters;
 import uk.co.ramp.covid.simulation.population.Shifts;
+
+import java.util.ArrayList;
 
 public class School extends CommunalPlace {
 
@@ -33,6 +35,12 @@ public class School extends CommunalPlace {
     @Override
     public boolean isFullyStaffed() {
         return nStaff > 0;
+    }
+
+    @Override
+    public void setHolidays() {
+        holidays = new ArrayList<>();
+        holidays.addAll(PopulationParameters.get().buildingProperties.schoolHolidays);
     }
 
 }

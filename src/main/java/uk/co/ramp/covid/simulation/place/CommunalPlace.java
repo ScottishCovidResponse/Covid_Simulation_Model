@@ -5,8 +5,8 @@
 package uk.co.ramp.covid.simulation.place;
 
 import org.apache.commons.math3.random.RandomDataGenerator;
-import uk.co.ramp.covid.simulation.Time;
-import uk.co.ramp.covid.simulation.parameters.PopulationParameters;
+import uk.co.ramp.covid.simulation.util.Time;
+import uk.co.ramp.covid.simulation.util.DateRange;
 import uk.co.ramp.covid.simulation.population.CStatus;
 import uk.co.ramp.covid.simulation.population.Person;
 import uk.co.ramp.covid.simulation.population.Places;
@@ -34,18 +34,19 @@ public abstract class CommunalPlace extends Place {
     protected final RandomDataGenerator rng;
     
     public abstract Shifts getShifts();
-
+    protected List<DateRange> holidays;
+    
     public CommunalPlace(Size s) {
         this();
         size = s;
     }
-
 
     public CommunalPlace() {
         super();
         this.rng = RNG.get();
         this.times = new OpeningTimes(8,17,1,5, OpeningTimes.getAllDays());
         this.keyPremises = false;
+        setHolidays();
     }
 
     public void overrideKeyPremises(boolean overR) {
@@ -122,7 +123,7 @@ public abstract class CommunalPlace extends Place {
                 continue;
             }
 
-            if (pLeave.sample() || !times.isOpenNextHour(t)) {
+            if (pLeave.sample() || !isOpenNextHour(t)) {
                 p.returnHome(this);
                 sendFamilyHome(p, this, t);
             } else {
@@ -138,18 +139,21 @@ public abstract class CommunalPlace extends Place {
     }
     
     public boolean isVisitorOpenNextHour(Time t) {
-        return  times.getOpenDays().get(t.getDay())
-                && t.getHour() + 1 >= times.getVisitorOpen()
-                && t.getHour() + 1 < times.getVisitorClose();
+        return isOpenNextHour(t) && times.isOpenToVisitors(t.advance());
+    }
+    
+    public boolean isOpenNextHour(Time t) {
+        return isOpen(t.advance());
     }
 
-    public boolean isOpen(int day, int hour) {
-        if (!times.getOpenDays().get(day)) {
-            return false;
+    public boolean isOpen(Time t) {
+        for (DateRange holiday : holidays) {
+            if (holiday.inRange(t)) {
+                return false;
+            }
         }
 
-        return hour >= times.getOpen()
-                && hour < times.getClose();
+        return times.isOpen(t);
     }
 
     public List<Person> getStaff(Time t) {
@@ -179,4 +183,8 @@ public abstract class CommunalPlace extends Place {
     public abstract boolean isFullyStaffed();
 
     public OpeningTimes getTimes() { return times; }
+    
+    public void setHolidays() {
+        holidays = new ArrayList<>();
+    }
 }

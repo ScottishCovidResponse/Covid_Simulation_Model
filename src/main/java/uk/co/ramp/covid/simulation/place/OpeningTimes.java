@@ -1,6 +1,6 @@
 package uk.co.ramp.covid.simulation.place;
 
-import uk.co.ramp.covid.simulation.Time;
+import uk.co.ramp.covid.simulation.util.Time;
 
 import java.util.BitSet;
 
@@ -28,12 +28,12 @@ public class OpeningTimes {
         this(open, close, open, close, days);
     }
     
-    public boolean isOpen(int time, int day) {
-        return time >= open && time < close && openDays.get(day);
+    public boolean isOpen(Time t) {
+        return openDays.get(t.getDay()) && t.getHour() >= open && t.getHour() < close;
     }
 
-    public boolean isOpenToVisitors(int time, int day) {
-        return time >= visitorOpen && time < visitorClose && openDays.get(day);
+    public boolean isOpenToVisitors(Time t) {
+        return openDays.get(t.getDay()) && t.getHour() >= visitorOpen && t.getHour() < visitorClose;
     }
 
     public int getOpen() {
@@ -124,7 +124,4 @@ public class OpeningTimes {
         return new OpeningTimes(0,24, OpeningTimes.getAllDays());
     }
 
-    public boolean isOpenNextHour(Time t) {
-        return isOpen(t.getHour() + 1, t.getDay());
-    }
 }
