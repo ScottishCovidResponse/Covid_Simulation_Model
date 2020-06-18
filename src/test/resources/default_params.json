@@ -173,7 +173,7 @@
            "schoolTransmissionConstant":30.0,
            "shopTransmissionConstant":5.0,
            "careHomeTransmissionConstant":5.0,
-           "pHospitalKey":0.8,
+           "pHospitalKey":1.0,
            "pHospitalStaffWillFurlough":0.5,
             "pConstructionSiteKey":0.5,
             "pOfficeKey":0.5,
