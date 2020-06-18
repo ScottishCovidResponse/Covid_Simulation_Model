@@ -8,7 +8,7 @@ import org.apache.commons.math3.random.RandomDataGenerator;
 import uk.co.ramp.covid.simulation.covid.Covid;
 import uk.co.ramp.covid.simulation.parameters.CovidParameters;
 import uk.co.ramp.covid.simulation.output.DailyStats;
-import uk.co.ramp.covid.simulation.Time;
+import uk.co.ramp.covid.simulation.util.Time;
 import uk.co.ramp.covid.simulation.parameters.PopulationParameters;
 import uk.co.ramp.covid.simulation.place.CareHome;
 import uk.co.ramp.covid.simulation.place.CommunalPlace;
@@ -255,7 +255,8 @@ public abstract class Person {
 
 
     public boolean worksNextHour(CommunalPlace communalPlace, Time t, boolean lockdown) {
-        if (primaryPlace == null || shifts == null || primaryPlace != communalPlace) {
+        if (primaryPlace == null || shifts == null || primaryPlace != communalPlace
+                || !communalPlace.isOpenNextHour(t)) {
             return false;
         }
 

@@ -1,9 +1,8 @@
 package uk.co.ramp.covid.simulation.lockdown;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
-import uk.co.ramp.covid.simulation.Time;
+import uk.co.ramp.covid.simulation.util.Time;
 import uk.co.ramp.covid.simulation.place.Nursery;
 import uk.co.ramp.covid.simulation.place.School;
 import uk.co.ramp.covid.simulation.population.Population;
