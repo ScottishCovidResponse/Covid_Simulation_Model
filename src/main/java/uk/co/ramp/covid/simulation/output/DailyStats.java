@@ -44,6 +44,7 @@ public class DailyStats {
     private int careHomeInfectionsWorker = 0;
     private int careHomeInfectionsResident = 0;
     private int seedInfections = 0;
+    private int transportInfections = 0;
 
     // Age Statistics
     private int adultInfected = 0;
@@ -63,6 +64,7 @@ public class DailyStats {
     // Infection rate stats
     private Double secInfections = null;
     private Double generationTime = null;
+
 
     public DailyStats(Time t) {
         this.day = t.getAbsDay();
@@ -137,7 +139,7 @@ public class DailyStats {
                 shopInfectionsWorker, careHomeInfectionsWorker, homeInfectionsInhabitant, careHomeInfectionsResident,
                 constructionSiteInfectionsVisitor, hospitalInfectionsVisitor, nurseryInfectionsVisitor, 
                 officeInfectionsVisitor, restaurantInfectionsVisitor, schoolInfectionsVisitor, shopInfectionsVisitor,
-                homeInfectionsVisitor, adultInfected, pensionerInfected, childInfected, infantInfected, adultDeaths,
+                homeInfectionsVisitor, transportInfections, adultInfected, pensionerInfected, childInfected, infantInfected, adultDeaths,
                 pensionerDeaths, childDeaths, infantDeaths, homeDeaths, hospitalDeaths, careHomeDeaths,
                 secInfections, generationTime);
     }
@@ -161,6 +163,7 @@ public class DailyStats {
                 careHomeInfectionsWorker +
                 homeInfectionsInhabitant +
                 homeInfectionsVisitor +
+                transportInfections +
                 seedInfections;
     }
 
@@ -393,4 +396,8 @@ public class DailyStats {
     public void incHomeDeaths() { homeDeaths++; }
 
     public void incCareHomeDeaths() { careHomeDeaths++; }
+
+    public void incTransportInfections() { transportInfections++; }
+    
+    public int getTransportInfections() { return transportInfections; }
 }

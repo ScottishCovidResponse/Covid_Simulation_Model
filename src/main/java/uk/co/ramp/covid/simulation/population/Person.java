@@ -47,6 +47,7 @@ public abstract class Person {
     private boolean isInCare = false;
     
     private boolean moved = false;
+    private Transport transport = null;
 
     public abstract void reportInfection(DailyStats s);
     public abstract void reportDeath (DailyStats s);
@@ -100,6 +101,10 @@ public abstract class Person {
     public void moveTo(Place from, Place to) {
         //We can turn off this asserting during main runs, but it's a nice sanity check to have
         assert !hasMoved();
+
+        if (transport != null && from != to) {
+            transport.addPassenger(this);
+        }
 
         to.addPersonNext(this);
         moved = true;
@@ -344,6 +349,10 @@ public abstract class Person {
     
     public void unsetMoved() {
         moved = false;
+    }
+    
+    public void takesPublicTransport(Transport t) {
+        transport = t;
     }
 
     protected abstract double getInfectionSeedRate();
