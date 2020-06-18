@@ -391,7 +391,7 @@ public class MovementTest extends SimulationTest {
             // Count the number of positive and negative tests
             if (p.wasTested()) {
                 numTested++;
-                if (!p.getTestOutcome().get()) {
+
                 if (!p.getTestOutcome()) {
                     numNegative++;
                 } else {
