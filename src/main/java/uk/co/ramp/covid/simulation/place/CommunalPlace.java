@@ -6,6 +6,7 @@ package uk.co.ramp.covid.simulation.place;
 
 import org.apache.commons.math3.random.RandomDataGenerator;
 import uk.co.ramp.covid.simulation.Time;
+import uk.co.ramp.covid.simulation.parameters.PopulationParameters;
 import uk.co.ramp.covid.simulation.population.CStatus;
 import uk.co.ramp.covid.simulation.population.Person;
 import uk.co.ramp.covid.simulation.population.Places;
@@ -63,19 +64,19 @@ public abstract class CommunalPlace extends Place {
     }
 
     /** Move everyone based on their shift patterns */
+    // Everone who has been hospitalised (and their families) will have left at this point
     public void moveShifts(Time t, boolean lockdown, Function<Person, Boolean> filter) {
-        List<Person> left = new ArrayList<>();
-        for (Person p : people) {
-            if (filter.apply(p)) {
+        for (Person p : getPeople() ) {
+            if (p.hasMoved() || filter.apply(p) || !p.isWorking(this, t)) {
                 continue;
             }
 
-            if (!p.worksNextHour(this, t, lockdown)) {
-                p.returnHome();
-                left.add(p);
+            if (p.worksNextHour(this, t, lockdown)) {
+                p.stayInPlace(this);
+            } else {
+                p.returnHome(this);
             }
         }
-        people.removeAll(left);
     }
     
     public void moveShifts(Time t, boolean lockdown) {
@@ -84,27 +85,53 @@ public abstract class CommunalPlace extends Place {
 
     /** Moves Phase2 people to either hospital or back home */
     public void movePhase2(Time t, Places places, Function<Person,Boolean> filter) {
-        List<Person> left = new ArrayList<>();
-        for (Person p : people) {
-            if (filter.apply(p)) {
+        for (Person p : getPeople()) {
+            if (p.hasMoved() || filter.apply(p)) {
                 continue;
             }
 
             if (p.cStatus() != null && p.cStatus() == CStatus.PHASE2) {
                 if (p.goesToHosptialInPhase2()) {
-                    Hospital h = places.getRandomCovidHospital();
+                    CovidHospital h = places.getRandomCovidHospital();
                     p.hospitalise();
-                    h.addPersonNext(p);
-                    left.add(p);
+                    p.moveTo(this, h);
                 } else {
-                    p.returnHome();
-                    left.add(p);
-                    left.addAll(sendFamilyHome(p, this, t));
+                    p.returnHome(this);
                 }
+
+                if (!p.isWorking(this, t)) {
+                    sendFamilyHome(p, this, t);
+                }
+
             }
         }
-        people.removeAll(left);
     }
+
+
+    public void moveVisitors(Time t, Probability pLeave) {
+        for (Person p : getPeople()) {
+            // People may have already left if their family has
+            if (p.hasMoved() || p.isWorking(this, t)) {
+                continue;
+            }
+
+            // Under certain conditions we must go home, e.g. if there is a shift starting soon
+            if (p.mustGoHome(t)) {
+                p.returnHome(this);
+                sendFamilyHome(p, this, t);
+                continue;
+            }
+
+            if (pLeave.sample() || !times.isOpenNextHour(t)) {
+                p.returnHome(this);
+                sendFamilyHome(p, this, t);
+            } else {
+                p.stayInPlace(this);
+                keepFamilyInPlace(p, this, t);
+            }
+        }
+    }
+
 
     public void movePhase2(Time t, Places places) {
         movePhase2(t, places, p -> false);
@@ -127,7 +154,7 @@ public abstract class CommunalPlace extends Place {
 
     public List<Person> getStaff(Time t) {
         List<Person> res = new ArrayList<>();
-        for (Person p : people) {
+        for (Person p : getPeople()) {
             if (p.isWorking(this, t)) {
                 res.add(p);
             }
@@ -136,7 +163,7 @@ public abstract class CommunalPlace extends Place {
     }
 
     @Override
-    public void doMovement(Time t, boolean lockdown, Places places) {
+    public void determineMovement(Time t, boolean lockdown, Places places) {
         movePhase2(t, places);
         moveShifts(t, lockdown);
     }

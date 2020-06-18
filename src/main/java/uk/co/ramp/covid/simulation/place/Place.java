@@ -14,8 +14,8 @@ public abstract class Place {
 
     // People are managed in 2 lists, those currently in the place "people" and
     // those who will be in the place in the next hour "nextPeople"
-    protected List<Person> people;
-    protected List<Person> nextPeople;
+    private List<Person> people;
+    private List<Person> nextPeople;
     
     protected double sDistance;
     protected double transConstant;
@@ -36,12 +36,21 @@ public abstract class Place {
         this.transAdjustment = 1.0;
     }
 
-    public List<Person> getPeople() {
+    // We use iterable here to make it harder to accidentally modify people (which is effectively immutable)
+    public Iterable<Person> getPeople() {
         return people;
     }
     
-    // Immediately add a new person to this place
+    public int getNumPeople() {
+        return people.size();
+    }
+    
+    // Immediately add a new person to this place (for use in initialisation. Not movement)
     public void addPerson(Person p) { people.add(p); }
+    
+    public void removePerson(Person p) { people.remove(p); }
+    
+    public boolean personInPlace(Person p) { return people.contains(p); }
 
     // Add a person to this place in the next time step
     public void addPersonNext(Person p) {
@@ -133,30 +142,47 @@ public abstract class Place {
     }
     
     /** Do a timestep by switching to the new set of people */
-    public void stepPeople() {
-
-        // Anyone who didn't move should remain.
-        nextPeople.addAll(people);
-
+    public void commitMovement() {
         // Switch the movement buffers
         List<Person> tmp = people;
         people = nextPeople;
         nextPeople = tmp;
         nextPeople.clear();
+        
+        for (Person p : people) {
+            p.unsetMoved();
+        }
+        
     }
 
-    public List<Person> sendFamilyHome(Person p, CommunalPlace place, Time t) {
-        List<Person> left = new ArrayList<>();
+    public void sendFamilyHome(Person p, CommunalPlace place, Time t) {
         for (Person q : people) {
-            if (p != q && !q.worksNextHour(place, t, false) && q.getHome() == p.getHome()) {
-                q.returnHome();
-                left.add(q);
+            if (p != q
+                    && q.getHome() == p.getHome()
+                    && !p.hasMoved()
+                    && !q.worksNextHour(place, t, false)) {
+                q.returnHome(this);
             }
         }
-        return left;
+    }
+
+    public void keepFamilyInPlace(Person p, CommunalPlace place, Time t) {
+        for (Person q : people) {
+            if (p != q && q.getHome() == p.getHome() && !p.hasMoved()) {
+                q.stayInPlace(this);
+            }
+        }
+    }
+
+    protected void remainInPlace() {
+        for (Person p : getPeople() ) {
+            if (!p.hasMoved()) {
+                p.stayInPlace(this);
+            }
+        }
     }
 
 
     /** Handles movement between people in this place */
-    public abstract void doMovement(Time t, boolean lockdown, Places places);
+    public abstract void determineMovement(Time t, boolean lockdown, Places places);
 }
