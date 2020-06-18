@@ -1,0 +1,14 @@
+{
+    "populationSize":910000,
+    "nInitialInfections":0,
+    "externalInfectionDays":55,
+    "nDays":160,
+    "nIters":1,
+    "rngSeed":42,
+    "outputDirectory":"",
+    "lockDown":{
+        "start":55,
+        "end":160,
+        "socialDistance":0.5
+    }
+}

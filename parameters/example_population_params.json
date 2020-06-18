@@ -25,8 +25,8 @@
           "pensionerProgressionPhase2":0.8
       },
       "infectionSeedProperties": {
-          "infectionRateIncreaseAdult":0.0000005,
-          "infectionRateIncreaseInfantChildPensioner":0.00000025
+          "infectionRateIncreaseAdult":0.0000002,
+          "infectionRateIncreaseInfantChildPensioner":0.0000001
       },
       "hospitalisationParameters": {
           "pPhase2GoesToHosptial":0.52,
