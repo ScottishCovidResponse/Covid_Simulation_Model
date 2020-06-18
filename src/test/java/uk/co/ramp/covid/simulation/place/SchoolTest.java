@@ -96,7 +96,7 @@ public class SchoolTest extends SimulationTest {
         }
         checkSchoolsPopulated(p);
 
-        // Day 1 - still open
+        // Day 1 - open
         for (int i = 0; i < 24; i++) {
             p.timeStep(t, new DailyStats(t));
             t = t.advance();
@@ -110,14 +110,14 @@ public class SchoolTest extends SimulationTest {
         }
         checkSchoolsNotPopulated(p);
 
-        // Day 3 - holiday
+        // Day 3 - open
         for (int i = 0; i < 24; i++) {
             p.timeStep(t, new DailyStats(t));
             t = t.advance();
         }
         checkSchoolsPopulated(p);
 
-        // Day 4 - open again
+        // Day 4 - holiday
         for (int i = 0; i < 24; i++) {
             p.timeStep(t, new DailyStats(t));
             t = t.advance();
