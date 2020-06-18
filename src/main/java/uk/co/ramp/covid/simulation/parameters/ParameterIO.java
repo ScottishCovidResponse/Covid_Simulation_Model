@@ -3,6 +3,8 @@ package uk.co.ramp.covid.simulation.parameters;
 import com.google.gson.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import uk.co.ramp.covid.simulation.DateRange;
+import uk.co.ramp.covid.simulation.Time;
 import uk.co.ramp.covid.simulation.util.InvalidProbabilityException;
 import uk.co.ramp.covid.simulation.util.Probability;
 
@@ -38,7 +40,15 @@ public class ParameterIO {
             }
         };
 
+        JsonDeserializer<DateRange> dateRangeDeserializer = (json, typeOfT, context) -> {
+            JsonObject o = json.getAsJsonObject();
+            int s = o.get("start").getAsInt();
+            int e = o.get("end").getAsInt();
+            return new DateRange(Time.timeFromDay(s), Time.timeFromDay(e));
+        };
+
         gson.registerTypeAdapter(Probability.class, pdeserializer);
+        gson.registerTypeAdapter(DateRange.class, dateRangeDeserializer);
         ParameterIO r = gson.create().fromJson(file, ParameterIO.class);
 
         CovidParameters.setParameters(r.disease);
@@ -49,7 +59,16 @@ public class ParameterIO {
         GsonBuilder gson = new GsonBuilder().setPrettyPrinting();
 
         JsonSerializer<Probability> pserializer = (src, typeOfSrc, context) -> new JsonPrimitive(src.asDouble());
+
+        JsonSerializer<DateRange> dateRangeSerializer = (src, typeOfSrc, context) -> {
+            JsonObject o = new JsonObject();
+            o.addProperty("start", src.getStart().getAbsDay());
+            o.addProperty("end", src.getEnd().getAbsDay());
+            return o;
+        };
+
         gson.registerTypeAdapter(Probability.class, pserializer);
+        gson.registerTypeAdapter(DateRange.class, dateRangeSerializer);
 
         ParameterIO params = new ParameterIO(CovidParameters.get(), PopulationParameters.get());
 

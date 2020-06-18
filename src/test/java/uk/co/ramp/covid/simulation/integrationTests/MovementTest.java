@@ -234,7 +234,7 @@ public class MovementTest extends SimulationTest {
 
             for (CommunalPlace place : p.getPlaces().getAllPlaces()) {
                 List<Person> staff = place.getStaff(t);
-                if (place.isOpen(day, t.getHour())) {
+                if (place.isOpen(t)) {
                     assertTrue("No staff found in open place", staff.size() > 0);
                 } else {
                     assertEquals("Unexpected staff found in closed place", 0, staff.size());

@@ -255,7 +255,8 @@ public abstract class Person {
 
 
     public boolean worksNextHour(CommunalPlace communalPlace, Time t, boolean lockdown) {
-        if (primaryPlace == null || shifts == null || primaryPlace != communalPlace) {
+        if (primaryPlace == null || shifts == null || primaryPlace != communalPlace
+                || !communalPlace.isOpenNextHour(t)) {
             return false;
         }
 

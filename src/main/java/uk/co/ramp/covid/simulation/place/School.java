@@ -6,6 +6,8 @@ import uk.co.ramp.covid.simulation.population.Person;
 import uk.co.ramp.covid.simulation.parameters.PopulationParameters;
 import uk.co.ramp.covid.simulation.population.Shifts;
 
+import java.util.HashSet;
+
 public class School extends CommunalPlace {
 
     public School(Size s) {
@@ -33,6 +35,12 @@ public class School extends CommunalPlace {
     @Override
     public boolean isFullyStaffed() {
         return nStaff > 0;
+    }
+
+    @Override
+    public void setHolidays() {
+        holidays = new HashSet<>();
+        holidays.addAll(PopulationParameters.get().buildingProperties.schoolHolidays);
     }
 
 }

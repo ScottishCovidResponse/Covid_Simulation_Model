@@ -57,9 +57,9 @@ public class CommunalPlaceTest extends SimulationTest {
     private void testShopOrRestaurant(CommunalPlace place, int open, int close, int day) {
         //Test if shop or restaurant is open or closed
         if (t.getHour() >= open && t.getHour() < close) {
-            assertTrue("Day " + day + " Time " + t.getHour() + " " + place.toString() + " unexpectedly closed", place.isOpen(day, t.getHour()));
+            assertTrue("Day " + day + " Time " + t.getHour() + " " + place.toString() + " unexpectedly closed", place.isOpen(t));
         } else {
-            assertFalse("Day " + day + " Time " + t.getHour() + " " + place.toString() + " unexpectedly open", place.isOpen(day, t.getHour()));
+            assertFalse("Day " + day + " Time " + t.getHour() + " " + place.toString() + " unexpectedly open", place.isOpen(t));
         }
 
         //Test if shop or restaurant is open to visitors in the next hour
@@ -73,23 +73,23 @@ public class CommunalPlaceTest extends SimulationTest {
     private void testOfficeHours(CommunalPlace place, int open, int close, int day) {
         //Test if place with 9-5 hours is open or closed
         if (t.getHour() >= open && t.getHour() < close && day < 5) {
-            assertTrue("Day " + day + " Time " + t.getHour() + " " + place.toString() + " unexpectedly closed", place.isOpen(day, t.getHour()));
+            assertTrue("Day " + day + " Time " + t.getHour() + " " + place.toString() + " unexpectedly closed", place.isOpen(t));
         } else {
-            assertFalse("Day " + day + " Time " + t.getHour() + " " + place.toString() + " unexpectedly open", place.isOpen(day, t.getHour()));
+            assertFalse("Day " + day + " Time " + t.getHour() + " " + place.toString() + " unexpectedly open", place.isOpen(t));
         }
     }
 
 
     private void testCarehome(CommunalPlace place, int open, int close, int day) {
         if (t.getHour() >= open && t.getHour() < close) {
-            assertTrue("Day " + day + " Time " + t.getHour() + " " + place.toString() + " unexpectedly closed", place.isOpen(day, t.getHour()));
+            assertTrue("Day " + day + " Time " + t.getHour() + " " + place.toString() + " unexpectedly closed", place.isOpen(t));
         } else {
-            assertFalse("Day " + day + " Time " + t.getHour() + " " + place.toString() + " unexpectedly open", place.isOpen(day, t.getHour()));
+            assertFalse("Day " + day + " Time " + t.getHour() + " " + place.toString() + " unexpectedly open", place.isOpen(t));
         }
     }
 
     private void testHospital(CommunalPlace place, int day) {
         // Hospitals should always be open
-        assertTrue("Day " + day + " Time " + t.getHour() + " Hospital unexpectedly closed", place.isOpen(day, t.getHour()));
+        assertTrue("Day " + day + " Time " + t.getHour() + " Hospital unexpectedly closed", place.isOpen(t));
     }
 }
