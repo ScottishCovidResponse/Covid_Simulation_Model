@@ -3,7 +3,7 @@ package uk.co.ramp.covid.simulation.parameters;
 import com.google.gson.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import uk.co.ramp.covid.simulation.DateRange;
+import uk.co.ramp.covid.simulation.util.DateRange;
 import uk.co.ramp.covid.simulation.util.Probability;
 
 import java.io.*;

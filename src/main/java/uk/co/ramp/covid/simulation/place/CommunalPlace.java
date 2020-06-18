@@ -5,8 +5,8 @@
 package uk.co.ramp.covid.simulation.place;
 
 import org.apache.commons.math3.random.RandomDataGenerator;
-import uk.co.ramp.covid.simulation.Time;
-import uk.co.ramp.covid.simulation.DateRange;
+import uk.co.ramp.covid.simulation.util.Time;
+import uk.co.ramp.covid.simulation.util.DateRange;
 import uk.co.ramp.covid.simulation.population.CStatus;
 import uk.co.ramp.covid.simulation.population.Person;
 import uk.co.ramp.covid.simulation.population.Places;

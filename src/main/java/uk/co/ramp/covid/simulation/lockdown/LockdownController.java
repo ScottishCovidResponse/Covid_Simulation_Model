@@ -1,6 +1,6 @@
 package uk.co.ramp.covid.simulation.lockdown;
 
-import uk.co.ramp.covid.simulation.Time;
+import uk.co.ramp.covid.simulation.util.Time;
 import uk.co.ramp.covid.simulation.place.CommunalPlace;
 import uk.co.ramp.covid.simulation.place.Nursery;
 import uk.co.ramp.covid.simulation.place.School;

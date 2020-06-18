@@ -1,6 +1,6 @@
 package uk.co.ramp.covid.simulation.place;
 
-import uk.co.ramp.covid.simulation.Time;
+import uk.co.ramp.covid.simulation.util.Time;
 
 import java.util.BitSet;
 

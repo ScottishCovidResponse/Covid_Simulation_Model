@@ -1,4 +1,4 @@
-package uk.co.ramp.covid.simulation;
+package uk.co.ramp.covid.simulation.util;
 
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonObject;

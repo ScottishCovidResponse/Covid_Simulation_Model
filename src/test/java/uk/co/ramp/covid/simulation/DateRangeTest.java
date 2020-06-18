@@ -1,6 +1,8 @@
 package uk.co.ramp.covid.simulation;
 
 import org.junit.Test;
+import uk.co.ramp.covid.simulation.util.DateRange;
+import uk.co.ramp.covid.simulation.util.Time;
 
 import static org.junit.Assert.*;
 

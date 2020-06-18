@@ -1,6 +1,6 @@
 package uk.co.ramp.covid.simulation.parameters;
 
-import uk.co.ramp.covid.simulation.DateRange;
+import uk.co.ramp.covid.simulation.util.DateRange;
 import uk.co.ramp.covid.simulation.util.Probability;
 
 import java.util.List;
