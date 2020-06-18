@@ -6,7 +6,7 @@ import uk.co.ramp.covid.simulation.population.Person;
 import uk.co.ramp.covid.simulation.parameters.PopulationParameters;
 import uk.co.ramp.covid.simulation.population.Shifts;
 
-import java.util.HashSet;
+import java.util.ArrayList;
 
 public class School extends CommunalPlace {
 
@@ -39,7 +39,7 @@ public class School extends CommunalPlace {
 
     @Override
     public void setHolidays() {
-        holidays = new HashSet<>();
+        holidays = new ArrayList<>();
         holidays.addAll(PopulationParameters.get().buildingProperties.schoolHolidays);
     }
 

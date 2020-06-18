@@ -15,9 +15,7 @@ import uk.co.ramp.covid.simulation.util.Probability;
 import uk.co.ramp.covid.simulation.util.RNG;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.function.Function;
 
 public abstract class CommunalPlace extends Place {
@@ -36,7 +34,7 @@ public abstract class CommunalPlace extends Place {
     protected final RandomDataGenerator rng;
     
     public abstract Shifts getShifts();
-    protected Set<DateRange> holidays;
+    protected List<DateRange> holidays;
     
     public CommunalPlace(Size s) {
         this();
@@ -187,6 +185,6 @@ public abstract class CommunalPlace extends Place {
     public OpeningTimes getTimes() { return times; }
     
     public void setHolidays() {
-        holidays = new HashSet<>();
+        holidays = new ArrayList<>();
     }
 }
