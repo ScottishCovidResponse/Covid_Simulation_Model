@@ -25,6 +25,8 @@ Get the source code from GitHub, and build it with:
 
 (Or use `git pull` instead of `clone` if you have already cloned the repository.)
 
+Set `"outputDirectory": ""` in your model parameters file, so that extra output directories are not created and the script to combine outputs works.
+
 Then have a look at the "TODO"s in the example `slurm_submit` file, which can be run with the command:
 
     sbatch slurm_submit
