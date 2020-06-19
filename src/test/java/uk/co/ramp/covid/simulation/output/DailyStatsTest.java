@@ -174,6 +174,10 @@ public class DailyStatsTest extends SimulationTest {
         assertTrue("No hospital deaths recorded", totalHospitalDeaths > 0);
         assertTrue("No care home deaths recorded", totalCareHomeDeaths > 0);
         assertTrue("No home deaths recorded", totalHomeDeaths > 0);
+        
+        assertTrue("Most people go home/hospital before dying",
+                totalAdditionalDeaths < totalHomeDeaths && totalAdditionalDeaths < totalHospitalDeaths);
+        
         assertEquals("Inconsistent number of deaths", totalDeaths, actualDeaths);
     }
 
