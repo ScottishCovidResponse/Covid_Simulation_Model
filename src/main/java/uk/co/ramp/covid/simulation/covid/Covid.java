@@ -76,7 +76,7 @@ public class Covid {
     
     private void setSymptomatic() {
         if(ccase.getAge() >= 70) {
-            // This is set to 60 because the probability is from the Diamond Princess where people were aged > 60
+            // This is set to 70 and 20 because the paper form LSHTM that informed this use these cut-offs
             symptomaticCase = CovidParameters.get().diseaseParameters.pSymptomaticCasePensioner.sample();
         } else if(ccase.getAge() < 70 && ccase.getAge() > 20) {
             symptomaticCase = CovidParameters.get().diseaseParameters.pSymptomaticCaseAdult.sample();
