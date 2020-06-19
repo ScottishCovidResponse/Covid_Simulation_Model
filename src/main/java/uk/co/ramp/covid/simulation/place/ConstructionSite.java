@@ -11,8 +11,7 @@ public class ConstructionSite extends CommunalPlace {
     public ConstructionSite(Size s) {
         super(s);
         transAdjustment = PopulationParameters.get().buildingProperties.constructionSiteTransmissionConstant;
-        keyProb = PopulationParameters.get().buildingProperties.pConstructionSiteKey;
-        if (keyProb.sample()) keyPremises = true;
+        keyPremises = PopulationParameters.get().buildingProperties.pConstructionSiteKey.sample();
         times = OpeningTimes.nineFiveWeekdays();
     }
 

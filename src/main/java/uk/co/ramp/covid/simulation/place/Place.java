@@ -160,7 +160,7 @@ public abstract class Place {
             if (p != q
                     && q.getHome() == p.getHome()
                     && !p.hasMoved()
-                    && !q.worksNextHour(place, t, false)) {
+                    && !q.worksNextHour(place, t)) {
                 q.returnHome(this);
             }
         }

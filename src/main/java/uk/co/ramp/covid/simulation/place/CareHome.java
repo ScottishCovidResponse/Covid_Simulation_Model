@@ -24,6 +24,8 @@ public class CareHome extends CommunalPlace implements Home {
         shifts.put(new Shifts(14,22, 0, 1, 2));
         shifts.put(new Shifts(6,14, 3, 4, 5, 6));
         shifts.put(new Shifts(14,22, 3, 4, 5, 6));
+
+        keyPremises = true;
     }
 
     @Override

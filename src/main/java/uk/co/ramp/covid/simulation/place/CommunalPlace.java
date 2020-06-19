@@ -27,7 +27,7 @@ public abstract class CommunalPlace extends Place {
     protected Size size;
     protected OpeningTimes times;
     protected boolean keyPremises;
-    protected Probability keyProb;
+    private boolean closed = false;
 
     protected int nStaff = 0;
 
@@ -49,12 +49,8 @@ public abstract class CommunalPlace extends Place {
         setHolidays();
     }
 
-    public void overrideKeyPremises(boolean overR) {
-        this.keyPremises = overR;
-    }
-
-    public void adjustSDist(double sVal) {
-        this.sDistance = sVal;
+    public void overrideKeyPremises(boolean key) {
+        keyPremises = key;
     }
 
     public Size getSize() {
@@ -72,7 +68,7 @@ public abstract class CommunalPlace extends Place {
                 continue;
             }
 
-            if (p.worksNextHour(this, t, lockdown)) {
+            if (p.worksNextHour(this, t)) {
                 p.stayInPlace(this);
             } else {
                 p.returnHome(this);
@@ -147,6 +143,10 @@ public abstract class CommunalPlace extends Place {
     }
 
     public boolean isOpen(Time t) {
+        if (closed) {
+            return false;
+        }
+
         for (DateRange holiday : holidays) {
             if (holiday.inRange(t)) {
                 return false;
@@ -186,5 +186,17 @@ public abstract class CommunalPlace extends Place {
     
     public void setHolidays() {
         holidays = new ArrayList<>();
+    }
+    
+    public void enterLockdown(double sDist) {
+        sDistance = sDist;
+        if (!keyPremises) {
+            closed = true;
+        }
+    }
+    
+    public void exitLockdown() {
+        sDistance = 1.0;
+        closed = false;
     }
 }
