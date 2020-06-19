@@ -53,8 +53,8 @@ public class Covid {
         this.sdLatentPeriod = CovidParameters.get().diseaseParameters.sdLatentPeriod;
         this.meanAsymptomaticPeriod = CovidParameters.get().diseaseParameters.meanAsymptomaticPeriod;
         this.sdAsymptomaticPeriod = CovidParameters.get().diseaseParameters.sdAsymptomaticPeriod;
-        this.pSymptomsChild = CovidParameters.get().diseaseParameters.pSymptomaticChild;
-        this.pSymptomsAdult = CovidParameters.get().diseaseParameters.pSymptomaticAdult;
+        this.pSymptomsChild = CovidParameters.get().diseaseParameters.pSymptomaticCaseChild;
+        this.pSymptomsAdult = CovidParameters.get().diseaseParameters.pSymptomaticCaseAdult;
         this.pSymptomsPensioner = CovidParameters.get().diseaseParameters.pSymptomaticCasePensioner;
         this.meanSymptomDelay = CovidParameters.get().diseaseParameters.meanSymptomDelay;
         this.meanSymptomDelaySD = CovidParameters.get().diseaseParameters.meanSymptomDelaySD;

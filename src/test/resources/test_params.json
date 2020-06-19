@@ -203,6 +203,7 @@
         },
         "personProperties":{
             "pTransmission":0.9,
+            "pSusceptibleChild": 0.5,
             "pQuarantinesIfSymptomatic":0.7
         }
     }

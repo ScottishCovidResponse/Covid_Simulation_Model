@@ -20,7 +20,7 @@
           "phase1Betab": 30.0,
           "aSymptomaticTransAdjustment": 0.15,
           "symptomaticTransAdjustment": 1.0,
-          "mortalityRate":0.02,
+          "mortalityRate":0.025,
           "childProgressionPhase2":0.02,
           "adultProgressionPhase2":0.15,
           "pensionerProgressionPhase2":0.8
@@ -164,7 +164,7 @@
             }
         },
         "buildingProperties":{
-           "baseTransmissionConstant":0.7,
+           "baseTransmissionConstant":0.65,
            "hospitalTransmissionConstant":10.0,
            "constructionSiteTransmissionConstant":5.0,
            "nurseryTransmissionConstant":10.0,
@@ -206,7 +206,8 @@
             "pLockCompliance": 0.8
         },
         "personProperties":{
-            "pTransmission":0.7,
+            "pTransmission":0.65,
+            "pSusceptibleChild": 0.5,
             "pQuarantinesIfSymptomatic":0.9
         }
     }
