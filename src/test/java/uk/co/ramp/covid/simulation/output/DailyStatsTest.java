@@ -161,14 +161,16 @@ public class DailyStatsTest extends SimulationTest {
         int totalHospitalDeaths = 0;
         int totalCareHomeDeaths = 0;
         int totalHomeDeaths = 0;
+        int totalAdditionalDeaths = 0;
         int totalDeaths = 0;
         for (DailyStats s : stats.get(0)) {
             totalHospitalDeaths += s.getHospitalDeaths();
             totalCareHomeDeaths += s.getCareHomeDeaths();
             totalHomeDeaths += s.getHomeDeaths();
+            totalAdditionalDeaths += s.getAdditionalDeaths();
             totalDeaths += s.getTotalDeaths();
         }
-        int actualDeaths = totalHospitalDeaths + totalCareHomeDeaths + totalHomeDeaths;
+        int actualDeaths = totalHospitalDeaths + totalCareHomeDeaths + totalHomeDeaths + totalAdditionalDeaths;
         assertTrue("No hospital deaths recorded", totalHospitalDeaths > 0);
         assertTrue("No care home deaths recorded", totalCareHomeDeaths > 0);
         assertTrue("No home deaths recorded", totalHomeDeaths > 0);

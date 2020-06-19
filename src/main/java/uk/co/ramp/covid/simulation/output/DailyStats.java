@@ -59,6 +59,7 @@ public class DailyStats {
     private int hospitalDeaths = 0;
     private int homeDeaths = 0;
     private int careHomeDeaths = 0;
+    private int additionalDeaths = 0; //Deaths in a workplace/school/etc
 
     // Infection rate stats
     private Double secInfections = null;
@@ -138,7 +139,7 @@ public class DailyStats {
                 constructionSiteInfectionsVisitor, hospitalInfectionsVisitor, nurseryInfectionsVisitor, 
                 officeInfectionsVisitor, restaurantInfectionsVisitor, schoolInfectionsVisitor, shopInfectionsVisitor,
                 homeInfectionsVisitor, adultInfected, pensionerInfected, childInfected, infantInfected, adultDeaths,
-                pensionerDeaths, childDeaths, infantDeaths, homeDeaths, hospitalDeaths, careHomeDeaths,
+                pensionerDeaths, childDeaths, infantDeaths, homeDeaths, hospitalDeaths, careHomeDeaths, additionalDeaths,
                 secInfections, generationTime);
     }
 
@@ -393,4 +394,8 @@ public class DailyStats {
     public void incHomeDeaths() { homeDeaths++; }
 
     public void incCareHomeDeaths() { careHomeDeaths++; }
+    
+    public void incAdditionalDeaths() { additionalDeaths++; }
+    
+    public int getAdditionalDeaths() { return additionalDeaths; }
 }
