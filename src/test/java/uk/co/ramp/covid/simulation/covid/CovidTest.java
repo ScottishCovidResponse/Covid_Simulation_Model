@@ -23,7 +23,7 @@ public class CovidTest extends SimulationTest {
     public void testStepInfectionSymptomatic() {
         //Use the default parameters with a mortality rate of 100
         CovidParameters.get().diseaseParameters.mortalityRate = 100.0;
-        CovidParameters.get().diseaseParameters.pSymptomaticCase = new Probability(1.0);
+        CovidParameters.get().diseaseParameters.pSymptomaticCaseAdult = new Probability(1.0);
         CovidParameters.get().diseaseParameters.pensionerProgressionPhase2 = 100.0;
 
         CStatus cStatus = null;
@@ -84,7 +84,7 @@ public class CovidTest extends SimulationTest {
     //Test that a child steps through the infection from Asymtomatic to recovered
     @Test
     public void testStepInfectionAsymptomatic() {
-        CovidParameters.get().diseaseParameters.pSymptomaticCase = new Probability(0);
+        CovidParameters.get().diseaseParameters.pSymptomaticCaseAdult = new Probability(0);
         Person child = new Child(5, Person.Sex.FEMALE);
         Time t = new Time();
         Covid virus = new Covid(child);
