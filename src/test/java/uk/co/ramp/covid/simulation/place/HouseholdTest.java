@@ -4,11 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.google.gson.JsonParseException;
-
-import uk.co.ramp.covid.simulation.output.DailyStats;
-import uk.co.ramp.covid.simulation.Model;
 import uk.co.ramp.covid.simulation.util.Time;
-import uk.co.ramp.covid.simulation.parameters.CovidParameters;
 import uk.co.ramp.covid.simulation.place.householdtypes.LargeManyAdultFamily;
 import uk.co.ramp.covid.simulation.place.householdtypes.SingleAdult;
 import uk.co.ramp.covid.simulation.place.householdtypes.SmallFamily;
@@ -18,8 +14,6 @@ import uk.co.ramp.covid.simulation.population.Person;
 import uk.co.ramp.covid.simulation.parameters.PopulationParameters;
 import uk.co.ramp.covid.simulation.util.Probability;
 import uk.co.ramp.covid.simulation.testutil.SimulationTest;
-
-import java.util.List;
 
 import static org.junit.Assert.*;
 
@@ -104,35 +98,5 @@ public class HouseholdTest extends SimulationTest {
         house.addAdult(p1);
         house.addChildOrInfant(c1);
     }
-
-    @Test
-    public void somePeopleDieAtHome() {
-        int population = 10000;
-        int nInfections = 200;
-        int nIter = 1;
-        int nDays = 60;
-        int RNGSeed = 42;
-
-        // Make the test more robust by reducing the number of phase 2 patients that will go to hospital
-        CovidParameters.get().hospitalisationParameters.pPhase2GoesToHosptial = new Probability(0.2);
-
-        Model m = new Model()
-                .setPopulationSize(population)
-                .setnInitialInfections(nInfections)
-                .setExternalInfectionDays(0)
-                .setIters(nIter)
-                .setnDays(nDays)
-                .setRNGSeed(RNGSeed)
-                .setNoOutput();
-
-        List<List<DailyStats>> stats = m.run(0);
-
-        int totalHomeDeaths = 0;
-        for (DailyStats s : stats.get(0)) {
-            totalHomeDeaths += s.getHomeDeaths();
-        }
-        assertTrue("Some people should die at home", totalHomeDeaths > 0);
-    }
-
 
 }

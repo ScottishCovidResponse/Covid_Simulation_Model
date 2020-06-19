@@ -2,6 +2,8 @@ package uk.co.ramp.covid.simulation.covid;
 
 import org.junit.After;
 import org.junit.Test;
+import uk.co.ramp.covid.simulation.output.DailyStats;
+import uk.co.ramp.covid.simulation.testutil.PopulationGenerator;
 import uk.co.ramp.covid.simulation.util.Time;
 import uk.co.ramp.covid.simulation.parameters.CovidParameters;
 import uk.co.ramp.covid.simulation.parameters.PopulationParameters;
@@ -108,6 +110,33 @@ public class CovidTest extends SimulationTest {
         assertEquals(CStatus.RECOVERED, cStatus);
         assertFalse(virus.isSymptomatic());
     }
+
+    @Test
+    public void testCovidStatus() throws ImpossibleWorkerDistributionException {
+        int populationSize = 12000;
+        Population p = PopulationGenerator.genValidPopulation(populationSize);
+        p.seedVirus(100);
+        p.allocatePeople();
+        Time t = new Time(0);
+        //Run for a week
+        for (int day = 0; day < 7; day++) {
+            DailyStats s = new DailyStats(t);
+            for (int i = 0; i < 24; i++) {
+                p.timeStep(t, s);
+                t = t.advance();
+
+                // Check if every infected person's status is correct
+                for (Person person : p.getAllPeople()) {
+                    if (person.isinfected()) {
+                        assertFalse(person.cStatus().equals(CStatus.HEALTHY) ||
+                                person.cStatus().equals(CStatus.RECOVERED));
+                    }
+                }
+            }
+        }
+    }
+
+
 
     @After
     public void clearParams() {

@@ -5,7 +5,6 @@ import org.junit.Test;
 import com.google.gson.JsonParseException;
 
 import uk.co.ramp.covid.simulation.output.DailyStats;
-import uk.co.ramp.covid.simulation.Model;
 import uk.co.ramp.covid.simulation.util.Time;
 import uk.co.ramp.covid.simulation.parameters.CovidParameters;
 import uk.co.ramp.covid.simulation.parameters.PopulationParameters;
@@ -60,32 +59,6 @@ public class HospitalTest extends SimulationTest {
     }
 
     @Test
-    public void somePeopleDieInHospital() {
-        int population = 10000;
-        int nInfections = 300;
-        int nIter = 1;
-        int nDays = 60;
-        int RNGSeed = 42;
-
-        Model m = new Model()
-                .setPopulationSize(population)
-                .setnInitialInfections(nInfections)
-                .setExternalInfectionDays(0)
-                .setIters(nIter)
-                .setnDays(nDays)
-                .setRNGSeed(RNGSeed)
-                .setNoOutput();
-
-        List<List<DailyStats>> stats = m.run(0);
-
-        int totalHospitalDeaths = 0;
-        for (DailyStats s : stats.get(0)) {
-            totalHospitalDeaths += s.getHospitalDeaths();
-        }
-        assertTrue("Some people should die in hospital", totalHospitalDeaths > 0);
-    }
-
-    @Test
     public void recoveredPeopleLeaveHospital() {
         int populationSize = 10000;
         int nInfections = 100;
@@ -104,6 +77,7 @@ public class HospitalTest extends SimulationTest {
             }
         }
 
+        assert inf != null;
         inf.infect();
         inf.getcVirus().forceSymptomatic(true);
 
@@ -123,7 +97,7 @@ public class HospitalTest extends SimulationTest {
         }
         assertTrue(inHospital);
 
-        double time = inf.getcVirus().getP2() + 48;
+ //       double time = inf.getcVirus().getP2() + 48;
 
         while (!inf.isRecovered()) {
             pop.timeStep(t, new DailyStats(t));
@@ -195,6 +169,7 @@ public class HospitalTest extends SimulationTest {
             }
         }
 
+        assert inf != null;
         inf.infect();
         inf.getcVirus().forceSymptomatic(true);
 
@@ -211,7 +186,8 @@ public class HospitalTest extends SimulationTest {
                 hosptial = h;
             }
         }
-        
+
+        assert hosptial != null;
         assertTrue(hosptial.getBaseTransP(inf) > hosptial.getTransP(t, inf, null));
     }
 
