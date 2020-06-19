@@ -234,67 +234,7 @@ public class PopulationTest extends SimulationTest {
         assertEquals("Unexpected number of daily stats", nDays, stats.size());
     }
 
-    @Test
-    public void testSetLockdown() {
-        int start = 1;
-        int end = 2;
-        double socialDist = 2.0;
-        pop.setLockdown(start, end, socialDist);
-        assertEquals("Unexpected lockdown start", start, pop.getLockdownStart());
-        assertEquals("Unexpected lockdown end", end, pop.getLockdownEnd());
-        assertEquals("Unexpected social distance", socialDist, pop.getSocialDist(), 0.01);
-    }
 
-    @Test
-    public void testLockdownOver() {
-        int nDays = 5;
-        int startLockdown = 2;
-        int endLockdown = 4;
-        double socialDist = 2.0;
-        pop.setLockdown(startLockdown, endLockdown, socialDist);
-        pop.simulate(nDays);
-        assertFalse("Unexpectedly still in lockdown", pop.isLockdown());
-    }
-
-    @Test
-    public void testInLockdown() {
-        int nDays = 5;
-        int start = 3;
-        int end = 6;
-        double socialDist = 2.0;
-        pop.setLockdown(start, end, socialDist);
-        pop.simulate(nDays);
-        assertTrue("Unexpectedly not in lockdown", pop.isLockdown());
-        assertTrue("Restaurants not in lockdown", pop.isrLockdown());
-    }
-
-    @Test
-    public void testSetSchoolLockdown() {
-        int start = 1;
-        int end = 2;
-        double socialDist = 2.0;
-        pop.setSchoolLockdown(start, end, socialDist);
-        assertEquals("Unexpected school lockdown start", start, pop.getLockdownStart());
-        assertEquals("Unexpected school lockdown end", end, pop.getLockdownEnd());
-        assertTrue("Unexpected school lockdown", pop.isSchoolL());
-    }
-
-    @Test
-    public void testSchoolExemption() {
-        int nDays = 5;
-        int startLockdown = 1;
-        int endLockdown = 5;
-        double socialDist = 2.0;
-        pop.setLockdown(startLockdown, endLockdown, socialDist);
-        pop.setSchoolLockdown(startLockdown, endLockdown - 2, socialDist);
-        pop.simulate(nDays);
-        for (School s : pop.getPlaces().getSchools()) {
-            assertTrue("School should be a key premises", s.isKeyPremises());
-        }
-        for (Nursery n : pop.getPlaces().getNurseries()) {
-            assertTrue("Nursery should be a key premises", n.isKeyPremises());
-        }
-    }
 
     @Test
     public void allPlacesStaffed() {

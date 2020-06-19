@@ -8,7 +8,7 @@ import org.apache.commons.math3.random.RandomDataGenerator;
 import uk.co.ramp.covid.simulation.covid.Covid;
 import uk.co.ramp.covid.simulation.parameters.CovidParameters;
 import uk.co.ramp.covid.simulation.output.DailyStats;
-import uk.co.ramp.covid.simulation.Time;
+import uk.co.ramp.covid.simulation.util.Time;
 import uk.co.ramp.covid.simulation.parameters.PopulationParameters;
 import uk.co.ramp.covid.simulation.place.CareHome;
 import uk.co.ramp.covid.simulation.place.CommunalPlace;
@@ -23,7 +23,7 @@ public abstract class Person {
         MALE, FEMALE
     }
     
-    private CommunalPlace primaryPlace = null;
+    protected CommunalPlace primaryPlace = null;
     protected Shifts shifts = null;
     
     private final Sex sex;
@@ -237,8 +237,8 @@ public abstract class Person {
 
     public abstract boolean avoidsPhase2(double testP);
 
-    public boolean isWorking(CommunalPlace communalPlace, Time t) {
-        if (primaryPlace == null || shifts == null) {
+    protected boolean isWorking(CommunalPlace communalPlace, Time t, boolean furloughed) {
+        if (primaryPlace == null || shifts == null || furloughed) {
             return false;
         }
 
@@ -254,16 +254,15 @@ public abstract class Person {
                 && t.getHour() < end;
     }
 
+    public boolean isWorking(CommunalPlace communalPlace, Time t) {
+        return isWorking(communalPlace, t, false);
+    }
 
-    public boolean worksNextHour(CommunalPlace communalPlace, Time t, boolean lockdown) {
-        if (primaryPlace == null || shifts == null || primaryPlace != communalPlace) {
+
+    public boolean worksNextHour(CommunalPlace communalPlace, Time t) {
+        if (primaryPlace == null || shifts == null || primaryPlace != communalPlace
+                || !communalPlace.isOpenNextHour(t)) {
             return false;
-        }
-
-        if (lockdown) {
-            if (!communalPlace.isKeyPremises()) {
-                return false;
-            }
         }
 
         // Handle day crossovers
@@ -356,5 +355,6 @@ public abstract class Person {
     }
 
     protected abstract double getInfectionSeedRate();
-
+    
+    public void furlough() {};
 }

@@ -3,7 +3,7 @@ package uk.co.ramp.covid.simulation.output;
 import org.apache.commons.csv.CSVPrinter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import uk.co.ramp.covid.simulation.Time;
+import uk.co.ramp.covid.simulation.util.Time;
 import uk.co.ramp.covid.simulation.population.*;
 
 import java.io.IOException;

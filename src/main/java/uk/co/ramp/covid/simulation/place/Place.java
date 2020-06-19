@@ -2,7 +2,7 @@ package uk.co.ramp.covid.simulation.place;
 
 import uk.co.ramp.covid.simulation.output.DailyStats;
 import uk.co.ramp.covid.simulation.output.NetworkGenerator;
-import uk.co.ramp.covid.simulation.Time;
+import uk.co.ramp.covid.simulation.util.Time;
 import uk.co.ramp.covid.simulation.population.CStatus;
 import uk.co.ramp.covid.simulation.population.Person;
 import uk.co.ramp.covid.simulation.parameters.PopulationParameters;
@@ -160,7 +160,7 @@ public abstract class Place {
             if (p != q
                     && q.getHome() == p.getHome()
                     && !p.hasMoved()
-                    && !q.worksNextHour(place, t, false)) {
+                    && !q.worksNextHour(place, t)) {
                 q.returnHome(this);
             }
         }

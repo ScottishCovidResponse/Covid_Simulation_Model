@@ -1,7 +1,7 @@
 package uk.co.ramp.covid.simulation.place;
 
 import uk.co.ramp.covid.simulation.output.DailyStats;
-import uk.co.ramp.covid.simulation.Time;
+import uk.co.ramp.covid.simulation.util.Time;
 import uk.co.ramp.covid.simulation.parameters.CovidParameters;
 import uk.co.ramp.covid.simulation.parameters.PopulationParameters;
 import uk.co.ramp.covid.simulation.place.householdtypes.NeighbourGroup;
@@ -193,7 +193,7 @@ public abstract class Household extends Place implements Home {
         if (!isIsolating() && getNumInhabitants() > 0) {
             // Ordering here implies work takes highest priority, then shopping trips have higher priority
             // than neighbour and restaurant trips
-            moveShift(t, lockdown);
+            moveShift(t);
 
             // Shops are only open 8-22
             if (t.getHour() + 1 >= 8 && t.getHour() + 1 < 22) {
@@ -309,14 +309,14 @@ public abstract class Household extends Place implements Home {
         familyTrip(t, places::getRandomRestaurant, visitProb);
     }
 
-    private void moveShift(Time t, boolean lockdown) {
+    private void moveShift(Time t) {
         for (Person p : getPeople()) {
             if (p.hasMoved()) {
                 continue;
             }
 
             if (isInhabitant(p) && !p.getQuarantine()
-                    && p.worksNextHour(p.getPrimaryCommunalPlace(), t, lockdown)) {
+                    && p.worksNextHour(p.getPrimaryCommunalPlace(), t)) {
                 p.moveToPrimaryPlace(this);
             }
         }

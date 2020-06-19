@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if [ $# -le 3 ]
+if [ $# -lt 3 ]
 then
 	echo "Usage: $0 jobID lastArrayIndex outputFileName"
 	exit 1

@@ -1,7 +1,7 @@
 package uk.co.ramp.covid.simulation.place;
 
 import uk.co.ramp.covid.simulation.output.DailyStats;
-import uk.co.ramp.covid.simulation.Time;
+import uk.co.ramp.covid.simulation.util.Time;
 import uk.co.ramp.covid.simulation.parameters.CovidParameters;
 import uk.co.ramp.covid.simulation.population.Person;
 import uk.co.ramp.covid.simulation.parameters.PopulationParameters;
@@ -15,11 +15,15 @@ public class Hospital extends CommunalPlace {
 
     public Hospital(Size s) {
         super(s);
+        // TODO: Adjustment or constant?
         transAdjustment = PopulationParameters.get().buildingProperties.hospitalTransmissionConstant;
-        keyProb = PopulationParameters.get().buildingProperties.pHospitalKey;
         times = OpeningTimes.twentyfourSeven();
-        if (keyProb.sample()) keyPremises = true;
         allocateShifts();
+    }
+
+    @Override
+    protected void setKey() {
+        keyPremises =  PopulationParameters.get().buildingProperties.pHospitalKey.sample();
     }
 
     private void allocateShifts() {

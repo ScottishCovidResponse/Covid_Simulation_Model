@@ -1,5 +1,6 @@
 package uk.co.ramp.covid.simulation.population;
 
+import uk.co.ramp.covid.simulation.util.Time;
 import uk.co.ramp.covid.simulation.parameters.CovidParameters;
 import uk.co.ramp.covid.simulation.output.DailyStats;
 import uk.co.ramp.covid.simulation.parameters.PopulationParameters;
@@ -13,6 +14,9 @@ public class Adult extends Person {
     }
 
     Professions profession;
+    
+    private boolean willFurlough = false;
+    private boolean furloughed = false;
 
     public Adult(int age, Sex sex) {
         super(age, sex);
@@ -59,6 +63,9 @@ public class Adult extends Person {
             } break;
             case HOSPITAL: {
                 primaryPlace = p.getNextHospitalJob();
+                if (!(primaryPlace instanceof CovidHospital)) {
+                    willFurlough = PopulationParameters.get().buildingProperties.pHospitalStaffWillFurlough.sample();
+                }
             } break;
             case RESTAURANT: {
                 primaryPlace = p.getNextRestaurantJob();
@@ -85,4 +92,24 @@ public class Adult extends Person {
     protected double getInfectionSeedRate() {
         return CovidParameters.get().infectionSeedProperties.infectionRateIncreaseAdult;
     }
+
+    @Override
+    public boolean isWorking(CommunalPlace communalPlace, Time t) {
+       return isWorking(communalPlace, t, isFurloughed());
+    }
+    
+    public boolean isFurloughed() { return furloughed; }
+    
+    public void furlough() {
+        if (willFurlough) {
+            furloughed = true;
+        }
+    }
+    
+    public void unFurlough() {
+        furloughed = false;
+    }
+
+
+
 }
