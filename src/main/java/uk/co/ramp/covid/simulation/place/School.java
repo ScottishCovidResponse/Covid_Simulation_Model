@@ -17,6 +17,11 @@ public class School extends CommunalPlace {
     }
 
     @Override
+    protected void setKey() {
+        keyPremises = false;
+    }
+
+    @Override
     public void reportInfection(Time t, Person p, DailyStats s) {
         if (p.isWorking(this, t) && p.getAge() >= 18) {
             s.incInfectionsSchoolWorker();

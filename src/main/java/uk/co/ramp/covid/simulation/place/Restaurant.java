@@ -16,8 +16,12 @@ public class Restaurant extends CommunalPlace {
     public Restaurant(Size s) {
         super(s);
         transAdjustment = PopulationParameters.get().buildingProperties.restaurantTransmissionConstant;
-        keyPremises = false;
         setOpeningHours();
+    }
+
+    @Override
+    protected void setKey() {
+        keyPremises = false;
     }
 
     private void setOpeningHours() {
