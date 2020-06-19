@@ -12,6 +12,8 @@ import uk.co.ramp.covid.simulation.testutil.SimulationTest;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static uk.co.ramp.covid.simulation.population.Person.Sex.FEMALE;
+import static uk.co.ramp.covid.simulation.population.Person.Sex.MALE;
 
 import java.util.List;
 
@@ -62,5 +64,18 @@ public class NurseryTest extends SimulationTest {
 
         }
     }
+
+    @Test
+    public void testSendHome() {
+        Nursery nursery = new Nursery(CommunalPlace.Size.MED);
+        nursery.addPerson(new Infant(1, FEMALE));
+        nursery.addPerson(new Infant(2, MALE));
+        int time = nursery.times.getClose() - 1;
+        nursery.determineMovement(new Time(time),  false, null);
+        nursery.commitMovement();
+        int expPeople = 0;
+        assertEquals("Unexpected infants left in nursery", expPeople, nursery.getNumPeople());
+    }
+
 
 }

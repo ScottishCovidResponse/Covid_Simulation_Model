@@ -1,7 +1,6 @@
 package uk.co.ramp.covid.simulation.place;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.google.gson.JsonParseException;
@@ -46,14 +45,14 @@ public class ShopTest extends SimulationTest {
         assertEquals("Unexpected shop TransProb", expProb, shop.transConstant, delta);
     }
 
-    @Ignore("Not valid with new movement")
     @Test
     public void testSendHome() {
         PopulationParameters.get().buildingProperties.pLeaveShop = new Probability(1.0);
         int time = shop.times.getClose() - 1;
-        //int left = shop.sendHome(new Time(time));
-        int expPeople = 2;
-        //assertEquals("Unexpected number of people sent home", expPeople, left);
+        shop.determineMovement(new Time(time),  false, null);
+        shop.commitMovement();
+        int expPeople = 0;
+        assertEquals("Unexpected people left in shop", expPeople, shop.getNumPeople());
     }
 
     @Test
