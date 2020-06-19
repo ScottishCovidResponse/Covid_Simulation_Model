@@ -19,7 +19,7 @@
           "phase1Betab": 30.0,
           "aSymptomaticTransAdjustment": 0.15,
           "symptomaticTransAdjustment": 1.0,
-          "mortalityRate":0.015,
+          "mortalityRate":0.02,
           "childProgressionPhase2":0.02,
           "adultProgressionPhase2":0.15,
           "pensionerProgressionPhase2":0.8
