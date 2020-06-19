@@ -5,7 +5,6 @@ import org.junit.Test;
 import com.google.gson.JsonParseException;
 
 import uk.co.ramp.covid.simulation.output.DailyStats;
-import uk.co.ramp.covid.simulation.Model;
 import uk.co.ramp.covid.simulation.util.Time;
 import uk.co.ramp.covid.simulation.parameters.CovidParameters;
 import uk.co.ramp.covid.simulation.parameters.PopulationParameters;
@@ -20,6 +19,8 @@ import java.util.Set;
 
 import static org.junit.Assert.*;
 import static org.junit.Assert.assertFalse;
+import static uk.co.ramp.covid.simulation.population.Person.Sex.FEMALE;
+import static uk.co.ramp.covid.simulation.population.Person.Sex.MALE;
 
 public class HospitalTest extends SimulationTest {
 
@@ -60,32 +61,6 @@ public class HospitalTest extends SimulationTest {
     }
 
     @Test
-    public void somePeopleDieInHospital() {
-        int population = 10000;
-        int nInfections = 300;
-        int nIter = 1;
-        int nDays = 60;
-        int RNGSeed = 42;
-
-        Model m = new Model()
-                .setPopulationSize(population)
-                .setnInitialInfections(nInfections)
-                .setExternalInfectionDays(0)
-                .setIters(nIter)
-                .setnDays(nDays)
-                .setRNGSeed(RNGSeed)
-                .setNoOutput();
-
-        List<List<DailyStats>> stats = m.run(0);
-
-        int totalHospitalDeaths = 0;
-        for (DailyStats s : stats.get(0)) {
-            totalHospitalDeaths += s.getHospitalDeaths();
-        }
-        assertTrue("Some people should die in hospital", totalHospitalDeaths > 0);
-    }
-
-    @Test
     public void recoveredPeopleLeaveHospital() {
         int populationSize = 10000;
         int nInfections = 100;
@@ -104,6 +79,7 @@ public class HospitalTest extends SimulationTest {
             }
         }
 
+        assert inf != null;
         inf.infect();
         inf.getcVirus().forceSymptomatic(true);
 
@@ -122,8 +98,6 @@ public class HospitalTest extends SimulationTest {
             }
         }
         assertTrue(inHospital);
-
-        double time = inf.getcVirus().getP2() + 48;
 
         while (!inf.isRecovered()) {
             pop.timeStep(t, new DailyStats(t));
@@ -195,6 +169,7 @@ public class HospitalTest extends SimulationTest {
             }
         }
 
+        assertNotNull("No person found", inf);
         inf.infect();
         inf.getcVirus().forceSymptomatic(true);
 
@@ -211,7 +186,8 @@ public class HospitalTest extends SimulationTest {
                 hosptial = h;
             }
         }
-        
+
+        assertNotNull("No hospitals found", hosptial);
         assertTrue(hosptial.getBaseTransP(inf) > hosptial.getTransP(t, inf, null));
     }
 
@@ -243,4 +219,21 @@ public class HospitalTest extends SimulationTest {
                 hospitalWorkersInLockdown.size() < hospitalWorkersPreLockdown.size());
 
     }
+
+    @Test
+    public void testSendHome() {
+        Hospital hospital = new Hospital(CommunalPlace.Size.MED);
+        Home h = new CareHome(CommunalPlace.Size.MED);
+        Adult adult1 = new Adult(30, FEMALE);
+        Adult adult2 = new Adult(30, MALE);
+        adult1.setHome(h);
+        adult2.setHome(h);
+        hospital.addPerson(adult1);
+        hospital.addPerson(adult2);
+        hospital.determineMovement(new Time(0),  false, null);
+        hospital.commitMovement();
+        int expPeople = 0;
+        assertEquals("Unexpected people left in hospital", expPeople, hospital.getNumPeople());
+    }
+
 }
