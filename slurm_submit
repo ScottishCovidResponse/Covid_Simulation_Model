@@ -15,8 +15,11 @@
 #! Simple single core jobs use one node and one task
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
-#! Set a time limit of 5 minutes
+
+#! Set a time limit (e.g. 5 minutes)
+#! TODO: Ensure this time limit is not too short for your jobs
 #SBATCH --time=00:05:00
+
 #! Set --mail-type=FAIL to get an email if the job array fails
 #SBATCH --mail-type=FAIL
 
@@ -27,9 +30,11 @@
 
 #! Note: Charging is determined by core number*walltime (doubled for 12GB per CPU)
 
-#! This submits a job array with a range of index values --array=[first]-[last]
-#! TODO: Set your required number of jobs here
-#SBATCH --array=0-1
+#! This submits a job array with a range of index values --array=[first]-[last]:[step]
+#! ("--array=0-15:4" is equivalent to "--array=0,4,8,12")
+#! TODO: Set your required job array here (with the required number of jobs and
+#!       a step size equal to the number of iterations in each job)
+#SBATCH --array=0-1:1
 
 #! sbatch directives end here (put any additional directives above this line)
 

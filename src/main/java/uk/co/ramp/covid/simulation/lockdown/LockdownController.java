@@ -58,15 +58,21 @@ public class LockdownController {
         }
     }
     
-    private void increaseSocialDistancing() {
+    private void lockdownPlaces() {
         for (CommunalPlace cPlace : population.getPlaces().getAllPlaces()) {
-            cPlace.adjustSDist(socialDist);
+            cPlace.enterLockdown(socialDist);
+        }
+    }
+
+    private void unLockdownPlaces() {
+        for (CommunalPlace cPlace : population.getPlaces().getAllPlaces()) {
+            cPlace.exitLockdown();
         }
     }
 
     private void enterLockdown(Time t) {
         inLockdown = true;
-        increaseSocialDistancing();
+        lockdownPlaces();
         furloughStaff();
     }
 
@@ -85,6 +91,7 @@ public class LockdownController {
         if (schoolLockdown) {
             schoolExemption();
         } else {
+            unLockdownPlaces();
             unFurloughStaff();
             inLockdown = false;
         }

@@ -13,9 +13,9 @@ Load Java:
 
     module load jdk-8u141-b15-intel-17.0.4-3g6rhr2
 
-John has downloaded gradle from https://gradle.org/release-nightly/ and unzipped it to `/home/dc-nonw1/gradle`.  To use it:
+John has downloaded gradle from https://gradle.org/release-nightly/ and unzipped it to `~/rds/rds-dirac-dc003/dc-nonw1/gradle`.  To use it (replacing [your-user-name]):
 
-    export PATH=$PATH:/home/dc-nonw1/gradle/bin
+    export PATH=$PATH:/home/[your-user-name]/rds/rds-dirac-dc003/dc-nonw1/gradle/bin
 
 Get the source code from GitHub, and build it with:
 
@@ -24,6 +24,8 @@ Get the source code from GitHub, and build it with:
     gradle install
 
 (Or use `git pull` instead of `clone` if you have already cloned the repository.)
+
+Set `"outputDirectory": ""` in your model parameters file, so that extra output directories are not created and the script to combine outputs works.
 
 Then have a look at the "TODO"s in the example `slurm_submit` file, which can be run with the command:
 
@@ -36,3 +38,7 @@ You can check the status of your job using:
 And combine the output from multiple jobs into a single csv file using (replacing jobID, lastArrayIndex and outputFileName with the relevant values):
 
     combineArrayJobOutputs.sh jobID lastArrayIndex outputFileName
+    
+(After leaving your ssh session,) copy files back to your local machine by running scp from your local machine, e.g.:
+
+    scp [your-user-name]@login.hpc.cam.ac.uk:/home/[your-user-name]/out.csv .

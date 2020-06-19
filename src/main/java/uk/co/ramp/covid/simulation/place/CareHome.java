@@ -27,6 +27,11 @@ public class CareHome extends CommunalPlace implements Home {
     }
 
     @Override
+    protected void setKey() {
+        keyPremises = true;
+    }
+
+    @Override
     public Shifts getShifts() {
         nStaff++;
         return shifts.getNext();
