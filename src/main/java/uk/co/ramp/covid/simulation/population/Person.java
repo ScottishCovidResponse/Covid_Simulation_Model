@@ -75,6 +75,7 @@ public abstract class Person {
     public void recover() {
         isHospitalised = false;
         recovered = true;
+        quarantine = false;
     }
 
     public CommunalPlace getPrimaryCommunalPlace() {
@@ -186,18 +187,15 @@ public abstract class Person {
         if (this.getInfectionStatus()) {
             if (this.cVirus.isLatent()) cStatus = CStatus.LATENT;
             if (this.cVirus.isAsymptomatic()) cStatus = CStatus.ASYMPTOMATIC;
-            if (this.cVirus.isSymptomatic()) enterQuarantine();
             if (this.cVirus.isPhase1()) {
                 cStatus = CStatus.PHASE1;
             }
             if (this.cVirus.isPhase2()) {
                 cStatus = CStatus.PHASE2;
-                this.quarantine = true;
             }
             if (this.cVirus.isDead()) cStatus = CStatus.DEAD;
             if (this.cVirus.isRecovered() && !this.cVirus.isDead()) {
                 cStatus = CStatus.RECOVERED;
-                this.quarantine = false;
             }
         }
         return cStatus;

@@ -222,8 +222,18 @@ public abstract class Household extends Place implements Home {
         for (Person p : getPeople()) {
             if (isInhabitant(p) && p.isinfected()) {
                 Time symptomaticTime = p.getcVirus().getInfectionLog().getSymptomaticTime();
-                if (symptomaticTime != null
-                        && symptomaticTime.getAbsTime() <= t.getAbsTime() + 24
+                
+                if (symptomaticTime == null) {
+                    continue;
+                }
+
+                if (symptomaticTime.getAbsTime() <= t.getAbsTime() + 12) {
+                    p.enterQuarantine();
+                    // Isolation timer each time a new inhabitant gets symptoms
+                    isolate();
+                }
+
+                if (symptomaticTime.getAbsTime() <= t.getAbsTime() + 24
                         && CovidParameters.get().testParameters.pDiagnosticTestAvailable.sample()) {
                     p.getTested();
                 }
