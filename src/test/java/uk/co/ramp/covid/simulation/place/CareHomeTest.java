@@ -12,6 +12,8 @@ import uk.co.ramp.covid.simulation.testutil.SimulationTest;
 import uk.co.ramp.covid.simulation.util.Probability;
 
 import static org.junit.Assert.*;
+import static uk.co.ramp.covid.simulation.population.Person.Sex.FEMALE;
+import static uk.co.ramp.covid.simulation.population.Person.Sex.MALE;
 
 public class CareHomeTest extends SimulationTest {
 
@@ -113,6 +115,19 @@ public class CareHomeTest extends SimulationTest {
                 assertTrue(home.getTransP(t, inf, null) > home.getTransP(new Time(0), inf, p));
             }
         }
+    }
+
+    //Test that people do not leave care homes
+    @Test
+    public void testSendHome() {
+        Time time = new Time(0);
+        CareHome ch = new CareHome(CommunalPlace.Size.MED);
+        ch.addPerson(new Pensioner(80, FEMALE));
+        ch.addPerson(new Pensioner(85, MALE));
+        ch.determineMovement(time,  false, null);
+        ch.commitMovement();
+        int expPeople = 2;
+        assertEquals("People Unexpectedly left the care home", expPeople, ch.getNumPeople());
     }
 
 }

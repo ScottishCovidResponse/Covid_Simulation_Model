@@ -12,6 +12,8 @@ import uk.co.ramp.covid.simulation.testutil.SimulationTest;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static uk.co.ramp.covid.simulation.population.Person.Sex.FEMALE;
+import static uk.co.ramp.covid.simulation.population.Person.Sex.MALE;
 
 import java.util.List;
 
@@ -63,4 +65,17 @@ public class OfficeTest extends SimulationTest {
 
         }
     }
+
+    @Test
+    public void testSendHome() {
+        Office office = new Office(CommunalPlace.Size.MED);
+        office.addPerson(new Adult(30, FEMALE));
+        office.addPerson(new Adult(35, MALE));
+        int time = office.times.getClose() - 1;
+        office.determineMovement(new Time(time),  false, null);
+        office.commitMovement();
+        int expPeople = 0;
+        assertEquals("Unexpected people left in office", expPeople, office.getNumPeople());
+    }
+
 }

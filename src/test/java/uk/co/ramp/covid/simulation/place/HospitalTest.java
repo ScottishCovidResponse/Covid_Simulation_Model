@@ -19,6 +19,8 @@ import java.util.Set;
 
 import static org.junit.Assert.*;
 import static org.junit.Assert.assertFalse;
+import static uk.co.ramp.covid.simulation.population.Person.Sex.FEMALE;
+import static uk.co.ramp.covid.simulation.population.Person.Sex.MALE;
 
 public class HospitalTest extends SimulationTest {
 
@@ -96,8 +98,6 @@ public class HospitalTest extends SimulationTest {
             }
         }
         assertTrue(inHospital);
-
- //       double time = inf.getcVirus().getP2() + 48;
 
         while (!inf.isRecovered()) {
             pop.timeStep(t, new DailyStats(t));
@@ -219,4 +219,21 @@ public class HospitalTest extends SimulationTest {
                 hospitalWorkersInLockdown.size() < hospitalWorkersPreLockdown.size());
 
     }
+
+    @Test
+    public void testSendHome() {
+        Hospital hospital = new Hospital(CommunalPlace.Size.MED);
+        Home h = new CareHome(CommunalPlace.Size.MED);
+        Adult adult1 = new Adult(30, FEMALE);
+        Adult adult2 = new Adult(30, MALE);
+        adult1.setHome(h);
+        adult2.setHome(h);
+        hospital.addPerson(adult1);
+        hospital.addPerson(adult2);
+        hospital.determineMovement(new Time(0),  false, null);
+        hospital.commitMovement();
+        int expPeople = 0;
+        assertEquals("Unexpected people left in hospital", expPeople, hospital.getNumPeople());
+    }
+
 }

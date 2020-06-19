@@ -41,7 +41,7 @@ public class ModelTest extends SimulationTest {
     public void testBaseLine() {
         final int inf = nInfections * 5;
 
-        Long startTime = System.currentTimeMillis();
+        double startTime = System.currentTimeMillis();
         Model m = new Model()
                 .setPopulationSize(population)
                 .setnInitialInfections(inf)

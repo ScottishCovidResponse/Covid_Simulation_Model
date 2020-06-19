@@ -18,7 +18,7 @@ public class RoundRobinAllocatorTest {
     public void testGetNothing() {
         RoundRobinAllocator<Integer> r = new RoundRobinAllocator<>();
         Integer x = r.getNext();
-        assertEquals(null, x);
+        assertNull(x);
     }
 
     @Test

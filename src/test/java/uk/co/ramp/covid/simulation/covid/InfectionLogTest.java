@@ -13,10 +13,10 @@ import static org.junit.Assert.assertTrue;
 public class InfectionLogTest extends SimulationTest {
 
     private Population pop;
-    private final int populationSize = 10000;
 
     @Before
     public void setupParams() {
+        int populationSize = 10000;
         pop = PopulationGenerator.genValidPopulation(populationSize);
     }
 
@@ -44,6 +44,7 @@ public class InfectionLogTest extends SimulationTest {
             }
         }
 
+        assert infected != null;
         infected.getcVirus().forceSymptomatic(true);
 
         pop.simulate(50);

@@ -14,6 +14,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.*;
+import static uk.co.ramp.covid.simulation.population.Person.Sex.FEMALE;
+import static uk.co.ramp.covid.simulation.population.Person.Sex.MALE;
 
 public class SchoolTest extends SimulationTest {
 
@@ -74,6 +76,18 @@ public class SchoolTest extends SimulationTest {
         for (School s : p.getPlaces().getSchools()) {
             assertEquals(0, s.getNumPeople());
         }
+    }
+
+    @Test
+    public void testSendHome() {
+        School school = new School(CommunalPlace.Size.MED);
+        school.addPerson(new Child(10, FEMALE));
+        school.addPerson(new Child(5, MALE));
+        int time = school.times.getClose() - 1;
+        school.determineMovement(new Time(time),  false, null);
+        school.commitMovement();
+        int expPeople = 0;
+        assertEquals("Unexpected children left in school", expPeople, school.getNumPeople());
     }
 
     @Test
