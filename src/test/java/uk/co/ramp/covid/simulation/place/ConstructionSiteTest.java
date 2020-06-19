@@ -16,6 +16,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.*;
+import static uk.co.ramp.covid.simulation.population.Person.Sex.FEMALE;
+import static uk.co.ramp.covid.simulation.population.Person.Sex.MALE;
 
 public class ConstructionSiteTest extends SimulationTest {
 
@@ -103,4 +105,17 @@ public class ConstructionSiteTest extends SimulationTest {
 
         }
     }
+
+    @Test
+    public void testSendHome() {
+        ConstructionSite cs = new ConstructionSite(CommunalPlace.Size.MED);
+        cs.addPerson(new Adult(30, FEMALE));
+        cs.addPerson(new Adult(35, MALE));
+        int time = cs.times.getClose() - 1;
+        cs.determineMovement(new Time(time),  false, null);
+        cs.commitMovement();
+        int expPeople = 0;
+        assertEquals("Unexpected people left on construction site", expPeople, cs.getNumPeople());
+    }
+
 }

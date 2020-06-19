@@ -141,6 +141,42 @@ public class DailyStatsTest extends SimulationTest {
         assertEquals("Inconsistent number of place infections", expPlaceInfections, dailyInfected);
     }
 
+    @Test
+    public void testConsistentDeaths() {
+        int population = 20000;
+        int nInfections = 300;
+        int nIter = 1;
+        int nDays = 60;
+        int RNGSeed = 42;
+
+        Model m = new Model()
+                .setPopulationSize(population)
+                .setnInitialInfections(nInfections)
+                .setExternalInfectionDays(0)
+                .setIters(nIter)
+                .setnDays(nDays)
+                .setRNGSeed(RNGSeed)
+                .setNoOutput();
+
+        List<List<DailyStats>> stats = m.run(0);
+
+        int totalHospitalDeaths = 0;
+        int totalCareHomeDeaths = 0;
+        int totalHomeDeaths = 0;
+        int totalDeaths = 0;
+        for (DailyStats s : stats.get(0)) {
+            totalHospitalDeaths += s.getHospitalDeaths();
+            totalCareHomeDeaths += s.getCareHomeDeaths();
+            totalHomeDeaths += s.getHomeDeaths();
+            totalDeaths += s.getTotalDeaths();
+        }
+        int actualDeaths = totalHospitalDeaths + totalCareHomeDeaths + totalHomeDeaths;
+        assertTrue("No hospital deaths recorded", totalHospitalDeaths > 0);
+        assertTrue("No care home deaths recorded", totalCareHomeDeaths > 0);
+        assertTrue("No home deaths recorded", totalHomeDeaths > 0);
+        assertEquals("Inconsistent number of deaths", totalDeaths, actualDeaths);
+    }
+
     //Test the equals() method in DailyStats
     @Test
     public void testEquals() {

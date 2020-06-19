@@ -1,9 +1,7 @@
 package uk.co.ramp.covid.simulation.place;
 
 import org.junit.Test;
-import uk.co.ramp.covid.simulation.Model;
 import uk.co.ramp.covid.simulation.util.Time;
-import uk.co.ramp.covid.simulation.output.DailyStats;
 import uk.co.ramp.covid.simulation.parameters.CovidParameters;
 import uk.co.ramp.covid.simulation.parameters.PopulationParameters;
 import uk.co.ramp.covid.simulation.population.Pensioner;
@@ -13,9 +11,9 @@ import uk.co.ramp.covid.simulation.testutil.PopulationGenerator;
 import uk.co.ramp.covid.simulation.testutil.SimulationTest;
 import uk.co.ramp.covid.simulation.util.Probability;
 
-import java.util.List;
-
 import static org.junit.Assert.*;
+import static uk.co.ramp.covid.simulation.population.Person.Sex.FEMALE;
+import static uk.co.ramp.covid.simulation.population.Person.Sex.MALE;
 
 public class CareHomeTest extends SimulationTest {
 
@@ -54,30 +52,6 @@ public class CareHomeTest extends SimulationTest {
     }
 
     @Test
-    public void somePeopleDieInCareHomes() {
-        int populationSize = 10000;
-        PopulationParameters.get().pensionerProperties.pEntersCareHome = new Probability(0.8);
-        CovidParameters.get().diseaseParameters.pensionerProgressionPhase2 = 100.0;
-        CovidParameters.get().diseaseParameters.mortalityRate = 100.0;
-        Model m = new Model()
-                .setPopulationSize(populationSize)
-                .setnInitialInfections(500)
-                .setExternalInfectionDays(0)
-                .setIters(1)
-                .setnDays(60)
-                .setRNGSeed(42)
-                .setNoOutput();
-        
-        List<List<DailyStats>> stats = m.run(0);
-        
-        int careDeaths = 0;
-        for (DailyStats s : stats.get(0)) {
-            careDeaths += s.getCareHomeDeaths();
-        }
-        assertTrue(careDeaths > 0);
-    }
-
-    @Test
     public void sickResidentsAreQuarantined() {
         int populationSize = 10000;
         PopulationParameters.get().pensionerProperties.pEntersCareHome = new Probability(0.8);
@@ -107,6 +81,7 @@ public class CareHomeTest extends SimulationTest {
                 }
             }
         }
+        assert inf != null;
         inf.infect();
         inf.getcVirus().forceSymptomatic(true);
         
@@ -140,6 +115,19 @@ public class CareHomeTest extends SimulationTest {
                 assertTrue(home.getTransP(t, inf, null) > home.getTransP(new Time(0), inf, p));
             }
         }
+    }
+
+    //Test that people do not leave care homes
+    @Test
+    public void testSendHome() {
+        Time time = new Time(0);
+        CareHome ch = new CareHome(CommunalPlace.Size.MED);
+        ch.addPerson(new Pensioner(80, FEMALE));
+        ch.addPerson(new Pensioner(85, MALE));
+        ch.determineMovement(time,  false, null);
+        ch.commitMovement();
+        int expPeople = 2;
+        assertEquals("People Unexpectedly left the care home", expPeople, ch.getNumPeople());
     }
 
 }
