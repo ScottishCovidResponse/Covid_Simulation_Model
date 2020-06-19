@@ -1,7 +1,8 @@
 package uk.co.ramp.covid.simulation.population;
 
-import uk.co.ramp.covid.simulation.Time;
 import uk.co.ramp.covid.simulation.output.DailyStats;
+import uk.co.ramp.covid.simulation.util.RNG;
+import uk.co.ramp.covid.simulation.util.Time;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,9 +45,13 @@ public class Transport {
 
     // We only do infections here, not step infections since 1 hour won't have passed.
     public void doInfect(Time t, DailyStats stats) {
+        // TODO: To keep this tractable we probably need something like this. Maybe the new infection method fixes this
+        final int expectedContacts = 40;
+        
         for (Person cPers : takingTransport) {
             if (cPers.isInfectious()) {
-                for (Person nPers : takingTransport) {
+                for (int i = 0; i < expectedContacts; i++) {
+                    Person nPers = takingTransport.get(RNG.get().nextInt(0, takingTransport.size() - 1));
                     if (cPers != nPers && !nPers.getInfectionStatus()) {
                         double transP = getBaseTransP(cPers);
                         boolean infected = nPers.infChallenge(transP);
