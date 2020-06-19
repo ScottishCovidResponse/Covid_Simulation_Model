@@ -44,7 +44,7 @@ public class InfectionLogTest extends SimulationTest {
             }
         }
 
-        assert infected != null;
+        assertNotNull("No infected cases found", infected);
         infected.getcVirus().forceSymptomatic(true);
 
         pop.simulate(50);

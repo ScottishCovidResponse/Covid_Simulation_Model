@@ -169,7 +169,7 @@ public class HospitalTest extends SimulationTest {
             }
         }
 
-        assert inf != null;
+        assertNotNull("No person found", inf);
         inf.infect();
         inf.getcVirus().forceSymptomatic(true);
 
@@ -187,7 +187,7 @@ public class HospitalTest extends SimulationTest {
             }
         }
 
-        assert hosptial != null;
+        assertNotNull("No hospitals found", hosptial);
         assertTrue(hosptial.getBaseTransP(inf) > hosptial.getTransP(t, inf, null));
     }
 
