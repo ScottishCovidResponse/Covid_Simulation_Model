@@ -187,8 +187,8 @@
             "pAttendsNursery":0.12
         },
         "pensionerProperties":{
-            "pEntersCareHome": 0.07,
-            "minAgeToEnterCare": 75
+            "pEntersCareHome": 0.12,
+            "minAgeToEnterCare": 80
         },
         "householdProperties":{
             "neighbourOpeningTime":9,
