@@ -25,8 +25,8 @@
           "pensionerProgressionPhase2":0.8
       },
       "infectionSeedProperties": {
-          "infectionRateIncreaseAdult":0.000005,
-          "infectionRateIncreaseInfantChildPensioner":0.0000025
+          "infectionRateIncreaseAdult":0.000002,
+          "infectionRateIncreaseInfantChildPensioner":0.000001
       },
       "hospitalisationParameters": {
           "pPhase2GoesToHosptial":0.52,
@@ -190,8 +190,8 @@
             "pAttendsNursery":0.12
         },
         "pensionerProperties":{
-            "minAgeToEnterCare" : 70,
-            "pEntersCareHome": 0.045
+            "minAgeToEnterCare" : 75,
+            "pEntersCareHome": 0.07
         },
         "householdProperties":{
           "neighbourOpeningTime":9,
