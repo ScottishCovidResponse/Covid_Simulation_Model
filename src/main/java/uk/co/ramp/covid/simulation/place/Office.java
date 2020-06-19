@@ -11,8 +11,12 @@ public class Office extends CommunalPlace {
     public Office(Size s)  {
         super(s);
         transAdjustment = PopulationParameters.get().buildingProperties.officeTransmissionConstant;
-        keyPremises = PopulationParameters.get().buildingProperties.pOfficeKey.sample();
         times = OpeningTimes.nineFiveWeekdays();
+    }
+
+    @Override
+    protected void setKey() {
+        keyPremises = PopulationParameters.get().buildingProperties.pOfficeKey.sample();
     }
 
     @Override

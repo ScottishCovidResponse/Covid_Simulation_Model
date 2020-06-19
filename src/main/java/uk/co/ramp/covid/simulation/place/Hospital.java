@@ -18,8 +18,12 @@ public class Hospital extends CommunalPlace {
         // TODO: Adjustment or constant?
         transAdjustment = PopulationParameters.get().buildingProperties.hospitalTransmissionConstant;
         times = OpeningTimes.twentyfourSeven();
-        keyPremises =  PopulationParameters.get().buildingProperties.pHospitalKey.sample();
         allocateShifts();
+    }
+
+    @Override
+    protected void setKey() {
+        keyPremises =  PopulationParameters.get().buildingProperties.pHospitalKey.sample();
     }
 
     private void allocateShifts() {

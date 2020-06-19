@@ -45,9 +45,11 @@ public abstract class CommunalPlace extends Place {
         super();
         this.rng = RNG.get();
         this.times = new OpeningTimes(8,17,1,5, OpeningTimes.getAllDays());
-        this.keyPremises = false;
         setHolidays();
+        setKey();
     }
+    
+    protected abstract void setKey();
 
     public void overrideKeyPremises(boolean key) {
         keyPremises = key;

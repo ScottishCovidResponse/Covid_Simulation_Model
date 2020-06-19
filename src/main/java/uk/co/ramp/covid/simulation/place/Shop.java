@@ -15,10 +15,14 @@ public class Shop extends CommunalPlace {
     public Shop(Size s) {
         super(s);
         transAdjustment = PopulationParameters.get().buildingProperties.shopTransmissionConstant;
-        keyPremises = PopulationParameters.get().buildingProperties.pShopKey.sample();
         setOpeningHours();
     }
-    
+
+    @Override
+    protected void setKey() {
+        keyPremises = PopulationParameters.get().buildingProperties.pShopKey.sample();
+    }
+
     private void setOpeningHours() {
         shifts = new RoundRobinAllocator<>();
         if (size == Size.SMALL) {
