@@ -171,12 +171,12 @@ public class Covid {
             }
             phase1 = false;
             double rVal = rng.nextUniform(0, 1);
-            if (rVal < mortalityRate / 24) {
+            if (rVal < mortalityRate / 24 * ccase.getCovidMortalityAgeAdjustment()) {
                 dead = true;
                 phase2 = false;
                 status = CStatus.DEAD;
             }
-            if (rVal >= mortalityRate / 24) {
+            if (rVal >= mortalityRate / 24 * ccase.getCovidMortalityAgeAdjustment()) {
                 status = CStatus.PHASE2;
             }
         } else if ((latentPeriod + p1 + p2) <= infCounter) {
