@@ -24,7 +24,8 @@ public class Covid {
     private final double sdLatentPeriod;
     private final double meanAsymptomaticPeriod;
     private final double sdAsymptomaticPeriod;
-    private final Probability pSymptoms;
+    private final Probability pSymptomsChild;
+    private final Probability pSymptomsAdult;
     private final Probability pSymptomsPensioner;
     private final double meanSymptomDelay;
     private final double meanSymptomDelaySD;    
@@ -52,7 +53,8 @@ public class Covid {
         this.sdLatentPeriod = CovidParameters.get().diseaseParameters.sdLatentPeriod;
         this.meanAsymptomaticPeriod = CovidParameters.get().diseaseParameters.meanAsymptomaticPeriod;
         this.sdAsymptomaticPeriod = CovidParameters.get().diseaseParameters.sdAsymptomaticPeriod;
-        this.pSymptoms = CovidParameters.get().diseaseParameters.pSymptomaticCase;
+        this.pSymptomsChild = CovidParameters.get().diseaseParameters.pSymptomaticChild;
+        this.pSymptomsAdult = CovidParameters.get().diseaseParameters.pSymptomaticAdult;
         this.pSymptomsPensioner = CovidParameters.get().diseaseParameters.pSymptomaticCasePensioner;
         this.meanSymptomDelay = CovidParameters.get().diseaseParameters.meanSymptomDelay;
         this.meanSymptomDelaySD = CovidParameters.get().diseaseParameters.meanSymptomDelaySD;
@@ -104,8 +106,9 @@ public class Covid {
     }
     
     private void setSymptomatic() {
-        symptomaticCase = pSymptoms.sample();
-        if(ccase.getAge() >= 60) symptomaticCase = pSymptomsPensioner.sample(); // This is set to 60 because the probability is from the Diamond Princess where people were aged > 60 
+        symptomaticCase = pSymptomsAdult.sample();
+        if(ccase.getAge() <= 20) symptomaticCase = pSymptomsChild.sample(); // This is set to 60 because the probability is from the Diamond Princess where people were aged > 60 
+        else if(ccase.getAge() >= 70) symptomaticCase = pSymptomsPensioner.sample(); // This is set to 60 because the probability is from the Diamond Princess where people were aged > 60 
     }
 
     // For each infection define the duration of the infection periods
