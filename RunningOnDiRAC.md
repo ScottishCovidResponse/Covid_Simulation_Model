@@ -23,7 +23,7 @@ Get the source code from GitHub, and build it with:
     cd Covid_Simulation_Model
     gradle install
 
-(Or use `git pull` instead of `clone` if you have already cloned the repository.)
+**Important:** You must re-run `gradle install` whenever you update the code.  (You can use `git pull` instead of `clone` if you have already cloned the repository.)
 
 Set `"outputDirectory": ""` in your model parameters file, so that extra output directories are not created and the script to combine outputs works.
 
