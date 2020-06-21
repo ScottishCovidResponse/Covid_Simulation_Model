@@ -1,8 +1,7 @@
 # Running On DiRAC
 
 Follow these instructions to get an account (for the SCRC Project):
-
-    https://github.com/ScottishCovidResponse/SCRCIssueTracking/wiki/DiRAC-Access
+https://github.com/ScottishCovidResponse/SCRCIssueTracking/wiki/DiRAC-Access
 
 You should receive an email describing how to connect to one of the CSD3 login nodes,
 with something like (replacing your-user-name with your username):
