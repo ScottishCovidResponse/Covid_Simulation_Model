@@ -63,6 +63,11 @@ public class DailyStatsTest extends SimulationTest {
         int childDeaths = 0;
         int infantDeaths = 0;
 
+        // Hospitalisation Stats
+        int hospitalised = 0;
+        int newlyHospitalised = 0;
+        int totalPhase2 = 0;
+
         nDays = 100;
         Model run1 = new Model()
                 .setPopulationSize(population)
@@ -122,6 +127,12 @@ public class DailyStatsTest extends SimulationTest {
             shopInfectionsVisitor += stats.get(0).get(i).getShopInfectionsVisitor();
             careHomeInfectionsWorker += stats.get(0).get(i).getCareHomeInfectionsWorker();
             careHomeInfectionsResident += stats.get(0).get(i).getCareHomeInfectionsResident();
+
+            // Hospitalised will double count people (since you might in in hospital multiple days),
+            // so we need to account for this in the test cases
+            hospitalised += stats.get(0).get(i).getNumInHospital();
+            newlyHospitalised += stats.get(0).get(i).getNewlyHospitalised();
+            totalPhase2 +=  stats.get(0).get(i).getPhase2();
         }
         int expDeaths = adultDeaths + childDeaths + pensionerDeaths + infantDeaths;
         int expInfected = adultInfected + childInfected + pensionerInfected + infantInfected + seedInfections;
@@ -137,6 +148,11 @@ public class DailyStatsTest extends SimulationTest {
         assertEquals("Inconsistent number of deaths", expDeaths, stats.get(0).get(nDays - 1).getDead());
         assertEquals("Inconsistent number of infected", expInfected, dailyInfected);
         assertEquals("Inconsistent number of place infections", expPlaceInfections, dailyInfected);
+        
+        assertNotEquals("Some people are hospitalised", hospitalised);
+        assertNotEquals("Some people are hospitalised", newlyHospitalised);
+        assertTrue("Hospitalised should be > newlyHospitalised", newlyHospitalised > 0);
+        assertTrue("Hospitalised <= phase2", newlyHospitalised <= totalPhase2);
     }
 
     @Test

@@ -184,5 +184,5 @@ public abstract class Place {
 
 
     /** Handles movement between people in this place */
-    public abstract void determineMovement(Time t, boolean lockdown, Places places);
+    public abstract void determineMovement(Time t, DailyStats s, boolean lockdown, Places places);
 }

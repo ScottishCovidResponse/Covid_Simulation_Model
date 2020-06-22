@@ -278,6 +278,7 @@ public class Model {
                               "ICs_V","IHos_V","INur_V","IOff_V","IRes_V","ISch_V","ISho_V","IHome_V",
                               "IAdu","IPen","IChi","IInf",
                               "DAdul","DPen","DChi","DInf","DHome", "DHospital", "DCareHome", "DAdditional",
+                              "NumHospital", "HospitalisedToday",
                               "SecInfections", "GenerationTime" };
         try {
             FileWriter out = new FileWriter(outF.toFile());
