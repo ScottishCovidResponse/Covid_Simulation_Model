@@ -162,7 +162,7 @@ public abstract class Household extends Place implements Home {
         }
     }
     
-    public void goToHospital(Time t, Places places) {
+    public void goToHospital(Time t, DailyStats s, Places places) {
         for (Person p : getPeople() ) {
             if (p.hasMoved()) {
                 continue;
@@ -170,7 +170,7 @@ public abstract class Household extends Place implements Home {
 
             if (p.cStatus() != null && p.cStatus() == CStatus.PHASE2) {
                 if (p.goesToHosptialInPhase2()) {
-                    p.hospitalise();
+                    p.hospitalise(s);
                     CovidHospital h = places.getRandomCovidHospital();
                     p.moveTo(this, h);
                 } else if (isVisitor(p)) {
@@ -182,8 +182,8 @@ public abstract class Household extends Place implements Home {
     }
 
     @Override
-    public void determineMovement(Time t, boolean lockdown, Places places) {
-        goToHospital(t, places);
+    public void determineMovement(Time t, DailyStats s, boolean lockdown, Places places) {
+        goToHospital(t, s, places);
 
         if (!isIsolating() && getNumInhabitants() > 0) {
             // Ordering here implies work takes highest priority, then shopping trips have higher priority

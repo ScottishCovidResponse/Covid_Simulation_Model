@@ -1,6 +1,7 @@
 package uk.co.ramp.covid.simulation.place;
 
 import org.junit.Test;
+import uk.co.ramp.covid.simulation.output.DailyStats;
 import uk.co.ramp.covid.simulation.util.Time;
 import uk.co.ramp.covid.simulation.parameters.CovidParameters;
 import uk.co.ramp.covid.simulation.parameters.PopulationParameters;
@@ -124,7 +125,7 @@ public class CareHomeTest extends SimulationTest {
         CareHome ch = new CareHome(CommunalPlace.Size.MED);
         ch.addPerson(new Pensioner(80, FEMALE));
         ch.addPerson(new Pensioner(85, MALE));
-        ch.determineMovement(time,  false, null);
+        ch.determineMovement(time, new DailyStats(time), false, null);
         ch.commitMovement();
         int expPeople = 2;
         assertEquals("People Unexpectedly left the care home", expPeople, ch.getNumPeople());

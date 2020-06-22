@@ -65,6 +65,10 @@ public class DailyStats {
     private Double secInfections = null;
     private Double generationTime = null;
 
+    // Hospitalisation Stats
+    private int inHospital = 0;
+    private int newlyHospitalised = 0;
+
     public DailyStats(Time t) {
         this.day = t.getAbsDay();
     }
@@ -78,6 +82,10 @@ public class DailyStats {
             case PHASE2: phase2++; break;
             case RECOVERED: recovered++; break;
             case DEAD: dead++; break;
+        }
+        
+        if (p.isHospitalised()) {
+            inHospital++;
         }
     }
 
@@ -126,8 +134,9 @@ public class DailyStats {
     public int getShopInfectionsVisitor() { return shopInfectionsVisitor; }
 
     public void log(){
-        LOGGER.info("Day = {} Healthy = {} Latent = {} Asymptomatic = {} Phase 1 = {} Phase 2 = {} Dead = {} Recovered = {}",
-                day, healthy, exposed, asymptomatic,phase1, phase2, dead, recovered);
+        LOGGER.info("Day = {} Healthy = {} Latent = {} Asymptomatic = {} Phase 1 = {} " +
+                        "Phase 2 = {} Hospitalised = {} Dead = {} Recovered = {}",
+                day, healthy, exposed, asymptomatic,phase1, phase2, inHospital, dead, recovered);
     }
 
     public void appendCSV(CSVPrinter csv, int iter) throws IOException {
@@ -140,6 +149,7 @@ public class DailyStats {
                 officeInfectionsVisitor, restaurantInfectionsVisitor, schoolInfectionsVisitor, shopInfectionsVisitor,
                 homeInfectionsVisitor, adultInfected, pensionerInfected, childInfected, infantInfected, adultDeaths,
                 pensionerDeaths, childDeaths, infantDeaths, homeDeaths, hospitalDeaths, careHomeDeaths, additionalDeaths,
+                inHospital, newlyHospitalised,
                 secInfections, generationTime);
     }
 
@@ -398,4 +408,10 @@ public class DailyStats {
     public void incAdditionalDeaths() { additionalDeaths++; }
     
     public int getAdditionalDeaths() { return additionalDeaths; }
+    
+    public void incHospitalised() { newlyHospitalised++; }
+
+    public int getNewlyHospitalised() { return newlyHospitalised; }
+
+    public int getNumInHospital() { return inHospital; }
 }

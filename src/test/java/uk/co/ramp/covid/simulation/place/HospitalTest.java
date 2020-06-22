@@ -232,7 +232,7 @@ public class HospitalTest extends SimulationTest {
         adult2.setHome(h);
         hospital.addPerson(adult1);
         hospital.addPerson(adult2);
-        hospital.determineMovement(new Time(0),  false, null);
+        hospital.determineMovement(new Time(0), new DailyStats(new Time(0)), false, null);
         hospital.commitMovement();
         int expPeople = 0;
         assertEquals("Unexpected people left in hospital", expPeople, hospital.getNumPeople());
