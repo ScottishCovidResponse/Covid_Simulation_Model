@@ -211,7 +211,9 @@
         "personProperties":{
             "pTransmission":0.65,
             "pSusceptibleChild": 0.5,
-            "pQuarantinesIfSymptomatic":0.9
+            "pQuarantinesIfSymptomatic":0.9,
+            "symptomToQuarantineDelay": 12,
+            "symptomToTestingDelay": 24
         }
     }
 }

@@ -16,21 +16,16 @@ public abstract class Household extends Place implements Home {
 
     private final List<Household> neighbours;
     
-    private boolean willIsolate = false;
-    private boolean lockCompliant = false;
+    private boolean willIsolate;
+    private boolean lockCompliant;
     private int isolationTimer = 0;
     private boolean visitsNeighbourToday = false;
 
     // Create household defined by who lives there
     public Household() {
         this.neighbours = new ArrayList<>();
-        if (PopulationParameters.get().householdProperties.pWillIsolate.sample()) {
-            willIsolate = true;
-        }
-        if (PopulationParameters.get().householdProperties.pLockCompliance.sample()) {
-        	lockCompliant = true;
-        }
-
+        willIsolate = PopulationParameters.get().householdProperties.pWillIsolate.sample();
+        lockCompliant = PopulationParameters.get().householdProperties.pLockCompliance.sample();
     }
     
     public void forceIsolationtimer(int time) {
@@ -218,12 +213,29 @@ public abstract class Household extends Place implements Home {
         remainInPlace();
     }
 
-      public void doTesting(Time t) {
+      public void handleSymptomaticCases(Time t) {
         for (Person p : getPeople()) {
             if (isInhabitant(p) && p.isinfected()) {
                 Time symptomaticTime = p.getcVirus().getInfectionLog().getSymptomaticTime();
-                if (symptomaticTime != null
-                        && symptomaticTime.getAbsTime() <= t.getAbsTime() + 24
+                
+                if (symptomaticTime == null) {
+                    continue;
+                }
+
+                if (symptomaticTime.getAbsTime() <=
+                        t.getAbsTime() + PopulationParameters.get().personProperties.symptomToQuarantineDelay) {
+                    p.enterQuarantine();
+
+                    // A person might choose not to quarantine, in which case the household doesn't isolate either
+                    if (p.isQuarantined()) {
+                        // Isolation timer resets each time a new inhabitant gets symptoms
+                        isolate();
+                    }
+
+                }
+
+                if (symptomaticTime.getAbsTime() <=
+                        t.getAbsTime() + PopulationParameters.get().personProperties.symptomToTestingDelay
                         && CovidParameters.get().testParameters.pDiagnosticTestAvailable.sample()) {
                     p.getTested();
                 }
@@ -260,7 +272,7 @@ public abstract class Household extends Place implements Home {
 
                 // Do the visit
                 for (Person p : getPeople()) {
-                    if (!p.hasMoved() && isInhabitant(p) && !p.getQuarantine()) {
+                    if (!p.hasMoved() && isInhabitant(p) && !p.isQuarantined()) {
                         Household chosenNeighbour = n;
                         p.moveTo(this, n);
                     }
@@ -289,7 +301,7 @@ public abstract class Household extends Place implements Home {
             }
 
             for (Person p : getPeople()) {
-                if (!p.hasMoved() && isInhabitant(p) && !p.getQuarantine()) {
+                if (!p.hasMoved() && isInhabitant(p) && !p.isQuarantined()) {
                     p.moveTo(this, place);
                 }
             }
@@ -315,7 +327,7 @@ public abstract class Household extends Place implements Home {
                 continue;
             }
 
-            if (isInhabitant(p) && !p.getQuarantine()
+            if (isInhabitant(p) && !p.isQuarantined()
                     && p.worksNextHour(p.getPrimaryCommunalPlace(), t)) {
                 p.moveToPrimaryPlace(this);
             }

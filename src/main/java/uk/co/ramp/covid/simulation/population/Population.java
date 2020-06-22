@@ -325,7 +325,7 @@ public class Population {
     public void timeStep(Time t, DailyStats dStats, ContactsWriter contactsWriter) {
         // Movement places people in "next" buffers (to avoid people moving twice in an hour)
         for (Household h : households) {
-            h.doTesting(t);
+            h.handleSymptomaticCases(t);
             h.doInfect(t, dStats, contactsWriter);
             h.determineMovement(t, dStats, lockdownController.inLockdown(t), getPlaces());
         }

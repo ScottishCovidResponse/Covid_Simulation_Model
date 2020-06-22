@@ -333,6 +333,9 @@ public class MovementTest extends SimulationTest {
     public void newInfectionsResetIsolationTimer() {
         int daysIsolated = 2;
         CovidParameters.get().testParameters.pDiagnosticTestAvailable = new Probability(0.0);
+        PopulationParameters.get().personProperties.pQuarantinesIfSymptomatic = new Probability(1.0);
+
+        Population p = PopulationGenerator.genValidPopulation(populationSize);
 
         Time t = new Time(24);
         DailyStats s = new DailyStats(t);
@@ -433,7 +436,7 @@ public class MovementTest extends SimulationTest {
         per.getTested();
         assertTrue(per.wasTested());
         assertFalse(per.getTestOutcome());
-        assertFalse(per.getQuarantine());
+        assertFalse(per.isQuarantined());
         assertFalse(iso.isIsolating());
     }
 
@@ -470,7 +473,7 @@ public class MovementTest extends SimulationTest {
         per.getTested();
         assertTrue(per.wasTested());
         assertTrue(per.getTestOutcome());
-        assertTrue(per.getQuarantine());
+        assertTrue(per.isQuarantined());
         assertTrue(iso.isIsolating());
     }
 

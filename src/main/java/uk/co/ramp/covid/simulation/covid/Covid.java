@@ -153,7 +153,6 @@ public class Covid {
             if(!isSymptomatic) { // This if statement is needed because the case could or could not have reached this point wihtout symptoms
             	isSymptomatic = true; 
             	log.registerSymptomatic(t);
-            	ccase.getHome().isolate();
             }
             phase1 = false;
             double rVal = rng.nextUniform(0, 1);
@@ -177,7 +176,6 @@ public class Covid {
             if (!isSymptomatic) {
                 isSymptomatic = true;
                 log.registerSymptomatic(t);
-                ccase.getHome().isolate();
             }
         }
         return status;
