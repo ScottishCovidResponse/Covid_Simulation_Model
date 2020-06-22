@@ -25,7 +25,7 @@ public abstract class Place {
     abstract public void reportInfection(Time t, Person p, DailyStats s);
 
     protected  void reportDeath(DailyStats s) {
-
+        s.incAdditionalDeaths();
     }
 
     public Place() {

@@ -7,4 +7,5 @@ public class PersonProperties {
     public Probability pTransmission = null;
     public Integer symptomToQuarantineDelay = null;
     public Integer symptomToTestingDelay = null;
+    public Double pSusceptibleChild = null;
 }

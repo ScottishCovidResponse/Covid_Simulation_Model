@@ -75,12 +75,13 @@ public class Covid {
     }
     
     private void setSymptomatic() {
-        if(ccase.getAge() >= 60) {
-            // This is set to 60 because the probability is from the Diamond Princess where people were aged > 60
+        if(ccase.getAge() >= 70) {
+            // This is set to 70 and 20 because the paper form LSHTM that informed this use these cut-offs
             symptomaticCase = CovidParameters.get().diseaseParameters.pSymptomaticCasePensioner.sample();
-        } else {
-            symptomaticCase = CovidParameters.get().diseaseParameters.pSymptomaticCase.sample();
+        } else if(ccase.getAge() < 70 && ccase.getAge() > 20) {
+            symptomaticCase = CovidParameters.get().diseaseParameters.pSymptomaticCaseAdult.sample();
         }
+        else symptomaticCase = CovidParameters.get().diseaseParameters.pSymptomaticCaseChild.sample();
     }
 
     // For each infection define the duration of the infection periods
@@ -155,7 +156,7 @@ public class Covid {
             }
             phase1 = false;
             double rVal = rng.nextUniform(0, 1);
-            if (rVal < mortalityRate / 24) {
+            if (rVal < mortalityRate / 24 * ccase.getCovidMortalityAgeAdjustment()) {
                 dead = true;
                 phase2 = false;
                 status = CStatus.DEAD;

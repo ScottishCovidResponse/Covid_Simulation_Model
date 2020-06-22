@@ -53,6 +53,10 @@ public abstract class Person {
     public abstract void reportInfection(DailyStats s);
     public abstract void reportDeath (DailyStats s);
     public abstract void allocateCommunalPlace(Places p);
+    
+    private final double covidMortalityAgeAdjustment;
+    
+    private final double covidSusceptibleVal; 
 
 
     public Person(int age, Sex sex) {
@@ -63,6 +67,12 @@ public abstract class Person {
         this.willQuarantine = PopulationParameters.get().personProperties.pQuarantinesIfSymptomatic.sample();
         this.goesToHospitalInPhase2 = CovidParameters.get().hospitalisationParameters.pPhase2GoesToHosptial.sample();
         this.personId = nPeople++;
+        
+        this.covidMortalityAgeAdjustment = Math.pow((double) age / 85.0, 2.0);
+        
+        if(age <= 20) this.covidSusceptibleVal = PopulationParameters.get().personProperties.pSusceptibleChild; // The original paper gave parameters broken at age 20
+        else this.covidSusceptibleVal = 1.0;
+
     }
 
     @Override
@@ -82,6 +92,10 @@ public abstract class Person {
 
     public CommunalPlace getPrimaryCommunalPlace() {
         return this.primaryPlace;
+    }
+    
+    public double getCovidMortalityAgeAdjustment() {
+    	return covidMortalityAgeAdjustment;
     }
 
     public void setPrimaryPlace(CommunalPlace p) {
@@ -156,7 +170,7 @@ public abstract class Person {
     }
 
     public boolean infChallenge(double challengeProb) {
-        if (rng.nextUniform(0, 1) < this.transmissionProb / 24 * challengeProb) {
+        if (rng.nextUniform(0, 1) < this.transmissionProb / 24 * challengeProb * covidSusceptibleVal) {
             this.cVirus = new Covid(this);
             return true;
         }
@@ -324,7 +338,7 @@ public abstract class Person {
     }
 
     public void seedInfectionChallenge(Time t, DailyStats s) {
-        Probability infectionChance = new Probability(getInfectionSeedRate() * t.getAbsDay());
+        Probability infectionChance = new Probability(getInfectionSeedRate() * t.getAbsDay() * this.covidSusceptibleVal);
         if (infectionChance.sample()) {
             cVirus = new Covid(this);
             cVirus.getInfectionLog().registerInfected(t);
