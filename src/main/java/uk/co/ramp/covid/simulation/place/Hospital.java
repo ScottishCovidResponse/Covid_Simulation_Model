@@ -81,7 +81,7 @@ public class Hospital extends CommunalPlace {
     }
 
     @Override
-    public double getTransP(Time t, Person infected, Person target) {
+    public double getTransP(Person infected) {
         double transP = getBaseTransP(infected);
         if (infected.isHospitalised()) {
             transP *= CovidParameters.get().hospitalisationParameters.hospitalisationTransmissionReduction;

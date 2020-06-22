@@ -7,8 +7,11 @@ import uk.co.ramp.covid.simulation.population.CStatus;
 import uk.co.ramp.covid.simulation.population.Person;
 import uk.co.ramp.covid.simulation.parameters.PopulationParameters;
 import uk.co.ramp.covid.simulation.population.Places;
+import uk.co.ramp.covid.simulation.util.RNG;
 
 import java.util.*;
+
+import org.apache.commons.math3.random.RandomDataGenerator;
 
 public abstract class Place {
 
@@ -20,6 +23,8 @@ public abstract class Place {
     protected double sDistance;
     protected double transConstant;
     protected double transAdjustment;
+    private final RandomDataGenerator rng;
+
 
 
     abstract public void reportInfection(Time t, Person p, DailyStats s);
@@ -29,6 +34,7 @@ public abstract class Place {
     }
 
     public Place() {
+        this.rng = RNG.get();
         this.people = new ArrayList<>();
         this.nextPeople = new ArrayList<>();
         this.transConstant = PopulationParameters.get().buildingProperties.baseTransmissionConstant;
@@ -119,9 +125,10 @@ public abstract class Place {
 
         for (Person cPers : people) {
             if (cPers.isInfectious()) {
+            	rng.nextBinomial(getNumPeople(), getTransP(cPers))
                 for (Person nPers : people) {
                     if (cPers != nPers && !nPers.getInfectionStatus()) {
-                        double transP = getTransP(t, cPers, nPers);
+                        double transP = getTransP(cPers);
                         boolean infected = nPers.infChallenge(transP);
                         if (infected) {
                             registerInfection(t, nPers, stats);
@@ -138,7 +145,7 @@ public abstract class Place {
         return getTransConstant() * sDistance * infected.getTransAdjustment();
     }
     
-    public double getTransP(Time t, Person infected, Person target) {
+    public double getTransP(Person infected) {
         return getBaseTransP(infected);
     }
     
