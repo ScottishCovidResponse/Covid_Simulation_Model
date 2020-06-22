@@ -327,12 +327,12 @@ public class Population {
         for (Household h : households) {
             h.doTesting(t);
             h.doInfect(t, dStats, contactsWriter);
-            h.determineMovement(t, lockdownController.inLockdown(t), getPlaces());
+            h.determineMovement(t, dStats, lockdownController.inLockdown(t), getPlaces());
         }
 
         for (Place p : places.getAllPlaces()) {
             p.doInfect(t, dStats, contactsWriter);
-            p.determineMovement(t, lockdownController.inLockdown(t), getPlaces());
+            p.determineMovement(t, dStats, lockdownController.inLockdown(t), getPlaces());
         }
         
         for (Household h : households) {
