@@ -149,9 +149,9 @@ public class DailyStatsTest extends SimulationTest {
         assertEquals("Inconsistent number of infected", expInfected, dailyInfected);
         assertEquals("Inconsistent number of place infections", expPlaceInfections, dailyInfected);
         
-        assertNotEquals("Some people are hospitalised", hospitalised);
-        assertNotEquals("Some people are hospitalised", newlyHospitalised);
-        assertTrue("Hospitalised should be > newlyHospitalised", newlyHospitalised > 0);
+        assertNotEquals("Some people are hospitalised", 0, hospitalised);
+        assertNotEquals("Some people are hospitalised (new cases)", 0, newlyHospitalised);
+        assertTrue("Hospitalised should be > newlyHospitalised", hospitalised > newlyHospitalised);
         assertTrue("Hospitalised <= phase2", newlyHospitalised <= totalPhase2);
     }
 
