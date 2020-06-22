@@ -5,4 +5,6 @@ import uk.co.ramp.covid.simulation.util.Probability;
 public class PersonProperties {
     public Probability pQuarantinesIfSymptomatic = null;
     public Probability pTransmission = null;
+    public Integer symptomToQuarantineDelay = null;
+    public Integer symptomToTestingDelay = null;
 }

@@ -33,8 +33,10 @@ public abstract class Person {
     private boolean recovered;
     private Covid cVirus;
     private final double transmissionProb;
-    private boolean quarantine;
-    private final Probability quarantineProb; // Needs more thought. The probability that the person will go into quarantine
+    
+    private boolean isQuarantined;
+    private boolean willQuarantine = false;
+    
     private Boolean testOutcome = null;
     protected final RandomDataGenerator rng;
 
@@ -58,7 +60,7 @@ public abstract class Person {
         this.sex = sex;
         this.rng = RNG.get();
         this.transmissionProb = PopulationParameters.get().personProperties.pTransmission.asDouble();
-        this.quarantineProb = PopulationParameters.get().personProperties.pQuarantinesIfSymptomatic;
+        this.willQuarantine = PopulationParameters.get().personProperties.pQuarantinesIfSymptomatic.sample();
         this.goesToHospitalInPhase2 = CovidParameters.get().hospitalisationParameters.pPhase2GoesToHosptial.sample();
         this.personId = nPeople++;
     }
@@ -75,7 +77,7 @@ public abstract class Person {
     public void recover() {
         isHospitalised = false;
         recovered = true;
-        quarantine = false;
+        isQuarantined = false;
     }
 
     public CommunalPlace getPrimaryCommunalPlace() {
@@ -114,8 +116,8 @@ public abstract class Person {
         return isHospitalised;
     }
 
-    public boolean getQuarantine() {
-        return this.quarantine;
+    public boolean isQuarantined() {
+        return isQuarantined;
     }
 
     public boolean infect() {
@@ -202,15 +204,17 @@ public abstract class Person {
     }
     
     public void enterQuarantine() {
-        quarantine = quarantineProb.sample();
+        if (willQuarantine) {
+            isQuarantined = true;
+        }
     }
 
     public void forceQuarantine() {
-        quarantine = true;
+        isQuarantined = true;
     }
     
     public void exitQuarantine() {
-        quarantine = false;
+        isQuarantined = false;
     }
 
     public boolean isInfectious() {

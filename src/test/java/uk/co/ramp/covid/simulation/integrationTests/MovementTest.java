@@ -433,7 +433,7 @@ public class MovementTest extends SimulationTest {
         per.getTested();
         assertTrue(per.wasTested());
         assertFalse(per.getTestOutcome());
-        assertFalse(per.getQuarantine());
+        assertFalse(per.isQuarantined());
         assertFalse(iso.isIsolating());
     }
 
@@ -470,7 +470,7 @@ public class MovementTest extends SimulationTest {
         per.getTested();
         assertTrue(per.wasTested());
         assertTrue(per.getTestOutcome());
-        assertTrue(per.getQuarantine());
+        assertTrue(per.isQuarantined());
         assertTrue(iso.isIsolating());
     }
 

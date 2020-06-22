@@ -218,7 +218,7 @@ public abstract class Household extends Place implements Home {
         remainInPlace();
     }
 
-      public void doTesting(Time t) {
+      public void handleSymptomaticCases(Time t) {
         for (Person p : getPeople()) {
             if (isInhabitant(p) && p.isinfected()) {
                 Time symptomaticTime = p.getcVirus().getInfectionLog().getSymptomaticTime();
@@ -227,13 +227,15 @@ public abstract class Household extends Place implements Home {
                     continue;
                 }
 
-                if (symptomaticTime.getAbsTime() <= t.getAbsTime() + 12) {
+                if (symptomaticTime.getAbsTime() <=
+                        t.getAbsTime() + PopulationParameters.get().personProperties.symptomToQuarantineDelay) {
                     p.enterQuarantine();
-                    // Isolation timer each time a new inhabitant gets symptoms
+                    // Isolation timer resets each time a new inhabitant gets symptoms
                     isolate();
                 }
 
-                if (symptomaticTime.getAbsTime() <= t.getAbsTime() + 24
+                if (symptomaticTime.getAbsTime() <=
+                        t.getAbsTime() + PopulationParameters.get().personProperties.symptomToTestingDelay
                         && CovidParameters.get().testParameters.pDiagnosticTestAvailable.sample()) {
                     p.getTested();
                 }
@@ -270,7 +272,7 @@ public abstract class Household extends Place implements Home {
 
                 // Do the visit
                 for (Person p : getPeople()) {
-                    if (!p.hasMoved() && isInhabitant(p) && !p.getQuarantine()) {
+                    if (!p.hasMoved() && isInhabitant(p) && !p.isQuarantined()) {
                         Household chosenNeighbour = n;
                         p.moveTo(this, n);
                     }
@@ -299,7 +301,7 @@ public abstract class Household extends Place implements Home {
             }
 
             for (Person p : getPeople()) {
-                if (!p.hasMoved() && isInhabitant(p) && !p.getQuarantine()) {
+                if (!p.hasMoved() && isInhabitant(p) && !p.isQuarantined()) {
                     p.moveTo(this, place);
                 }
             }
@@ -325,7 +327,7 @@ public abstract class Household extends Place implements Home {
                 continue;
             }
 
-            if (isInhabitant(p) && !p.getQuarantine()
+            if (isInhabitant(p) && !p.isQuarantined()
                     && p.worksNextHour(p.getPrimaryCommunalPlace(), t)) {
                 p.moveToPrimaryPlace(this);
             }

@@ -209,7 +209,9 @@
         },
         "personProperties":{
             "pTransmission":0.7,
-            "pQuarantinesIfSymptomatic":0.9
+            "pQuarantinesIfSymptomatic":0.9,
+            "symptomToQuarantineDelay": 12,
+            "symptomToTestingDelay": 24
         }
     }
 }
