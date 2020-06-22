@@ -22,5 +22,8 @@ public class ExampleParametersTest {
 
         m  = Model.readModelFromFile("parameters/example_model_params_lockdown.json");
         assertTrue(m.isValid());
+
+        m  = Model.readModelFromFile("parameters/example_model_params_network_gen.json");
+        assertTrue(m.isValid());
     }
 }
