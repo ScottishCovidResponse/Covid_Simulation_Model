@@ -228,7 +228,7 @@ public abstract class Person {
     public abstract boolean avoidsPhase2(double testP);
 
     protected boolean isWorking(CommunalPlace communalPlace, Time t, boolean furloughed) {
-        if (primaryPlace == null || shifts == null || furloughed) {
+        if (primaryPlace == null || shifts == null || furloughed || isHospitalised) {
             return false;
         }
 
