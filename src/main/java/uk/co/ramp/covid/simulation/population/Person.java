@@ -170,8 +170,8 @@ public abstract class Person {
         return this.cVirus.stepInfection(t);
     }
 
-    public boolean infChallenge(double challengeProb) {
-        if (rng.nextUniform(0, 1) < this.transmissionProb / 24 * challengeProb * covidSusceptibleVal) {
+    public boolean infChallenge(double environmentAdjustment) {
+        if (rng.nextUniform(0, 1) < environmentAdjustment * covidSusceptibleVal) {
             this.cVirus = new Covid(this);
             return true;
         }

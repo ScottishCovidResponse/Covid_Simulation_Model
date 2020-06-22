@@ -24,6 +24,7 @@ public abstract class Place {
     protected double transConstant;
     protected double transAdjustment;
     private final RandomDataGenerator rng;
+    protected double environmentAdjustment;
 
 
 
@@ -31,6 +32,10 @@ public abstract class Place {
 
     protected  void reportDeath(DailyStats s) {
         s.incAdditionalDeaths();
+    }
+    
+    protected double getEnvironmentAdjustment(Person susceptible) {
+    	return environmentAdjustment;
     }
 
     public Place() {
@@ -40,6 +45,7 @@ public abstract class Place {
         this.transConstant = PopulationParameters.get().buildingProperties.baseTransmissionConstant;
         this.sDistance = 1.0;
         this.transAdjustment = 1.0;
+        this.environmentAdjustment = 1.0;
     }
 
     // We use iterable here to make it harder to accidentally modify people (which is effectively immutable)
@@ -125,18 +131,22 @@ public abstract class Place {
 
         for (Person cPers : people) {
             if (cPers.isInfectious()) {
-            	rng.nextBinomial(getNumPeople(), getTransP(cPers))
-                for (Person nPers : people) {
-                    if (cPers != nPers && !nPers.getInfectionStatus()) {
-                        double transP = getTransP(cPers);
-                        boolean infected = nPers.infChallenge(transP);
-                        if (infected) {
-                            registerInfection(t, nPers, stats);
-                            nPers.getcVirus().getInfectionLog().registerInfected(t);
-                            cPers.getcVirus().getInfectionLog().registerSecondaryInfection(t, nPers);
-                        }
-                    }
-                }
+            	int nInfected = rng.nextBinomial(getNumPeople(), getTransP(cPers) / 24);
+            	List <Person> usedPerson = new ArrayList<>();
+            	if(nInfected > 0) {
+            		for(int nextInt = 1; nextInt <= nInfected; nextInt++) {
+            		Person nPers = people.get(rng.nextInt(0, getNumPeople() - 1));
+	            		if(nPers != cPers && !(usedPerson.contains(nPers))) {
+	            			usedPerson.add(nPers);
+	                        boolean infected = nPers.infChallenge(getEnvironmentAdjustment(t, this));
+	                        if (infected) {
+	                            registerInfection(t, nPers, stats);
+	                            nPers.getcVirus().getInfectionLog().registerInfected(t);
+	                            cPers.getcVirus().getInfectionLog().registerSecondaryInfection(t, nPers);
+	                        }
+	            		}
+            		}
+            	}
             }
         }
     }
