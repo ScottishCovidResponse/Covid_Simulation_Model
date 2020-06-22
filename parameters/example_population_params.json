@@ -21,9 +21,9 @@
           "aSymptomaticTransAdjustment": 0.25,
           "symptomaticTransAdjustment": 1.0,
           "mortalityRate":0.025,
-          "childProgressionPhase2":0.02,
-          "adultProgressionPhase2":0.15,
-          "pensionerProgressionPhase2":0.8
+          "childProgressionPhase2":0.01,
+          "adultProgressionPhase2":0.2,
+          "pensionerProgressionPhase2":0.7
       },
       "infectionSeedProperties": {
           "infectionRateIncreaseAdult":0.0000002,
