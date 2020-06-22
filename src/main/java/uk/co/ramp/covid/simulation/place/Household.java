@@ -225,8 +225,13 @@ public abstract class Household extends Place implements Home {
                 if (symptomaticTime.getAbsTime() <=
                         t.getAbsTime() + PopulationParameters.get().personProperties.symptomToQuarantineDelay) {
                     p.enterQuarantine();
-                    // Isolation timer resets each time a new inhabitant gets symptoms
-                    isolate();
+
+                    // A person might choose not to quarantine, in which case the household doesn't isolate either
+                    if (p.isQuarantined()) {
+                        // Isolation timer resets each time a new inhabitant gets symptoms
+                        isolate();
+                    }
+
                 }
 
                 if (symptomaticTime.getAbsTime() <=
