@@ -145,8 +145,9 @@ public abstract class Person {
         return isInCare;
     }
 
-    public void hospitalise() {
+    public void hospitalise(DailyStats s) {
         isHospitalised = true;
+        s.incHospitalised();
     }
 
     public boolean goesToHosptialInPhase2() {

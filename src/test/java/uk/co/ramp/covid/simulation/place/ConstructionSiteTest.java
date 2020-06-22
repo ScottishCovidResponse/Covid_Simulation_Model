@@ -112,7 +112,7 @@ public class ConstructionSiteTest extends SimulationTest {
         cs.addPerson(new Adult(30, FEMALE));
         cs.addPerson(new Adult(35, MALE));
         int time = cs.times.getClose() - 1;
-        cs.determineMovement(new Time(time),  false, null);
+        cs.determineMovement(new Time(time), new DailyStats(new Time(time)), false, null);
         cs.commitMovement();
         int expPeople = 0;
         assertEquals("Unexpected people left on construction site", expPeople, cs.getNumPeople());
