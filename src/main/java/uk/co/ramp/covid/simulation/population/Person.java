@@ -35,7 +35,7 @@ public abstract class Person {
     private final double transmissionProb;
     
     private boolean isQuarantined;
-    private boolean willQuarantine = false;
+    private boolean willQuarantine;
     
     private Boolean testOutcome = null;
     protected final RandomDataGenerator rng;
@@ -185,22 +185,15 @@ public abstract class Person {
 
     // This method is pretty important, it returns the Covid infection status
     public CStatus cStatus() {
-        CStatus cStatus = CStatus.HEALTHY;
         if (this.getInfectionStatus()) {
-            if (this.cVirus.isLatent()) cStatus = CStatus.LATENT;
-            if (this.cVirus.isAsymptomatic()) cStatus = CStatus.ASYMPTOMATIC;
-            if (this.cVirus.isPhase1()) {
-                cStatus = CStatus.PHASE1;
-            }
-            if (this.cVirus.isPhase2()) {
-                cStatus = CStatus.PHASE2;
-            }
-            if (this.cVirus.isDead()) cStatus = CStatus.DEAD;
-            if (this.cVirus.isRecovered() && !this.cVirus.isDead()) {
-                cStatus = CStatus.RECOVERED;
-            }
+            if (this.cVirus.isLatent()) { return CStatus.LATENT; }
+            if (this.cVirus.isAsymptomatic()) { return CStatus.ASYMPTOMATIC; };
+            if (this.cVirus.isPhase1()) { return CStatus.PHASE1; }
+            if (this.cVirus.isPhase2()) { return CStatus.PHASE2; }
+            if (this.cVirus.isDead()) { return CStatus.DEAD; }
+            if (this.cVirus.isRecovered()) { return CStatus.RECOVERED; }
         }
-        return cStatus;
+        return CStatus.HEALTHY;
     }
     
     public void enterQuarantine() {

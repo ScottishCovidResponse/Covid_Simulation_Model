@@ -16,21 +16,16 @@ public abstract class Household extends Place implements Home {
 
     private final List<Household> neighbours;
     
-    private boolean willIsolate = false;
-    private boolean lockCompliant = false;
+    private boolean willIsolate;
+    private boolean lockCompliant;
     private int isolationTimer = 0;
     private boolean visitsNeighbourToday = false;
 
     // Create household defined by who lives there
     public Household() {
         this.neighbours = new ArrayList<>();
-        if (PopulationParameters.get().householdProperties.pWillIsolate.sample()) {
-            willIsolate = true;
-        }
-        if (PopulationParameters.get().householdProperties.pLockCompliance.sample()) {
-        	lockCompliant = true;
-        }
-
+        willIsolate = PopulationParameters.get().householdProperties.pWillIsolate.sample();
+        lockCompliant = PopulationParameters.get().householdProperties.pLockCompliance.sample();
     }
     
     public void forceIsolationtimer(int time) {
