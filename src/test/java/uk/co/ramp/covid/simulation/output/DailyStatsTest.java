@@ -3,7 +3,10 @@ package uk.co.ramp.covid.simulation.output;
 import org.junit.Before;
 import org.junit.Test;
 import uk.co.ramp.covid.simulation.Model;
+import uk.co.ramp.covid.simulation.parameters.CovidParameters;
+import uk.co.ramp.covid.simulation.parameters.PopulationParameters;
 import uk.co.ramp.covid.simulation.testutil.SimulationTest;
+import uk.co.ramp.covid.simulation.util.Probability;
 
 import java.util.List;
 
@@ -162,6 +165,10 @@ public class DailyStatsTest extends SimulationTest {
         int nIter = 1;
         int nDays = 60;
         int RNGSeed = 42;
+        
+        // Try to force at least 1 care home death for test purposes
+        CovidParameters.get().diseaseParameters.pensionerProgressionPhase2 = 100.0;
+        PopulationParameters.get().pensionerProperties.pEntersCareHome = new Probability(0.33);
 
         Model m = new Model()
                 .setPopulationSize(population)
