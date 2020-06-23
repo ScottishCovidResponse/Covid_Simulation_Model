@@ -34,9 +34,6 @@ public abstract class Place {
         s.incAdditionalDeaths();
     }
     
-    protected double getEnvironmentAdjustment(Person susceptible) {
-    	return environmentAdjustment;
-    }
 
     public Place() {
         this.rng = RNG.get();
@@ -46,6 +43,10 @@ public abstract class Place {
         this.sDistance = 1.0;
         this.transAdjustment = 1.0;
         this.environmentAdjustment = 1.0;
+    }
+
+    protected double getEnvironmentAdjustment(Person susceptible, Person target, Time t) {
+    	return environmentAdjustment;
     }
 
     // We use iterable here to make it harder to accidentally modify people (which is effectively immutable)
@@ -138,7 +139,7 @@ public abstract class Place {
             		Person nPers = people.get(rng.nextInt(0, getNumPeople() - 1));
 	            		if(nPers != cPers && !(usedPerson.contains(nPers))) {
 	            			usedPerson.add(nPers);
-	                        boolean infected = nPers.infChallenge(getEnvironmentAdjustment(t, this));
+	                        boolean infected = nPers.infChallenge(getEnvironmentAdjustment(nPers, cPers, t));
 	                        if (infected) {
 	                            registerInfection(t, nPers, stats);
 	                            nPers.getcVirus().getInfectionLog().registerInfected(t);

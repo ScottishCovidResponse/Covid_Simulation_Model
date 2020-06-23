@@ -90,9 +90,9 @@ public class Hospital extends CommunalPlace {
     }
     
     @Override
-    public double getEnvironmentAdjustment(Person susceptible) {
+    public double getEnvironmentAdjustment(Person susceptible, Person infected, Time t) {
     	
-    	if(!susceptible.isHospitalised()) {
+    	if(!susceptible.isHospitalised() && infected.isHospitalised() && infected.goesToHosptialInPhase2()) {
     		return CovidParameters.get().hospitalisationParameters.hospitalisationTransmissionReduction;
     	}
     	else return environmentAdjustment;
