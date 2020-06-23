@@ -21,7 +21,6 @@ import uk.co.ramp.covid.simulation.util.RNG;
 
 public abstract class Person {
 
-
     public enum Sex {
         MALE, FEMALE
     }
@@ -303,12 +302,18 @@ public abstract class Person {
         }
     }
 
-    // People need to leave early if they have a shift starting in 2 hours time
-    // 1 hour travels home, 1 travels to work; There is currently no direct travel to work.
+    // People need to leave early if they have a shift starting in 2 hours time, 
+    // or if they have a hospital appt to get to
+    // 1 hour travels home, 1 travels to work; There is currently no direct travel to work/hospitals.
     public boolean mustGoHome(Time t) {
+        if (hospitalAppt != null) {
+            return t.getHour() + 2 >= hospitalAppt.getStartTime().getHour();
+        }
+
         if (primaryPlace != null && shifts != null) {
             return t.getHour() + 2 >= shifts.getShift(t.getDay()).getStart();
         }
+
         return false;
     }
 
@@ -439,4 +444,9 @@ public abstract class Person {
     public HospitalAppt getHospitalAppt() {
         return hospitalAppt;
     }
+
+    public void setHospitalAppt(HospitalAppt hospitalAppt) {
+        this.hospitalAppt = hospitalAppt;
+    }
+
 }

@@ -536,7 +536,7 @@ public class MovementTest extends SimulationTest {
 
     @Test
     public void peopleAttendHospitalAppts() {
-        final int simDays = 5;
+        final int simDays = 7;
         Time t = new Time(0);
         // We need to force > 1 hospital, else it will be designated COVID and no accept patients
         PopulationParameters.get().buildingDistribution.populationToHospitalsRatio = 5000;

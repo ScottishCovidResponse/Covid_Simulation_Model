@@ -236,4 +236,46 @@ public class HospitalTest extends SimulationTest {
         assertEquals("Unexpected people left in hospital", expPeople, hospital.getNumPeople());
     }
 
+    @Test
+    public void childrenAreAcompaniedByAdultsForApts() {
+        int simDays = 7;
+        int populationSize = 10000;
+        int nInfections = 100;
+
+        // Need to force some non-covid hospitals
+        PopulationParameters.get().buildingDistribution.populationToHospitalsRatio = 3000;
+        Population pop = PopulationGenerator.genValidPopulation(populationSize);
+        pop.seedVirus(nInfections);
+
+        Time t = new Time(0);
+        for (int i = 0; i < simDays; i++) {
+            for (Person per : pop.getAllPeople()) {
+                per.deteremineHospitalVisits(t, false, pop.getPlaces());
+            }
+
+            for (int j = 0; j < 24; j++) {
+                pop.timeStep(t, new DailyStats(t));
+                t = t.advance();
+
+                for (Hospital h : pop.getPlaces().getAllHospitals()) {
+                    for (Person p : h.getPeople()) {
+                        if (p.hasHospitalAppt() && !p.getHospitalAppt().isOver(t) 
+                                && (p instanceof Child || p instanceof Infant)) {
+
+                            Person acompanying = null;
+                            for (Person p2 : h.getPeople()) {
+                                if (p != p2 && p2.getHome() == p.getHome() && p2.hasHospitalAppt()
+                                        && (p2 instanceof Adult || p2 instanceof Pensioner)) {
+                                    acompanying = p2;
+                                }
+                            }
+                            assertNotNull(acompanying);
+
+                        }
+                    }
+                }
+            }
+        }
+    }
+
 }

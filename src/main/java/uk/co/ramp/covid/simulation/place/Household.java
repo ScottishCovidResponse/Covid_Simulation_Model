@@ -219,15 +219,28 @@ public abstract class Household extends Place implements Home {
         remainInPlace();
     }
 
-    // TODO: doesn't currently handle parent/child constraints
     private void moveHospital(Time t) {
         for (Person p : getPeople() ) {
             if (p.hasMoved() || !p.hasHospitalAppt()) {
                 continue;
             }
-            
+
             if (p.getHospitalAppt().getStartTime().equals(t.advance())) {
-                p.moveTo(this, p.getHospitalAppt().getApptLocation());
+               // Children need to find an adult to go with them else they don't go
+               if (p instanceof Child || p instanceof Infant) {
+                   for (Person per : getPeople() ) {
+                       if (per != p && (per instanceof Adult || per instanceof Pensioner)
+                               && !per.hasMoved() && !per.hasHospitalAppt()) {
+                           // Giving them the same appt ensures they leave at the same time
+                           per.setHospitalAppt(p.getHospitalAppt());
+                           per.moveTo(this, per.getHospitalAppt().getApptLocation());
+                           p.moveTo(this, p.getHospitalAppt().getApptLocation());
+                           break;
+                       }
+                   }
+               } else {
+                    p.moveTo(this, p.getHospitalAppt().getApptLocation());
+                }
             }
         }
     }
