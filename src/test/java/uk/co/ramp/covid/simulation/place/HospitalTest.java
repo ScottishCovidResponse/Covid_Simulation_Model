@@ -222,7 +222,7 @@ public class HospitalTest extends SimulationTest {
 
     @Test
     public void testSendHome() {
-        Hospital hospital = new Hospital(CommunalPlace.Size.MED);
+        Hospital hospital = new CovidHospital(CommunalPlace.Size.MED);
         Home h = new CareHome(CommunalPlace.Size.MED);
         Adult adult1 = new Adult(30, FEMALE);
         Adult adult2 = new Adult(30, MALE);

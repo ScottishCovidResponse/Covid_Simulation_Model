@@ -377,6 +377,12 @@ public class Population {
                 t = t.advance();
             }
             households.forEach(Household::dayEnd);
+
+            // At the end of each day we also determine possible hospital visits for the next day
+            for (Person p : allPeople) {
+                p.deteremineHospitalVisits(t, lockdownController.inLockdown(t));
+            }
+
             stats.add(this.processCases(dStats));
 
             if (!rprinted) {

@@ -56,14 +56,15 @@ public class Hospital extends CommunalPlace {
 
     public void movePatients(Time t) {
         for (Person p : getPeople()) {
+            //TODO: check hospital workers with appts are handled correctly
             if (p.hasMoved() || p.isWorking(this, t)) {
                 continue;
             }
-            
-            if (p.isHospitalised()) {
-                p.stayInPlace(this);
-            } else {
+
+            if (p.hasHospitalAppt() && p.getHospitalAppt().isOver(t)) {
                 p.returnHome(this);
+            } else {
+                p.stayInPlace(this);
             }
         }
     }

@@ -167,7 +167,7 @@ public abstract class Household extends Place implements Home {
         }
     }
     
-    public void goToHospital(Time t, DailyStats s, Places places) {
+    public void sendCOVIDPatientsToHospital(Time t, DailyStats s, Places places) {
         for (Person p : getPeople() ) {
             if (p.hasMoved()) {
                 continue;
@@ -188,11 +188,12 @@ public abstract class Household extends Place implements Home {
 
     @Override
     public void determineMovement(Time t, DailyStats s, boolean lockdown, Places places) {
-        goToHospital(t, s, places);
+        sendCOVIDPatientsToHospital(t, s, places);
 
         if (!isIsolating() && getNumInhabitants() > 0) {
-            // Ordering here implies work takes highest priority, then shopping trips have higher priority
-            // than neighbour and restaurant trips
+            // Ordering here implies hospital appts take highest priority
+            moveHospital(t, places);
+
             moveShift(t);
 
             // Shops are only open 8-22
@@ -218,7 +219,22 @@ public abstract class Household extends Place implements Home {
         remainInPlace();
     }
 
-      public void doTesting(Time t) {
+    // TODO: doesn't currently handle parent/child constraints
+    private void moveHospital(Time t, Places places) {
+        for (Person p : getPeople() ) {
+            if (p.hasMoved() || !p.hasHospitalAppt()) {
+                continue;
+            }
+            
+            if (p.getHospitalAppt().getStartTime().equals(t.advance())) {
+                // TODO: should be random non-covid hospital
+                Hospital h = places.getRandomHospital();
+                p.moveTo(this, h);
+            }
+        }
+    }
+
+    public void doTesting(Time t) {
         for (Person p : getPeople()) {
             if (isInhabitant(p) && p.isinfected()) {
                 Time symptomaticTime = p.getcVirus().getInfectionLog().getSymptomaticTime();

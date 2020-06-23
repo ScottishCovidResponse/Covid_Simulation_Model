@@ -8,6 +8,9 @@ import org.apache.commons.math3.random.RandomDataGenerator;
 import uk.co.ramp.covid.simulation.covid.Covid;
 import uk.co.ramp.covid.simulation.parameters.CovidParameters;
 import uk.co.ramp.covid.simulation.output.DailyStats;
+import uk.co.ramp.covid.simulation.parameters.HospitalApptInfo;
+import uk.co.ramp.covid.simulation.parameters.HospitalApptParameters;
+import uk.co.ramp.covid.simulation.util.HospitalAppt;
 import uk.co.ramp.covid.simulation.util.Time;
 import uk.co.ramp.covid.simulation.parameters.PopulationParameters;
 import uk.co.ramp.covid.simulation.place.CareHome;
@@ -15,6 +18,8 @@ import uk.co.ramp.covid.simulation.place.CommunalPlace;
 import uk.co.ramp.covid.simulation.place.Place;
 import uk.co.ramp.covid.simulation.util.Probability;
 import uk.co.ramp.covid.simulation.util.RNG;
+
+import javax.net.ssl.HostnameVerifier;
 
 public abstract class Person {
 
@@ -55,7 +60,8 @@ public abstract class Person {
     private final double covidMortalityAgeAdjustment;
     
     private final double covidSusceptibleVal; 
-
+    
+    private HospitalAppt hospitalAppt;
 
     public Person(int age, Sex sex) {
         this.age = age;
@@ -363,4 +369,50 @@ public abstract class Person {
     protected abstract double getInfectionSeedRate();
     
     public void furlough() {};
+
+    // We can't determine this in household incase the person is working nightshift
+    // Time is always the start of a day
+    public void deteremineHospitalVisits(Time t, boolean lockdown) {
+        // TODO: cache this
+        HospitalApptInfo info = PopulationParameters.get().hospitalAppsParams().getParams(sex, age);
+        
+        double lockdownAdjust = lockdown ? 0.75 : 1.0;
+        
+        if (new Probability(info.pDayCase.asDouble() * lockdownAdjust).sample()) {
+            // Start at 8 - TODO-CHECK: Is this anytime after 8 or always at 8?
+            Time startTime = new Time(t.getAbsTime() + 8);
+            // TODO: Parameters for these numbers
+            int length = (int) RNG.get().nextGaussian(8, 1);
+            if (length < 1) {
+                length =  1;
+            }
+            hospitalAppt = new HospitalAppt(startTime, length);
+        } else if (new Probability(info.pInPatient.asDouble() * lockdownAdjust).sample()) {
+            Time startTime = new Time(t.getAbsTime() + RNG.get().nextInt(1, 23));
+            // TODO: Parameters for these numbers
+            int length = info.inPatientLength.intValue();
+            if (length < 1) {
+                length =  1;
+            }
+            hospitalAppt = new HospitalAppt(startTime, length);
+        } else if (new Probability(info.pOutPatient.asDouble() * lockdownAdjust).sample()) {
+            Time startTime = new Time(t.getAbsTime() + RNG.get().nextInt(8, 17));
+            // TODO: check this
+            int length = (int) RNG.get().nextExponential(2);
+            if (length < 1) {
+                length =  1;
+            }
+            hospitalAppt = new HospitalAppt(startTime, length);
+        } else {
+            hospitalAppt = null;
+        }
+    }
+    
+    public boolean hasHospitalAppt() {
+        return hospitalAppt != null;
+    }
+    
+    public HospitalAppt getHospitalAppt() {
+        return hospitalAppt;
+    }
 }

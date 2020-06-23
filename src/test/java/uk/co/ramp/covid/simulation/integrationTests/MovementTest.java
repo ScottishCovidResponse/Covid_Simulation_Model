@@ -533,4 +533,36 @@ public class MovementTest extends SimulationTest {
         }
 
     }
+
+    @Test
+    public void peopleAttendHospitalAppts() {
+        final int simDays = 5;
+        Time t = new Time(0);
+        // We need to force > 1 hospital, else it will be designated COVID and no accept patients
+        PopulationParameters.get().buildingDistribution.populationToHospitalsRatio = 5000;
+        p = PopulationGenerator.genValidPopulation(populationSize);
+        p.seedVirus(nInfections);
+
+        int hospitalApptVisitors = 0;
+
+        for (int i = 0; i < simDays; i++) {
+            for (Person per : p.getAllPeople()) {
+                per.deteremineHospitalVisits(t, false);
+            }
+            
+            for (int j = 0; j < 24; j++) {
+                p.timeStep(t, new DailyStats(t));
+                t = t.advance();
+
+                for (Hospital h : p.getPlaces().getHospitals()) {
+                    for (Person p : h.getPeople()) {
+                        if (p.hasHospitalAppt() && !p.getHospitalAppt().isOver(t)) {
+                            hospitalApptVisitors++;
+                        }
+                    }
+                }
+            }
+        }
+        assertNotEquals("Noone had a hospital appt", 0, hospitalApptVisitors);
+    }
 }

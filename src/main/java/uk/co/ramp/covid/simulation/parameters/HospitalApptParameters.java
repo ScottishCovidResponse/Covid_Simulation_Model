@@ -54,4 +54,8 @@ public class HospitalApptParameters {
         }
         return valid;
     }
+
+    public HospitalApptInfo getParams(Person.Sex sex, int age) {
+        return apptInfo.get(new PopulationDistribution.SexAge(sex, age));
+    }
 }

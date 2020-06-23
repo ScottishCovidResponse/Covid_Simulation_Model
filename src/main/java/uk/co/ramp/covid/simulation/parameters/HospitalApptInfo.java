@@ -1,8 +1,10 @@
 package uk.co.ramp.covid.simulation.parameters;
 
+import uk.co.ramp.covid.simulation.util.Probability;
+
 public class HospitalApptInfo {
-    public Double pInPatient = null;
+    public Probability pInPatient = null;
     public Double inPatientLength = null;
-    public Double pOutPatient = null;
-    public Double pDayCase = null;
+    public Probability pOutPatient = null;
+    public Probability pDayCase = null;
 }
