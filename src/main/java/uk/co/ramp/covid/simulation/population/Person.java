@@ -171,7 +171,7 @@ public abstract class Person {
     }
 
     public boolean infChallenge(double environmentAdjustment) {
-        if (rng.nextUniform(0, 1) < environmentAdjustment * covidSusceptibleVal) {
+        if (rng.nextUniform(0, 1) < environmentAdjustment * covidSusceptibleVal && this.cVirus == null) {
             this.cVirus = new Covid(this);
             return true;
         }

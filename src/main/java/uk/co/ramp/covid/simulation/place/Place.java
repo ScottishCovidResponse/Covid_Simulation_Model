@@ -45,7 +45,7 @@ public abstract class Place {
         this.environmentAdjustment = 1.0;
     }
 
-    protected double getEnvironmentAdjustment(Person susceptible, Person target, Time t) {
+    protected double getEnvironmentAdjustment(Person susceptible, Person infected, Time t) {
     	return environmentAdjustment;
     }
 
@@ -132,7 +132,7 @@ public abstract class Place {
 
         for (Person cPers : people) {
             if (cPers.isInfectious() && getNumPeople() > 1) {
-            	int nInfected = rng.nextBinomial(getNumPeople() - 1, getTransP(cPers) / 24);
+            	int nInfected = rng.nextBinomial(getNumPeople() - 1, getTransP(cPers) / 24.0);
             	List <Person> usedPerson = new ArrayList<>();
             	if(nInfected > 0) {
             		for(int nextInt = 1; nextInt <= nInfected; nextInt++) {
