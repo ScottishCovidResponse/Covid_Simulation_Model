@@ -1,5 +1,6 @@
 package uk.co.ramp.covid.simulation.parameters;
 
+import com.google.gson.annotations.Expose;
 import uk.co.ramp.covid.simulation.util.InvalidParametersException;
 
 import java.util.HashMap;
@@ -24,6 +25,13 @@ public class PopulationParameters {
     public final PersonProperties personProperties;
     public HouseholdProperties householdProperties;
 
+    // For easier parsing we have 2 structures for appt info. One we parse, and one we query
+    private Map<String, HospitalApptInfo> hospitalAppts;
+
+    // Marking this transient is the easiest way to avoid this being serialized since the map
+    // above has all the same information
+    private transient HospitalApptParameters hospitalAppsParams = null;
+
     private PopulationParameters() {
         populationDistribution = new HashMap<>();
         householdDistribution = new HouseholdDistribution();
@@ -34,6 +42,7 @@ public class PopulationParameters {
         pensionerProperties = new PensionerProperties();
         personProperties = new PersonProperties();
         householdProperties = new HouseholdProperties();
+        hospitalAppts = new HashMap<>();
     }
 
     public boolean isValid() {
@@ -50,6 +59,7 @@ public class PopulationParameters {
         valid = valid && checker.isValid(pensionerProperties);
         valid = valid && checker.isValid(personProperties);
         valid = valid && checker.isValid(householdProperties) && householdProperties.isValid();
+        valid = valid && hospitalAppsParams().isValid();
         return valid;
     }
 
@@ -58,6 +68,13 @@ public class PopulationParameters {
             throw new InvalidParametersException("Invalid population parameters");
         }
         return pp;
+    }
+
+    public HospitalApptParameters hospitalAppsParams() {
+        if (hospitalAppsParams == null) {
+            hospitalAppsParams = new HospitalApptParameters(hospitalAppts);
+        }
+        return hospitalAppsParams;
     }
 
     public static void setParameters(PopulationParameters p) {
