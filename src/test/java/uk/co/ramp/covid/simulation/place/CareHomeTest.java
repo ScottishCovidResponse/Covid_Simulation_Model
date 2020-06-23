@@ -95,7 +95,7 @@ public class CareHomeTest extends SimulationTest {
         // Not quarantined instantly
         for (Person p : home.getPeople()) {
             if (p == inf) { continue; }
-            assertTrue(home.getTransP(t, inf, p) > 0);
+            assertTrue(home.getTransP(inf) > 0);
         }
 
         // Step till quarantine
@@ -110,10 +110,10 @@ public class CareHomeTest extends SimulationTest {
                 continue;
             }
             if (p.isInCare()) {
-                assertEquals(0.0, home.getTransP(t, inf, p), 0.001);
+                assertEquals(0.0, home.getTransP(inf), 0.001);
             } else {
                 // PPE Adjustment
-                assertTrue(home.getTransP(t, inf, null) > home.getTransP(new Time(0), inf, p));
+                assertTrue(home.getTransP(inf) > home.getTransP(inf));
             }
         }
     }
