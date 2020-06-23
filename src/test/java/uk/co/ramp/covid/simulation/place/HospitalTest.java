@@ -47,7 +47,7 @@ public class HospitalTest extends SimulationTest {
                 // Since movement puts people in place for the *next* hour, it's easiest to check this before the timestep
                 // First check is skipped to give workers time to move to work
                 if (firstSkipped) {
-                    for (Hospital place : p.getPlaces().getHospitals()) {
+                    for (Hospital place : p.getPlaces().getAllHospitals()) {
                         staff = place.getStaff(t);
                         assertTrue("Day " + day + " Time " + i  + " Unexpectedly no staff in hospital",
                                 staff.size() > 0);
@@ -92,7 +92,7 @@ public class HospitalTest extends SimulationTest {
         assertFalse(inf.isRecovered());
 
         boolean inHospital = false;
-        for (Hospital h : pop.getPlaces().getHospitals()) {
+        for (Hospital h : pop.getPlaces().getAllHospitals()) {
             if (h.personInPlace(inf) && inf.isHospitalised()) {
                 inHospital = true;
             }
@@ -115,7 +115,7 @@ public class HospitalTest extends SimulationTest {
 
         // Don't check explicitly for atHome since they could be back at work already
         inHospital = false;
-        for (Hospital h : pop.getPlaces().getHospitals()) {
+        for (Hospital h : pop.getPlaces().getAllHospitals()) {
             if (h.personInPlace(inf) && inf.isHospitalised()) {
                 inHospital = true;
             }
@@ -203,7 +203,7 @@ public class HospitalTest extends SimulationTest {
 
         Set<Person> hospitalWorkersPreLockdown = new HashSet<>();
         pop.simulate(1);
-        for (Hospital h : pop.getPlaces().getHospitals()) {
+        for (Hospital h : pop.getPlaces().getAllHospitals()) {
             hospitalWorkersPreLockdown.addAll(h.getStaff(Time.timeFromDay(1)));
         }
         
@@ -211,7 +211,7 @@ public class HospitalTest extends SimulationTest {
         
         Set<Person> hospitalWorkersInLockdown = new HashSet<>();
         pop.simulateFromTime(Time.timeFromDay(1), 2);
-        for (Hospital h : pop.getPlaces().getHospitals()) {
+        for (Hospital h : pop.getPlaces().getAllHospitals()) {
             hospitalWorkersInLockdown.addAll(h.getStaff(Time.timeFromDay(3)));
         }
         

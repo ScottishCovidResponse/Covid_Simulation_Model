@@ -227,9 +227,11 @@ public abstract class Household extends Place implements Home {
             }
             
             if (p.getHospitalAppt().getStartTime().equals(t.advance())) {
-                // TODO: should be random non-covid hospital
-                Hospital h = places.getRandomHospital();
-                p.moveTo(this, h);
+                Hospital h = places.getRandomNonCovidHospital();
+                // For small populations there might not be any non-COVID hospitals
+                if (h != null) {
+                    p.moveTo(this, h);
+                }
             }
         }
     }

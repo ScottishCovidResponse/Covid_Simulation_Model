@@ -172,7 +172,7 @@ public class MovementTest extends SimulationTest {
         DailyStats s = new DailyStats(t);
         for (int i = 0; i < simTime; i++) {
             p.timeStep(t, s);
-            for (Hospital place : p.getPlaces().getHospitals()) {
+            for (Hospital place : p.getPlaces().getAllHospitals()) {
                 for (Person per : place.getPeople()) {
                     if (per.getPrimaryCommunalPlace() != place || per.isHospitalised()) {
                         visiting.add(per);
@@ -554,7 +554,7 @@ public class MovementTest extends SimulationTest {
                 p.timeStep(t, new DailyStats(t));
                 t = t.advance();
 
-                for (Hospital h : p.getPlaces().getHospitals()) {
+                for (Hospital h : p.getPlaces().getAllHospitals()) {
                     for (Person p : h.getPeople()) {
                         if (p.hasHospitalAppt() && !p.getHospitalAppt().isOver(t)) {
                             hospitalApptVisitors++;

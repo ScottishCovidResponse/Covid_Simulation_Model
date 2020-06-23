@@ -373,8 +373,12 @@ public abstract class Person {
     // We can't determine this in household incase the person is working nightshift
     // Time is always the start of a day
     public void deteremineHospitalVisits(Time t, boolean lockdown) {
-        // TODO: cache this
         HospitalApptInfo info = PopulationParameters.get().hospitalAppsParams().getParams(sex, age);
+        
+        // Appts might be across days so don't regenerate if we already have one
+        if (hasHospitalAppt() && !getHospitalAppt().isOver(t)) {
+            return;
+        }
         
         double lockdownAdjust = lockdown ? 0.75 : 1.0;
         
