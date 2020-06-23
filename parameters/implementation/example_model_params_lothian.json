@@ -4,7 +4,7 @@
     "externalInfectionDays":55,
     "nDays":160,
     "nIters":1,
-    "rngSeed":42,
+    "rngSeed":412,
     "outputDirectory":"",
     "lockDown":{
         "start":55,
