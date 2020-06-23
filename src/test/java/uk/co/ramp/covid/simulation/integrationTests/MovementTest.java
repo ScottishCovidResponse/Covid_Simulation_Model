@@ -544,6 +544,7 @@ public class MovementTest extends SimulationTest {
         p.seedVirus(nInfections);
 
         int hospitalApptVisitors = 0;
+        int hospitalApptCare = 0;
 
         for (int i = 0; i < simDays; i++) {
             for (Person per : p.getAllPeople()) {
@@ -558,11 +559,16 @@ public class MovementTest extends SimulationTest {
                     for (Person p : h.getPeople()) {
                         if (p.hasHospitalAppt() && !p.getHospitalAppt().isOver(t)) {
                             hospitalApptVisitors++;
+                            if (p.isInCare()) {
+                                hospitalApptCare++;
+                            }
                         }
                     }
                 }
             }
         }
-        assertNotEquals("Noone had a hospital appt", 0, hospitalApptVisitors);
+        assertNotEquals("No one had a hospital appt", 0, hospitalApptVisitors);
+        assertNotEquals("No one from care had a hospital appt", 0, hospitalApptCare);
     }
+
 }

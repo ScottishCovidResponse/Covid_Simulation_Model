@@ -51,9 +51,25 @@ public class CareHome extends CommunalPlace implements Home {
         }
     }
 
+    private void moveHospital(Time t, Places places) {
+        for (Person p : getPeople()) {
+            if (p.hasMoved() || !p.hasHospitalAppt()) {
+                continue;
+            }
+            if (p.getHospitalAppt().getStartTime().equals(t.advance())) {
+                Hospital h = places.getRandomNonCovidHospital();
+                // For small populations there might not be any non-COVID hospitals
+                if (h != null) {
+                    p.moveTo(this, h);
+                }
+            }
+        }
+    }
+
     @Override
     public void determineMovement(Time t, DailyStats s, boolean lockdown, Places places) {
         movePhase2(t, s, places, Person::isInCare);
+        moveHospital(t, places);
         moveShifts(t, lockdown, Person::isInCare);
         remainInPlace();
     }
