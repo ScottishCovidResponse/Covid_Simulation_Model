@@ -213,6 +213,16 @@
             "pSusceptibleChild": 0.5,
             "pQuarantinesIfSymptomatic":0.9
         },
+        "hospitalApptTimings": {
+          "dayCaseStartTime": 8,
+          "meanDayCaseTime": 8,
+          "SDDayCaseTime": 1,
+          "inPatientFirstStartTime": 1,
+          "inPatientLastStartTime": 23,
+          "outPatientFirstStartTime": 8,
+          "outPatientLastStartTime": 17,
+          "meanOutPatientTime": 2
+        },
         "hospitalAppts": {
           "f_0_9":{
             "pOutPatient":0.000401541756159,

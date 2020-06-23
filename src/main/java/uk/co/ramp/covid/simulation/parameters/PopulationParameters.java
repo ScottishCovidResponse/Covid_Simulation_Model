@@ -24,6 +24,7 @@ public class PopulationParameters {
     public PensionerProperties pensionerProperties;
     public final PersonProperties personProperties;
     public HouseholdProperties householdProperties;
+    public HosptialApptTimings hospitalApptTimings;
 
     // For easier parsing we have 2 structures for appt info. One we parse, and one we query
     private Map<String, HospitalApptInfo> hospitalAppts;
@@ -42,6 +43,7 @@ public class PopulationParameters {
         pensionerProperties = new PensionerProperties();
         personProperties = new PersonProperties();
         householdProperties = new HouseholdProperties();
+        hospitalApptTimings = new HosptialApptTimings();
         hospitalAppts = new HashMap<>();
     }
 
@@ -59,6 +61,7 @@ public class PopulationParameters {
         valid = valid && checker.isValid(pensionerProperties);
         valid = valid && checker.isValid(personProperties);
         valid = valid && checker.isValid(householdProperties) && householdProperties.isValid();
+        valid = valid && checker.isValid(hospitalApptTimings);
         valid = valid && hospitalAppsParams().isValid();
         return valid;
     }
