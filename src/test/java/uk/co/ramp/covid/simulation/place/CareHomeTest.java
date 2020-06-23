@@ -110,10 +110,10 @@ public class CareHomeTest extends SimulationTest {
                 continue;
             }
             if (p.isInCare()) {
-                assertEquals(0.0, home.getTransP(inf), 0.001);
+                assertEquals(0.0, home.getEnvironmentAdjustment(p, inf, t), 0.001);
             } else {
                 // PPE Adjustment
-                assertTrue(home.getTransP(inf) > home.getTransP(inf));
+                assertTrue(home.getEnvironmentAdjustment(p, inf, t) > 0.0);
             }
         }
     }

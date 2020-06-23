@@ -146,6 +146,9 @@ public abstract class Place {
 	                            cPers.getcVirus().getInfectionLog().registerSecondaryInfection(t, nPers);
 	                        }
 	            		}
+	            		else {
+	            			nextInt --;
+	            		}
             		}
             	}
             }
