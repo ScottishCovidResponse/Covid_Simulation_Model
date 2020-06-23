@@ -190,7 +190,7 @@ public class HospitalTest extends SimulationTest {
         }
 
         assertNotNull("No hospitals found", hosptial);
-        assertTrue(hosptial.getBaseTransP(inf) > hosptial.getTransP(t, inf, null));
+        assertTrue(hosptial.getBaseTransP(inf) > hosptial.getTransP(inf));
     }
 
     @Test

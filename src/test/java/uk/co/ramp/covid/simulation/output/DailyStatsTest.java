@@ -71,7 +71,7 @@ public class DailyStatsTest extends SimulationTest {
         int newlyHospitalised = 0;
         int totalPhase2 = 0;
 
-        nDays = 100;
+        nDays = 50;
         Model run1 = new Model()
                 .setPopulationSize(population)
                 .setnInitialInfections(nInfections)
