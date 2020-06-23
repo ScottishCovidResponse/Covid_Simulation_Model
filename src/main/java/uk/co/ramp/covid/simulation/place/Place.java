@@ -135,6 +135,7 @@ public abstract class Place {
             	int nInfected = rng.nextBinomial(getNumPeople() - 1, getTransP(cPers) / 24.0);
             	List <Person> usedPerson = new ArrayList<>();
             	if(nInfected > 0) {
+            		int safetyValve = 0;
             		for(int nextInt = 1; nextInt <= nInfected; nextInt++) {
             		Person nPers = people.get(rng.nextInt(0, getNumPeople() - 1));
 	            		if(nPers != cPers && !(usedPerson.contains(nPers))) {
@@ -146,7 +147,8 @@ public abstract class Place {
 	                            cPers.getcVirus().getInfectionLog().registerSecondaryInfection(t, nPers);
 	                        }
 	            		}
-	            		else {
+	            		else if(safetyValve < 1000000){
+	            			safetyValve ++;
 	            			nextInt --;
 	            		}
             		}
