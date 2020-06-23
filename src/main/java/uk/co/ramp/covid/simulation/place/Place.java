@@ -131,8 +131,8 @@ public abstract class Place {
        stepInfections(t, stats);
 
         for (Person cPers : people) {
-            if (cPers.isInfectious()) {
-            	int nInfected = rng.nextBinomial(getNumPeople(), getTransP(cPers) / 24);
+            if (cPers.isInfectious() && getNumPeople() > 1) {
+            	int nInfected = rng.nextBinomial(getNumPeople() - 1, getTransP(cPers) / 24);
             	List <Person> usedPerson = new ArrayList<>();
             	if(nInfected > 0) {
             		for(int nextInt = 1; nextInt <= nInfected; nextInt++) {
