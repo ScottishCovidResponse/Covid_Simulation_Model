@@ -147,7 +147,7 @@ public abstract class Place {
 	                            cPers.getcVirus().getInfectionLog().registerSecondaryInfection(t, nPers);
 	                        }
 	            		}
-	            		else if(safetyValve < 1000000){
+	            		else if(safetyValve < getNumPeople() * 100){
 	            			safetyValve ++;
 	            			nextInt --;
 	            		}
