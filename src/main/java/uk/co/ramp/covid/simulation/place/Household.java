@@ -192,7 +192,7 @@ public abstract class Household extends Place implements Home {
 
         if (!isIsolating() && getNumInhabitants() > 0) {
             // Ordering here implies hospital appts take highest priority
-            moveHospital(t, places);
+            moveHospital(t);
 
             moveShift(t);
 
@@ -220,18 +220,14 @@ public abstract class Household extends Place implements Home {
     }
 
     // TODO: doesn't currently handle parent/child constraints
-    private void moveHospital(Time t, Places places) {
+    private void moveHospital(Time t) {
         for (Person p : getPeople() ) {
             if (p.hasMoved() || !p.hasHospitalAppt()) {
                 continue;
             }
             
             if (p.getHospitalAppt().getStartTime().equals(t.advance())) {
-                Hospital h = places.getRandomNonCovidHospital();
-                // For small populations there might not be any non-COVID hospitals
-                if (h != null) {
-                    p.moveTo(this, h);
-                }
+                p.moveTo(this, p.getHospitalAppt().getApptLocation());
             }
         }
     }

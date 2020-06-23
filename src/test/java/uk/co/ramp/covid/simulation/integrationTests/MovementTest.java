@@ -548,7 +548,7 @@ public class MovementTest extends SimulationTest {
 
         for (int i = 0; i < simDays; i++) {
             for (Person per : p.getAllPeople()) {
-                per.deteremineHospitalVisits(t, false);
+                per.deteremineHospitalVisits(t, false, p.getPlaces());
             }
             
             for (int j = 0; j < 24; j++) {

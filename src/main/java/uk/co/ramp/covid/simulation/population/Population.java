@@ -380,7 +380,7 @@ public class Population {
 
             // At the end of each day we also determine possible hospital visits for the next day
             for (Person p : allPeople) {
-                p.deteremineHospitalVisits(t, lockdownController.inLockdown(t));
+                p.deteremineHospitalVisits(t, lockdownController.inLockdown(t), places);
             }
 
             stats.add(this.processCases(dStats));

@@ -9,7 +9,7 @@ import uk.co.ramp.covid.simulation.covid.Covid;
 import uk.co.ramp.covid.simulation.parameters.CovidParameters;
 import uk.co.ramp.covid.simulation.output.DailyStats;
 import uk.co.ramp.covid.simulation.parameters.HospitalApptInfo;
-import uk.co.ramp.covid.simulation.parameters.HospitalApptParameters;
+import uk.co.ramp.covid.simulation.place.Hospital;
 import uk.co.ramp.covid.simulation.util.HospitalAppt;
 import uk.co.ramp.covid.simulation.util.Time;
 import uk.co.ramp.covid.simulation.parameters.PopulationParameters;
@@ -18,8 +18,6 @@ import uk.co.ramp.covid.simulation.place.CommunalPlace;
 import uk.co.ramp.covid.simulation.place.Place;
 import uk.co.ramp.covid.simulation.util.Probability;
 import uk.co.ramp.covid.simulation.util.RNG;
-
-import javax.net.ssl.HostnameVerifier;
 
 public abstract class Person {
 
@@ -372,7 +370,7 @@ public abstract class Person {
 
     // We can't determine this in household in case the person is working nightshift
     // Time is always the start of a day
-    public void deteremineHospitalVisits(Time t, boolean lockdown) {
+    public void deteremineHospitalVisits(Time t, boolean lockdown, Places places) {
         HospitalApptInfo info = PopulationParameters.get().hospitalAppsParams().getParams(sex, age);
         
         // Appts might be across days so don't regenerate if we already have one
@@ -392,7 +390,13 @@ public abstract class Person {
                     PopulationParameters.get().hospitalApptTimings.SDDayCaseTime
             );
             if (length < 1) { length =  1; }
-            hospitalAppt = new HospitalAppt(startTime, length);
+
+            // For small populations there might not be any non-COVID hospitals
+            Hospital h = places.getRandomNonCovidHospital();
+            if (h != null) {
+                hospitalAppt = new HospitalAppt(startTime, length, h);
+            }
+
         } else if (new Probability(info.pInPatient.asDouble() * lockdownAdjust).sample()) {
             Time startTime = new Time(t.getAbsTime() +
                     RNG.get().nextInt(
@@ -401,7 +405,12 @@ public abstract class Person {
 
             int length = info.inPatientLength.intValue();
             if (length < 1) { length =  1; }
-            hospitalAppt = new HospitalAppt(startTime, length);
+
+            Hospital h = places.getRandomNonCovidHospital();
+            if (h != null) {
+                hospitalAppt = new HospitalAppt(startTime, length, h);
+            }
+
         } else if (new Probability(info.pOutPatient.asDouble() * lockdownAdjust).sample()) {
             Time startTime = new Time(t.getAbsTime() +
                     RNG.get().nextInt(
@@ -412,7 +421,12 @@ public abstract class Person {
             int length = (int) RNG.get().nextExponential(
                     PopulationParameters.get().hospitalApptTimings.meanOutPatientTime);
             if (length < 1) { length =  1; }
-            hospitalAppt = new HospitalAppt(startTime, length);
+
+            Hospital h = places.getRandomNonCovidHospital();
+            if (h != null) {
+                hospitalAppt = new HospitalAppt(startTime, length, h);
+            }
+
         } else {
             hospitalAppt = null;
         }
