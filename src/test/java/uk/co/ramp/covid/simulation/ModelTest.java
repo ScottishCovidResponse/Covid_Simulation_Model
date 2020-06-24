@@ -88,7 +88,7 @@ public class ModelTest extends SimulationTest {
             adultDeaths = s.getAdultDeaths();
             pensionerDeaths += s.getPensionerDeaths();
             childDeaths += s.getChildDeaths();
-            totalDead += s.getHomeDeaths() + s.getHospitalDeaths() + s.getCareHomeDeaths();
+            totalDead += s.getHomeDeaths() + s.getHospitalDeaths() + s.getCareHomeDeaths() + s.getAdditionalDeaths();
         }
         
         List<DailyStats> s = stats.get(0);
