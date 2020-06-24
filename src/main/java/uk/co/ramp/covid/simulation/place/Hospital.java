@@ -69,8 +69,8 @@ public class Hospital extends CommunalPlace {
     }
     
     @Override
-    public void determineMovement(Time t, boolean lockdown, Places places) {
-        movePhase2(t, places, Person::isHospitalised);
+    public void determineMovement(Time t, DailyStats s, boolean lockdown, Places places) {
+        movePhase2(t, s, places, Person::isHospitalised);
         moveShifts(t, lockdown, Person::isHospitalised);
         movePatients(t);
     }
@@ -81,11 +81,20 @@ public class Hospital extends CommunalPlace {
     }
 
     @Override
-    public double getTransP(Time t, Person infected, Person target) {
+    public double getTransP(Person infected) {
         double transP = getBaseTransP(infected);
         if (infected.isHospitalised()) {
             transP *= CovidParameters.get().hospitalisationParameters.hospitalisationTransmissionReduction;
         }
         return transP;
+    }
+    
+    @Override
+    public double getEnvironmentAdjustment(Person susceptible, Person infected, Time t) {
+    	
+    	if(!susceptible.isHospitalised() && infected.isHospitalised() && this instanceof CovidHospital) {
+    		return CovidParameters.get().hospitalisationParameters.hospitalisationTransmissionReduction;
+    	}
+    	else return environmentAdjustment;
     }
 }

@@ -5,6 +5,7 @@
 package uk.co.ramp.covid.simulation.place;
 
 import org.apache.commons.math3.random.RandomDataGenerator;
+import uk.co.ramp.covid.simulation.output.DailyStats;
 import uk.co.ramp.covid.simulation.util.Time;
 import uk.co.ramp.covid.simulation.util.DateRange;
 import uk.co.ramp.covid.simulation.population.CStatus;
@@ -83,7 +84,7 @@ public abstract class CommunalPlace extends Place {
     }
 
     /** Moves Phase2 people to either hospital or back home */
-    public void movePhase2(Time t, Places places, Function<Person,Boolean> filter) {
+    public void movePhase2(Time t, DailyStats s, Places places, Function<Person,Boolean> filter) {
         for (Person p : getPeople()) {
             if (p.hasMoved() || filter.apply(p)) {
                 continue;
@@ -92,7 +93,7 @@ public abstract class CommunalPlace extends Place {
             if (p.cStatus() != null && p.cStatus() == CStatus.PHASE2) {
                 if (p.goesToHosptialInPhase2()) {
                     CovidHospital h = places.getRandomCovidHospital();
-                    p.hospitalise();
+                    p.hospitalise(s);
                     p.moveTo(this, h);
                 } else {
                     p.returnHome(this);
@@ -132,8 +133,8 @@ public abstract class CommunalPlace extends Place {
     }
 
 
-    public void movePhase2(Time t, Places places) {
-        movePhase2(t, places, p -> false);
+    public void movePhase2(Time t, DailyStats s, Places places) {
+        movePhase2(t, s, places, p -> false);
     }
     
     public boolean isVisitorOpenNextHour(Time t) {
@@ -169,8 +170,8 @@ public abstract class CommunalPlace extends Place {
     }
 
     @Override
-    public void determineMovement(Time t, boolean lockdown, Places places) {
-        movePhase2(t, places);
+    public void determineMovement(Time t, DailyStats s, boolean lockdown, Places places) {
+        movePhase2(t, s, places);
         moveShifts(t, lockdown);
     }
 

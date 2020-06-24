@@ -1,6 +1,7 @@
 package uk.co.ramp.covid.simulation.place;
 
 import org.junit.Test;
+import uk.co.ramp.covid.simulation.output.DailyStats;
 import uk.co.ramp.covid.simulation.util.Time;
 import uk.co.ramp.covid.simulation.parameters.CovidParameters;
 import uk.co.ramp.covid.simulation.parameters.PopulationParameters;
@@ -57,7 +58,7 @@ public class CareHomeTest extends SimulationTest {
         PopulationParameters.get().pensionerProperties.pEntersCareHome = new Probability(0.8);
         // There can be lots of people in the care home so we crank this up to avoid getting almost 0 transmission probs
         PopulationParameters.get().buildingProperties.careHomeTransmissionConstant = 100.0;
-        CovidParameters.get().diseaseParameters.pSymptomaticCase = new Probability(1.0);
+        CovidParameters.get().diseaseParameters.pSymptomaticCasePensioner = new Probability(1.0);
         CovidParameters.get().diseaseParameters.pensionerProgressionPhase2 = 100.0;
         // Makes it less likely we get symptoms before we are infectious
         CovidParameters.get().diseaseParameters.meanSymptomDelay = 0.1;
@@ -94,7 +95,7 @@ public class CareHomeTest extends SimulationTest {
         // Not quarantined instantly
         for (Person p : home.getPeople()) {
             if (p == inf) { continue; }
-            assertTrue(home.getTransP(t, inf, p) > 0);
+            assertTrue(home.getTransP(inf) > 0);
         }
 
         // Step till quarantine
@@ -109,10 +110,10 @@ public class CareHomeTest extends SimulationTest {
                 continue;
             }
             if (p.isInCare()) {
-                assertEquals(0.0, home.getTransP(t, inf, p), 0.001);
+                assertEquals(0.0, home.getEnvironmentAdjustment(p, inf, t), 0.001);
             } else {
                 // PPE Adjustment
-                assertTrue(home.getTransP(t, inf, null) > home.getTransP(new Time(0), inf, p));
+                assertTrue(home.getEnvironmentAdjustment(p, inf, t) > 0.0);
             }
         }
     }
@@ -124,7 +125,7 @@ public class CareHomeTest extends SimulationTest {
         CareHome ch = new CareHome(CommunalPlace.Size.MED);
         ch.addPerson(new Pensioner(80, FEMALE));
         ch.addPerson(new Pensioner(85, MALE));
-        ch.determineMovement(time,  false, null);
+        ch.determineMovement(time, new DailyStats(time), false, null);
         ch.commitMovement();
         int expPeople = 2;
         assertEquals("People Unexpectedly left the care home", expPeople, ch.getNumPeople());

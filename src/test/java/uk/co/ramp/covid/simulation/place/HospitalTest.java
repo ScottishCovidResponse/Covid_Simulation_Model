@@ -1,10 +1,12 @@
 package uk.co.ramp.covid.simulation.place;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.google.gson.JsonParseException;
 
 import uk.co.ramp.covid.simulation.output.DailyStats;
+import uk.co.ramp.covid.simulation.util.RNG;
 import uk.co.ramp.covid.simulation.util.Time;
 import uk.co.ramp.covid.simulation.parameters.CovidParameters;
 import uk.co.ramp.covid.simulation.parameters.PopulationParameters;
@@ -188,7 +190,7 @@ public class HospitalTest extends SimulationTest {
         }
 
         assertNotNull("No hospitals found", hosptial);
-        assertTrue(hosptial.getBaseTransP(inf) > hosptial.getTransP(t, inf, null));
+        assertTrue(hosptial.getBaseTransP(inf) > hosptial.getTransP(inf));
     }
 
     @Test
@@ -230,7 +232,7 @@ public class HospitalTest extends SimulationTest {
         adult2.setHome(h);
         hospital.addPerson(adult1);
         hospital.addPerson(adult2);
-        hospital.determineMovement(new Time(0),  false, null);
+        hospital.determineMovement(new Time(0), new DailyStats(new Time(0)), false, null);
         hospital.commitMovement();
         int expPeople = 0;
         assertEquals("Unexpected people left in hospital", expPeople, hospital.getNumPeople());

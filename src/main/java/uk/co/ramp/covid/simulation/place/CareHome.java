@@ -14,7 +14,7 @@ public class CareHome extends CommunalPlace implements Home {
     public CareHome(Size s) {
         super(s);
 
-        transConstant = PopulationParameters.get().buildingProperties.careHomeTransmissionConstant;
+        transAdjustment = PopulationParameters.get().buildingProperties.careHomeTransmissionConstant;
 
         // Care homes are "open" to staff from 6-22 (but can have residents in them all the time)
         times = new OpeningTimes(6, 22, OpeningTimes.getAllDays());
@@ -52,8 +52,8 @@ public class CareHome extends CommunalPlace implements Home {
     }
 
     @Override
-    public void determineMovement(Time t, boolean lockdown, Places places) {
-        movePhase2(t, places, Person::isInCare);
+    public void determineMovement(Time t, DailyStats s, boolean lockdown, Places places) {
+        movePhase2(t, s, places, Person::isInCare);
         moveShifts(t, lockdown, Person::isInCare);
         remainInPlace();
     }
@@ -70,19 +70,27 @@ public class CareHome extends CommunalPlace implements Home {
     }
 
     @Override
-    public double getTransP(Time t, Person infected, Person target) {
-        double transP = getBaseTransP(infected);
-        // In case patients only infect staff due to quarantine
-        boolean isQuarantined = infected.getcVirus().isSymptomatic()
-                && t.getAbsTime() > infected.getcVirus().getInfectionLog().getSymptomaticTime().getAbsTime()
+    public double getEnvironmentAdjustment(Person target, Person infected, Time t) {
+    	if(!infected.isInCare()) { 
+    		return environmentAdjustment;
+    		}
+    	
+    	else {
+    		boolean isQuarantined = infected.getcVirus().isSymptomatic()
+    				&& t.getAbsTime() > infected.getcVirus().getInfectionLog().getSymptomaticTime().getAbsTime()
                                      + CovidParameters.get().careHomeParameters.hoursAfterSymptomsBeforeQuarantine;
-        if (infected.isInCare() && isQuarantined) {
-            if (target.isInCare()) {
-                return 0.0;
-            } else {
-                return transP * CovidParameters.get().careHomeParameters.PPETransmissionReduction;
-            }
-        }
-        return transP;
+    			if (!isQuarantined) {
+    				return environmentAdjustment;
+    				}
+    			else {
+    				if (target.isInCare()) {
+    					return 0.0;
+    				} 
+    				else {
+    					return CovidParameters.get().careHomeParameters.PPETransmissionReduction;
+    				}
+    			}
+    		}
     }
+
 }

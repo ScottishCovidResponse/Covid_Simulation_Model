@@ -9,8 +9,9 @@
           "sdLatentPeriod":0.5,
           "meanAsymptomaticPeriod":192,
           "sdAsymptomaticPeriod":0.5,
-          "pSymptomaticCase": 0.692,
-          "pSymptomaticCasePensioner": 0.821,
+          "pSymptomaticCaseChild": 0.21,
+          "pSymptomaticCaseAdult": 0.5,
+          "pSymptomaticCasePensioner": 0.69,
           "meanSymptomDelay": -16.08,
           "meanSymptomDelaySD": 30,
           "meanInfectiousDuration": 321.6,
@@ -19,14 +20,14 @@
           "phase1Betab": 30.0,
           "aSymptomaticTransAdjustment": 0.15,
           "symptomaticTransAdjustment": 1.0,
-          "mortalityRate":0.015,
-          "childProgressionPhase2":0.02,
-          "adultProgressionPhase2":0.15,
+          "mortalityRate":0.025,
+          "childProgressionPhase2":0.01,
+          "adultProgressionPhase2":0.2,
           "pensionerProgressionPhase2":0.8
       },
       "infectionSeedProperties": {
-          "infectionRateIncreaseAdult":0.000005,
-          "infectionRateIncreaseInfantChildPensioner":0.0000025
+          "infectionRateIncreaseAdult":0.000002,
+          "infectionRateIncreaseInfantChildPensioner":0.000001
       },
       "hospitalisationParameters": {
           "pPhase2GoesToHosptial":0.52,
@@ -190,8 +191,8 @@
             "pAttendsNursery":0.12
         },
         "pensionerProperties":{
-            "minAgeToEnterCare" : 70,
-            "pEntersCareHome": 0.045
+            "minAgeToEnterCare" : 80,
+            "pEntersCareHome": 0.12
         },
         "householdProperties":{
           "neighbourOpeningTime":9,
@@ -209,7 +210,10 @@
         },
         "personProperties":{
             "pTransmission":0.7,
-            "pQuarantinesIfSymptomatic":0.9
+            "pSusceptibleChild": 0.5,
+            "pQuarantinesIfSymptomatic":0.9,
+            "symptomToQuarantineDelay": 12,
+            "symptomToTestingDelay": 24
         }
     }
 }

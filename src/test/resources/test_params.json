@@ -9,8 +9,9 @@
           "sdLatentPeriod":0.5,
           "meanAsymptomaticPeriod":192,
           "sdAsymptomaticPeriod":0.5,
-          "pSymptomaticCase": 0.692,
-          "pSymptomaticCasePensioner": 0.821,
+          "pSymptomaticCaseChild": 0.21,
+          "pSymptomaticCaseAdult": 0.5,
+          "pSymptomaticCasePensioner": 0.69,
           "meanSymptomDelay": -16.08,
           "meanSymptomDelaySD": 30,
           "meanInfectiousDuration": 321.6,
@@ -183,8 +184,8 @@
             "pAttendsNursery":0.8
         },
         "pensionerProperties":{
-            "pEntersCareHome": 0.045,
-            "minAgeToEnterCare": 70
+            "pEntersCareHome": 0.07,
+            "minAgeToEnterCare": 75
         },
         "householdProperties":{
             "neighbourOpeningTime":9,
@@ -202,7 +203,10 @@
         },
         "personProperties":{
             "pTransmission":0.9,
-            "pQuarantinesIfSymptomatic":0.7
+            "pSusceptibleChild": 0.5,
+            "pQuarantinesIfSymptomatic":0.7,
+            "symptomToQuarantineDelay": 12,
+            "symptomToTestingDelay": 24
         }
     }
 }

@@ -54,8 +54,8 @@ public class Shop extends CommunalPlace {
     }
 
     @Override
-    public void determineMovement(Time t, boolean lockdown, Places places) {
-        movePhase2(t, places);
+    public void determineMovement(Time t, DailyStats s, boolean lockdown, Places places) {
+        movePhase2(t, s, places);
         moveShifts(t, lockdown);
         moveVisitors(t, PopulationParameters.get().buildingProperties.pLeaveShop);
     }

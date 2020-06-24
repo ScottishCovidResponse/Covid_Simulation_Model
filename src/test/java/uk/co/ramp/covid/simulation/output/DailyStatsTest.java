@@ -3,7 +3,10 @@ package uk.co.ramp.covid.simulation.output;
 import org.junit.Before;
 import org.junit.Test;
 import uk.co.ramp.covid.simulation.Model;
+import uk.co.ramp.covid.simulation.parameters.CovidParameters;
+import uk.co.ramp.covid.simulation.parameters.PopulationParameters;
 import uk.co.ramp.covid.simulation.testutil.SimulationTest;
+import uk.co.ramp.covid.simulation.util.Probability;
 
 import java.util.List;
 
@@ -64,7 +67,13 @@ public class DailyStatsTest extends SimulationTest {
         int childDeaths = 0;
         int infantDeaths = 0;
 
-        nDays = 80;
+        // Hospitalisation Stats
+        int hospitalised = 0;
+        int newlyHospitalised = 0;
+        int totalPhase2 = 0;
+
+        nDays = 50;
+
         Model run1 = new Model()
                 .setPopulationSize(population)
                 .setnInitialInfections(nInfections)
@@ -124,6 +133,12 @@ public class DailyStatsTest extends SimulationTest {
             careHomeInfectionsWorker += stats.get(0).get(i).getCareHomeInfectionsWorker();
             careHomeInfectionsResident += stats.get(0).get(i).getCareHomeInfectionsResident();
             transportInfections += stats.get(0).get(i).getTransportInfections();
+
+            // Hospitalised will double count people (since you might in in hospital multiple days),
+            // so we need to account for this in the test cases
+            hospitalised += stats.get(0).get(i).getNumInHospital();
+            newlyHospitalised += stats.get(0).get(i).getNewlyHospitalised();
+            totalPhase2 +=  stats.get(0).get(i).getPhase2();
         }
         int expDeaths = adultDeaths + childDeaths + pensionerDeaths + infantDeaths;
         int expInfected = adultInfected + childInfected + pensionerInfected + infantInfected + seedInfections;
@@ -139,6 +154,11 @@ public class DailyStatsTest extends SimulationTest {
         assertEquals("Inconsistent number of deaths", expDeaths, stats.get(0).get(nDays - 1).getDead());
         assertEquals("Inconsistent number of infected", expInfected, dailyInfected);
         assertEquals("Inconsistent number of place infections", expPlaceInfections, dailyInfected);
+        
+        assertNotEquals("Some people are hospitalised", 0, hospitalised);
+        assertNotEquals("Some people are hospitalised (new cases)", 0, newlyHospitalised);
+        assertTrue("Hospitalised should be > newlyHospitalised", hospitalised > newlyHospitalised);
+        assertTrue("Hospitalised <= phase2", newlyHospitalised <= totalPhase2);
     }
 
     @Test
@@ -148,6 +168,10 @@ public class DailyStatsTest extends SimulationTest {
         int nIter = 1;
         int nDays = 60;
         int RNGSeed = 42;
+        
+        // Try to force at least 1 care home death for test purposes
+        CovidParameters.get().diseaseParameters.pensionerProgressionPhase2 = 100.0;
+        PopulationParameters.get().pensionerProperties.pEntersCareHome = new Probability(0.33);
 
         Model m = new Model()
                 .setPopulationSize(population)
@@ -163,17 +187,23 @@ public class DailyStatsTest extends SimulationTest {
         int totalHospitalDeaths = 0;
         int totalCareHomeDeaths = 0;
         int totalHomeDeaths = 0;
+        int totalAdditionalDeaths = 0;
         int totalDeaths = 0;
         for (DailyStats s : stats.get(0)) {
             totalHospitalDeaths += s.getHospitalDeaths();
             totalCareHomeDeaths += s.getCareHomeDeaths();
             totalHomeDeaths += s.getHomeDeaths();
+            totalAdditionalDeaths += s.getAdditionalDeaths();
             totalDeaths += s.getTotalDeaths();
         }
-        int actualDeaths = totalHospitalDeaths + totalCareHomeDeaths + totalHomeDeaths;
+        int actualDeaths = totalHospitalDeaths + totalCareHomeDeaths + totalHomeDeaths + totalAdditionalDeaths;
         assertTrue("No hospital deaths recorded", totalHospitalDeaths > 0);
         assertTrue("No care home deaths recorded", totalCareHomeDeaths > 0);
         assertTrue("No home deaths recorded", totalHomeDeaths > 0);
+        
+        assertTrue("Most people go home/hospital before dying",
+                totalAdditionalDeaths < totalHomeDeaths && totalAdditionalDeaths < totalHospitalDeaths);
+        
         assertEquals("Inconsistent number of deaths", totalDeaths, actualDeaths);
     }
 
