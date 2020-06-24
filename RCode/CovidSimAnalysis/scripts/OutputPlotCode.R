@@ -6,7 +6,7 @@ library(rio)
 
 healthboard <- "Lothian"
 
-datafile <- "exampledata/Lothian/out_25182730_20200624.csv"
+datafile <- "exampledata/Lothian/out_25187310_20200624.csv"
 
 cPop <- 910000
 lockdown <- 55
@@ -18,6 +18,9 @@ baseline <- read.csv(datafile)
 
 source("scripts/SourceScripts/Data munching.R")
 source("scripts/SourceScripts/DetahMunching.R")
+source("scripts/CaseOutcomePlot.R")
+
+ggsave(paste(plotFile, "CaseOutcomes.jpg", sep = "/"), caseOutcomes, height = 6, width = 6, units = "in")
 
 baseline$Infected <- baseline$L + baseline$A + baseline$P1 + baseline$P2
 
@@ -232,6 +235,18 @@ deathCumPlot <- ggplot(data = deathCum, aes(x=day, y= mi * cPop)) +
   theme(text = element_text(size = 16))
 
 ggsave(paste(plotFile, "DeathCumPlot.jpg", sep = "/"), deathCumPlot, height = 6, width = 6, units = "in")
+
+
+# Hospitalisations --------------------------------------------------------
+
+deathCum <- dailyCrunch(baseline, baseline$HospitalisedToday)
+
+hospitalCurrentPlot <- ggplot(data = deathCum, aes(x=day, y= mi * cPop)) +
+  geom_line() +
+  geom_ribbon(aes(x=day, ymin = li * cPop, ymax = ui * cPop), fill="red", alpha = .15) + geom_vline(xintercept = lockdown) + ylab("Total hospitalised per day") + xlab("Day") + # geom_point(data = deathdf[deathdf$deathDays > 28,], mapping = aes(x = deathDays - 28, y = cumDeaths)) +
+  theme(text = element_text(size = 16))
+
+ggsave(paste(plotFile, "HospitalisedPerDay.jpg", sep = "/"), hospitalCurrentPlot, height = 6, width = 6, units = "in")
 
 
 deathPlace <- baselineIMelt[baselineIMelt$variable %in% c("DHome", "DHospital", "DCareHome"),]

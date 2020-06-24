@@ -7,3 +7,4 @@ deathdf$cumDeaths <- cumsum(as.vector(unlist(hbDeaths)))
 
 deathDataCumSum <- apply(deathData[,2:ncol(deathData)], 1, function(x) cumsum(x))
 
+hospitalised <- read.csv("deathData/NHS_HealthBoard_Data.csv")
