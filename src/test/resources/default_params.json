@@ -228,121 +228,121 @@
             "pOutPatient":0.000401541756159,
             "pDayCase":4.54E-05,
             "pInPatient":6.16E-05,
-            "inPatientLength":2.73559539052497
+            "inPatientLengthDays":2.73559539052497
           },
           "f_10_19":{
             "pOutPatient":0.000479670039136,
             "pDayCase":6.16E-05,
             "pInPatient":0.000125221133291,
-            "inPatientLength":2.17544416243655
+            "inPatientLengthDays":2.17544416243655
           },
           "f_20_29":{
             "pOutPatient":0.000778868668611,
             "pDayCase":7.56E-05,
             "pInPatient":0.000223929306622,
-            "inPatientLength":1.72618562304661
+            "inPatientLengthDays":1.72618562304661
           },
           "f_30_39":{
             "pOutPatient":0.00095664674423,
             "pDayCase":0.000119935225117,
             "pInPatient":0.000261225823052,
-            "inPatientLength":2.19782942078566
+            "inPatientLengthDays":2.19782942078566
           },
           "f_40_49":{
             "pOutPatient":0.000950248621002,
             "pDayCase":0.000197216107055,
             "pInPatient":0.000333327397794,
-            "inPatientLength":2.53955014058107
+            "inPatientLengthDays":2.53955014058107
           },
           "f_50_59":{
             "pOutPatient":0.001063642368321,
             "pDayCase":0.000308822270111,
             "pInPatient":0.00048941402856,
-            "inPatientLength":2.96244288420818
+            "inPatientLengthDays":2.96244288420818
           },
           "f_60_69":{
             "pOutPatient":0.00115230647347,
             "pDayCase":0.000432419376772,
             "pInPatient":0.000732166548608,
-            "inPatientLength":3.66609683977084
+            "inPatientLengthDays":3.66609683977084
           },
           "f_70_79":{
             "pOutPatient":0.001369547179473,
             "pDayCase":0.000577112373824,
             "pInPatient":0.001283355651979,
-            "inPatientLength":4.37807255762134
+            "inPatientLengthDays":4.37807255762134
           },
           "f_80_89":{
             "pOutPatient":0.001431749830061,
             "pDayCase":0.000467551100777,
             "pInPatient":0.002366015924496,
-            "inPatientLength":5.85550215562937
+            "inPatientLengthDays":5.85550215562937
           },
           "f_90_100":{
             "pOutPatient":0.00094706232489,
             "pDayCase":0.000214965707851,
             "pInPatient":0.003410258451716,
-            "inPatientLength":6.8627015008338
+            "inPatientLengthDays":6.8627015008338
           },
           "m_0_9":{
             "pOutPatient":0.000485114278485,
             "pDayCase":6.11E-05,
             "pInPatient":7.75E-05,
-            "inPatientLength":2.96758587324625
+            "inPatientLengthDays":2.96758587324625
           },
           "m_10_19":{
             "pOutPatient":0.000412902010942,
             "pDayCase":6.06E-05,
             "pInPatient":0.000101896744885,
-            "inPatientLength":1.86326378539493
+            "inPatientLengthDays":1.86326378539493
           },
           "m_20_29":{
             "pOutPatient":0.000416086293651,
             "pDayCase":7.94E-05,
             "pInPatient":0.000181973561272,
-            "inPatientLength":1.79731075697211
+            "inPatientLengthDays":1.79731075697211
           },
           "m_30_39":{
             "pOutPatient":0.000532341685228,
             "pDayCase":0.000117774145134,
             "pInPatient":0.000270600119176,
-            "inPatientLength":2.27237399905794
+            "inPatientLengthDays":2.27237399905794
           },
           "m_40_49":{
             "pOutPatient":0.000618565765709,
             "pDayCase":0.000167590895749,
             "pInPatient":0.000368600804436,
-            "inPatientLength":2.62675993184468
+            "inPatientLengthDays":2.62675993184468
           },
           "m_50_59":{
             "pOutPatient":0.000766824424817,
             "pDayCase":0.000283970458043,
             "pInPatient":0.000554193874955,
-            "inPatientLength":3.03248211394851
+            "inPatientLengthDays":3.03248211394851
           },
           "m_60_69":{
             "pOutPatient":0.001041158658017,
             "pDayCase":0.000467358946161,
             "pInPatient":0.00092408462924,
-            "inPatientLength":3.55899676249171
+            "inPatientLengthDays":3.55899676249171
           },
           "m_70_79":{
             "pOutPatient":0.001385113956109,
             "pDayCase":0.000653349745179,
             "pInPatient":0.001545275242064,
-            "inPatientLength":4.10105128377923
+            "inPatientLengthDays":4.10105128377923
           },
           "m_80_89":{
             "pOutPatient":0.001610695770532,
             "pDayCase":0.000651909565844,
             "pInPatient":0.002740121899958,
-            "inPatientLength":5.25539880381683
+            "inPatientLengthDays":5.25539880381683
           },
           "m_90_100":{
             "pOutPatient":0.001219404824793,
             "pDayCase":0.000385631273111,
             "pInPatient":0.004144215530903,
-            "inPatientLength":6.23815593796473
+            "inPatientLengthDays":6.23815593796473
           }
         }
     }
