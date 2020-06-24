@@ -35,8 +35,10 @@ public abstract class Person {
     private boolean recovered;
     private Covid cVirus;
     private final double transmissionProb;
-    private boolean quarantine;
-    private final Probability quarantineProb; // Needs more thought. The probability that the person will go into quarantine
+    
+    private boolean isQuarantined;
+    private boolean willQuarantine;
+    
     private Boolean testOutcome = null;
     protected final RandomDataGenerator rng;
 
@@ -65,7 +67,7 @@ public abstract class Person {
         this.sex = sex;
         this.rng = RNG.get();
         this.transmissionProb = PopulationParameters.get().personProperties.pTransmission.asDouble();
-        this.quarantineProb = PopulationParameters.get().personProperties.pQuarantinesIfSymptomatic;
+        this.willQuarantine = PopulationParameters.get().personProperties.pQuarantinesIfSymptomatic.sample();
         this.goesToHospitalInPhase2 = CovidParameters.get().hospitalisationParameters.pPhase2GoesToHosptial.sample();
         this.personId = nPeople++;
         
@@ -88,6 +90,7 @@ public abstract class Person {
     public void recover() {
         isHospitalised = false;
         recovered = true;
+        isQuarantined = false;
     }
 
     public CommunalPlace getPrimaryCommunalPlace() {
@@ -130,8 +133,8 @@ public abstract class Person {
         return isHospitalised;
     }
 
-    public boolean getQuarantine() {
-        return this.quarantine;
+    public boolean isQuarantined() {
+        return isQuarantined;
     }
 
     public boolean infect() {
@@ -170,8 +173,8 @@ public abstract class Person {
         return this.cVirus.stepInfection(t);
     }
 
-    public boolean infChallenge(double challengeProb) {
-        if (rng.nextUniform(0, 1) < this.transmissionProb / 24 * challengeProb * covidSusceptibleVal) {
+    public boolean infChallenge(double environmentAdjustment) {
+        if (rng.nextUniform(0, 1) < environmentAdjustment * covidSusceptibleVal && this.cVirus == null) {
             this.cVirus = new Covid(this);
             return true;
         }
@@ -200,37 +203,29 @@ public abstract class Person {
 
     // This method is pretty important, it returns the Covid infection status
     public CStatus cStatus() {
-        CStatus cStatus = CStatus.HEALTHY;
         if (this.getInfectionStatus()) {
-            if (this.cVirus.isLatent()) cStatus = CStatus.LATENT;
-            if (this.cVirus.isAsymptomatic()) cStatus = CStatus.ASYMPTOMATIC;
-            if (this.cVirus.isSymptomatic()) enterQuarantine();
-            if (this.cVirus.isPhase1()) {
-                cStatus = CStatus.PHASE1;
-            }
-            if (this.cVirus.isPhase2()) {
-                cStatus = CStatus.PHASE2;
-                this.quarantine = true;
-            }
-            if (this.cVirus.isDead()) cStatus = CStatus.DEAD;
-            if (this.cVirus.isRecovered() && !this.cVirus.isDead()) {
-                cStatus = CStatus.RECOVERED;
-                this.quarantine = false;
-            }
+            if (this.cVirus.isLatent()) { return CStatus.LATENT; }
+            if (this.cVirus.isAsymptomatic()) { return CStatus.ASYMPTOMATIC; };
+            if (this.cVirus.isPhase1()) { return CStatus.PHASE1; }
+            if (this.cVirus.isPhase2()) { return CStatus.PHASE2; }
+            if (this.cVirus.isDead()) { return CStatus.DEAD; }
+            if (this.cVirus.isRecovered()) { return CStatus.RECOVERED; }
         }
-        return cStatus;
+        return CStatus.HEALTHY;
     }
     
     public void enterQuarantine() {
-        quarantine = quarantineProb.sample();
+        if (willQuarantine) {
+            isQuarantined = true;
+        }
     }
 
     public void forceQuarantine() {
-        quarantine = true;
+        isQuarantined = true;
     }
     
     public void exitQuarantine() {
-        quarantine = false;
+        isQuarantined = false;
     }
 
     public boolean isInfectious() {
@@ -251,7 +246,7 @@ public abstract class Person {
     public abstract boolean avoidsPhase2(double testP);
 
     protected boolean isWorking(CommunalPlace communalPlace, Time t, boolean furloughed) {
-        if (primaryPlace == null || shifts == null || furloughed) {
+        if (primaryPlace == null || shifts == null || furloughed || isHospitalised) {
             return false;
         }
 

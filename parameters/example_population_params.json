@@ -21,8 +21,8 @@
           "aSymptomaticTransAdjustment": 0.15,
           "symptomaticTransAdjustment": 1.0,
           "mortalityRate":0.025,
-          "childProgressionPhase2":0.02,
-          "adultProgressionPhase2":0.15,
+          "childProgressionPhase2":0.01,
+          "adultProgressionPhase2":0.2,
           "pensionerProgressionPhase2":0.8
       },
       "infectionSeedProperties": {
@@ -164,7 +164,7 @@
             }
         },
         "buildingProperties":{
-           "baseTransmissionConstant":0.65,
+           "baseTransmissionConstant":0.7,
            "hospitalTransmissionConstant":10.0,
            "constructionSiteTransmissionConstant":5.0,
            "nurseryTransmissionConstant":10.0,
@@ -206,9 +206,11 @@
             "pLockCompliance": 0.8
         },
         "personProperties":{
-            "pTransmission":0.65,
+            "pTransmission":0.7,
             "pSusceptibleChild": 0.5,
-            "pQuarantinesIfSymptomatic":0.9
+            "pQuarantinesIfSymptomatic":0.9,
+            "symptomToQuarantineDelay": 12,
+            "symptomToTestingDelay": 24
         },
         "hospitalApptTimings": {
           "dayCaseStartTime": 8,

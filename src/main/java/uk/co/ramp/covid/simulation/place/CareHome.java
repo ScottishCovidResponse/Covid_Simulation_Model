@@ -82,19 +82,27 @@ public class CareHome extends CommunalPlace implements Home {
     }
 
     @Override
-    public double getTransP(Time t, Person infected, Person target) {
-        double transP = getBaseTransP(infected);
-        // In case patients only infect staff due to quarantine
-        boolean isQuarantined = infected.getcVirus().isSymptomatic()
-                && t.getAbsTime() > infected.getcVirus().getInfectionLog().getSymptomaticTime().getAbsTime()
+    public double getEnvironmentAdjustment(Person target, Person infected, Time t) {
+    	if(!infected.isInCare()) { 
+    		return environmentAdjustment;
+    		}
+    	
+    	else {
+    		boolean isQuarantined = infected.getcVirus().isSymptomatic()
+    				&& t.getAbsTime() > infected.getcVirus().getInfectionLog().getSymptomaticTime().getAbsTime()
                                      + CovidParameters.get().careHomeParameters.hoursAfterSymptomsBeforeQuarantine;
-        if (infected.isInCare() && isQuarantined) {
-            if (target.isInCare()) {
-                return 0.0;
-            } else {
-                return transP * CovidParameters.get().careHomeParameters.PPETransmissionReduction;
-            }
-        }
-        return transP;
+    			if (!isQuarantined) {
+    				return environmentAdjustment;
+    				}
+    			else {
+    				if (target.isInCare()) {
+    					return 0.0;
+    				} 
+    				else {
+    					return CovidParameters.get().careHomeParameters.PPETransmissionReduction;
+    				}
+    			}
+    		}
     }
+
 }

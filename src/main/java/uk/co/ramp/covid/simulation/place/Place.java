@@ -7,8 +7,11 @@ import uk.co.ramp.covid.simulation.population.CStatus;
 import uk.co.ramp.covid.simulation.population.Person;
 import uk.co.ramp.covid.simulation.parameters.PopulationParameters;
 import uk.co.ramp.covid.simulation.population.Places;
+import uk.co.ramp.covid.simulation.util.RNG;
 
 import java.util.*;
+
+import org.apache.commons.math3.random.RandomDataGenerator;
 
 public abstract class Place {
 
@@ -20,6 +23,9 @@ public abstract class Place {
     protected double sDistance;
     protected double transConstant;
     protected double transAdjustment;
+    private final RandomDataGenerator rng;
+    protected double environmentAdjustment;
+
 
 
     abstract public void reportInfection(Time t, Person p, DailyStats s);
@@ -27,13 +33,20 @@ public abstract class Place {
     protected  void reportDeath(DailyStats s) {
         s.incAdditionalDeaths();
     }
+    
 
     public Place() {
+        this.rng = RNG.get();
         this.people = new ArrayList<>();
         this.nextPeople = new ArrayList<>();
         this.transConstant = PopulationParameters.get().buildingProperties.baseTransmissionConstant;
         this.sDistance = 1.0;
         this.transAdjustment = 1.0;
+        this.environmentAdjustment = 1.0;
+    }
+
+    protected double getEnvironmentAdjustment(Person susceptible, Person infected, Time t) {
+    	return environmentAdjustment;
     }
 
     // We use iterable here to make it harder to accidentally modify people (which is effectively immutable)
@@ -118,18 +131,28 @@ public abstract class Place {
        stepInfections(t, stats);
 
         for (Person cPers : people) {
-            if (cPers.isInfectious()) {
-                for (Person nPers : people) {
-                    if (cPers != nPers && !nPers.getInfectionStatus()) {
-                        double transP = getTransP(t, cPers, nPers);
-                        boolean infected = nPers.infChallenge(transP);
-                        if (infected) {
-                            registerInfection(t, nPers, stats);
-                            nPers.getcVirus().getInfectionLog().registerInfected(t);
-                            cPers.getcVirus().getInfectionLog().registerSecondaryInfection(t, nPers);
-                        }
-                    }
-                }
+            if (cPers.isInfectious() && getNumPeople() > 1) {
+            	int nInfected = rng.nextBinomial(getNumPeople() - 1, getTransP(cPers) / 24.0);
+            	List <Person> usedPerson = new ArrayList<>();
+            	if(nInfected > 0) {
+            		int safetyValve = 0;
+            		for(int nextInt = 1; nextInt <= nInfected; nextInt++) {
+            		Person nPers = people.get(rng.nextInt(0, getNumPeople() - 1));
+	            		if(nPers != cPers && !(usedPerson.contains(nPers))) {
+	            			usedPerson.add(nPers);
+	                        boolean infected = nPers.infChallenge(getEnvironmentAdjustment(nPers, cPers, t));
+	                        if (infected) {
+	                            registerInfection(t, nPers, stats);
+	                            nPers.getcVirus().getInfectionLog().registerInfected(t);
+	                            cPers.getcVirus().getInfectionLog().registerSecondaryInfection(t, nPers);
+	                        }
+	            		}
+	            		else if(safetyValve < getNumPeople() * 100){
+	            			safetyValve ++;
+	            			nextInt --;
+	            		}
+            		}
+            	}
             }
         }
     }
@@ -138,7 +161,7 @@ public abstract class Place {
         return getTransConstant() * sDistance * infected.getTransAdjustment();
     }
     
-    public double getTransP(Time t, Person infected, Person target) {
+    public double getTransP(Person infected) {
         return getBaseTransP(infected);
     }
     
