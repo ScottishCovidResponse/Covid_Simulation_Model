@@ -16,7 +16,7 @@ public class Adult extends Person {
     Professions profession;
     
     private boolean willFurlough = false;
-    private boolean furloughed = false;
+
 
     public Adult(int age, Sex sex) {
         super(age, sex);
@@ -94,22 +94,10 @@ public class Adult extends Person {
     }
 
     @Override
-    public boolean isWorking(CommunalPlace communalPlace, Time t) {
-       return isWorking(communalPlace, t, isFurloughed());
-    }
-    
-    public boolean isFurloughed() { return furloughed; }
-    
     public void furlough() {
         if (willFurlough) {
             furloughed = true;
         }
     }
-    
-    public void unFurlough() {
-        furloughed = false;
-    }
-
-
 
 }
