@@ -10,7 +10,7 @@ import uk.co.ramp.covid.simulation.util.Time;
  *  and no movements occur */
 public class Transport extends Place {
 
-    Transport() {
+    public Transport() {
         transAdjustment = PopulationParameters.get().publicTransportParameters.transmissionConstant;
     }
 
