@@ -439,10 +439,7 @@ public abstract class Household extends Place implements Home {
     }
     
     public void determinePublicTransportTakers(Transport t) {
-        // For now entire families take public transport
-        // TODO: Needs a parameter
-        Probability pTakesPublicTransport = new Probability(0.15);
-        if (pTakesPublicTransport.sample()) {
+        if (PopulationParameters.get().publicTransportParameters.pFamilyTakesTransport.sample()) {
             for (Person p : getPeople()) {
                 p.takesPublicTransport(t);
             }

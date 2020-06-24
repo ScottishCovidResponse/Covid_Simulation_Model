@@ -345,7 +345,7 @@ public class Population {
             p.determineMovement(t, dStats, lockdownController.inLockdown(t), getPlaces());
         }
 
-        publicTransport.doInfect(t, dStats);
+        publicTransport.doInfect(t, dStats, contactsWriter);
         
         for (Household h : households) {
             h.commitMovement();

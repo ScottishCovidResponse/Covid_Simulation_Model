@@ -1,75 +1,42 @@
 package uk.co.ramp.covid.simulation.population;
 
 import uk.co.ramp.covid.simulation.output.DailyStats;
-import uk.co.ramp.covid.simulation.util.RNG;
+import uk.co.ramp.covid.simulation.output.network.ContactsWriter;
+import uk.co.ramp.covid.simulation.parameters.PopulationParameters;
+import uk.co.ramp.covid.simulation.place.Place;
 import uk.co.ramp.covid.simulation.util.Time;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class Transport {
-    List<Person> takingTransport;
-
-    protected double sDistance;
-    protected double transConstant;
-    protected double transAdjustment;
+/** Transport is a special form of Place where we allow infections to occur, but not to advance,
+ *  and no movements occur */
+public class Transport extends Place {
 
     Transport() {
-        takingTransport = new ArrayList<>();
-        sDistance = 1.0;
-        // TODO: Set from parameers
-        transConstant = 5.0;
-        transAdjustment = 1.0;
+        transAdjustment = PopulationParameters.get().publicTransportParameters.transmissionConstant;
     }
-    
+
     public void addPassenger(Person p) {
-        takingTransport.add(p);
+        people.add(p);
     }
 
-    // TODO: Lots of this is repeated in Place, can we factor this out?
-    public double getBaseTransP(Person infected) {
-        return getTransConstant() * sDistance * infected.getTransAdjustment();
-    }
-
-    protected double getTransConstant() {
-        if(takingTransport.size() == 0) {
-            return 0.0;
-        }
-
-        if(takingTransport.size() <= transAdjustment) {
-            return transConstant;
-        }
-
-        return transConstant * transAdjustment / takingTransport.size();
-    }
+    // No-one "leaves" public transport in the usual manner since they are already going elsewhere
+    // Since nextPerson is switched in this implicitly clears the people buffer
+    @Override
+    public void determineMovement(Time t, DailyStats s, boolean lockdown, Places places) { }
 
     // We only do infections here, not step infections since 1 hour won't have passed.
-    public void doInfect(Time t, DailyStats stats) {
-        // TODO: To keep this tractable we probably need something like this. Maybe the new infection method fixes this
-        final int expectedContacts = 40;
-        
-        for (Person cPers : takingTransport) {
-            if (cPers.isInfectious()) {
-                for (int i = 0; i < expectedContacts; i++) {
-                    Person nPers = takingTransport.get(RNG.get().nextInt(0, takingTransport.size() - 1));
-                    if (cPers != nPers && !nPers.getInfectionStatus()) {
-                        double transP = getBaseTransP(cPers);
-                        boolean infected = nPers.infChallenge(transP);
-                        if (infected) {
-                            registerInfection(t, nPers, stats);
-                            nPers.getcVirus().getInfectionLog().registerInfected(t);
-                            cPers.getcVirus().getInfectionLog().registerSecondaryInfection(t, nPers);
-                        }
-                    }
-                }
-            }
+    @Override
+    public void doInfect(Time t, DailyStats stats, ContactsWriter contactsWriter) {
+        if (contactsWriter != null) {
+            addContacts(t, contactsWriter);
+            return; // don't do infections
         }
-        
-        takingTransport.clear();
+
+        infectOthers(t, stats);
+        people.clear();
     }
 
-    private void registerInfection(Time t, Person p, DailyStats s) {
+    @Override
+    public void reportInfection(Time t, Person p, DailyStats s) {
         s.incTransportInfections();
-        p.reportInfection(s);
     }
 }

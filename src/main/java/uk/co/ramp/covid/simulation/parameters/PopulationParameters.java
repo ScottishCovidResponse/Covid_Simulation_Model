@@ -23,6 +23,7 @@ public class PopulationParameters {
     public PensionerProperties pensionerProperties;
     public final PersonProperties personProperties;
     public HouseholdProperties householdProperties;
+    public PublicTransportParameters publicTransportParameters;
 
     private PopulationParameters() {
         populationDistribution = new HashMap<>();
@@ -34,6 +35,7 @@ public class PopulationParameters {
         pensionerProperties = new PensionerProperties();
         personProperties = new PersonProperties();
         householdProperties = new HouseholdProperties();
+        publicTransportParameters = new PublicTransportParameters();
     }
 
     public boolean isValid() {
@@ -50,6 +52,7 @@ public class PopulationParameters {
         valid = valid && checker.isValid(pensionerProperties);
         valid = valid && checker.isValid(personProperties);
         valid = valid && checker.isValid(householdProperties) && householdProperties.isValid();
+        valid = valid && checker.isValid(publicTransportParameters);
         return valid;
     }
 

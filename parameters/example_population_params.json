@@ -211,6 +211,10 @@
             "pQuarantinesIfSymptomatic":0.9,
             "symptomToQuarantineDelay": 12,
             "symptomToTestingDelay": 24
+        },
+        "publicTransportParameters": {
+            "transmissionConstant": 5.0,
+            "pFamilyTakesTransport": 0.2
         }
     }
 }
