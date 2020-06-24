@@ -3,6 +3,7 @@
 /.gradle/
 /build/
 /gradle/
+/RCode/CovidSimAnalysis/Plots/
 
 # Compiled class file
 *.class

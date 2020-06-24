@@ -41,7 +41,7 @@ public abstract class Person {
     protected final RandomDataGenerator rng;
 
     private boolean isHospitalised = false;
-    private final boolean goesToHospitalInPhase2;
+    private boolean goesToHospitalInPhase2;
     
     private static int nPeople = 0;
     private final int personId;
@@ -66,7 +66,6 @@ public abstract class Person {
         this.rng = RNG.get();
         this.transmissionProb = PopulationParameters.get().personProperties.pTransmission.asDouble();
         this.willQuarantine = PopulationParameters.get().personProperties.pQuarantinesIfSymptomatic.sample();
-        this.goesToHospitalInPhase2 = CovidParameters.get().hospitalisationParameters.pPhase2GoesToHosptial.sample();
         this.personId = nPeople++;
         
         this.covidMortalityAgeAdjustment = Math.pow((double) age / 85.0, 2.0);
@@ -79,6 +78,12 @@ public abstract class Person {
     @Override
     public int hashCode() {
         return personId;
+    }
+    
+    public void setHospitlaised() {
+    	if(!isInCare) {
+    		goesToHospitalInPhase2 = true;
+    	}
     }
 
     public boolean isRecovered() {

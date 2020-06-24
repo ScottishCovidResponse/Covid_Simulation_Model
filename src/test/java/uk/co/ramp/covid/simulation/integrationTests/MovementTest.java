@@ -156,7 +156,7 @@ public class MovementTest extends SimulationTest {
     @Test
     public void someNonWorkersGoToHospital() {
         // Phase 2 movement set when we construct population so we need to reconstruct it here
-        CovidParameters.get().hospitalisationParameters.pPhase2GoesToHosptial = new Probability(1.0);
+        CovidParameters.get().diseaseParameters.hospitalisedSurvive = new Probability(1.0);
         CovidParameters.get().diseaseParameters.adultProgressionPhase2 = 100.0;
         CovidParameters.get().diseaseParameters.childProgressionPhase2 = 100.0;
         CovidParameters.get().diseaseParameters.pensionerProgressionPhase2 = 100.0;

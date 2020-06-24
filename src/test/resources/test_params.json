@@ -20,17 +20,18 @@
           "phase1Betab": 30.0,
           "aSymptomaticTransAdjustment": 0.1,
           "symptomaticTransAdjustment": 1.0,
-          "mortalityRate":100.0,
+          "caseMortalityRate":1.0,
           "childProgressionPhase2":0.0,
           "adultProgressionPhase2":0.15,
-          "pensionerProgressionPhase2":1.0
+          "pensionerProgressionPhase2":1.0,
+          "hospitalisedSurvive":0.25,
+          "hospitalisedDie":0.8
       },
       "infectionSeedProperties": {
         "infectionRateIncreaseAdult":0.0001,
         "infectionRateIncreaseInfantChildPensioner":0.0002
       },
       "hospitalisationParameters": {
-          "pPhase2GoesToHosptial":0.52,
           "hospitalisationTransmissionReduction":0.05
       },
       "careHomeParameters": {
