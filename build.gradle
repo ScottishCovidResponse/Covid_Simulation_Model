@@ -3,9 +3,11 @@ buildscript {
         maven {
             url "https://plugins.gradle.org/m2/"
         }
+        gradlePluginPortal()
     }
     dependencies {
         classpath "org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:2.6.1"
+        classpath "gradle.plugin.de.fuerstenau:BuildConfigPlugin:1.1.4"
     }
 }
 
@@ -13,6 +15,25 @@ apply plugin: 'java'
 apply plugin: 'application'
 apply plugin: "org.sonarqube"
 apply plugin: 'jacoco'
+apply plugin: 'de.fuerstenau.buildconfig'
+
+ext {
+
+    ext.getGitHash = { ->
+
+        def stdout = new ByteArrayOutputStream()
+        exec {
+            commandLine 'git', 'rev-parse', 'HEAD'
+            standardOutput = stdout
+        }
+        return stdout.toString().trim()
+    }
+
+}
+
+buildConfig {
+    buildConfigField "String", "GitHash", "${getGitHash()}"
+}
 
 java {
     sourceCompatibility = JavaVersion.VERSION_1_8
@@ -37,7 +58,7 @@ jacoco{
     version = '0.8.5'
 }
 
-version=0.1
+version = '1.0.0'
 
 repositories {
     // Use jcenter for resolving dependencies.
