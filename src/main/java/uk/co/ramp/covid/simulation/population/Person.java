@@ -47,6 +47,7 @@ public abstract class Person {
     private final int personId;
 
     private boolean isInCare = false;
+    protected boolean furloughed = false;
     
     private boolean moved = false;
     private Transport transport = null;
@@ -247,8 +248,10 @@ public abstract class Person {
 
     public abstract boolean avoidsPhase2(double testP);
 
-    protected boolean isWorking(CommunalPlace communalPlace, Time t, boolean furloughed) {
-        if (primaryPlace == null || shifts == null || furloughed || isHospitalised) {
+    public boolean isWorking(CommunalPlace communalPlace, Time t) {
+        if (primaryPlace == null || shifts == null
+                || isFurloughed() || isHospitalised
+                || !communalPlace.isOpen(t)) {
             return false;
         }
 
@@ -263,34 +266,9 @@ public abstract class Person {
                 && t.getHour() >= start
                 && t.getHour() < end;
     }
-
-    public boolean isWorking(CommunalPlace communalPlace, Time t) {
-        return isWorking(communalPlace, t, false);
-    }
-
-
+    
     public boolean worksNextHour(CommunalPlace communalPlace, Time t) {
-        if (primaryPlace == null || shifts == null || primaryPlace != communalPlace
-                || !communalPlace.isOpenNextHour(t)) {
-            return false;
-        }
-
-        // Handle day crossovers
-        int day = t.getDay();
-        int nextHour = 0;
-        if (t.getHour() + 1 == 24) {
-            day = (day + 1) % 7;
-        } else {
-            nextHour = t.getHour() + 1;
-        }
-
-        int start = shifts.getShift(day).getStart();
-        int end = shifts.getShift(day).getEnd();
-        if (end < start) {
-            end += 24;
-        }
-
-        return nextHour >= start && nextHour < end;
+        return isWorking(communalPlace, t.advance());
     }
 
     public void moveToPrimaryPlace(Place from) {
@@ -367,4 +345,9 @@ public abstract class Person {
     protected abstract double getInfectionSeedRate();
     
     public void furlough() {};
+
+    public boolean isFurloughed() { return furloughed; }
+    public void unFurlough() {
+        furloughed = false;
+    }
 }
