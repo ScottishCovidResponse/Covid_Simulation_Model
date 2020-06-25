@@ -12,6 +12,7 @@ import uk.co.ramp.covid.simulation.util.RNG;
 import java.util.*;
 
 import org.apache.commons.math3.random.RandomDataGenerator;
+import org.apache.commons.math3.util.Pair;
 
 public abstract class Place {
 
@@ -93,14 +94,29 @@ public abstract class Place {
         return transConstant * transAdjustment / people.size();
     }
     
-    private void addContacts(Time t, ContactsWriter contactsWriter) {
-        double weight = this.getTransConstant();
-        for (Person a : people) {
-            for (Person b : people) {
-                if (a != b) {
-                    contactsWriter.addContact(t, a, b, this, weight);
+    private Collection<Pair<Integer, Integer>> genRandomPairs(int minValue, int maxValue, int count) {
+        Set<Pair<Integer, Integer>> pairs = new HashSet<>();
+        while(pairs.size() < count) {
+            int i = rng.nextInt(minValue, maxValue);
+            int j = rng.nextInt(minValue, maxValue);
+            if (i != j) {
+                if (i > j) {
+                    int k = i;
+                    i = j;
+                    j = k;
                 }
+                pairs.add(new Pair<Integer, Integer>(i, j));
             }
+        }
+        return pairs;
+    }
+
+    private void addContacts(Time t, ContactsWriter contactsWriter) {
+        int nPairs = getNumPeople() * (getNumPeople() - 1) / 2;
+        int nContacts = rng.nextBinomial(nPairs, this.getTransConstant() / 24.0);
+        Collection<Pair<Integer, Integer>> randomPairs = genRandomPairs(0, people.size() - 1, nContacts);
+        for (Pair<Integer, Integer> pair : randomPairs) {
+            contactsWriter.addContact(t, people.get(pair.getFirst()), people.get(pair.getSecond()), this, 1);
         }
     }
 
