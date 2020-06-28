@@ -11,11 +11,15 @@ buildscript {
     }
 }
 
+group 'uk.co.ramp.covid.simulation'
+
 apply plugin: 'java'
 apply plugin: 'application'
 apply plugin: "org.sonarqube"
 apply plugin: 'jacoco'
 apply plugin: 'de.fuerstenau.buildconfig'
+apply plugin: 'eclipse'
+apply plugin: 'idea'
 
 ext {
 
