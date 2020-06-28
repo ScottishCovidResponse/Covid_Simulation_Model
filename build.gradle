@@ -27,7 +27,9 @@ ext {
 
         def stdout = new ByteArrayOutputStream()
         exec {
-            commandLine 'git', 'rev-parse', 'HEAD'
+            // get git commit hash with -dirty appended for uncommitted changes
+            // (see https://stackoverflow.com/questions/21017300/git-command-to-get-head-sha1-with-dirty-suffix-if-workspace-is-not-clean)
+            commandLine 'git', 'describe', '--match=NeVeRmAtCh', '--always', '--abbrev=40', '--dirty'
             standardOutput = stdout
         }
         return stdout.toString().trim()
