@@ -306,7 +306,7 @@ public class HospitalTest extends SimulationTest {
                 
                 for (Hospital h : pop.getPlaces().getAllHospitals()) {
                     for (Person p : h.getPeople()) {
-                        if (p.hasHospitalAppt() && !p.getHospitalAppt().isOver(t)) {
+                        if (h.isPatient(p, t)) {
                             hospitalApptsBeforeLockdown++;
                         }
                     }
@@ -327,7 +327,7 @@ public class HospitalTest extends SimulationTest {
 
                 for (Hospital h : pop.getPlaces().getAllHospitals()) {
                     for (Person p : h.getPeople()) {
-                        if (p.hasHospitalAppt() && !p.getHospitalAppt().isOver(t)) {
+                        if (h.isPatient(p, t)) {
                             hospitalApptsInLockdown++;
                         }
                     }
@@ -337,10 +337,10 @@ public class HospitalTest extends SimulationTest {
         
         assertTrue("Expected: " + hospitalApptsInLockdown + " < " + hospitalApptsBeforeLockdown,
                 hospitalApptsInLockdown < hospitalApptsBeforeLockdown);
-        // Should be roughly lockdownAdjust fewer appts. We need to allow a decent margin of error here since people
-        // might be in appts as lockdown starts
-        assertEquals(hospitalApptsBeforeLockdown - hospitalApptsBeforeLockdown * lockdownAdjust,
-                hospitalApptsInLockdown, hospitalApptsBeforeLockdown * 0.15);
+
+        // The reduction is 75% but we check for > 50% reduction just to give some padding for the randomness
+        assertTrue("Expected:" + hospitalApptsInLockdown + " < " + hospitalApptsBeforeLockdown * 0.5,
+                hospitalApptsInLockdown < hospitalApptsBeforeLockdown * 0.5);
 
     }
 

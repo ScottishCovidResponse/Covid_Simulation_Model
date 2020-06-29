@@ -23,4 +23,8 @@ public class HospitalAppt {
     public boolean isOver(Time t) {
         return t.getAbsTime() - startTime.getAbsTime() >= lengthInHours;
     }
+    
+    public boolean isOccurring(Time t) {
+        return t.getAbsTime() >= startTime.getAbsTime() && !isOver(t);
+    }
 }

@@ -53,18 +53,21 @@ public class Hospital extends CommunalPlace {
             s.incInfectionsHospitalVisitor();
         }
     }
+    
+    public boolean isPatient(Person p, Time t) {
+        return p.hasHospitalAppt() && p.getHospitalAppt().isOccurring(t);
+    }
 
     public void movePatients(Time t) {
         for (Person p : getPeople()) {
-            //TODO: check hospital workers with appts are handled correctly
             if (p.hasMoved() || p.isWorking(this, t)) {
                 continue;
             }
 
-            if (p.hasHospitalAppt() && p.getHospitalAppt().isOver(t)) {
-                p.returnHome(this);
-            } else {
+            if (isPatient(p, t)) {
                 p.stayInPlace(this);
+            } else {
+                p.returnHome(this);
             }
         }
     }
@@ -72,7 +75,7 @@ public class Hospital extends CommunalPlace {
     @Override
     public void determineMovement(Time t, DailyStats s, boolean lockdown, Places places) {
         movePhase2(t, s, places, Person::isHospitalised);
-        moveShifts(t, lockdown, Person::isHospitalised);
+        moveShifts(t, lockdown, p -> p.isHospitalised() || isPatient(p, t));
         movePatients(t);
     }
 
