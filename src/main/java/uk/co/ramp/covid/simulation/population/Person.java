@@ -377,15 +377,19 @@ public abstract class Person {
         if (hasHospitalAppt() && !getHospitalAppt().isOver(t)) {
             return;
         }
-        
-        double lockdownAdjust = lockdown ? 0.75 : 1.0;
+
+        double lockdownAdjust = 1.0;
+        if (lockdown) {
+            double decreaseP = PopulationParameters.get().hospitalApptProperties.lockdownApptDecreasePercentage;
+            lockdownAdjust = lockdownAdjust - decreaseP;
+        }
 
         if (new Probability(info.pInPatient.asDouble() * lockdownAdjust).sample()) {
             
             Time startTime = new Time(t.getAbsTime() +
                     RNG.get().nextInt(
-                            PopulationParameters.get().hospitalApptTimings.inPatientFirstStartTime,
-                            PopulationParameters.get().hospitalApptTimings.inPatientLastStartTime));
+                            PopulationParameters.get().hospitalApptProperties.inPatientFirstStartTime,
+                            PopulationParameters.get().hospitalApptProperties.inPatientLastStartTime));
 
             int length = info.inPatientLengthDays.intValue() * 24;
             if (length < 1) {
@@ -400,11 +404,11 @@ public abstract class Person {
         } else if (new Probability(info.pDayCase.asDouble() * lockdownAdjust).sample()) {
 
             Time startTime = new Time(t.getAbsTime() +
-                    PopulationParameters.get().hospitalApptTimings.dayCaseStartTime);
+                    PopulationParameters.get().hospitalApptProperties.dayCaseStartTime);
 
             int length = (int) RNG.get().nextGaussian(
-                    PopulationParameters.get().hospitalApptTimings.meanDayCaseTime,
-                    PopulationParameters.get().hospitalApptTimings.SDDayCaseTime
+                    PopulationParameters.get().hospitalApptProperties.meanDayCaseTime,
+                    PopulationParameters.get().hospitalApptProperties.SDDayCaseTime
             );
             if (length < 1) { length =  1; }
 
@@ -418,12 +422,12 @@ public abstract class Person {
             
             Time startTime = new Time(t.getAbsTime() +
                     RNG.get().nextInt(
-                            PopulationParameters.get().hospitalApptTimings.outPatientFirstStartTime,
-                            PopulationParameters.get().hospitalApptTimings.outPatientLastStartTime));
+                            PopulationParameters.get().hospitalApptProperties.outPatientFirstStartTime,
+                            PopulationParameters.get().hospitalApptProperties.outPatientLastStartTime));
 
 
             int length = (int) RNG.get().nextExponential(
-                    PopulationParameters.get().hospitalApptTimings.meanOutPatientTime);
+                    PopulationParameters.get().hospitalApptProperties.meanOutPatientTime);
             if (length < 1) { length =  1; }
 
             Hospital h = places.getRandomNonCovidHospital();

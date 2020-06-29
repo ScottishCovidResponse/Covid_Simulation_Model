@@ -1,12 +1,10 @@
 package uk.co.ramp.covid.simulation.place;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.google.gson.JsonParseException;
 
 import uk.co.ramp.covid.simulation.output.DailyStats;
-import uk.co.ramp.covid.simulation.util.RNG;
 import uk.co.ramp.covid.simulation.util.Time;
 import uk.co.ramp.covid.simulation.parameters.CovidParameters;
 import uk.co.ramp.covid.simulation.parameters.PopulationParameters;
@@ -278,6 +276,72 @@ public class HospitalTest extends SimulationTest {
                 }
             }
         }
+    }
+
+    @Test
+    public void hospitalApptsDecreaseDuringLockdown() {
+        int populationSize = 20000;
+        int nInfections = 100;
+        double lockdownAdjust = 0.75;
+
+        // Need to force some non-covid hospitals
+        PopulationParameters.get().buildingDistribution.populationToHospitalsRatio = 3000;
+        PopulationParameters.get().hospitalApptProperties.lockdownApptDecreasePercentage = lockdownAdjust;
+        Population pop = PopulationGenerator.genValidPopulation(populationSize);
+        pop.seedVirus(nInfections);
+        
+        pop.setLockdown(15, 30, 1.0);
+
+        int hospitalApptsBeforeLockdown = 0;
+        Time t = new Time(0);
+        for (int i = 0; i < 14; i++) {
+            pop.getLockdownController().implementLockdown(t);
+            for (Person per : pop.getAllPeople()) {
+                per.deteremineHospitalVisits(t,  pop.getLockdownController().inLockdown(t), pop.getPlaces());
+            }
+
+            for (int j = 0; j < 24; j++) {
+                pop.timeStep(t, new DailyStats(t));
+                t = t.advance();
+                
+                for (Hospital h : pop.getPlaces().getAllHospitals()) {
+                    for (Person p : h.getPeople()) {
+                        if (p.hasHospitalAppt() && !p.getHospitalAppt().isOver(t)) {
+                            hospitalApptsBeforeLockdown++;
+                        }
+                    }
+                }
+            }
+        }
+
+        int hospitalApptsInLockdown = 0;
+        for (int i = 0; i < 14; i++) {
+            pop.getLockdownController().implementLockdown(t);
+            for (Person per : pop.getAllPeople()) {
+                per.deteremineHospitalVisits(t, pop.getLockdownController().inLockdown(t), pop.getPlaces());
+            }
+
+            for (int j = 0; j < 24; j++) {
+                pop.timeStep(t, new DailyStats(t));
+                t = t.advance();
+
+                for (Hospital h : pop.getPlaces().getAllHospitals()) {
+                    for (Person p : h.getPeople()) {
+                        if (p.hasHospitalAppt() && !p.getHospitalAppt().isOver(t)) {
+                            hospitalApptsInLockdown++;
+                        }
+                    }
+                }
+            }
+        }
+        
+        assertTrue("Expected: " + hospitalApptsInLockdown + " < " + hospitalApptsBeforeLockdown,
+                hospitalApptsInLockdown < hospitalApptsBeforeLockdown);
+        // Should be roughly lockdownAdjust fewer appts. We need to allow a decent margin of error here since people
+        // might be in appts as lockdown starts
+        assertEquals(hospitalApptsBeforeLockdown - hospitalApptsBeforeLockdown * lockdownAdjust,
+                hospitalApptsInLockdown, hospitalApptsBeforeLockdown * 0.15);
+
     }
 
 }

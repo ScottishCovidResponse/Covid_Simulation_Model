@@ -212,7 +212,7 @@
             "symptomToQuarantineDelay": 12,
             "symptomToTestingDelay": 24
         },
-        "hospitalApptTimings": {
+        "hospitalApptProperties": {
           "dayCaseStartTime": 8,
           "meanDayCaseTime": 8,
           "SDDayCaseTime": 1,
@@ -220,7 +220,8 @@
           "inPatientLastStartTime": 23,
           "outPatientFirstStartTime": 8,
           "outPatientLastStartTime": 17,
-          "meanOutPatientTime": 2
+          "meanOutPatientTime": 2,
+          "lockdownApptDecreasePercentage": 0.75
         },
         "hospitalAppts": {
           "f_0_9":{
