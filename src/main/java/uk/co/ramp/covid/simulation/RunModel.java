@@ -23,6 +23,9 @@ public class RunModel {
             LOGGER.error("Expected parameters: <population_params.json> <model_params.json> <simulationID>");
             System.exit(-1);
         } else {
+            LOGGER.info(BuildConfig.NAME + " version " + BuildConfig.VERSION);
+            LOGGER.info("Git hash: " + BuildConfig.GitHash);
+
             String populationParamsFile = args[0];
             String modelParamsFile = args[1];
             int simulationID = Integer.parseInt(args[2]);
