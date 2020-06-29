@@ -342,6 +342,10 @@ public class Places {
         return covidHospitals.toList();
     }
 
+    public List<Hospital> getNonCovidHospitals() {
+        return nonCovidHospitals.toList();
+    }
+
     public List<Nursery> getNurseries() {
         return nurseries.toList();
     }
