@@ -1,11 +1,13 @@
 package uk.co.ramp.covid.simulation.util;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import uk.co.ramp.covid.simulation.population.ImpossibleAllocationException;
 import uk.co.ramp.covid.simulation.population.ImpossibleWorkerDistributionException;
 import uk.co.ramp.covid.simulation.population.Population;
 
 public class PopulationGenerator {
-    
+    private static final Logger LOGGER = LogManager.getLogger(PopulationGenerator.class);
     private static final int RETRIES = 20;
 
     public static Population genValidPopulation(int populationsize) throws CannotGeneratePopulationException {
@@ -15,6 +17,7 @@ public class PopulationGenerator {
                 p = new Population(populationsize);
                 break;
             } catch (ImpossibleAllocationException | ImpossibleWorkerDistributionException e2) {
+                LOGGER.info("Could not generate valid population. Retrying");
                 continue;
             }
         }
