@@ -237,7 +237,7 @@ public class HospitalTest extends SimulationTest {
     }
 
     @Test
-    public void childrenAreAcompaniedByAdultsForApts() {
+    public void childrenAreAccompaniedByAdultsForAppts() {
         int simDays = 7;
         int populationSize = 10000;
         int nInfections = 100;

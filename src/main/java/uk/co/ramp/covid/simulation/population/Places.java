@@ -86,7 +86,9 @@ public class Places {
         return careHomes.sample();
     }
 
-    public Hospital getRandomNonCovidHospital() { return nonCovidHospitals.sample(); }
+    public Hospital getRandomNonCovidHospital() {
+        return nonCovidHospitals.sample();
+    }
     
     private <T extends CommunalPlace> T getNextWorkplace(ProbabilityDistribution<T> places,
                                            Supplier<Boolean> getUnallocated,
