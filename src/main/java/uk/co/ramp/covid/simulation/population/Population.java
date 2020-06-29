@@ -418,8 +418,9 @@ public class Population {
     }
 
     // This is a really cack handed way of implementing the school lockdown. IT needs improving
+    // TODO: School lockdowns no longer work as expected
     public void setSchoolLockdown(int start, int end, double socialDist) {
-       lockdownController.setSchoolLockdown(Time.timeFromDay(start), Time.timeFromDay(end), socialDist);
+       lockdownController.setSchoolLockdown(Time.timeFromDay(start), Time.timeFromDay(end), Time.timeFromDay(end), socialDist);
     }
 
     // This method generates output at the end of each day

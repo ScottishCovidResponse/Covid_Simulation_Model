@@ -202,4 +202,12 @@ public abstract class CommunalPlace extends Place {
         sDistance = 1.0;
         closed = false;
     }
+    
+    public void close() {
+        closed = true;
+    }
+    
+    public void open() {
+        closed = false;
+    }
 }
