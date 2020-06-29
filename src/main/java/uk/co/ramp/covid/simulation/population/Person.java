@@ -80,7 +80,7 @@ public abstract class Person {
         return personId;
     }
     
-    public void setHospitlaised() {
+    public void setWillBeHospitalised() {
     	if(!isInCare) {
     		goesToHospitalInPhase2 = true;
     	}

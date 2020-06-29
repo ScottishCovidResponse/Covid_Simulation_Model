@@ -28,7 +28,6 @@ public class Covid {
     private int infCounter;
     private final Person ccase;
     private final RandomDataGenerator rng;
-    private boolean hospitalised;
     private boolean dies;
     
     private final InfectionLog log;
@@ -115,15 +114,17 @@ public class Covid {
             }
             
             if(p2 > 0) {
+                final boolean goesToHospital;
+
             	dies = rng.nextUniform(0,  1) < caseMortalityRate * ccase.getCovidMortalityAgeAdjustment();
             	if(dies) {
-            		hospitalised = CovidParameters.get().diseaseParameters.hospitalisedDie.sample();
+            		goesToHospital = CovidParameters.get().diseaseParameters.hospitalisedDie.sample();
             	}
             	else {
-            		hospitalised = CovidParameters.get().diseaseParameters.hospitalisedSurvive.sample();
+            		goesToHospital = CovidParameters.get().diseaseParameters.hospitalisedSurvive.sample();
             	}
-            	if(hospitalised) {
-            		ccase.setHospitlaised();
+            	if(goesToHospital) {
+            		ccase.setWillBeHospitalised();
             	}
 
             }
