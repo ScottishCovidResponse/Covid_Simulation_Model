@@ -412,16 +412,6 @@ public class Population {
         return false;
     }
 
-    // Basically a method to set the instance variables. Could also do this through an overloaded constructor, but I rather prefer this way of doing things
-    public void setLockdown(int start, int end, double socialDist) {
-       lockdownController.setLockdown(Time.timeFromDay(start), Time.timeFromDay(end), socialDist);
-    }
-
-    // This is a really cack handed way of implementing the school lockdown. IT needs improving
-    public void setSchoolLockdown(int start, int end, double socialDist) {
-       lockdownController.setSchoolLockdown(Time.timeFromDay(start), Time.timeFromDay(end), socialDist);
-    }
-
     // This method generates output at the end of each day
     private DailyStats processCases(DailyStats stats) {
         for (Person p : allPeople) {

@@ -7,6 +7,8 @@ import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import uk.co.ramp.covid.simulation.lockdown.LockdownComponent;
+import uk.co.ramp.covid.simulation.lockdown.LockdownComponentDeserialiser;
 import uk.co.ramp.covid.simulation.output.DailyStats;
 import uk.co.ramp.covid.simulation.output.network.ContactsWriter;
 import uk.co.ramp.covid.simulation.output.network.PeopleWriter;
@@ -16,6 +18,7 @@ import uk.co.ramp.covid.simulation.population.ImpossibleWorkerDistributionExcept
 import uk.co.ramp.covid.simulation.population.Population;
 import uk.co.ramp.covid.simulation.util.InvalidParametersException;
 import uk.co.ramp.covid.simulation.util.RNG;
+import uk.co.ramp.covid.simulation.util.Time;
 
 import java.io.*;
 import java.nio.file.FileSystems;
@@ -29,35 +32,6 @@ import java.util.*;
 public class Model {
     private static final Logger LOGGER = LogManager.getLogger(Model.class);
 
-    private class Lockdown {
-        public Integer start;
-        public Integer end;
-        public Double socialDistance;
-
-        public Lockdown(int start, int end, double socialDistance) {
-            this.start = start;
-            this.end = end;
-            this.socialDistance = socialDistance;
-        }
-
-        public boolean isValid() {
-            boolean valid = true;
-            if (start == null) {
-                LOGGER.warn("Uninitialised model parameter: start");
-                valid = false;
-            }
-            if (end == null) {
-                LOGGER.warn("Uninitialised model parameter: end");
-                valid = false;
-            }
-            if (socialDistance == null) {
-                LOGGER.warn("Uninitialised model parameter: socialDistance");
-                valid = false;
-            }
-            return valid;
-        }
-    }
-
     private boolean outputDisabled;
     private Integer populationSize = null;
     private Integer nInitialInfections = null;
@@ -66,9 +40,9 @@ public class Model {
     private Integer nIters = null;
     private Integer rngSeed = null;
     private String outputDirectory = null;
-    private Lockdown lockDown = null;
-    private Lockdown schoolLockDown = null;
     private String networkOutputDir = null;
+    
+    private List<LockdownComponent> lockdownComponents = null;
 
     public Model() {}
 
@@ -110,16 +84,6 @@ public class Model {
 
     public Integer getRNGSeed() {
         return rngSeed;
-    }
-
-    public Model setSchoolLockdown(int start, int end, double socialDistance) {
-        this.schoolLockDown = new Lockdown(start, end, socialDistance);
-        return this;
-    }
-
-    public Model setLockdown(int start, int end, double socialDistance) {
-        this.lockDown = new Lockdown(start, end, socialDistance);
-        return this;
     }
 
     public Model setOutputDirectory(String fname) {
@@ -165,19 +129,6 @@ public class Model {
                 valid = false;
             }
         }
-        // Handle optional args
-        if (lockDown != null) {
-            if (!lockDown.isValid()) {
-                LOGGER.warn("lockDown parameters invalid");
-                valid = false;
-            }
-        }
-        if (schoolLockDown != null) {
-            if (!schoolLockDown.isValid()) {
-                LOGGER.warn("schoollockDown parameters invalid");
-                valid = false;
-            }
-        }
 
         return valid;
     }
@@ -219,11 +170,12 @@ public class Model {
 
             p.setExternalInfectionDays(externalInfectionDays);
             p.seedVirus(nInitialInfections);
-            if (lockDown != null) {
-                p.setLockdown(lockDown.start, lockDown.end, lockDown.socialDistance);
-            }
-            if (schoolLockDown != null) {
-                p.setSchoolLockdown(schoolLockDown.start, schoolLockDown.end, schoolLockDown.socialDistance);
+
+            if (lockdownComponents != null) {
+                for (LockdownComponent c : lockdownComponents) {
+                    c.setPopulation(p);
+                    p.getLockdownController().addComponent(c);
+                }
             }
 
             List<DailyStats> iterStats = p.simulate(nDays, contactsWriter);
@@ -324,7 +276,14 @@ public class Model {
     // Also allows reading from json file
     public static Model readModelFromFile(String path) throws IOException, JsonParseException {
         Reader file = new FileReader(path);
-        Gson gson = new Gson();
+
+        LockdownComponentDeserialiser lcDeserialiser = new LockdownComponentDeserialiser();
+        Gson gson = new GsonBuilder()
+                .registerTypeAdapter(LockdownComponent.class, lcDeserialiser)
+                .registerTypeAdapter(Time.class, Time.deserializer)
+                .create();
+        lcDeserialiser.setGson(gson);
+        
         return gson.fromJson(file, Model.class);
     }
 

@@ -221,6 +221,10 @@ public abstract class Place {
             }
         }
     }
+    
+    public void setSocialDistancing(double sdist) {
+        sDistance = sdist;
+    }
 
 
     /** Handles movement between people in this place */

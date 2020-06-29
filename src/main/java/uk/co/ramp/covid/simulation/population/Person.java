@@ -335,6 +335,10 @@ public abstract class Person {
 
     protected abstract double getInfectionSeedRate();
     
+    public void forceFurlough() {
+        furloughed = true;
+    }
+
     public void furlough() {};
 
     public boolean isFurloughed() { return furloughed; }

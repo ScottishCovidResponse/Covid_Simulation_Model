@@ -20,6 +20,8 @@ public class LockdownControllerTest extends SimulationTest  {
         pop = PopulationGenerator.genValidPopulation(10000);
     }
 
+    // TODO: Many of these don't make too much sense anymore
+    /*
     @Test
     public void testSetLockdown() {
         int start = 1;
@@ -82,5 +84,8 @@ public class LockdownControllerTest extends SimulationTest  {
             assertTrue("Nursery should be a key premises", n.isKeyPremises());
         }
     }
+
+
+     */
 
 }
