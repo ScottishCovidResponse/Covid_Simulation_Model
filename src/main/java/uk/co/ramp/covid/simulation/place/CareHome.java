@@ -51,9 +51,21 @@ public class CareHome extends CommunalPlace implements Home {
         }
     }
 
+    private void moveHospital(Time t) {
+        for (Person p : getPeople()) {
+            if (p.hasMoved() || !p.hasHospitalAppt()) {
+                continue;
+            }
+            if (p.getHospitalAppt().getStartTime().equals(t.advance())) {
+                p.moveTo(this, p.getHospitalAppt().getApptLocation());
+            }
+        }
+    }
+
     @Override
     public void determineMovement(Time t, DailyStats s, boolean lockdown, Places places) {
         movePhase2(t, s, places, Person::isInCare);
+        moveHospital(t);
         moveShifts(t, lockdown, Person::isInCare);
         remainInPlace();
     }

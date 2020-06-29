@@ -172,7 +172,7 @@ public class MovementTest extends SimulationTest {
         DailyStats s = new DailyStats(t);
         for (int i = 0; i < simTime; i++) {
             p.timeStep(t, s);
-            for (Hospital place : p.getPlaces().getHospitals()) {
+            for (Hospital place : p.getPlaces().getAllHospitals()) {
                 for (Person per : place.getPeople()) {
                     if (per.getPrimaryCommunalPlace() != place || per.isHospitalised()) {
                         visiting.add(per);
@@ -536,4 +536,42 @@ public class MovementTest extends SimulationTest {
         }
 
     }
+
+    @Test
+    public void peopleAttendHospitalAppts() {
+        final int simDays = 14;
+        Time t = new Time(0);
+        // We need to force > 1 hospital, else it will be designated COVID and no accept patients
+        PopulationParameters.get().buildingDistribution.populationToHospitalsRatio = 5000;
+        p = PopulationGenerator.genValidPopulation(populationSize);
+        p.seedVirus(nInfections);
+
+        int hospitalApptVisitors = 0;
+        int hospitalApptCare = 0;
+
+        for (int i = 0; i < simDays; i++) {
+            for (Person per : p.getAllPeople()) {
+                per.deteremineHospitalVisits(t, false, p.getPlaces());
+            }
+            
+            for (int j = 0; j < 24; j++) {
+                p.timeStep(t, new DailyStats(t));
+                t = t.advance();
+
+                for (Hospital h : p.getPlaces().getAllHospitals()) {
+                    for (Person p : h.getPeople()) {
+                        if (h.isPatient(p, t)) {
+                            hospitalApptVisitors++;
+                            if (p.isInCare()) {
+                                hospitalApptCare++;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        assertNotEquals("No one had a hospital appt", 0, hospitalApptVisitors);
+        assertNotEquals("No one from care had a hospital appt", 0, hospitalApptCare);
+    }
+
 }

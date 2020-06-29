@@ -33,8 +33,8 @@ public class LockdownTests extends SimulationTest  {
             pop.timeStep(t, new DailyStats(t));
             t = t.advance();
 
-            // We only check hospitals since they 1. support furlough, 2. aren't visitable by staff members
-            for (Hospital plc : pop.getPlaces().getHospitals()) {
+            // We only check (non-COVID) hospitals since they support furlough
+            for (Hospital plc : pop.getPlaces().getNonCovidHospitals()) {
                 for (Person p : plc.getPeople()) {
                     if (p.getPrimaryCommunalPlace() == plc && !p.isHospitalised()) {
                         assertFalse(p.isFurloughed());

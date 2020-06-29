@@ -8,6 +8,9 @@ import org.apache.commons.math3.random.RandomDataGenerator;
 import uk.co.ramp.covid.simulation.covid.Covid;
 import uk.co.ramp.covid.simulation.parameters.CovidParameters;
 import uk.co.ramp.covid.simulation.output.DailyStats;
+import uk.co.ramp.covid.simulation.parameters.HospitalApptInfo;
+import uk.co.ramp.covid.simulation.place.Hospital;
+import uk.co.ramp.covid.simulation.util.HospitalAppt;
 import uk.co.ramp.covid.simulation.util.Time;
 import uk.co.ramp.covid.simulation.parameters.PopulationParameters;
 import uk.co.ramp.covid.simulation.place.CareHome;
@@ -17,7 +20,6 @@ import uk.co.ramp.covid.simulation.util.Probability;
 import uk.co.ramp.covid.simulation.util.RNG;
 
 public abstract class Person {
-
 
     public enum Sex {
         MALE, FEMALE
@@ -58,7 +60,8 @@ public abstract class Person {
     private final double covidMortalityAgeAdjustment;
     
     private final double covidSusceptibleVal; 
-
+    
+    private HospitalAppt hospitalAppt;
 
     public Person(int age, Sex sex) {
         this.age = age;
@@ -272,12 +275,18 @@ public abstract class Person {
         }
     }
 
-    // People need to leave early if they have a shift starting in 2 hours time
-    // 1 hour travels home, 1 travels to work; There is currently no direct travel to work.
+    // People need to leave early if they have a shift starting in 2 hours time, 
+    // or if they have a hospital appt to get to
+    // 1 hour travels home, 1 travels to work; There is currently no direct travel to work/hospitals.
     public boolean mustGoHome(Time t) {
+        if (hospitalAppt != null) {
+            return t.getHour() + 2 >= hospitalAppt.getStartTime().getHour();
+        }
+
         if (primaryPlace != null && shifts != null) {
             return t.getHour() + 2 >= shifts.getShift(t.getDay()).getStart();
         }
+
         return false;
     }
 
@@ -337,7 +346,94 @@ public abstract class Person {
     
     public void furlough() {};
 
-    public boolean isFurloughed() { return furloughed; }
+    // We can't determine this in household in case the person is working nightshift
+    // Time is always the start of a day
+    public void deteremineHospitalVisits(Time t, boolean lockdown, Places places) {
+        HospitalApptInfo info = PopulationParameters.get().hospitalAppsParams().getParams(sex, age);
+        
+        // Appts might be across days so don't regenerate if we already have one
+        if (hasHospitalAppt() && !getHospitalAppt().isOver(t)) {
+            return;
+        }
+
+        double lockdownAdjust = 1.0;
+        if (lockdown) {
+            double decreaseP = PopulationParameters.get().hospitalApptProperties.lockdownApptDecreasePercentage;
+            lockdownAdjust = lockdownAdjust - decreaseP;
+        }
+
+        if (new Probability(info.pInPatient.asDouble() * lockdownAdjust).sample()) {
+            
+            Time startTime = new Time(t.getAbsTime() +
+                    RNG.get().nextInt(
+                            PopulationParameters.get().hospitalApptProperties.inPatientFirstStartTime,
+                            PopulationParameters.get().hospitalApptProperties.inPatientLastStartTime));
+
+            int length = info.inPatientLengthDays.intValue() * 24;
+            if (length < 1) {
+                length = 1;
+            }
+
+            Hospital h = places.getRandomNonCovidHospital();
+            if (h != null) {
+                hospitalAppt = new HospitalAppt(startTime, length, h);
+            }
+            
+        } else if (new Probability(info.pDayCase.asDouble() * lockdownAdjust).sample()) {
+
+            Time startTime = new Time(t.getAbsTime() +
+                    PopulationParameters.get().hospitalApptProperties.dayCaseStartTime);
+
+            int length = (int) RNG.get().nextGaussian(
+                    PopulationParameters.get().hospitalApptProperties.meanDayCaseTime,
+                    PopulationParameters.get().hospitalApptProperties.SDDayCaseTime
+            );
+            if (length < 1) { length =  1; }
+
+            // For small populations there might not be any non-COVID hospitals
+            Hospital h = places.getRandomNonCovidHospital();
+            if (h != null) {
+                hospitalAppt = new HospitalAppt(startTime, length, h);
+            }
+            
+        } else if (new Probability(info.pOutPatient.asDouble() * lockdownAdjust).sample()) {
+            
+            Time startTime = new Time(t.getAbsTime() +
+                    RNG.get().nextInt(
+                            PopulationParameters.get().hospitalApptProperties.outPatientFirstStartTime,
+                            PopulationParameters.get().hospitalApptProperties.outPatientLastStartTime));
+
+
+            int length = (int) RNG.get().nextExponential(
+                    PopulationParameters.get().hospitalApptProperties.meanOutPatientTime);
+            if (length < 1) { length =  1; }
+
+            Hospital h = places.getRandomNonCovidHospital();
+            if (h != null) {
+                hospitalAppt = new HospitalAppt(startTime, length, h);
+            }
+            
+        } else {
+            hospitalAppt = null;
+        }
+    }
+    
+    public boolean hasHospitalAppt() {
+        return hospitalAppt != null;
+    }
+    
+    public HospitalAppt getHospitalAppt() {
+        return hospitalAppt;
+    }
+
+    public void setHospitalAppt(HospitalAppt hospitalAppt) {
+        this.hospitalAppt = hospitalAppt;
+    }
+
+    public boolean isFurloughed() {
+        return furloughed;
+    }
+
     public void unFurlough() {
         furloughed = false;
     }

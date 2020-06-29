@@ -1,12 +1,10 @@
 package uk.co.ramp.covid.simulation.place;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.google.gson.JsonParseException;
 
 import uk.co.ramp.covid.simulation.output.DailyStats;
-import uk.co.ramp.covid.simulation.util.RNG;
 import uk.co.ramp.covid.simulation.util.Time;
 import uk.co.ramp.covid.simulation.parameters.CovidParameters;
 import uk.co.ramp.covid.simulation.parameters.PopulationParameters;
@@ -49,7 +47,7 @@ public class HospitalTest extends SimulationTest {
                 // Since movement puts people in place for the *next* hour, it's easiest to check this before the timestep
                 // First check is skipped to give workers time to move to work
                 if (firstSkipped) {
-                    for (Hospital place : p.getPlaces().getHospitals()) {
+                    for (Hospital place : p.getPlaces().getAllHospitals()) {
                         staff = place.getStaff(t);
                         assertTrue("Day " + day + " Time " + i  + " Unexpectedly no staff in hospital",
                                 staff.size() > 0);
@@ -94,7 +92,7 @@ public class HospitalTest extends SimulationTest {
         assertFalse(inf.isRecovered());
 
         boolean inHospital = false;
-        for (Hospital h : pop.getPlaces().getHospitals()) {
+        for (Hospital h : pop.getPlaces().getAllHospitals()) {
             if (h.personInPlace(inf) && inf.isHospitalised()) {
                 inHospital = true;
             }
@@ -117,7 +115,7 @@ public class HospitalTest extends SimulationTest {
 
         // Don't check explicitly for atHome since they could be back at work already
         inHospital = false;
-        for (Hospital h : pop.getPlaces().getHospitals()) {
+        for (Hospital h : pop.getPlaces().getAllHospitals()) {
             if (h.personInPlace(inf) && inf.isHospitalised()) {
                 inHospital = true;
             }
@@ -205,7 +203,7 @@ public class HospitalTest extends SimulationTest {
 
         Set<Person> hospitalWorkersPreLockdown = new HashSet<>();
         pop.simulate(1);
-        for (Hospital h : pop.getPlaces().getHospitals()) {
+        for (Hospital h : pop.getPlaces().getAllHospitals()) {
             hospitalWorkersPreLockdown.addAll(h.getStaff(Time.timeFromDay(1)));
         }
         
@@ -213,7 +211,7 @@ public class HospitalTest extends SimulationTest {
         
         Set<Person> hospitalWorkersInLockdown = new HashSet<>();
         pop.simulateFromTime(Time.timeFromDay(1), 2);
-        for (Hospital h : pop.getPlaces().getHospitals()) {
+        for (Hospital h : pop.getPlaces().getAllHospitals()) {
             hospitalWorkersInLockdown.addAll(h.getStaff(Time.timeFromDay(3)));
         }
         
@@ -224,7 +222,7 @@ public class HospitalTest extends SimulationTest {
 
     @Test
     public void testSendHome() {
-        Hospital hospital = new Hospital(CommunalPlace.Size.MED);
+        Hospital hospital = new CovidHospital(CommunalPlace.Size.MED);
         Home h = new CareHome(CommunalPlace.Size.MED);
         Adult adult1 = new Adult(30, FEMALE);
         Adult adult2 = new Adult(30, MALE);
@@ -236,6 +234,114 @@ public class HospitalTest extends SimulationTest {
         hospital.commitMovement();
         int expPeople = 0;
         assertEquals("Unexpected people left in hospital", expPeople, hospital.getNumPeople());
+    }
+
+    @Test
+    public void childrenAreAccompaniedByAdultsForAppts() {
+        int simDays = 7;
+        int populationSize = 10000;
+        int nInfections = 100;
+
+        // Need to force some non-covid hospitals
+        PopulationParameters.get().buildingDistribution.populationToHospitalsRatio = 3000;
+        Population pop = PopulationGenerator.genValidPopulation(populationSize);
+        pop.seedVirus(nInfections);
+
+        Time t = new Time(0);
+        for (int i = 0; i < simDays; i++) {
+            for (Person per : pop.getAllPeople()) {
+                per.deteremineHospitalVisits(t, false, pop.getPlaces());
+            }
+
+            for (int j = 0; j < 24; j++) {
+                pop.timeStep(t, new DailyStats(t));
+                t = t.advance();
+
+                for (Hospital h : pop.getPlaces().getAllHospitals()) {
+                    for (Person p : h.getPeople()) {
+                        if (p.hasHospitalAppt() && !p.getHospitalAppt().isOver(t) 
+                                && (p instanceof Child || p instanceof Infant)) {
+
+                            Person acompanying = null;
+                            for (Person p2 : h.getPeople()) {
+                                if (p != p2 && p2.getHome() == p.getHome() && p2.hasHospitalAppt()
+                                        && (p2 instanceof Adult || p2 instanceof Pensioner)) {
+                                    acompanying = p2;
+                                }
+                            }
+                            assertNotNull(acompanying);
+
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    @Test
+    public void hospitalApptsDecreaseDuringLockdown() {
+        int populationSize = 20000;
+        int nInfections = 100;
+        double lockdownAdjust = 0.75;
+
+        // Need to force some non-covid hospitals
+        PopulationParameters.get().buildingDistribution.populationToHospitalsRatio = 3000;
+        PopulationParameters.get().hospitalApptProperties.lockdownApptDecreasePercentage = lockdownAdjust;
+        Population pop = PopulationGenerator.genValidPopulation(populationSize);
+        pop.seedVirus(nInfections);
+        
+        pop.setLockdown(15, 30, 1.0);
+
+        int hospitalApptsBeforeLockdown = 0;
+        Time t = new Time(0);
+        for (int i = 0; i < 14; i++) {
+            pop.getLockdownController().implementLockdown(t);
+            for (Person per : pop.getAllPeople()) {
+                per.deteremineHospitalVisits(t,  pop.getLockdownController().inLockdown(t), pop.getPlaces());
+            }
+
+            for (int j = 0; j < 24; j++) {
+                pop.timeStep(t, new DailyStats(t));
+                t = t.advance();
+                
+                for (Hospital h : pop.getPlaces().getAllHospitals()) {
+                    for (Person p : h.getPeople()) {
+                        if (h.isPatient(p, t)) {
+                            hospitalApptsBeforeLockdown++;
+                        }
+                    }
+                }
+            }
+        }
+
+        int hospitalApptsInLockdown = 0;
+        for (int i = 0; i < 14; i++) {
+            pop.getLockdownController().implementLockdown(t);
+            for (Person per : pop.getAllPeople()) {
+                per.deteremineHospitalVisits(t, pop.getLockdownController().inLockdown(t), pop.getPlaces());
+            }
+
+            for (int j = 0; j < 24; j++) {
+                pop.timeStep(t, new DailyStats(t));
+                t = t.advance();
+
+                for (Hospital h : pop.getPlaces().getAllHospitals()) {
+                    for (Person p : h.getPeople()) {
+                        if (h.isPatient(p, t)) {
+                            hospitalApptsInLockdown++;
+                        }
+                    }
+                }
+            }
+        }
+        
+        assertTrue("Expected: " + hospitalApptsInLockdown + " < " + hospitalApptsBeforeLockdown,
+                hospitalApptsInLockdown < hospitalApptsBeforeLockdown);
+
+        // The reduction is 75% but we check for > 50% reduction just to give some padding for the randomness
+        assertTrue("Expected:" + hospitalApptsInLockdown + " < " + hospitalApptsBeforeLockdown * 0.5,
+                hospitalApptsInLockdown < hospitalApptsBeforeLockdown * 0.5);
+
     }
 
 }

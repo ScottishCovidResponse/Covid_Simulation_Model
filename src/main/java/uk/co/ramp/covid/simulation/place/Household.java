@@ -162,7 +162,7 @@ public abstract class Household extends Place implements Home {
         }
     }
     
-    public void goToHospital(Time t, DailyStats s, Places places) {
+    public void sendCOVIDPatientsToHospital(Time t, DailyStats s, Places places) {
         for (Person p : getPeople() ) {
             if (p.hasMoved()) {
                 continue;
@@ -183,11 +183,12 @@ public abstract class Household extends Place implements Home {
 
     @Override
     public void determineMovement(Time t, DailyStats s, boolean lockdown, Places places) {
-        goToHospital(t, s, places);
+        sendCOVIDPatientsToHospital(t, s, places);
 
         if (!isIsolating() && getNumInhabitants() > 0) {
-            // Ordering here implies work takes highest priority, then shopping trips have higher priority
-            // than neighbour and restaurant trips
+            // Ordering here implies hospital appts take highest priority
+            moveHospital(t);
+
             moveShift(t);
 
             // Shops are only open 8-22
@@ -211,6 +212,32 @@ public abstract class Household extends Place implements Home {
 
         // Anyone who is left stays here
         remainInPlace();
+    }
+
+    private void moveHospital(Time t) {
+        for (Person p : getPeople() ) {
+            if (p.hasMoved() || !p.hasHospitalAppt()) {
+                continue;
+            }
+
+            if (p.getHospitalAppt().getStartTime().equals(t.advance())) {
+               // Children need to find an adult to go with them else they don't go
+               if (p instanceof Child || p instanceof Infant) {
+                   for (Person per : getPeople() ) {
+                       if (per != p && (per instanceof Adult || per instanceof Pensioner)
+                               && !per.hasMoved() && !per.hasHospitalAppt()) {
+                           // Giving them the same appt ensures they leave at the same time
+                           per.setHospitalAppt(p.getHospitalAppt());
+                           per.moveTo(this, per.getHospitalAppt().getApptLocation());
+                           p.moveTo(this, p.getHospitalAppt().getApptLocation());
+                           break;
+                       }
+                   }
+               } else {
+                    p.moveTo(this, p.getHospitalAppt().getApptLocation());
+                }
+            }
+        }
     }
 
       public void handleSymptomaticCases(Time t) {
