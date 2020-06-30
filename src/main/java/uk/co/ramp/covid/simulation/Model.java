@@ -7,6 +7,8 @@ import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import uk.co.ramp.covid.simulation.lockdown.LockdownComponent;
+import uk.co.ramp.covid.simulation.lockdown.LockdownComponentFactory;
 import uk.co.ramp.covid.simulation.output.DailyStats;
 import uk.co.ramp.covid.simulation.output.network.ContactsWriter;
 import uk.co.ramp.covid.simulation.output.network.PeopleWriter;
@@ -69,6 +71,8 @@ public class Model {
     private Lockdown lockDown = null;
     private Lockdown schoolLockDown = null;
     private String networkOutputDir = null;
+    
+    private List<LockdownComponentFactory.LockdownComponentFactoryInfo> lockdownComponents = null;
 
     public Model() {}
 
@@ -219,13 +223,15 @@ public class Model {
 
             p.setExternalInfectionDays(externalInfectionDays);
             p.seedVirus(nInitialInfections);
-            if (lockDown != null) {
-                p.setLockdown(lockDown.start, lockDown.end, lockDown.socialDistance);
-            }
-            if (schoolLockDown != null) {
-                p.setSchoolLockdown(schoolLockDown.start, schoolLockDown.end, schoolLockDown.socialDistance);
-            }
 
+            if (!lockdownComponents.isEmpty()) {
+                LockdownComponentFactory f = new LockdownComponentFactory();
+                List<LockdownComponent> lockdowns = f.buildComponents(lockdownComponents, p);
+                for (LockdownComponent c : lockdowns) {
+                    p.getLockdownController().addComponent(c);
+                }
+            }
+            
             List<DailyStats> iterStats = p.simulate(nDays, contactsWriter);
             for (DailyStats s : iterStats) {
                 s.determineRValues(p);

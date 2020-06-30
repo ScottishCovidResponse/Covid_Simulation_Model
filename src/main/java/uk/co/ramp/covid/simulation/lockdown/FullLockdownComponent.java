@@ -40,4 +40,9 @@ public class FullLockdownComponent extends LockdownComponent {
     protected void tick(Time t) {
 
     }
+
+    @Override
+    protected String getName() {
+        return "Full Lockdown";
+    }
 }

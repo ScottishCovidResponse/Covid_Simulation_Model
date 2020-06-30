@@ -27,4 +27,9 @@ public class SchoolReturnComponent extends LockdownComponent {
 
     @Override
     protected void tick(Time t) { }
+
+    @Override
+    protected String getName() {
+        return "School Return";
+    }
 }

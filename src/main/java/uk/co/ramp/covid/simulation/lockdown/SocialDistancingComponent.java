@@ -35,4 +35,9 @@ public class SocialDistancingComponent extends LockdownComponent {
 
     }
 
+    @Override
+    protected String getName() {
+        return "Social Distancing";
+    }
+
 }

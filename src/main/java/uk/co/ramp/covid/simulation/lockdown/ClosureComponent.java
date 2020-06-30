@@ -32,4 +32,9 @@ public class ClosureComponent extends LockdownComponent {
     protected void tick(Time t) {
 
     }
+
+    @Override
+    protected String getName() {
+        return "Closure Component";
+    }
 }

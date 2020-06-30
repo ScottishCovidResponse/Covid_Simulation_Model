@@ -6,9 +6,18 @@
     "nIters":1,
     "rngSeed":42,
     "outputDirectory":".",
-    "lockDown":{
-        "start":55,
-        "end":150,
-        "socialDistance":0.5
-    }
+    "lockdownComponents": [
+        {
+            "type" : "FullLockdown",
+            "start": 20,
+            "end": 40,
+            "args": [2.2]
+        },
+        {
+            "type" : "SocialDistancing",
+            "start": 10,
+            "end": 15,
+            "args": [5.0, 1.0]
+        }
+    ]
 }

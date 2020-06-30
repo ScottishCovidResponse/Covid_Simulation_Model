@@ -52,4 +52,9 @@ public class SchoolToggleComponent extends LockdownComponent {
             evenFurloughed = !evenFurloughed;
         }
     }
+
+    @Override
+    protected String getName() {
+        return "School Toggle";
+    }
 }

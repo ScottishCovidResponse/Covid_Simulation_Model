@@ -1,9 +1,13 @@
 package uk.co.ramp.covid.simulation.lockdown;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import uk.co.ramp.covid.simulation.population.Population;
 import uk.co.ramp.covid.simulation.util.Time;
 
 public abstract class LockdownComponent {
+    private static final Logger LOGGER = LogManager.getLogger(LockdownComponent.class);
+
     protected Time startTime;
     protected Time endTime;
     
@@ -21,6 +25,7 @@ public abstract class LockdownComponent {
     public void handleLockdown(Time t) {
         if (!inLockdown) {
             if (t.equals(startTime)) {
+                LOGGER.info("Starting " + getName());
                 start();
                 tick(t);
                 inLockdown = true;
@@ -29,6 +34,7 @@ public abstract class LockdownComponent {
             tick(t);
 
             if (t.equals(endTime)) {
+                LOGGER.info("Ending " + getName());
                 end();
                 inLockdown = false;
             }
@@ -44,4 +50,6 @@ public abstract class LockdownComponent {
 
     // tick allows dynamic lockdown behaviour over the course of a lockdown
     protected abstract void tick(Time t);
+    
+    protected abstract String getName();
 }
