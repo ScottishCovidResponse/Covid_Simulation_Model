@@ -21,7 +21,7 @@ public class ParameterIOTest {
         // Disease Parameters (Tests CovidParameters as a side effect)
         assertEquals(123.12, CovidParameters.get().diseaseParameters.meanLatentPeriod, EPSILON);
         assertEquals(192.0, CovidParameters.get().diseaseParameters.meanAsymptomaticPeriod, EPSILON);
-        assertEquals(100.0, CovidParameters.get().diseaseParameters.mortalityRate, EPSILON);
+        assertEquals(1.0, CovidParameters.get().diseaseParameters.caseMortalityRate, EPSILON);
         assertEquals(0.0, CovidParameters.get().diseaseParameters.childProgressionPhase2, EPSILON);
         assertEquals(0.15, CovidParameters.get().diseaseParameters.adultProgressionPhase2, EPSILON);
         assertEquals(1.0, CovidParameters.get().diseaseParameters.pensionerProgressionPhase2, EPSILON);

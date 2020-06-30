@@ -24,12 +24,12 @@ public class CovidTest extends SimulationTest {
     @Test
     public void testStepInfectionSymptomatic() {
         //Use the default parameters with a mortality rate of 100
-        CovidParameters.get().diseaseParameters.mortalityRate = 100.0;
-        CovidParameters.get().diseaseParameters.pSymptomaticCaseAdult = new Probability(1.0);
+        CovidParameters.get().diseaseParameters.caseMortalityRate = 1.0;
+        CovidParameters.get().diseaseParameters.pSymptomaticCasePensioner = new Probability(1.0);
         CovidParameters.get().diseaseParameters.pensionerProgressionPhase2 = 100.0;
 
         CStatus cStatus = null;
-        Person pensioner = new Pensioner(65, Person.Sex.MALE);
+        Person pensioner = new Pensioner(85, Person.Sex.MALE);
         Household h = new SingleOlder();
         pensioner.setHome(h);
         Covid virus = new Covid(pensioner);
@@ -50,11 +50,12 @@ public class CovidTest extends SimulationTest {
         //Test that the person becomes dead after the phase2 period
         double p1Period = virus.getP1();
         double p2Period = virus.getP2();
-        for (int i = 0; i < p1Period + p2Period - 1; i++) {
+        for (int i = 0; i < latentPeriod + p1Period + p2Period-1; i++) {
             if(!virus.isDead()) cStatus = virus.stepInfection(t);
             t.advance();
         }
         assertTrue(virus.isSymptomatic());
+        virus.stepInfection(t.advance());
         virus.stepInfection(t.advance());
         assertEquals(CStatus.DEAD, cStatus);
     }
