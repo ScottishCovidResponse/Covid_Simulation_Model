@@ -37,27 +37,16 @@ public class HospitalTest extends SimulationTest {
         int populationSize = 10000;
         Population p = new Population(populationSize);
         p.allocatePeople();
-        List<Person> staff;
-        Time t = new Time(0);
-        //Run for a whole week
-        boolean firstSkipped = false;
-        for (int day = 0; day < 7; day++) {
-            DailyStats s = new DailyStats(t);
-            for (int i = 0; i < 24; i++) {
-                // Since movement puts people in place for the *next* hour, it's easiest to check this before the timestep
-                // First check is skipped to give workers time to move to work
-                if (firstSkipped) {
-                    for (Hospital place : p.getPlaces().getAllHospitals()) {
-                        staff = place.getStaff(t);
-                        assertTrue("Day " + day + " Time " + i  + " Unexpectedly no staff in hospital",
-                                staff.size() > 0);
-                    }
-                }
-                firstSkipped = true;
-                p.timeStep(t, s);
-                t.advance();
+        
+        p.setPostHourHook((pop, time) -> {
+            for (Hospital place : pop.getPlaces().getAllHospitals()) {
+                List<Person> staff = place.getStaff(time);
+                assertTrue("Day " + time.getDay() + " Time " + time.getHour() + " Unexpectedly no staff in hospital",
+                        staff.size() > 0);
             }
-        }
+        });
+        
+        p.simulate(7);
     }
 
     @Test
@@ -127,7 +116,6 @@ public class HospitalTest extends SimulationTest {
     public void peopleInCareNeverGoToCovidHospital() {
         final int populationSize = 10000;
         final int nInfections = 500;
-        final int hours = 168;
 
         PopulationParameters.get().pensionerProperties.pEntersCareHome = new Probability(0.9);
         CovidParameters.get().hospitalisationParameters.pPhase2GoesToHosptial = new Probability(1.0);
@@ -136,17 +124,15 @@ public class HospitalTest extends SimulationTest {
         Population pop = PopulationGenerator.genValidPopulation(populationSize);
         pop.seedVirus(nInfections);
 
-        Time t = new Time(0);
-        DailyStats s = new DailyStats(t);
-        for (int hour = 0; hour < hours; hour++) {
-            pop.timeStep(t, s);
-            t.advance();
-            for (CovidHospital h : pop.getPlaces().getCovidHospitals()) {
+        pop.setPostHourHook((population, time) -> {
+            for (CovidHospital h : population.getPlaces().getCovidHospitals()) {
                 for (Person p : h.getPeople()) {
                     assertFalse(p.isInCare());
                 }
             }
-        }
+        });
+
+        pop.simulate(7);
     }
 
 
@@ -246,36 +232,27 @@ public class HospitalTest extends SimulationTest {
         PopulationParameters.get().buildingDistribution.populationToHospitalsRatio = 3000;
         Population pop = PopulationGenerator.genValidPopulation(populationSize);
         pop.seedVirus(nInfections);
+        
+        pop.setPostHourHook((population, time) -> {
+            for (Hospital h : population.getPlaces().getAllHospitals()) {
+                for (Person p : h.getPeople()) {
+                    if (p.hasHospitalAppt() && !p.getHospitalAppt().isOver(time)
+                            && (p instanceof Child || p instanceof Infant)) {
 
-        Time t = new Time(0);
-        for (int i = 0; i < simDays; i++) {
-            for (Person per : pop.getAllPeople()) {
-                per.deteremineHospitalVisits(t, false, pop.getPlaces());
-            }
-
-            for (int j = 0; j < 24; j++) {
-                pop.timeStep(t, new DailyStats(t));
-                t = t.advance();
-
-                for (Hospital h : pop.getPlaces().getAllHospitals()) {
-                    for (Person p : h.getPeople()) {
-                        if (p.hasHospitalAppt() && !p.getHospitalAppt().isOver(t) 
-                                && (p instanceof Child || p instanceof Infant)) {
-
-                            Person acompanying = null;
-                            for (Person p2 : h.getPeople()) {
-                                if (p != p2 && p2.getHome() == p.getHome() && p2.hasHospitalAppt()
-                                        && (p2 instanceof Adult || p2 instanceof Pensioner)) {
-                                    acompanying = p2;
-                                }
+                        Person acompanying = null;
+                        for (Person p2 : h.getPeople()) {
+                            if (p != p2 && p2.getHome() == p.getHome() && p2.hasHospitalAppt()
+                                    && (p2 instanceof Adult || p2 instanceof Pensioner)) {
+                                acompanying = p2;
                             }
-                            assertNotNull(acompanying);
-
                         }
+                        assertNotNull(acompanying);
                     }
                 }
             }
-        }
+        });
+
+        pop.simulate(simDays);
     }
 
     @Test
@@ -292,55 +269,30 @@ public class HospitalTest extends SimulationTest {
         
         pop.setLockdown(15, 30, 1.0);
 
-        int hospitalApptsBeforeLockdown = 0;
-        Time t = new Time(0);
-        for (int i = 0; i < 14; i++) {
-            pop.getLockdownController().implementLockdown(t);
-            for (Person per : pop.getAllPeople()) {
-                per.deteremineHospitalVisits(t,  pop.getLockdownController().inLockdown(t), pop.getPlaces());
-            }
-
-            for (int j = 0; j < 24; j++) {
-                pop.timeStep(t, new DailyStats(t));
-                t = t.advance();
-                
-                for (Hospital h : pop.getPlaces().getAllHospitals()) {
-                    for (Person p : h.getPeople()) {
-                        if (h.isPatient(p, t)) {
-                            hospitalApptsBeforeLockdown++;
+        final int[] hospitalApptsBeforeLockdown = {0};
+        final int[] hospitalApptsInLockdown = {0};
+        pop.setPostHourHook((population, time) -> {
+            for (Hospital h : pop.getPlaces().getAllHospitals()) {
+                for (Person p : h.getPeople()) {
+                    if (h.isPatient(p, time)) {
+                        if (population.getLockdownController().inLockdown(time)) {
+                            hospitalApptsInLockdown[0]++;
+                        } else {
+                            hospitalApptsBeforeLockdown[0]++;
                         }
                     }
                 }
             }
-        }
+        });
 
-        int hospitalApptsInLockdown = 0;
-        for (int i = 0; i < 14; i++) {
-            pop.getLockdownController().implementLockdown(t);
-            for (Person per : pop.getAllPeople()) {
-                per.deteremineHospitalVisits(t, pop.getLockdownController().inLockdown(t), pop.getPlaces());
-            }
+        pop.simulate(28);
 
-            for (int j = 0; j < 24; j++) {
-                pop.timeStep(t, new DailyStats(t));
-                t = t.advance();
-
-                for (Hospital h : pop.getPlaces().getAllHospitals()) {
-                    for (Person p : h.getPeople()) {
-                        if (h.isPatient(p, t)) {
-                            hospitalApptsInLockdown++;
-                        }
-                    }
-                }
-            }
-        }
-        
-        assertTrue("Expected: " + hospitalApptsInLockdown + " < " + hospitalApptsBeforeLockdown,
-                hospitalApptsInLockdown < hospitalApptsBeforeLockdown);
+        assertTrue("Expected: " + hospitalApptsInLockdown + " < " + hospitalApptsBeforeLockdown[0],
+                hospitalApptsInLockdown[0] < hospitalApptsBeforeLockdown[0]);
 
         // The reduction is 75% but we check for > 50% reduction just to give some padding for the randomness
-        assertTrue("Expected:" + hospitalApptsInLockdown + " < " + hospitalApptsBeforeLockdown * 0.5,
-                hospitalApptsInLockdown < hospitalApptsBeforeLockdown * 0.5);
+        assertTrue("Expected:" + hospitalApptsInLockdown + " < " + hospitalApptsBeforeLockdown[0] * 0.5,
+                hospitalApptsInLockdown[0] < hospitalApptsBeforeLockdown[0] * 0.5);
 
     }
 

@@ -19,24 +19,21 @@ public class LockdownTests extends SimulationTest  {
         final int populationSize = 20000;
        
         Population pop = PopulationGenerator.genValidPopulation(populationSize);
-
         pop.setLockdown(2,4,0.5);
-
-        Time t = new Time(0);
         
-        // First 2 days people go to work as usual
-        for (int i = 0; i < simDays; i++) {
-            pop.timeStep(t, new DailyStats(t));
-            t = t.advance();
-
-            // We only check (non-COVID) hospitals since they support furlough
-            for (Hospital plc : pop.getPlaces().getNonCovidHospitals()) {
-                for (Person p : plc.getPeople()) {
-                    if (p.getPrimaryCommunalPlace() == plc && !p.isHospitalised()) {
-                        assertFalse(p.isFurloughed());
+        pop.setPostHourHook((population, time) -> {
+            // We need to give working staff some time to go home so we delay this a few hours after furlough (starts day 3).
+            if (time.getAbsTime() >= 3*24 + 1) {
+                for (Hospital plc : population.getPlaces().getNonCovidHospitals()) {
+                    for (Person p : plc.getPeople()) {
+                        if (p.getPrimaryCommunalPlace() == plc && !p.isHospitalised()) {
+                            assertFalse(p.isFurloughed());
+                        }
                     }
                 }
             }
-        }
+        });
+
+        pop.simulate(simDays);
     }
 }

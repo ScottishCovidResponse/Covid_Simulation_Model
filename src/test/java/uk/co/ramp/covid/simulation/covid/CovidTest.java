@@ -117,23 +117,18 @@ public class CovidTest extends SimulationTest {
         Population p = PopulationGenerator.genValidPopulation(populationSize);
         p.seedVirus(100);
         p.allocatePeople();
-        Time t = new Time(0);
-        //Run for a week
-        for (int day = 0; day < 7; day++) {
-            DailyStats s = new DailyStats(t);
-            for (int i = 0; i < 24; i++) {
-                p.timeStep(t, s);
-                t = t.advance();
-
-                // Check if every infected person's status is correct
-                for (Person person : p.getAllPeople()) {
-                    if (person.isinfected()) {
-                        assertFalse(person.cStatus().equals(CStatus.HEALTHY) ||
-                                person.cStatus().equals(CStatus.RECOVERED));
-                    }
+        
+        p.setPostHourHook((pop, time) -> {
+            // Check if every infected person's status is correct
+            for (Person person : pop.getAllPeople()) {
+                if (person.isinfected()) {
+                    assertFalse(person.cStatus().equals(CStatus.HEALTHY) ||
+                            person.cStatus().equals(CStatus.RECOVERED));
                 }
             }
-        }
+        } );
+        
+        p.simulateFromTime(new Time(0), 7);
     }
 
 

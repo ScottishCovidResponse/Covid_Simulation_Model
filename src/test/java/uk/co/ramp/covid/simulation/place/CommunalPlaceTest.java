@@ -30,28 +30,24 @@ public class CommunalPlaceTest extends SimulationTest {
 
     @Test
     public void testAllPlaces() {
-        //Run for 7 days
-        for (int day = 0; day < 7; day++) {
-            for (int i = 0; i < 24; i++) {
-                p.timeStep(t, s);
-                t = t.advance();
-                for (CommunalPlace place : p.getPlaces().getAllPlaces()) {
-                    // Get place opening and closing time
-                    int open = place.getTimes().getOpen();
-                    int close = place.getTimes().getClose();
+        p.setPostHourHook((pop, time) -> {
+            for (CommunalPlace place : pop.getPlaces().getAllPlaces()) {
+                // Get place opening and closing time
+                int open = place.getTimes().getOpen();
+                int close = place.getTimes().getClose();
 
-                    if (place instanceof Shop || place instanceof Restaurant) {
-                        testShopOrRestaurant(place, open, close, day);
-                    } else if (place instanceof Hospital){
-                        testHospital(place, day);
-                    } else if (place instanceof CareHome){
-                        testCarehome(place, open, close, day);
-                    } else {
-                        testOfficeHours(place, open, close, day);
-                    }
+                if (place instanceof Shop || place instanceof Restaurant) {
+                    testShopOrRestaurant(place, open, close, t.getDay());
+                } else if (place instanceof Hospital){
+                    testHospital(place, t.getDay());
+                } else if (place instanceof CareHome){
+                    testCarehome(place, open, close, t.getDay());
+                } else {
+                    testOfficeHours(place, open, close, t.getDay());
                 }
             }
-        }
+        });
+        p.simulate(7);
     }
 
     private void testShopOrRestaurant(CommunalPlace place, int open, int close, int day) {
