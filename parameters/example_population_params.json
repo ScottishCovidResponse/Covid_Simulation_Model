@@ -18,19 +18,20 @@
           "sdInfectiousDuration": 0.4,
           "phase1Betaa": 25.0,
           "phase1Betab": 30.0,
-          "aSymptomaticTransAdjustment": 0.15,
+          "aSymptomaticTransAdjustment": 0.5,
           "symptomaticTransAdjustment": 1.0,
-          "mortalityRate":0.025,
+          "caseMortalityRate":0.25,
           "childProgressionPhase2":0.01,
           "adultProgressionPhase2":0.2,
-          "pensionerProgressionPhase2":0.8
+          "pensionerProgressionPhase2":0.8,
+          "hospitalisedSurvive":0.25,
+          "hospitalisedDie":0.8
       },
       "infectionSeedProperties": {
-          "infectionRateIncreaseAdult":0.0000002,
-          "infectionRateIncreaseInfantChildPensioner":0.0000001
+          "infectionRateIncreaseAdult":0.0000003,
+          "infectionRateIncreaseInfantChildPensioner":0.00000015
       },
       "hospitalisationParameters": {
-          "pPhase2GoesToHosptial":0.52,
           "hospitalisationTransmissionReduction":0.05
       },
       "careHomeParameters": {
@@ -164,13 +165,13 @@
             }
         },
         "buildingProperties":{
-           "baseTransmissionConstant":0.7,
-           "hospitalTransmissionConstant":10.0,
+           "baseTransmissionConstant":0.32,
+           "hospitalTransmissionConstant":7.0,
            "constructionSiteTransmissionConstant":5.0,
            "nurseryTransmissionConstant":10.0,
            "officeTransmissionConstant":5.0,
            "restaurantTransmissionConstant":10.0,
-           "schoolTransmissionConstant":30.0,
+           "schoolTransmissionConstant":25.0,
            "shopTransmissionConstant":5.0,
            "careHomeTransmissionConstant":7.0,
            "pHospitalKey":1.0,
@@ -206,7 +207,7 @@
             "pLockCompliance": 0.8
         },
         "personProperties":{
-            "pTransmission":0.7,
+            "pTransmission":0.32,
             "pSusceptibleChild": 0.5,
             "pQuarantinesIfSymptomatic":0.9,
             "symptomToQuarantineDelay": 12,
