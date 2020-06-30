@@ -7,7 +7,6 @@ import uk.co.ramp.covid.simulation.population.Person;
 import uk.co.ramp.covid.simulation.population.Population;
 import uk.co.ramp.covid.simulation.util.PopulationGenerator;
 import uk.co.ramp.covid.simulation.testutil.SimulationTest;
-import uk.co.ramp.covid.simulation.util.Time;
 
 import static org.junit.Assert.assertFalse;
 
@@ -19,24 +18,26 @@ public class LockdownTests extends SimulationTest  {
         final int populationSize = 20000;
        
         Population pop = PopulationGenerator.genValidPopulation(populationSize);
-
         pop.setLockdown(2,4,0.5);
 
-        Time t = new Time(0);
-        
-        // First 2 days people go to work as usual
-        for (int i = 0; i < simDays; i++) {
-            pop.timeStep(t, new DailyStats(t));
-            t = t.advance();
+        pop.setPostHourHook((population, time) -> {
+            // Skip the first hour lockdown starts since people might still be at
+            // work as they get the message they need to leave
+            if (time.getDay() == 2 && time.getHour() == 1) {
+                return;
+            }
 
-            // We only check (non-COVID) hospitals since they support furlough
-            for (Hospital plc : pop.getPlaces().getNonCovidHospitals()) {
+            for (Hospital plc : population.getPlaces().getNonCovidHospitals()) {
                 for (Person p : plc.getPeople()) {
-                    if (p.getPrimaryCommunalPlace() == plc && !p.isHospitalised()) {
-                        assertFalse(p.isFurloughed());
+                    if (p.getPrimaryCommunalPlace() == plc
+                            && !p.isHospitalised()
+                            && !(p.hasHospitalAppt() && p.getHospitalAppt().isOccurring(time))) {
+                            assertFalse(p.isFurloughed());
                     }
                 }
             }
-        }
+        });
+
+        pop.simulate(simDays);
     }
 }

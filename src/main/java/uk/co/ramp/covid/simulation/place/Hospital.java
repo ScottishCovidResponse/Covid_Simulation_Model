@@ -60,11 +60,11 @@ public class Hospital extends CommunalPlace {
 
     public void movePatients(Time t) {
         for (Person p : getPeople()) {
-            if (p.hasMoved() || p.isWorking(this, t)) {
+            if (p.hasMoved() || p.worksNextHour(this, t)) {
                 continue;
             }
 
-            if (isPatient(p, t)) {
+            if (isPatient(p, t.advance())) {
                 p.stayInPlace(this);
             } else {
                 p.returnHome(this);

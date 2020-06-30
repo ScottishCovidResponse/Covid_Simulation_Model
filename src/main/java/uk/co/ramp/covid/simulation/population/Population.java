@@ -22,6 +22,7 @@ import uk.co.ramp.covid.simulation.util.ProbabilityDistribution;
 import uk.co.ramp.covid.simulation.util.RNG;
 
 import java.util.*;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -41,6 +42,9 @@ public class Population {
     private final RandomDataGenerator rng;
     private Integer externalInfectionDays = 0;
 
+    // Hook to make it easier to test properties after each hour
+    private BiConsumer<Population, Time> postHourHook;
+
     public Population(int populationSize) throws ImpossibleAllocationException, ImpossibleWorkerDistributionException {
         this.rng = RNG.get();
         this.populationSize = populationSize;
@@ -57,6 +61,8 @@ public class Population {
         this.households = new ArrayList<>(numHouseholds);
         this.allPeople = new ArrayList<>(populationSize);
         this.places = new Places();
+
+        postHourHook = (p,t) -> {};
 
         lockdownController = new LockdownController(this);
 
@@ -346,6 +352,7 @@ public class Population {
         if (contactsWriter != null) {
             contactsWriter.finishTimeStep(t);
         }
+
     }
     
     public List<DailyStats> simulateFromTime(Time startTime, int nDays) {
@@ -375,6 +382,7 @@ public class Population {
             for (int k = 0; k < 24; k++) {
                 timeStep(t, dStats, contactsWriter);
                 t = t.advance();
+                postHourHook.accept(this, t);
             }
             households.forEach(Household::dayEnd);
 
@@ -473,5 +481,9 @@ public class Population {
 
     public LockdownController getLockdownController() {
         return lockdownController;
+    }
+
+    public void setPostHourHook(BiConsumer<Population, Time> postHourHook) {
+        this.postHourHook = postHourHook;
     }
 }
