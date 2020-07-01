@@ -50,13 +50,13 @@ public class ParameterIOTest {
         assertEqualsP(0.1, PopulationParameters.get().workerDistribution.pUnemployed);
 
         assertEquals(0.8, PopulationParameters.get().buildingProperties.baseTransmissionConstant, EPSILON);
-        assertEquals(0.2, PopulationParameters.get().buildingProperties.hospitalTransmissionConstant, EPSILON);
-        assertEquals(0.3, PopulationParameters.get().buildingProperties.constructionSiteTransmissionConstant, EPSILON);
-        assertEquals(0.001, PopulationParameters.get().buildingProperties.nurseryTransmissionConstant, EPSILON);
-        assertEquals(0.6, PopulationParameters.get().buildingProperties.officeTransmissionConstant, EPSILON);
-        assertEquals(0.1, PopulationParameters.get().buildingProperties.restaurantTransmissionConstant, EPSILON);
-        assertEquals(0.05, PopulationParameters.get().buildingProperties.schoolTransmissionConstant, EPSILON);
-        assertEquals(0.2, PopulationParameters.get().buildingProperties.shopTransmissionConstant, EPSILON);
+        assertEquals(0.2, PopulationParameters.get().buildingProperties.hospitalExpectedInteractionsPerHour, EPSILON);
+        assertEquals(0.3, PopulationParameters.get().buildingProperties.constructionSiteExpectedInteractionsPerHour, EPSILON);
+        assertEquals(0.001, PopulationParameters.get().buildingProperties.nurseryExpectedInteractionsPerHour, EPSILON);
+        assertEquals(0.6, PopulationParameters.get().buildingProperties.officeExpectedInteractionsPerHour, EPSILON);
+        assertEquals(0.1, PopulationParameters.get().buildingProperties.restaurantExpectedInteractionsPerHour, EPSILON);
+        assertEquals(0.05, PopulationParameters.get().buildingProperties.schoolExpectedInteractionsPerHour, EPSILON);
+        assertEquals(0.2, PopulationParameters.get().buildingProperties.shopExpectedInteractionsPerHour, EPSILON);
 
         assertEqualsP(0.1, PopulationParameters.get().buildingProperties.pHospitalKey);
         assertEqualsP(0.6, PopulationParameters.get().buildingProperties.pConstructionSiteKey);

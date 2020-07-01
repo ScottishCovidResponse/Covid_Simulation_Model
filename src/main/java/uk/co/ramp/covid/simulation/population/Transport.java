@@ -14,7 +14,7 @@ public class Transport extends Place {
 
     Transport(int populationSize) {
         this.populationSize = populationSize;
-        transAdjustment = PopulationParameters.get().publicTransportParameters.transmissionConstant;
+        expectedInteractionsPerHour = PopulationParameters.get().publicTransportParameters.expectedInteractions;
     }
 
     public void addPassenger(Person p) {
@@ -31,7 +31,7 @@ public class Transport extends Place {
             return 0.0;
         }
 
-        return transConstant * transAdjustment / populationSize;
+        return transConstant * expectedInteractionsPerHour / populationSize;
     }
 
     // We only do infections here, not step infections since 1 hour won't have passed.

@@ -15,8 +15,7 @@ public class Hospital extends CommunalPlace {
 
     public Hospital(Size s) {
         super(s);
-        // TODO: Adjustment or constant?
-        transAdjustment = PopulationParameters.get().buildingProperties.hospitalTransmissionConstant;
+        expectedInteractionsPerHour = PopulationParameters.get().buildingProperties.hospitalExpectedInteractionsPerHour;
         times = OpeningTimes.twentyfourSeven();
         allocateShifts();
     }

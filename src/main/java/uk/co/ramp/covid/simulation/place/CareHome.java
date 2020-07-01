@@ -14,7 +14,7 @@ public class CareHome extends CommunalPlace implements Home {
     public CareHome(Size s) {
         super(s);
 
-        transAdjustment = PopulationParameters.get().buildingProperties.careHomeTransmissionConstant;
+        expectedInteractionsPerHour = PopulationParameters.get().buildingProperties.careHomeExpectedInteractionsPerHour;
 
         // Care homes are "open" to staff from 6-22 (but can have residents in them all the time)
         times = new OpeningTimes(6, 22, OpeningTimes.getAllDays());

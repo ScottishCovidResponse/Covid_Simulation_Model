@@ -10,7 +10,7 @@ public class Nursery extends CommunalPlace {
 
     public Nursery(Size s) {
         super(s);
-        transAdjustment = PopulationParameters.get().buildingProperties.nurseryTransmissionConstant;
+        expectedInteractionsPerHour = PopulationParameters.get().buildingProperties.nurseryExpectedInteractionsPerHour;
         times = OpeningTimes.nineFiveWeekdays();
     }
 

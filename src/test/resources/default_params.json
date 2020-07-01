@@ -166,14 +166,14 @@
         },
         "buildingProperties":{
            "baseTransmissionConstant":0.32,
-           "hospitalTransmissionConstant":10.0,
-           "constructionSiteTransmissionConstant":5.0,
-           "nurseryTransmissionConstant":10.0,
-           "officeTransmissionConstant":5.0,
-           "restaurantTransmissionConstant":10.0,
-           "schoolTransmissionConstant":30.0,
-           "shopTransmissionConstant":5.0,
-           "careHomeTransmissionConstant":5.0,
+           "hospitalExpectedInteractionsPerHour":10.0,
+           "constructionSiteExpectedInteractionsPerHour":5.0,
+           "nurseryExpectedInteractionsPerHour":10.0,
+           "officeExpectedInteractionsPerHour":5.0,
+           "restaurantExpectedInteractionsPerHour":10.0,
+           "schoolExpectedInteractionsPerHour":30.0,
+           "shopExpectedInteractionsPerHour":5.0,
+           "careHomeExpectedInteractionsPerHour":5.0,
            "pHospitalKey":1.0,
            "pHospitalStaffWillFurlough":0.5,
             "pConstructionSiteKey":0.5,
@@ -217,7 +217,7 @@
             "symptomToTestingDelay": 24
         },
         "publicTransportParameters": {
-            "transmissionConstant": 5.0,
+            "expectedInteractions": 5.0,
             "pFamilyTakesTransport": 0.2
         },
         "hospitalApptProperties": {

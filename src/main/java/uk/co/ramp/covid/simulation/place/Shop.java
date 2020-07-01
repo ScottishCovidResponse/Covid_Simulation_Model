@@ -14,7 +14,7 @@ public class Shop extends CommunalPlace {
 
     public Shop(Size s) {
         super(s);
-        transAdjustment = PopulationParameters.get().buildingProperties.shopTransmissionConstant;
+        expectedInteractionsPerHour = PopulationParameters.get().buildingProperties.shopExpectedInteractionsPerHour;
         setOpeningHours();
     }
 
