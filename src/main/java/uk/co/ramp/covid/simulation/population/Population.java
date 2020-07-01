@@ -61,7 +61,7 @@ public class Population {
 
         lockdownController = new LockdownController(this);
 
-        publicTransport = new Transport();
+        publicTransport = new Transport(populationSize);
 
         allocatePopulation();
     }

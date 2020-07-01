@@ -9,8 +9,11 @@ import uk.co.ramp.covid.simulation.util.Time;
 /** Transport is a special form of Place where we allow infections to occur, but not to advance,
  *  and no movements occur */
 public class Transport extends Place {
+    
+    final int populationSize;
 
-    Transport() {
+    Transport(int populationSize) {
+        this.populationSize = populationSize;
         transAdjustment = PopulationParameters.get().publicTransportParameters.transmissionConstant;
     }
 
@@ -22,6 +25,15 @@ public class Transport extends Place {
     // Since nextPerson is switched in this implicitly clears the people buffer
     @Override
     public void determineMovement(Time t, DailyStats s, boolean lockdown, Places places) { }
+
+    @Override
+    protected double getTransConstant() {
+        if(people.size() == 0) {
+            return 0.0;
+        }
+
+        return transConstant * transAdjustment / populationSize;
+    }
 
     // We only do infections here, not step infections since 1 hour won't have passed.
     @Override
