@@ -1,7 +1,6 @@
 package uk.co.ramp.covid.simulation.integrationTests;
 
 import org.junit.Test;
-import uk.co.ramp.covid.simulation.output.DailyStats;
 import uk.co.ramp.covid.simulation.place.Hospital;
 import uk.co.ramp.covid.simulation.population.Person;
 import uk.co.ramp.covid.simulation.population.Population;

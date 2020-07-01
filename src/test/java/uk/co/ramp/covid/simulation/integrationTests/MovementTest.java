@@ -426,7 +426,6 @@ public class MovementTest extends SimulationTest {
     @Test
     public void neighboursShouldLeaveEmptyHouses() {
         final int simDays = 5;
-        Time t = new Time(0);
         p = PopulationGenerator.genValidPopulation(populationSize);
         p.seedVirus(nInfections);
 

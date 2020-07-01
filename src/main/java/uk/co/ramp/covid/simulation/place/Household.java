@@ -300,7 +300,6 @@ public abstract class Household extends Place implements Home {
                 // Do the visit
                 for (Person p : getPeople()) {
                     if (!p.hasMoved() && isInhabitant(p) && !p.isQuarantined()) {
-                        Household chosenNeighbour = n;
                         p.moveTo(this, n);
                     }
                 }

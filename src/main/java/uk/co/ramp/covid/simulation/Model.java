@@ -11,8 +11,6 @@ import uk.co.ramp.covid.simulation.output.DailyStats;
 import uk.co.ramp.covid.simulation.output.network.ContactsWriter;
 import uk.co.ramp.covid.simulation.output.network.PeopleWriter;
 import uk.co.ramp.covid.simulation.parameters.ParameterIO;
-import uk.co.ramp.covid.simulation.population.ImpossibleAllocationException;
-import uk.co.ramp.covid.simulation.population.ImpossibleWorkerDistributionException;
 import uk.co.ramp.covid.simulation.population.Population;
 import uk.co.ramp.covid.simulation.util.CannotGeneratePopulationException;
 import uk.co.ramp.covid.simulation.util.InvalidParametersException;
