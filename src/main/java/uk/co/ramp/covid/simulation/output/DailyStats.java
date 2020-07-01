@@ -1,18 +1,17 @@
 package uk.co.ramp.covid.simulation.output;
 
-import org.apache.commons.csv.CSVPrinter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import uk.co.ramp.covid.simulation.util.Time;
 import uk.co.ramp.covid.simulation.population.*;
 
-import java.io.IOException;
+import java.lang.reflect.Field;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Objects;
 
 /** DailyStats accumulates statistics, e.g. healthy/dead, for a particular day */
 public class DailyStats {
-    private static final Logger LOGGER = LogManager.getLogger(DailyStats.class);
-
     private final int day;
 
     // Daily cumulative statistics
@@ -89,6 +88,25 @@ public class DailyStats {
             inHospital++;
         }
     }
+    
+    public Map<String, String> toOutputMap(int iter) {
+        // LinkedHashMap means the keys are in the order we define the fields in this file
+        Map<String, String> out = new LinkedHashMap<>();
+        out.put("iter", String.valueOf(iter));
+        for (Field f : this.getClass().getDeclaredFields()) {
+            try {
+                Object field = f.get(this);
+                if (field != null) {
+                    String s = field.toString();
+                    out.put(f.getName(), s);
+                }
+            } catch (IllegalAccessException e) {
+                Logger LOGGER = LogManager.getLogger(DailyStats.class);
+                LOGGER.error("Could not access fields within DailyStats - output may be missing");
+            }
+        }
+        return out;
+    }
 
     public void incrementDeaths(int deaths) {
        dead += deaths;
@@ -135,22 +153,10 @@ public class DailyStats {
     public int getShopInfectionsVisitor() { return shopInfectionsVisitor; }
 
     public void log(){
+        Logger LOGGER = LogManager.getLogger(DailyStats.class);
         LOGGER.info("Day = {} Healthy = {} Latent = {} Asymptomatic = {} Phase 1 = {} " +
                         "Phase 2 = {} Hospitalised = {} Dead = {} Recovered = {}",
                 day, healthy, exposed, asymptomatic,phase1, phase2, inHospital, dead, recovered);
-    }
-
-    public void appendCSV(CSVPrinter csv, int iter) throws IOException {
-        csv.printRecord(iter, day, healthy, exposed, asymptomatic,
-                phase1, phase2, dead, recovered, seedInfections,
-                constructionSiteInfectionsWorker, hospitalInfectionsWorker, 
-                nurseryInfectionsWorker, officeInfectionsWorker, restaurantInfectionsWorker, schoolInfectionsWorker, 
-                shopInfectionsWorker, careHomeInfectionsWorker, homeInfectionsInhabitant, careHomeInfectionsResident,
-                constructionSiteInfectionsVisitor, hospitalInfectionsVisitor, nurseryInfectionsVisitor, 
-                officeInfectionsVisitor, restaurantInfectionsVisitor, schoolInfectionsVisitor, shopInfectionsVisitor,
-                homeInfectionsVisitor, transportInfections, adultInfected, pensionerInfected, childInfected, infantInfected, adultDeaths,
-                pensionerDeaths, childDeaths, infantDeaths, homeDeaths, hospitalDeaths, careHomeDeaths, additionalDeaths,
-                inHospital, newlyHospitalised, secInfections, generationTime);
     }
 
     public int getTotalDailyInfections () {

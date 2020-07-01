@@ -280,20 +280,23 @@ public class Model {
 
 
     private void outputCSV(Path outF, int startIterID, List<List<DailyStats>> stats) {
-    final String[] headers = {"iter", "day", "H", "L", "A", "P1", "P2", "D", "R", "ISeed",
-                              "ICs_W","IHos_W","INur_W","IOff_W","IRes_W","ISch_W","ISho_W","ICHome_W",
-                              "IHome_I", "ICHome_R",
-                              "ICs_V","IHos_V","INur_V","IOff_V","IRes_V","ISch_V","ISho_V","IHome_V", "ITransport",
-                              "IAdu","IPen","IChi","IInf",
-                              "DAdul","DPen","DChi","DInf","DHome", "DHospital", "DCareHome", "DAdditional",
-                              "NumHospital", "HospitalisedToday",
-                              "SecInfections", "GenerationTime" };
+        if (stats.isEmpty() || stats.get(0).isEmpty()) {
+            return;
+        }
+
+        // Headers come from the first output
+        final String[] headers = stats.get(0).get(0).toOutputMap(startIterID).keySet().toArray(new String[0]);
+
         try {
             FileWriter out = new FileWriter(outF.toFile());
             CSVPrinter printer = new CSVPrinter(out, CSVFormat.DEFAULT.withHeader(headers));
             for (int i = 0; i < nIters; i++) {
                 for (DailyStats s : stats.get(i)) {
-                    s.appendCSV(printer, startIterID + i);
+                    Map<String, String> dailyStatMap = s.toOutputMap(startIterID + i);
+                    for (String h : headers) {
+                        printer.print(dailyStatMap.get(h));
+                    }
+                    printer.println();
                 }
             }
             out.close();
