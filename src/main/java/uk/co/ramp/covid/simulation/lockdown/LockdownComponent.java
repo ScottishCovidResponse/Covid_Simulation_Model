@@ -8,23 +8,24 @@ import uk.co.ramp.covid.simulation.util.Time;
 public abstract class LockdownComponent {
     private static final Logger LOGGER = LogManager.getLogger(LockdownComponent.class);
 
-    protected Time startTime;
-    protected Time endTime;
+    protected Time start;
+    protected Time end;
     
     private boolean inLockdown = false;
-    
+
     // The Population we are controlling
-    protected Population population;
-    
-    public LockdownComponent(Time s, Time e, Population p) {
-        startTime = s;
-        endTime = e;
+    // Transient to avoid deserialising this for now
+    protected transient Population population = null;
+
+    public LockdownComponent(Time start, Time end, Population p) {
+        this.start = start;
+        this.end = end;
         population = p;
     }
 
     public void handleLockdown(Time t) {
         if (!inLockdown) {
-            if (t.equals(startTime)) {
+            if (t.equals(start)) {
                 LOGGER.info("Starting " + getName());
                 start();
                 tick(t);
@@ -33,7 +34,7 @@ public abstract class LockdownComponent {
         } else {
             tick(t);
 
-            if (t.equals(endTime)) {
+            if (t.equals(end)) {
                 LOGGER.info("Ending " + getName());
                 end();
                 inLockdown = false;
@@ -41,8 +42,8 @@ public abstract class LockdownComponent {
         }
     }
 
-    public Time getEndTime() {
-        return endTime;
+    public Time getEnd() {
+        return end;
     }
 
     protected abstract void start();
@@ -52,4 +53,8 @@ public abstract class LockdownComponent {
     protected abstract void tick(Time t);
     
     protected abstract String getName();
+    
+    public void setPopulation(Population p) {
+        population = p;
+    }
 }

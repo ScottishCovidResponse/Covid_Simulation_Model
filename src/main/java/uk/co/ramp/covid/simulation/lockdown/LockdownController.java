@@ -1,19 +1,10 @@
 package uk.co.ramp.covid.simulation.lockdown;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import uk.co.ramp.covid.simulation.Model;
 import uk.co.ramp.covid.simulation.util.Time;
-import uk.co.ramp.covid.simulation.place.CommunalPlace;
-import uk.co.ramp.covid.simulation.place.Nursery;
-import uk.co.ramp.covid.simulation.place.School;
-import uk.co.ramp.covid.simulation.population.Person;
 import uk.co.ramp.covid.simulation.population.Population;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 public class LockdownController {
     private boolean schoolLockdown = false;
@@ -35,6 +26,7 @@ public class LockdownController {
         return this;
     }
     
+
     public void setLockdown(Time start, Time end, double sdist) {
         addComponent(new FullLockdownComponent(start, end, population, sdist));
     }
@@ -49,7 +41,7 @@ public class LockdownController {
         for (LockdownComponent c : components) {
             c.handleLockdown(now);
             
-            if (c.getEndTime().equals(now)) {
+            if (c.getEnd().equals(now)) {
                 removeable.add(c);
             }
         }

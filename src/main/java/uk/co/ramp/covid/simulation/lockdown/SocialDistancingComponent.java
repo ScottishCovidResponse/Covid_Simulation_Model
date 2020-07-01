@@ -8,10 +8,10 @@ import uk.co.ramp.covid.simulation.util.Time;
 public class SocialDistancingComponent extends LockdownComponent {
     private double lockdownSocialDistance;
     private double previousSocialDistance;
-    
+
     public SocialDistancingComponent(Time start, Time end, Population p,
                                      double lockdownSocialDistance, double previousSocialDistance) {
-        super(start, end, p);
+        super(start,end,p);
         this.lockdownSocialDistance = lockdownSocialDistance;
         this.previousSocialDistance = previousSocialDistance;
     }

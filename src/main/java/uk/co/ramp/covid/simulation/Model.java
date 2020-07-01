@@ -7,7 +7,9 @@ import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import uk.co.ramp.covid.simulation.lockdown.FullLockdownComponent;
 import uk.co.ramp.covid.simulation.lockdown.LockdownComponent;
+import uk.co.ramp.covid.simulation.lockdown.LockdownComponentDeserialiser;
 import uk.co.ramp.covid.simulation.lockdown.LockdownComponentFactory;
 import uk.co.ramp.covid.simulation.output.DailyStats;
 import uk.co.ramp.covid.simulation.output.network.ContactsWriter;
@@ -18,6 +20,7 @@ import uk.co.ramp.covid.simulation.population.ImpossibleWorkerDistributionExcept
 import uk.co.ramp.covid.simulation.population.Population;
 import uk.co.ramp.covid.simulation.util.InvalidParametersException;
 import uk.co.ramp.covid.simulation.util.RNG;
+import uk.co.ramp.covid.simulation.util.Time;
 
 import java.io.*;
 import java.nio.file.FileSystems;
@@ -72,7 +75,7 @@ public class Model {
     private Lockdown schoolLockDown = null;
     private String networkOutputDir = null;
     
-    private List<LockdownComponentFactory.LockdownComponentFactoryInfo> lockdownComponents = null;
+    private List<LockdownComponent> lockdownComponents = null;
 
     public Model() {}
 
@@ -224,14 +227,18 @@ public class Model {
             p.setExternalInfectionDays(externalInfectionDays);
             p.seedVirus(nInitialInfections);
 
-            if (!lockdownComponents.isEmpty()) {
-                LockdownComponentFactory f = new LockdownComponentFactory();
-                List<LockdownComponent> lockdowns = f.buildComponents(lockdownComponents, p);
-                for (LockdownComponent c : lockdowns) {
+            // Backwards compatability
+            if (lockDown != null) {
+                FullLockdownComponent c = new FullLockdownComponent(
+                        Time.timeFromDay(lockDown.start), Time.timeFromDay(lockDown.end), p, lockDown.socialDistance);
+                p.getLockdownController().addComponent(c);
+            } else if (lockdownComponents != null) {
+                for (LockdownComponent c : lockdownComponents) {
+                    c.setPopulation(p);
                     p.getLockdownController().addComponent(c);
                 }
             }
-            
+
             List<DailyStats> iterStats = p.simulate(nDays, contactsWriter);
             for (DailyStats s : iterStats) {
                 s.determineRValues(p);
@@ -330,7 +337,14 @@ public class Model {
     // Also allows reading from json file
     public static Model readModelFromFile(String path) throws IOException, JsonParseException {
         Reader file = new FileReader(path);
-        Gson gson = new Gson();
+
+        LockdownComponentDeserialiser lcDeserialiser = new LockdownComponentDeserialiser();
+        Gson gson = new GsonBuilder()
+                .registerTypeAdapter(LockdownComponent.class, lcDeserialiser)
+                .registerTypeAdapter(Time.class, Time.deserializer)
+                .create();
+        lcDeserialiser.setGson(gson);
+        
         return gson.fromJson(file, Model.class);
     }
 

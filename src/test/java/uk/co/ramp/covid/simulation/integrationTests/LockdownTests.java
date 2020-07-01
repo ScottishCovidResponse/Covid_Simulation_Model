@@ -1,5 +1,6 @@
 package uk.co.ramp.covid.simulation.integrationTests;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import uk.co.ramp.covid.simulation.lockdown.SchoolToggleComponent;
 import uk.co.ramp.covid.simulation.output.DailyStats;
@@ -47,11 +48,12 @@ public class LockdownTests extends SimulationTest  {
     public void testSchoolToggle() {
         final int populationSize = 20000;
         Population pop = PopulationGenerator.genValidPopulation(populationSize);
-        
+
+
         pop.getLockdownController().addComponent(
                 new SchoolToggleComponent(Time.timeFromDay(0),Time.timeFromDay(14), pop)
         );
-        
+
         // First week only even aged kids go to school
         Time t = new Time(0);
         for (int i = 0; i < 7; i++) {
