@@ -18,8 +18,10 @@ public class DiseaseParameters {
     public Double phase1Betab = null;
     public Double aSymptomaticTransAdjustment = null;
     public Double symptomaticTransAdjustment = null;
-    public Double mortalityRate = null;
+    public Double caseMortalityRate = null;
     public Double childProgressionPhase2 = null;
     public Double adultProgressionPhase2 = null;
     public Double pensionerProgressionPhase2 = null;
+    public Probability hospitalisedSurvive = null;
+    public Probability hospitalisedDie = null;
 }

@@ -3,7 +3,7 @@ package uk.co.ramp.covid.simulation.output;
 import org.junit.Before;
 import org.junit.Test;
 import uk.co.ramp.covid.simulation.population.Population;
-import uk.co.ramp.covid.simulation.testutil.PopulationGenerator;
+import uk.co.ramp.covid.simulation.util.PopulationGenerator;
 import uk.co.ramp.covid.simulation.testutil.SimulationTest;
 
 import static org.junit.Assert.*;

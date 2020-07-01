@@ -8,6 +8,9 @@ import org.apache.commons.math3.random.RandomDataGenerator;
 import uk.co.ramp.covid.simulation.covid.Covid;
 import uk.co.ramp.covid.simulation.parameters.CovidParameters;
 import uk.co.ramp.covid.simulation.output.DailyStats;
+import uk.co.ramp.covid.simulation.parameters.HospitalApptInfo;
+import uk.co.ramp.covid.simulation.place.Hospital;
+import uk.co.ramp.covid.simulation.util.HospitalAppt;
 import uk.co.ramp.covid.simulation.util.Time;
 import uk.co.ramp.covid.simulation.parameters.PopulationParameters;
 import uk.co.ramp.covid.simulation.place.CareHome;
@@ -17,7 +20,6 @@ import uk.co.ramp.covid.simulation.util.Probability;
 import uk.co.ramp.covid.simulation.util.RNG;
 
 public abstract class Person {
-
 
     public enum Sex {
         MALE, FEMALE
@@ -41,12 +43,13 @@ public abstract class Person {
     protected final RandomDataGenerator rng;
 
     private boolean isHospitalised = false;
-    private final boolean goesToHospitalInPhase2;
+    private boolean goesToHospitalInPhase2;
     
     private static int nPeople = 0;
     private final int personId;
 
     private boolean isInCare = false;
+    protected boolean furloughed = false;
     
     private boolean moved = false;
     private Transport transport = null;
@@ -58,7 +61,8 @@ public abstract class Person {
     private final double covidMortalityAgeAdjustment;
     
     private final double covidSusceptibleVal; 
-
+    
+    private HospitalAppt hospitalAppt;
 
     public Person(int age, Sex sex) {
         this.age = age;
@@ -66,7 +70,6 @@ public abstract class Person {
         this.rng = RNG.get();
         this.transmissionProb = PopulationParameters.get().personProperties.pTransmission.asDouble();
         this.willQuarantine = PopulationParameters.get().personProperties.pQuarantinesIfSymptomatic.sample();
-        this.goesToHospitalInPhase2 = CovidParameters.get().hospitalisationParameters.pPhase2GoesToHosptial.sample();
         this.personId = nPeople++;
         
         this.covidMortalityAgeAdjustment = Math.pow((double) age / 85.0, 2.0);
@@ -79,6 +82,12 @@ public abstract class Person {
     @Override
     public int hashCode() {
         return personId;
+    }
+    
+    public void setWillBeHospitalised() {
+    	if(!isInCare) {
+    		goesToHospitalInPhase2 = true;
+    	}
     }
 
     public boolean isRecovered() {
@@ -247,8 +256,10 @@ public abstract class Person {
 
     public abstract boolean avoidsPhase2(double testP);
 
-    protected boolean isWorking(CommunalPlace communalPlace, Time t, boolean furloughed) {
-        if (primaryPlace == null || shifts == null || furloughed || isHospitalised) {
+    public boolean isWorking(CommunalPlace communalPlace, Time t) {
+        if (primaryPlace == null || shifts == null
+                || isFurloughed() || isHospitalised
+                || !communalPlace.isOpen(t)) {
             return false;
         }
 
@@ -263,34 +274,9 @@ public abstract class Person {
                 && t.getHour() >= start
                 && t.getHour() < end;
     }
-
-    public boolean isWorking(CommunalPlace communalPlace, Time t) {
-        return isWorking(communalPlace, t, false);
-    }
-
-
+    
     public boolean worksNextHour(CommunalPlace communalPlace, Time t) {
-        if (primaryPlace == null || shifts == null || primaryPlace != communalPlace
-                || !communalPlace.isOpenNextHour(t)) {
-            return false;
-        }
-
-        // Handle day crossovers
-        int day = t.getDay();
-        int nextHour = 0;
-        if (t.getHour() + 1 == 24) {
-            day = (day + 1) % 7;
-        } else {
-            nextHour = t.getHour() + 1;
-        }
-
-        int start = shifts.getShift(day).getStart();
-        int end = shifts.getShift(day).getEnd();
-        if (end < start) {
-            end += 24;
-        }
-
-        return nextHour >= start && nextHour < end;
+        return isWorking(communalPlace, t.advance());
     }
 
     public void moveToPrimaryPlace(Place from) {
@@ -299,12 +285,18 @@ public abstract class Person {
         }
     }
 
-    // People need to leave early if they have a shift starting in 2 hours time
-    // 1 hour travels home, 1 travels to work; There is currently no direct travel to work.
+    // People need to leave early if they have a shift starting in 2 hours time, 
+    // or if they have a hospital appt to get to
+    // 1 hour travels home, 1 travels to work; There is currently no direct travel to work/hospitals.
     public boolean mustGoHome(Time t) {
+        if (hospitalAppt != null) {
+            return t.getHour() + 2 >= hospitalAppt.getStartTime().getHour();
+        }
+
         if (primaryPlace != null && shifts != null) {
             return t.getHour() + 2 >= shifts.getShift(t.getDay()).getStart();
         }
+
         return false;
     }
 
@@ -367,4 +359,96 @@ public abstract class Person {
     protected abstract double getInfectionSeedRate();
     
     public void furlough() {};
+
+    // We can't determine this in household in case the person is working nightshift
+    // Time is always the start of a day
+    public void deteremineHospitalVisits(Time t, boolean lockdown, Places places) {
+        HospitalApptInfo info = PopulationParameters.get().hospitalAppsParams().getParams(sex, age);
+        
+        // Appts might be across days so don't regenerate if we already have one
+        if (hasHospitalAppt() && !getHospitalAppt().isOver(t)) {
+            return;
+        }
+
+        double lockdownAdjust = 1.0;
+        if (lockdown) {
+            double decreaseP = PopulationParameters.get().hospitalApptProperties.lockdownApptDecreasePercentage;
+            lockdownAdjust = lockdownAdjust - decreaseP;
+        }
+
+        if (new Probability(info.pInPatient.asDouble() * lockdownAdjust).sample()) {
+            
+            Time startTime = new Time(t.getAbsTime() +
+                    RNG.get().nextInt(
+                            PopulationParameters.get().hospitalApptProperties.inPatientFirstStartTime,
+                            PopulationParameters.get().hospitalApptProperties.inPatientLastStartTime));
+
+            int length = info.inPatientLengthDays.intValue() * 24;
+            if (length < 1) {
+                length = 1;
+            }
+
+            Hospital h = places.getRandomNonCovidHospital();
+            if (h != null) {
+                hospitalAppt = new HospitalAppt(startTime, length, h);
+            }
+            
+        } else if (new Probability(info.pDayCase.asDouble() * lockdownAdjust).sample()) {
+
+            Time startTime = new Time(t.getAbsTime() +
+                    PopulationParameters.get().hospitalApptProperties.dayCaseStartTime);
+
+            int length = (int) RNG.get().nextGaussian(
+                    PopulationParameters.get().hospitalApptProperties.meanDayCaseTime,
+                    PopulationParameters.get().hospitalApptProperties.SDDayCaseTime
+            );
+            if (length < 1) { length =  1; }
+
+            // For small populations there might not be any non-COVID hospitals
+            Hospital h = places.getRandomNonCovidHospital();
+            if (h != null) {
+                hospitalAppt = new HospitalAppt(startTime, length, h);
+            }
+            
+        } else if (new Probability(info.pOutPatient.asDouble() * lockdownAdjust).sample()) {
+            
+            Time startTime = new Time(t.getAbsTime() +
+                    RNG.get().nextInt(
+                            PopulationParameters.get().hospitalApptProperties.outPatientFirstStartTime,
+                            PopulationParameters.get().hospitalApptProperties.outPatientLastStartTime));
+
+
+            int length = (int) RNG.get().nextExponential(
+                    PopulationParameters.get().hospitalApptProperties.meanOutPatientTime);
+            if (length < 1) { length =  1; }
+
+            Hospital h = places.getRandomNonCovidHospital();
+            if (h != null) {
+                hospitalAppt = new HospitalAppt(startTime, length, h);
+            }
+            
+        } else {
+            hospitalAppt = null;
+        }
+    }
+    
+    public boolean hasHospitalAppt() {
+        return hospitalAppt != null;
+    }
+    
+    public HospitalAppt getHospitalAppt() {
+        return hospitalAppt;
+    }
+
+    public void setHospitalAppt(HospitalAppt hospitalAppt) {
+        this.hospitalAppt = hospitalAppt;
+    }
+
+    public boolean isFurloughed() {
+        return furloughed;
+    }
+
+    public void unFurlough() {
+        furloughed = false;
+    }
 }

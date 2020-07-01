@@ -54,7 +54,7 @@ public class LockdownController {
 
     private void unFurloughStaff() {
         for (Person p : population.getAllPeople()) {
-            p.furlough();
+            p.unFurlough();
         }
     }
     

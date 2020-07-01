@@ -3,16 +3,43 @@ buildscript {
         maven {
             url "https://plugins.gradle.org/m2/"
         }
+        gradlePluginPortal()
     }
     dependencies {
         classpath "org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:2.6.1"
+        classpath "gradle.plugin.de.fuerstenau:BuildConfigPlugin:1.1.4"
     }
 }
+
+group 'uk.co.ramp.covid.simulation'
 
 apply plugin: 'java'
 apply plugin: 'application'
 apply plugin: "org.sonarqube"
 apply plugin: 'jacoco'
+apply plugin: 'de.fuerstenau.buildconfig'
+apply plugin: 'eclipse'
+apply plugin: 'idea'
+
+ext {
+
+    ext.getGitHash = { ->
+
+        def stdout = new ByteArrayOutputStream()
+        exec {
+            // get git commit hash with -dirty appended for uncommitted changes
+            // (see https://stackoverflow.com/questions/21017300/git-command-to-get-head-sha1-with-dirty-suffix-if-workspace-is-not-clean)
+            commandLine 'git', 'describe', '--match=NeVeRmAtCh', '--always', '--abbrev=40', '--dirty'
+            standardOutput = stdout
+        }
+        return stdout.toString().trim()
+    }
+
+}
+
+buildConfig {
+    buildConfigField "String", "GitHash", "${getGitHash()}"
+}
 
 java {
     sourceCompatibility = JavaVersion.VERSION_1_8
@@ -37,7 +64,7 @@ jacoco{
     version = '0.8.5'
 }
 
-version=0.1
+version = '0.1.0-SNAPSHOT'
 
 repositories {
     // Use jcenter for resolving dependencies.

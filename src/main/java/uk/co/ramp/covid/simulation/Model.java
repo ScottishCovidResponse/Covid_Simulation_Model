@@ -14,7 +14,9 @@ import uk.co.ramp.covid.simulation.parameters.ParameterIO;
 import uk.co.ramp.covid.simulation.population.ImpossibleAllocationException;
 import uk.co.ramp.covid.simulation.population.ImpossibleWorkerDistributionException;
 import uk.co.ramp.covid.simulation.population.Population;
+import uk.co.ramp.covid.simulation.util.CannotGeneratePopulationException;
 import uk.co.ramp.covid.simulation.util.InvalidParametersException;
+import uk.co.ramp.covid.simulation.util.PopulationGenerator;
 import uk.co.ramp.covid.simulation.util.RNG;
 
 import java.io.*;
@@ -198,8 +200,8 @@ public class Model {
             // seed (this can be accounted for when processing the output).
             Population p;
             try {
-                p = new Population(populationSize);
-            } catch (ImpossibleAllocationException | ImpossibleWorkerDistributionException e) {
+                p = PopulationGenerator.genValidPopulation(populationSize);
+            } catch (CannotGeneratePopulationException e) {
                 LOGGER.error(e);
                 break;
             }

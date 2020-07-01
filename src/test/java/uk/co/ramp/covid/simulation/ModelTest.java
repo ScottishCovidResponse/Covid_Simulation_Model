@@ -1,17 +1,12 @@
 package uk.co.ramp.covid.simulation;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.google.gson.JsonParseException;
-
 import uk.co.ramp.covid.simulation.output.DailyStats;
 import uk.co.ramp.covid.simulation.parameters.CovidParameters;
-import uk.co.ramp.covid.simulation.parameters.PopulationParameters;
-import uk.co.ramp.covid.simulation.util.Probability;
 import uk.co.ramp.covid.simulation.testutil.SimulationTest;
-
 import java.io.IOException;
 import java.util.List;
 
@@ -221,46 +216,4 @@ public class ModelTest extends SimulationTest {
         assertTrue("Unexpectedly fewer infections before lockdown", totInfDuringLockdown < totInfBeforeLockdown);
      }
 
-    @Ignore("Still some robustness issues. Sometimes you get a recovery if " +
-            "there's a super short p2 length since they don't get time to die")
-    @Test
-    public void testMortality() {
-        //Mortality and transmission rates are set to 100%
-        //Check that everyone is infected and progresses to death
-        CovidParameters.get().diseaseParameters.pSymptomaticCaseAdult = new Probability(1.0);
-        CovidParameters.get().diseaseParameters.pSymptomaticCasePensioner = new Probability(1.0);
-        CovidParameters.get().diseaseParameters.meanSymptomDelay = -5.0;
-        CovidParameters.get().diseaseParameters.meanLatentPeriod = 50.0;
-        CovidParameters.get().diseaseParameters.meanInfectiousDuration = 100.0;
-        CovidParameters.get().diseaseParameters.mortalityRate = 100.0;
-        CovidParameters.get().diseaseParameters.childProgressionPhase2 = 100.0;
-        CovidParameters.get().diseaseParameters.adultProgressionPhase2 = 100.0;
-        CovidParameters.get().diseaseParameters.pensionerProgressionPhase2 = 100.0;
-        CovidParameters.get().diseaseParameters.symptomaticTransAdjustment = 100.0;
-        CovidParameters.get().diseaseParameters.aSymptomaticTransAdjustment = 100.0;
-        PopulationParameters.get().personProperties.pTransmission = new Probability(1.0);
-        PopulationParameters.get().personProperties.pQuarantinesIfSymptomatic = new Probability(0.0);
-        nDays = 100;
-        //Run the model
-        Model m1 = new Model()
-                .setPopulationSize(population)
-                .setnInitialInfections(nInfections * 30)
-                .setExternalInfectionDays(0)
-                .setIters(nIter)
-                .setnDays(nDays)
-                .setRNGSeed(RNGSeed)
-                .setNoOutput();
-
-        List<List<DailyStats>> stats1 = m1.run(0);
-        int dead = stats1.get(0).get(nDays - 1).getDead();
-        int recovered = stats1.get(0).get(nDays -1).getRecovered();
-        int latent = stats1.get(0).get(nDays -1).getExposed();
-        int phase1 = stats1.get(0).get(nDays -1).getPhase1();
-        int phase2 = stats1.get(0).get(nDays -1).getPhase2();
-        assertTrue("Too many latent remain", latent < 3);
-        assertTrue("Too many P1 remain", phase1 < 3);
-        assertTrue("Too many P2 remain", phase2 < 3);
-        assertEquals("Unexpected recoveries", 0, recovered);
-        assertEquals("Unexpected number of deaths", population, dead, latent + phase1 + phase2);
-    }
 }

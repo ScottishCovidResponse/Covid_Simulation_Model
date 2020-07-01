@@ -1,8 +1,7 @@
 # Running On DiRAC
 
 Follow these instructions to get an account (for the SCRC Project):
-
-    https://github.com/ScottishCovidResponse/SCRCIssueTracking/wiki/DiRAC-Access
+https://github.com/ScottishCovidResponse/SCRCIssueTracking/wiki/DiRAC-Access
 
 You should receive an email describing how to connect to one of the CSD3 login nodes,
 with something like (replacing your-user-name with your username):
@@ -23,7 +22,7 @@ Get the source code from GitHub, and build it with:
     cd Covid_Simulation_Model
     gradle install
 
-(Or use `git pull` instead of `clone` if you have already cloned the repository.)
+**Important:** You must re-run `gradle install` whenever you update the code.  (You can use `git pull` instead of `clone` if you have already cloned the repository.)
 
 Set `"outputDirectory": ""` in your model parameters file, so that extra output directories are not created and the script to combine outputs works.
 

@@ -3,7 +3,7 @@ package uk.co.ramp.covid.simulation.covid;
 import org.junit.After;
 import org.junit.Test;
 import uk.co.ramp.covid.simulation.output.DailyStats;
-import uk.co.ramp.covid.simulation.testutil.PopulationGenerator;
+import uk.co.ramp.covid.simulation.util.PopulationGenerator;
 import uk.co.ramp.covid.simulation.util.Time;
 import uk.co.ramp.covid.simulation.parameters.CovidParameters;
 import uk.co.ramp.covid.simulation.parameters.PopulationParameters;
@@ -24,12 +24,12 @@ public class CovidTest extends SimulationTest {
     @Test
     public void testStepInfectionSymptomatic() {
         //Use the default parameters with a mortality rate of 100
-        CovidParameters.get().diseaseParameters.mortalityRate = 100.0;
-        CovidParameters.get().diseaseParameters.pSymptomaticCaseAdult = new Probability(1.0);
+        CovidParameters.get().diseaseParameters.caseMortalityRate = 1.0;
+        CovidParameters.get().diseaseParameters.pSymptomaticCasePensioner = new Probability(1.0);
         CovidParameters.get().diseaseParameters.pensionerProgressionPhase2 = 100.0;
 
         CStatus cStatus = null;
-        Person pensioner = new Pensioner(65, Person.Sex.MALE);
+        Person pensioner = new Pensioner(85, Person.Sex.MALE);
         Household h = new SingleOlder();
         pensioner.setHome(h);
         Covid virus = new Covid(pensioner);
@@ -50,11 +50,12 @@ public class CovidTest extends SimulationTest {
         //Test that the person becomes dead after the phase2 period
         double p1Period = virus.getP1();
         double p2Period = virus.getP2();
-        for (int i = 0; i < p1Period + p2Period - 1; i++) {
+        for (int i = 0; i < latentPeriod + p1Period + p2Period-1; i++) {
             if(!virus.isDead()) cStatus = virus.stepInfection(t);
             t.advance();
         }
         assertTrue(virus.isSymptomatic());
+        virus.stepInfection(t.advance());
         virus.stepInfection(t.advance());
         assertEquals(CStatus.DEAD, cStatus);
     }
@@ -117,23 +118,18 @@ public class CovidTest extends SimulationTest {
         Population p = PopulationGenerator.genValidPopulation(populationSize);
         p.seedVirus(100);
         p.allocatePeople();
-        Time t = new Time(0);
-        //Run for a week
-        for (int day = 0; day < 7; day++) {
-            DailyStats s = new DailyStats(t);
-            for (int i = 0; i < 24; i++) {
-                p.timeStep(t, s);
-                t = t.advance();
-
-                // Check if every infected person's status is correct
-                for (Person person : p.getAllPeople()) {
-                    if (person.isinfected()) {
-                        assertFalse(person.cStatus().equals(CStatus.HEALTHY) ||
-                                person.cStatus().equals(CStatus.RECOVERED));
-                    }
+        
+        p.setPostHourHook((pop, time) -> {
+            // Check if every infected person's status is correct
+            for (Person person : pop.getAllPeople()) {
+                if (person.isinfected()) {
+                    assertFalse(person.cStatus().equals(CStatus.HEALTHY) ||
+                            person.cStatus().equals(CStatus.RECOVERED));
                 }
             }
-        }
+        } );
+        
+        p.simulateFromTime(new Time(0), 7);
     }
 
 

@@ -24,6 +24,14 @@ public class PopulationParameters {
     public final PersonProperties personProperties;
     public HouseholdProperties householdProperties;
     public PublicTransportParameters publicTransportParameters;
+    public HospitalApptProperties hospitalApptProperties;
+
+    // For easier parsing we have 2 structures for appt info. One we parse, and one we query
+    private Map<String, HospitalApptInfo> hospitalAppts;
+
+    // Marking this transient is the easiest way to avoid this being serialized since the map
+    // above has all the same information
+    private transient HospitalApptParameters hospitalAppsParams = null;
 
     private PopulationParameters() {
         populationDistribution = new HashMap<>();
@@ -36,6 +44,8 @@ public class PopulationParameters {
         personProperties = new PersonProperties();
         householdProperties = new HouseholdProperties();
         publicTransportParameters = new PublicTransportParameters();
+        hospitalApptProperties = new HospitalApptProperties();
+        hospitalAppts = new HashMap<>();
     }
 
     public boolean isValid() {
@@ -53,6 +63,8 @@ public class PopulationParameters {
         valid = valid && checker.isValid(personProperties);
         valid = valid && checker.isValid(householdProperties) && householdProperties.isValid();
         valid = valid && checker.isValid(publicTransportParameters);
+        valid = valid && checker.isValid(hospitalApptProperties) && hospitalApptProperties.isValid();
+        valid = valid && hospitalAppsParams().isValid();
         return valid;
     }
 
@@ -61,6 +73,13 @@ public class PopulationParameters {
             throw new InvalidParametersException("Invalid population parameters");
         }
         return pp;
+    }
+
+    public HospitalApptParameters hospitalAppsParams() {
+        if (hospitalAppsParams == null) {
+            hospitalAppsParams = new HospitalApptParameters(hospitalAppts);
+        }
+        return hospitalAppsParams;
     }
 
     public static void setParameters(PopulationParameters p) {
