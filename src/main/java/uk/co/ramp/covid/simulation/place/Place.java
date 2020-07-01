@@ -23,7 +23,7 @@ public abstract class Place {
     
     protected double sDistance;
     protected double transConstant;
-    protected double transAdjustment;
+    protected double expectedInteractionsPerHour;
     private final RandomDataGenerator rng;
     protected double environmentAdjustment;
 
@@ -42,7 +42,7 @@ public abstract class Place {
         this.nextPeople = new ArrayList<>();
         this.transConstant = PopulationParameters.get().buildingProperties.baseTransmissionConstant;
         this.sDistance = 1.0;
-        this.transAdjustment = 1.0;
+        this.expectedInteractionsPerHour = 1.0;
         this.environmentAdjustment = 1.0;
     }
 
@@ -87,11 +87,11 @@ public abstract class Place {
     	   return 0.0;
         }
 
-    	if(people.size() <= transAdjustment) {
+    	if(people.size() <= expectedInteractionsPerHour) {
     	    return transConstant;
         }
 
-        return transConstant * transAdjustment / people.size();
+        return transConstant * expectedInteractionsPerHour / people.size();
     }
     
     private Collection<Pair<Integer, Integer>> genRandomPairs(int minValue, int maxValue, int count) {
