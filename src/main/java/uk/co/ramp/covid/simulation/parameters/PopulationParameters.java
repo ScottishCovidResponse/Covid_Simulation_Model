@@ -23,6 +23,7 @@ public class PopulationParameters {
     public PensionerProperties pensionerProperties;
     public final PersonProperties personProperties;
     public HouseholdProperties householdProperties;
+    public PublicTransportParameters publicTransportParameters;
     public HospitalApptProperties hospitalApptProperties;
 
     // For easier parsing we have 2 structures for appt info. One we parse, and one we query
@@ -42,6 +43,7 @@ public class PopulationParameters {
         pensionerProperties = new PensionerProperties();
         personProperties = new PersonProperties();
         householdProperties = new HouseholdProperties();
+        publicTransportParameters = new PublicTransportParameters();
         hospitalApptProperties = new HospitalApptProperties();
         hospitalAppts = new HashMap<>();
     }
@@ -60,6 +62,7 @@ public class PopulationParameters {
         valid = valid && checker.isValid(pensionerProperties);
         valid = valid && checker.isValid(personProperties);
         valid = valid && checker.isValid(householdProperties) && householdProperties.isValid();
+        valid = valid && checker.isValid(publicTransportParameters);
         valid = valid && checker.isValid(hospitalApptProperties) && hospitalApptProperties.isValid();
         valid = valid && hospitalAppsParams().isValid();
         return valid;

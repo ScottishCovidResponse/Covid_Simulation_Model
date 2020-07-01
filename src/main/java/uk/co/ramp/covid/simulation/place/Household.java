@@ -464,6 +464,14 @@ public abstract class Household extends Place implements Home {
             throw new InvalidHouseholdAllocationException("Cannot add pensioner to household");
         }
     }
+    
+    public void determinePublicTransportTakers(Transport t) {
+        if (PopulationParameters.get().publicTransportParameters.pFamilyTakesTransport.sample()) {
+            for (Person p : getPeople()) {
+                p.takesPublicTransport(t);
+            }
+        }
+    }
 
     @Override
     public void reportDeath(DailyStats s) {

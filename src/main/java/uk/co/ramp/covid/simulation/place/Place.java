@@ -18,8 +18,8 @@ public abstract class Place {
 
     // People are managed in 2 lists, those currently in the place "people" and
     // those who will be in the place in the next hour "nextPeople"
-    private List<Person> people;
-    private List<Person> nextPeople;
+    protected List<Person> people;
+    protected List<Person> nextPeople;
     
     protected double sDistance;
     protected double transConstant;
@@ -71,7 +71,7 @@ public abstract class Place {
         nextPeople.add(p);
     }
 
-    private void registerInfection(Time t, Person p, DailyStats s) {
+    protected void registerInfection(Time t, Person p, DailyStats s) {
         reportInfection(t, p, s);
         p.reportInfection(s);
     }
@@ -111,7 +111,7 @@ public abstract class Place {
         return pairs;
     }
 
-    private void addContacts(Time t, ContactsWriter contactsWriter) {
+    protected void addContacts(Time t, ContactsWriter contactsWriter) {
         int nPairs = getNumPeople() * (getNumPeople() - 1) / 2;
         int nContacts = rng.nextBinomial(nPairs, this.getTransConstant() / 24.0);
         Collection<Pair<Integer, Integer>> randomPairs = genRandomPairs(0, people.size() - 1, nContacts);
@@ -120,7 +120,7 @@ public abstract class Place {
         }
     }
 
-    private void stepInfections(Time t, DailyStats stats) {
+    protected void stepInfections(Time t, DailyStats stats) {
         List<Person> deaths = new ArrayList<>();
         for (Person cPers : people) {
             if (cPers.getInfectionStatus() && !cPers.isRecovered()) {
@@ -144,8 +144,11 @@ public abstract class Place {
             return; // don't do infections
         }
 
-       stepInfections(t, stats);
+        stepInfections(t, stats);
+        infectOthers(t, stats);
+    }
 
+    public void infectOthers(Time t, DailyStats stats) {
         for (Person cPers : people) {
             if (cPers.isInfectious() && getNumPeople() > 1) {
             	int nInfected = rng.nextBinomial(getNumPeople() - 1, getTransP(cPers) / 24.0);

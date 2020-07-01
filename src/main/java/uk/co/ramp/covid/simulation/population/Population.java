@@ -35,6 +35,7 @@ public class Population {
 
     private final ArrayList<Household> households;
     private final ArrayList<Person> allPeople;
+    private final Transport publicTransport;
     private final Places places;
 
     private LockdownController lockdownController;
@@ -66,6 +67,8 @@ public class Population {
 
         lockdownController = new LockdownController(this);
 
+        publicTransport = new Transport(populationSize);
+
         allocatePopulation();
     }
     
@@ -75,6 +78,13 @@ public class Population {
         allocatePeople();
         allocateCareHomes();
         assignNeighbours();
+        assignPublicTransport();
+    }
+
+    private void assignPublicTransport() {
+        for (Household h : getHouseholds()) {
+            h.determinePublicTransportTakers(publicTransport);
+        }
     }
 
     private void allocateCareHomes() {
@@ -340,6 +350,8 @@ public class Population {
             p.doInfect(t, dStats, contactsWriter);
             p.determineMovement(t, dStats, lockdownController.inLockdown(t), getPlaces());
         }
+
+        publicTransport.doInfect(t, dStats, contactsWriter);
         
         for (Household h : households) {
             h.commitMovement();
