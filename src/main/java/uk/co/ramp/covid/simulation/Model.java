@@ -8,7 +8,7 @@ import org.apache.commons.csv.CSVPrinter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import uk.co.ramp.covid.simulation.lockdown.LockdownEvent;
-import uk.co.ramp.covid.simulation.lockdown.LockdownComponentDeserialiser;
+import uk.co.ramp.covid.simulation.lockdown.LockdownEventDeserialiser;
 import uk.co.ramp.covid.simulation.output.DailyStats;
 import uk.co.ramp.covid.simulation.output.network.ContactsWriter;
 import uk.co.ramp.covid.simulation.output.network.PeopleWriter;
@@ -273,7 +273,7 @@ public class Model {
     public static Model readModelFromFile(String path) throws IOException, JsonParseException {
         Reader file = new FileReader(path);
 
-        LockdownComponentDeserialiser lcDeserialiser = new LockdownComponentDeserialiser();
+        LockdownEventDeserialiser lcDeserialiser = new LockdownEventDeserialiser();
         Gson gson = new GsonBuilder()
                 .registerTypeAdapter(LockdownEvent.class, lcDeserialiser)
                 .registerTypeAdapter(Time.class, Time.deserializer)

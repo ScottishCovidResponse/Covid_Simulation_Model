@@ -9,15 +9,15 @@
     "lockdownEvents": [
         {
             "type" : "FullLockdown",
-            "start": 55,
+            "start": 5,
             "socialDistance": 0.5
         },
         {
-            "type": "Easing",
-            "start": 75,
-            "placeType": "Schools",
+            "type": "SchoolEasing",
+            "start": 8,
             "socialDistance": 0.75,
-            "keyPremises": 0.75
+            "keyPremises": 0.75,
+            "pAttendsSchool": 0.5
         }
     ]
 }

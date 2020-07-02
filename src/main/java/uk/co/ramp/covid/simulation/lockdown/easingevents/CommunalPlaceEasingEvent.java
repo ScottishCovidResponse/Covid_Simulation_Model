@@ -1,6 +1,10 @@
-package uk.co.ramp.covid.simulation.lockdown;
+package uk.co.ramp.covid.simulation.lockdown.easingevents;
 
+import uk.co.ramp.covid.simulation.lockdown.LockdownEvent;
 import uk.co.ramp.covid.simulation.place.CommunalPlace;
+import uk.co.ramp.covid.simulation.place.ConstructionSite;
+import uk.co.ramp.covid.simulation.population.Child;
+import uk.co.ramp.covid.simulation.population.Person;
 import uk.co.ramp.covid.simulation.population.Population;
 import uk.co.ramp.covid.simulation.util.Probability;
 import uk.co.ramp.covid.simulation.util.Time;
@@ -8,38 +12,32 @@ import uk.co.ramp.covid.simulation.util.Time;
 import java.util.List;
 
 /** Lockdown component to ease restrictions on places */
-public class EasingEvent extends LockdownEvent {
-    private String placeType = null;
+public abstract class CommunalPlaceEasingEvent extends LockdownEvent {
     private Probability keyPremises = null;
     private Double socialDistance = null;
 
-    public EasingEvent(Time s, Time e, Population p,
-                       String placeType, Probability keyPremises, Double socialDistance) {
+
+    public CommunalPlaceEasingEvent(Time s, Population p, Probability keyPremises, Double socialDistance) {
         super(s, p);
-        this.placeType = placeType;
         this.keyPremises = keyPremises;
         this.socialDistance = socialDistance;
     }
 
     @Override
     protected void apply() {
-        List<? extends CommunalPlace> places = population.getPlaces().getByName(placeType);
+        List<? extends CommunalPlace> places = getPlaces();
         for (CommunalPlace p : places) {
             p.overrideKeyPremises(keyPremises.sample());
             p.setSocialDistancing(socialDistance);
         }
     }
 
-    @Override
-    protected String getName() {
-        return placeType + " easing";
-    }
+    protected abstract List<? extends CommunalPlace> getPlaces();
 
     @Override
     protected boolean isValid() {
-        return start != null 
+        return start != null
                 && keyPremises != null
-                && socialDistance != null
-                && population.getPlaces().getByName(placeType) != null;
+                && socialDistance != null;
     }
 }
