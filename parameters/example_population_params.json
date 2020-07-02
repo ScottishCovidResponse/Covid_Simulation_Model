@@ -215,7 +215,7 @@
         },
         "publicTransportParameters": {
             "expectedInteractions": 5.0,
-            "pFamilyTakesTransport": 0.2
+            "pFamilyTakesTransport": 0.5
         },
         "hospitalApptProperties": {
           "dayCaseStartTime": 8,
