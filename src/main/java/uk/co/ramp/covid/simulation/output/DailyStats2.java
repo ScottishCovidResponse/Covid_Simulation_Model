@@ -4,10 +4,12 @@ import org.apache.commons.csv.CSVPrinter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import uk.co.ramp.covid.simulation.util.Time;
+import uk.co.ramp.covid.simulation.parameters.PopulationDistribution.SexAge;
 import uk.co.ramp.covid.simulation.population.*;
 
 import java.io.IOException;
 import java.util.Objects;
+import java.util.stream.Stream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -17,75 +19,127 @@ import java.util.Map;
 public class DailyStats2 {
     private static final Logger LOGGER = LogManager.getLogger(DailyStats2.class);
 
-    private final int day;
+    private List<Value> all = new ArrayList<>(); // in csv column order
+    private List<Value> totalPopulation = new ArrayList<>();
+    private List<Value> totalInfected = new ArrayList<>();
+    private List<Value> totalDailyInfections = new ArrayList<>();
+    private List<Value> logged = new ArrayList<>();
+    private List<Value> deaths = new ArrayList<>();
+    
+    public Value iter = add("iter");
+    public Value day = add("day");
 
+    // Daily cumulative statistics
+    public Value healthy = add("H").log("Healthy").addTo(totalPopulation);
+    public Value exposed = add("L").log("Latent").addTo(totalPopulation).addTo(totalInfected);
+
+    // ...TODO        
+            
     // Infection rate stats
-    private Double secInfections = null;
-    private Double generationTime = null;
+    public RealValue secInfections = new RealValue("SecInfections");
+    private RealValue generationTime = new RealValue("GenerationTime");
 
-    private static class Stat {
-        public final String csvHeader;
-        public int value = 0;
+    public class Value {
+        private final String csvHeader;
+        protected String nameForLog;
+        private int value = 0;
 
-        public Stat(String csvHeader) { this.csvHeader = csvHeader; }
-    }
-    
-    private Map<String, Stat> map = new HashMap<>();
-    private List<Stat> all = new ArrayList<>(); // in csv column order
-    private List<Stat> totalPopulation = new ArrayList<>();
-    private List<Stat> totalInfected = new ArrayList<>();
-    private List<Stat> totalDailyInfections = new ArrayList<>();
-    private List<Stat> logged = new ArrayList<>();
-    private List<Stat> deaths = new ArrayList<>();
-
-    private static final int totalPopulationFlag = 1;
-    private static final int totalInfectedFlag = 1 << 1;
-    private static final int totalDailyInfectionsFlag = 1 << 2;
-    private static final int loggedFlag = 1 << 3;
-    private static final int deathsFlag = 1 << 4;
-    
-    private void addStat(String name, String csvHeader, int flags) {
-        Stat stat = new Stat(csvHeader);
-        all.add(stat);
-        map.put(name, stat);
+        public Value(String csvHeader) {
+            all.add(this);
+            this.csvHeader = csvHeader;
+        }
         
-        if ((flags & totalPopulationFlag) != 0) {
-            totalPopulation.add(stat);
+        public String header() { return csvHeader; } 
+        public int get() { return value; }
+        public void set(int value) { this.value = value; }
+        public void increment() { value++; }        
+        
+        public Value log(String name) {
+            logged.add(this);
+            this.nameForLog = name;
+            return this;
         }
-        if ((flags & totalInfectedFlag) != 0) {
-            totalInfected.add(stat);
+        
+        public Value addTo(List<Value> list) {
+            list.add(this);
+            return this;
         }
-        //...TODO
-    }
+        
+        public String logString() {
+            return nameForLog + " " + value;
+        }
+        
+        @Override
+        public String toString() { return Integer.toString(value); }
+        
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            Value other = (Value) o;
+            return value == other.value;
+        }
 
+        @Override
+        public int hashCode() {
+            return value;
+        }
+    }
+    
+    public class RealValue extends Value {
+        private double realValue;
+        
+        public RealValue(String csvHeader) {
+            super(csvHeader);
+        }
+        
+        public void set(double value) { this.realValue = value; }
+
+        @Override
+        public String logString() {
+            return nameForLog + " " + realValue;
+        }
+        
+        @Override
+        public String toString() { return Double.toString(realValue); }
+        
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            RealValue other = (RealValue) o;
+            return realValue == other.realValue;
+        }
+
+        @Override
+        public int hashCode() {
+            return Double.hashCode(realValue);
+        }        
+    }
+    
+    private Value add(String csvHeader) { return new Value(csvHeader); }
+    
     public DailyStats2(Time t) {
-        this.day = t.getAbsDay();
-        addStat("healthy", "H", totalPopulationFlag | loggedFlag);
-        addStat("exposed", "L", totalPopulationFlag | totalInfectedFlag | loggedFlag);
-        // ...TODO
+        day.set(t.getAbsDay());
     }
     
-    public int get(String name) { return map.get(name).value; }
-    
-    public void increment(String name) { map.get(name).value++; }
-
     public void processPerson(Person p) {
         switch (p.cStatus()) {
-            case HEALTHY: increment("healthy"); break;
-            case LATENT: increment("exposed"); break;
-            case ASYMPTOMATIC: increment("asymptomatic"); break;
-            case PHASE1: increment("phase1"); break;
-            case PHASE2: increment("phase2"); break;
-            case RECOVERED: increment("recovered"); break;
-            case DEAD: increment("dead"); break;
+            case HEALTHY: healthy.increment(); break;
+            case LATENT: exposed.increment(); break;
+            case ASYMPTOMATIC: asymptomatic.increment(); break;
+            case PHASE1: phase1.increment(); break;
+            case PHASE2: phase2.increment(); break;
+            case RECOVERED: recovered.increment(); break;
+            case DEAD: dead.increment(); break;
         }
         
         if (p.isHospitalised()) {
-            increment("inHospital");
+            inHospital.increment();
         }
     }
     
-    private int sum(List<Stat> stats) {
+    private int sum(List<Value> stats) {
         return stats.stream().mapToInt(s -> s.value).sum();
     }
 
@@ -101,33 +155,26 @@ public class DailyStats2 {
         return sum(totalDailyInfections);
     }
    
+    public String logString() {
+        return String.join(" ", logged.stream().map(s -> s.logString()).toArray(String[]::new));
+    }
+    
     public void log(){
-        // TODO
+        LOGGER.info(logString());
         //LOGGER.info("Day = {} Healthy = {} Latent = {} Asymptomatic = {} Phase 1 = {} " +
         //                "Phase 2 = {} Hospitalised = {} Dead = {} Recovered = {}",
         //        day, healthy, exposed, asymptomatic,phase1, phase2, inHospital, dead, recovered);
     }
 
     // TODO: We should probably either move the outputCSV method in here,
-    // or alternatively return the list of values (and not use the CSVPrinter here)
+    // or alternatively return the list of values (and not pass in the CSVPrinter here)
     public void appendCSV(CSVPrinter csv, int iter) throws IOException {
-        List<Object> values = new ArrayList<>();
-        values.add(iter);
-        values.add(day);
-        all.forEach(s -> { values.add(s.value); });
-        values.add(secInfections);
-        values.add(generationTime);
-        csv.printRecord(values);
+        this.iter.set(iter);
+        csv.printRecord(all);
     }
 
-    public List<String> csvHeaders() {
-        List<String> headers = new ArrayList<>();
-        headers.add("iter");
-        headers.add("day");
-        all.forEach(s -> { headers.add(s.csvHeader); });
-        headers.add("SecInfections");
-        headers.add("GenerationTime");
-        return headers;
+    public Stream<String> csvHeaders() {
+        return all.stream().map(value -> value.header());
     }
 
     public int getTotalDeaths() { return sum(deaths); }
@@ -142,19 +189,12 @@ public class DailyStats2 {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         DailyStats2 that = (DailyStats2) o;
-        if (day != that.day)
-            return false;
-
-        for (int i = 0; i < all.size(); i++) {
-            if (!all.get(i).equals(that.all.get(i)))
-                return false;            
-        }
-        return true;
+        return all.equals(that.all);
     }
 
     public void determineRValues(Population p) {
         RStats rs = new RStats(p);
-        secInfections = rs.getSecInfections(day);
-        generationTime = rs.getMeanGenerationTime(day);
+        secInfections.set(rs.getSecInfections(day.get()));
+        generationTime.set(rs.getMeanGenerationTime(day.get()));
     }
 }
