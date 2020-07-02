@@ -5,6 +5,7 @@ import org.junit.Test;
 
 import com.google.gson.JsonParseException;
 
+import uk.co.ramp.covid.simulation.lockdown.FullLockdownEvent;
 import uk.co.ramp.covid.simulation.output.DailyStats;
 import uk.co.ramp.covid.simulation.util.Time;
 import uk.co.ramp.covid.simulation.parameters.CovidParameters;
@@ -179,7 +180,6 @@ public class HospitalTest extends SimulationTest {
         assertTrue(hosptial.getBaseTransP(inf) > hosptial.getTransP(inf));
     }
 
-    @Ignore("Refactor to new lockdown system")
     @Test
     public void nonCovidHospitalsReduceStaffOnLockdown() {
         int populationSize = 10000;
@@ -196,7 +196,7 @@ public class HospitalTest extends SimulationTest {
             hospitalWorkersPreLockdown.addAll(h.getStaff(Time.timeFromDay(1)));
         }
         
-        //pop.getLockdownController().setLockdown(Time.timeFromDay(2), Time.timeFromDay(4), 1.0);
+        pop.getLockdownController().addComponent(new FullLockdownEvent(Time.timeFromDay(2), pop,1.0));
         
         Set<Person> hospitalWorkersInLockdown = new HashSet<>();
         pop.simulateFromTime(Time.timeFromDay(1), 2);

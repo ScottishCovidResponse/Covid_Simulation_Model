@@ -5,9 +5,12 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import com.google.gson.JsonParseException;
+import uk.co.ramp.covid.simulation.lockdown.FullLockdownEvent;
 import uk.co.ramp.covid.simulation.output.DailyStats;
 import uk.co.ramp.covid.simulation.parameters.CovidParameters;
 import uk.co.ramp.covid.simulation.testutil.SimulationTest;
+import uk.co.ramp.covid.simulation.util.Time;
+
 import java.io.IOException;
 import java.util.List;
 
@@ -161,12 +164,10 @@ public class ModelTest extends SimulationTest {
         assertTrue(m2.isValid());
     }
 
-    @Ignore("Refactor with new lockdown system")
     @Test
     public void testLockdown() {
 
         int startLock = 30;
-        int endLock = 60;
         nInfections = 100;
 
         //Run the model with no lockdown
@@ -189,8 +190,8 @@ public class ModelTest extends SimulationTest {
                 .setIters(nIter)
                 .setnDays(nDays)
                 .setRNGSeed(RNGSeed)
-                .setNoOutput();
-                //.setLockdown(startLock, endLock, 2.0);
+                .setNoOutput()
+                .addLockdownEvent(new FullLockdownEvent(Time.timeFromDay(startLock), null,2.0));
 
         List<List<DailyStats>> stats2 = m2.run(0);
 
@@ -211,7 +212,7 @@ public class ModelTest extends SimulationTest {
         for (int i = 0; i < stats2.get(0).size(); i++) {
             if (i < startLock && i>=10) {
                 totInfBeforeLockdown += stats2.get(0).get(i).getTotalDailyInfections();
-            } else if (i < endLock && i>= startLock + 10) {
+            } else if (i < nDays && i>= startLock + 10) {
                 totInfDuringLockdown += stats2.get(0).get(i).getTotalDailyInfections();
             }
         }

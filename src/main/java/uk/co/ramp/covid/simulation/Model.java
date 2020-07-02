@@ -77,6 +77,14 @@ public class Model {
         this.rngSeed = seed;
         return this;
     }
+    
+    public Model addLockdownEvent(LockdownEvent e) {
+        if (lockdownEvents == null) {
+            lockdownEvents = new ArrayList<>();
+        }
+        lockdownEvents.add(e);
+        return this;
+    }
 
     public Integer getRNGSeed() {
         return rngSeed;
