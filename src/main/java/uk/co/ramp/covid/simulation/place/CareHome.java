@@ -63,10 +63,10 @@ public class CareHome extends CommunalPlace implements Home {
     }
 
     @Override
-    public void determineMovement(Time t, DailyStats s, boolean lockdown, Places places) {
+    public void determineMovement(Time t, DailyStats s, Places places) {
         movePhase2(t, s, places, Person::isInCare);
         moveHospital(t);
-        moveShifts(t, lockdown, Person::isInCare);
+        moveShifts(t, Person::isInCare);
         remainInPlace();
     }
 

@@ -343,12 +343,12 @@ public class Population {
         for (Household h : households) {
             h.handleSymptomaticCases(t);
             h.doInfect(t, dStats, contactsWriter);
-            h.determineMovement(t, dStats, lockdownController.inLockdown(t), getPlaces());
+            h.determineMovement(t, dStats, getPlaces());
         }
 
         for (Place p : places.getAllPlaces()) {
             p.doInfect(t, dStats, contactsWriter);
-            p.determineMovement(t, dStats, lockdownController.inLockdown(t), getPlaces());
+            p.determineMovement(t, dStats, getPlaces());
         }
 
         publicTransport.doInfect(t, dStats, contactsWriter);
