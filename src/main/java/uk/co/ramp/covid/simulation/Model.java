@@ -7,18 +7,14 @@ import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import uk.co.ramp.covid.simulation.lockdown.LockdownComponent;
+import uk.co.ramp.covid.simulation.lockdown.LockdownEvent;
 import uk.co.ramp.covid.simulation.lockdown.LockdownComponentDeserialiser;
 import uk.co.ramp.covid.simulation.output.DailyStats;
 import uk.co.ramp.covid.simulation.output.network.ContactsWriter;
 import uk.co.ramp.covid.simulation.output.network.PeopleWriter;
 import uk.co.ramp.covid.simulation.parameters.ParameterIO;
 import uk.co.ramp.covid.simulation.population.Population;
-import uk.co.ramp.covid.simulation.util.CannotGeneratePopulationException;
-import uk.co.ramp.covid.simulation.util.InvalidParametersException;
-import uk.co.ramp.covid.simulation.util.PopulationGenerator;
-import uk.co.ramp.covid.simulation.util.RNG;
-import uk.co.ramp.covid.simulation.util.Time;
+import uk.co.ramp.covid.simulation.util.*;
 
 import java.io.*;
 import java.nio.file.FileSystems;
@@ -42,7 +38,7 @@ public class Model {
     private String outputDirectory = null;
     private String networkOutputDir = null;
     
-    private List<LockdownComponent> lockdownComponents = null;
+    private List<LockdownEvent> lockdownEvents = null;
 
     public Model() {}
 
@@ -171,8 +167,8 @@ public class Model {
             p.setExternalInfectionDays(externalInfectionDays);
             p.seedVirus(nInitialInfections);
 
-            if (lockdownComponents != null) {
-                for (LockdownComponent c : lockdownComponents) {
+            if (lockdownEvents != null) {
+                for (LockdownEvent c : lockdownEvents) {
                     c.setPopulation(p);
                     p.getLockdownController().addComponent(c);
                 }
@@ -279,8 +275,9 @@ public class Model {
 
         LockdownComponentDeserialiser lcDeserialiser = new LockdownComponentDeserialiser();
         Gson gson = new GsonBuilder()
-                .registerTypeAdapter(LockdownComponent.class, lcDeserialiser)
+                .registerTypeAdapter(LockdownEvent.class, lcDeserialiser)
                 .registerTypeAdapter(Time.class, Time.deserializer)
+                .registerTypeAdapter(Probability.class, Probability.deserializer)
                 .create();
         lcDeserialiser.setGson(gson);
         

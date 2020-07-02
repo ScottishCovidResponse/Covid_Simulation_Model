@@ -7,32 +7,37 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class LockdownController {
-    private boolean schoolLockdown = false;
-    
-    private double socialDist = 1.0;
-    private boolean inLockdown = false;
-    
     private final Population population;
-    
-    private List<LockdownComponent> components;
+    private List<LockdownEvent> events;
 
     public LockdownController(Population p) {
         population = p;
-        components = new ArrayList<>();
+        events = new ArrayList<>();
     }
     
-    public LockdownController addComponent(LockdownComponent c) {
-        components.add(c);
+    public LockdownController addComponent(LockdownEvent c) {
+        if (!c.isValid()) {
+            throw new InvalidLockdownEventException(c.getName());
+        }
+        events.add(c);
         return this;
     }
 
     public void implementLockdown(Time now) {
-        for (LockdownComponent c : components) {
+        List<LockdownEvent> finished = new ArrayList<>();
+        for (LockdownEvent c : events) {
             c.handleLockdown(now);
+
+            // Remove events that should never fire again
+            if (c.start.equals(now)) {
+                finished.add(c);
+            }
         }
+        events.removeAll(finished);
     }
 
     public boolean inLockdown(Time t) {
-       return inLockdown;
+        // TODO: this will be propogated insde the classes to we don't pass this around.
+       return false;
     }
 }

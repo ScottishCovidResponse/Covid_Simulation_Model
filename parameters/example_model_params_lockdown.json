@@ -6,10 +6,18 @@
     "nIters":1,
     "rngSeed":42,
     "outputDirectory":".",
-    "lockdownComponents": [
+    "lockdownEvents": [
         {
             "type" : "FullLockdown",
-            "start": 5
+            "start": 55,
+            "socialDistance": 0.5
+        },
+        {
+            "type": "Easing",
+            "start": 75,
+            "placeType": "Schools",
+            "socialDistance": 0.75,
+            "keyPremises": 0.75
         }
     ]
 }

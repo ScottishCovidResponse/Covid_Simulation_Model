@@ -5,17 +5,17 @@ import uk.co.ramp.covid.simulation.population.Person;
 import uk.co.ramp.covid.simulation.population.Population;
 import uk.co.ramp.covid.simulation.util.Time;
 
-public class FullLockdownComponent extends LockdownComponent {
+public class FullLockdownEvent extends LockdownEvent {
     
-    private double socialDistance;
+    private Double socialDistance = null;
 
-    public FullLockdownComponent(Time s, Time e, Population p, double socialDistance) {
-        super(s, e, p);
+    public FullLockdownEvent(Time s, Population p, double socialDistance) {
+        super(s, p);
         this.socialDistance = socialDistance;
     }
 
     @Override
-    protected void start() {
+    protected void apply() {
         for (CommunalPlace cPlace : population.getPlaces().getAllPlaces()) {
             cPlace.enterLockdown(socialDistance);
         }
@@ -25,19 +25,14 @@ public class FullLockdownComponent extends LockdownComponent {
         }
     }
 
-    @Override
-    protected void end() {
-        for (CommunalPlace cPlace : population.getPlaces().getAllPlaces()) {
-            cPlace.exitLockdown();
-        }
-
-        for (Person p : population.getAllPeople()) {
-            p.unFurlough();
-        }
-    }
 
     @Override
     protected String getName() {
         return "Full Lockdown";
+    }
+
+    @Override
+    protected boolean isValid() {
+        return start != null && socialDistance != null;
     }
 }

@@ -6,15 +6,15 @@ import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
 
-public class LockdownComponentDeserialiser implements JsonDeserializer<LockdownComponent> {
+public class LockdownComponentDeserialiser implements JsonDeserializer<LockdownEvent> {
     
     private Map<String, Class<?>> components;
     private Gson gson; // to handle recursive parse
     
     public LockdownComponentDeserialiser() {
         components = new HashMap<>();
-        components.put("FullLockdown", FullLockdownComponent.class);
-        components.put("Easing", EasingComponent.class);
+        components.put("FullLockdown", FullLockdownEvent.class);
+        components.put("Easing", EasingEvent.class);
     }
 
     public void setGson(Gson gson) {
@@ -22,7 +22,7 @@ public class LockdownComponentDeserialiser implements JsonDeserializer<LockdownC
     }
 
     @Override
-    public LockdownComponent deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
+    public LockdownEvent deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
             throws JsonParseException {
 
         JsonObject comp = json.getAsJsonObject();

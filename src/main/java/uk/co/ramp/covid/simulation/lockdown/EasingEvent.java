@@ -7,14 +7,14 @@ import uk.co.ramp.covid.simulation.util.Time;
 
 import java.util.List;
 
-/** Lockdown component to close key places */
-public class EasingComponent extends LockdownEvent {
+/** Lockdown component to ease restrictions on places */
+public class EasingEvent extends LockdownEvent {
     private String placeType = null;
     private Probability keyPremises = null;
     private Double socialDistance = null;
 
-    public EasingComponent(Time s, Time e, Population p,
-                           String placeType, Probability keyPremises, Double socialDistance) {
+    public EasingEvent(Time s, Time e, Population p,
+                       String placeType, Probability keyPremises, Double socialDistance) {
         super(s, p);
         this.placeType = placeType;
         this.keyPremises = keyPremises;
@@ -24,7 +24,6 @@ public class EasingComponent extends LockdownEvent {
     @Override
     protected void apply() {
         List<? extends CommunalPlace> places = population.getPlaces().getByName(placeType);
-        // TODO: Handle the case of no place (ideally before we reach here start)
         for (CommunalPlace p : places) {
             p.overrideKeyPremises(keyPremises.sample());
             p.setSocialDistancing(socialDistance);
@@ -34,5 +33,13 @@ public class EasingComponent extends LockdownEvent {
     @Override
     protected String getName() {
         return placeType + " easing";
+    }
+
+    @Override
+    protected boolean isValid() {
+        return start != null 
+                && keyPremises != null
+                && socialDistance != null
+                && population.getPlaces().getByName(placeType) != null;
     }
 }
