@@ -20,53 +20,61 @@ public class DailyStats2 {
     private static final Logger LOGGER = LogManager.getLogger(DailyStats2.class);
 
     private List<Value> all = new ArrayList<>(); // in csv column order
-    private List<Value> totalPopulation = new ArrayList<>();
-    private List<Value> totalInfected = new ArrayList<>();
-    private List<Value> totalDailyInfections = new ArrayList<>();
-    private List<Value> logged = new ArrayList<>();
-    private List<Value> deaths = new ArrayList<>();
+    private List<IntValue> totalPopulation = new ArrayList<>();
+    private List<IntValue> totalInfected = new ArrayList<>();
+    private List<IntValue> totalDailyInfections = new ArrayList<>();
+    private List<IntValue> logged = new ArrayList<>();
+    private List<IntValue> deaths = new ArrayList<>();
     
-    public Value iter = add("iter");
-    public Value day = add("day");
+    public IntValue iter = add("iter");
+    public IntValue day = add("day");
 
     // Daily cumulative statistics
-    public Value healthy = add("H").log("Healthy").addTo(totalPopulation);
-    public Value exposed = add("L").log("Latent").addTo(totalPopulation).addTo(totalInfected);
+    public IntValue healthy = add("H").log("Healthy").addTo(totalPopulation);
+    public IntValue exposed = add("L").log("Latent").addTo(totalPopulation).addTo(totalInfected);
 
     // ...TODO        
             
     // Infection rate stats
-    public RealValue secInfections = new RealValue("SecInfections");
-    private RealValue generationTime = new RealValue("GenerationTime");
+    public DoubleValue secInfections = new DoubleValue("SecInfections");
+    private DoubleValue generationTime = new DoubleValue("GenerationTime");
 
     public class Value {
         private final String csvHeader;
         protected String nameForLog;
+
+        protected Value(String csvHeader) {
+            all.add(this);
+            this.csvHeader = csvHeader;            
+        }
+
+        public String header() { return csvHeader; } 
+
+        public String logString() {
+            return nameForLog + " " + toString();
+        }
+    }
+    
+    public class IntValue extends Value {
         private int value = 0;
 
-        public Value(String csvHeader) {
-            all.add(this);
-            this.csvHeader = csvHeader;
+        public IntValue(String csvHeader) {
+            super(csvHeader);
         }
         
-        public String header() { return csvHeader; } 
         public int get() { return value; }
         public void set(int value) { this.value = value; }
         public void increment() { value++; }        
         
-        public Value log(String name) {
+        public IntValue log(String name) {
             logged.add(this);
             this.nameForLog = name;
             return this;
         }
         
-        public Value addTo(List<Value> list) {
+        public IntValue addTo(List<IntValue> list) {
             list.add(this);
             return this;
-        }
-        
-        public String logString() {
-            return nameForLog + " " + value;
         }
         
         @Override
@@ -76,7 +84,7 @@ public class DailyStats2 {
         public boolean equals(Object o) {
             if (this == o) return true;
             if (o == null || getClass() != o.getClass()) return false;
-            Value other = (Value) o;
+            IntValue other = (IntValue) o;
             return value == other.value;
         }
 
@@ -86,20 +94,15 @@ public class DailyStats2 {
         }
     }
     
-    public class RealValue extends Value {
+    public class DoubleValue extends Value {
         private double realValue;
         
-        public RealValue(String csvHeader) {
+        public DoubleValue(String csvHeader) {
             super(csvHeader);
         }
         
         public void set(double value) { this.realValue = value; }
 
-        @Override
-        public String logString() {
-            return nameForLog + " " + realValue;
-        }
-        
         @Override
         public String toString() { return Double.toString(realValue); }
         
@@ -107,7 +110,7 @@ public class DailyStats2 {
         public boolean equals(Object o) {
             if (this == o) return true;
             if (o == null || getClass() != o.getClass()) return false;
-            RealValue other = (RealValue) o;
+            DoubleValue other = (DoubleValue) o;
             return realValue == other.realValue;
         }
 
@@ -117,7 +120,7 @@ public class DailyStats2 {
         }        
     }
     
-    private Value add(String csvHeader) { return new Value(csvHeader); }
+    private IntValue add(String csvHeader) { return new IntValue(csvHeader); }
     
     public DailyStats2(Time t) {
         day.set(t.getAbsDay());
@@ -139,7 +142,7 @@ public class DailyStats2 {
         }
     }
     
-    private int sum(List<Value> stats) {
+    private int sum(List<IntValue> stats) {
         return stats.stream().mapToInt(s -> s.value).sum();
     }
 
