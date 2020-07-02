@@ -27,7 +27,7 @@ public class SchoolEasingEvent extends CommunalPlaceEasingEvent {
         for (Person p : population.getAllPeople()) {
             if (p instanceof Child) {
                 // Furlough everyone and un-furlough visitAdjustment % of the children to return
-                p.furlough();
+                p.forceFurlough();
                 if (pAttendsSchool.sample()) {
                     p.unFurlough();
                 }

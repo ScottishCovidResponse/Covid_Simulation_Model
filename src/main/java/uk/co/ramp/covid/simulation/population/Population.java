@@ -378,6 +378,9 @@ public class Population {
 
         boolean rprinted = false;
 
+        // To ensure we disallow neighbour visits on day 0 if required, we need to implement
+        // lockdown first here (events are popped once they are done so this only happens once on day 0)
+        lockdownController.implementLockdown(t);
         households.forEach(Household::determineDailyNeighbourVisit);
 
         for (int i = 0; i < nDays; i++) {

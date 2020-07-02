@@ -24,11 +24,8 @@ public class Probability {
         this.p = p;
     }
 
-    public void adjust(double adj) {
-        p *= adj;
-        if (p < 0.0 || p > 1.0) {
-            throw new InvalidProbabilityException("Trying to adjust to an invalid probability: p = " + p);
-        }
+    public Probability adjust(double adj) {
+       return new Probability(p * adj);
     }
     
     public boolean sample() {

@@ -54,6 +54,9 @@ public abstract class CommunalPlace extends Place {
 
     public void overrideKeyPremises(boolean key) {
         keyPremises = key;
+        if (keyPremises && closed) {
+            closed = false;
+        }
     }
 
     public Size getSize() {
@@ -209,5 +212,9 @@ public abstract class CommunalPlace extends Place {
     
     public void open() {
         closed = false;
+    }
+    
+    public boolean isClosed() {
+        return closed;
     }
 }

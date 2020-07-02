@@ -9,8 +9,9 @@ public class HouseholdEasingEvent extends LockdownEvent {
     
     private Double neighbourVisitAdjustment = null;
 
-    public HouseholdEasingEvent(Time start, Population p) {
+    public HouseholdEasingEvent(Time start, Population p, Double neighbourVisitAdjustment) {
         super(start, p);
+        this.neighbourVisitAdjustment = neighbourVisitAdjustment;
     }
 
     @Override

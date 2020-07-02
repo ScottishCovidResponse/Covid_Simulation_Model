@@ -281,35 +281,35 @@ public abstract class Household extends Place implements Home {
                 || t.getHour() + 1 >= PopulationParameters.get().householdProperties.neighbourClosingTime) {
             return;
         }
-       
-            int openT = PopulationParameters.get().householdProperties.neighbourOpeningTime;
-            int closeT = PopulationParameters.get().householdProperties.neighbourClosingTime;
-            // If we should visit a neighbour, do so at random
-            if (new Probability(1.0 / (closeT - openT)).sample()) {
-                List<Household> neighbours = getNeighbours();
-                Household n = neighbours.get(RNG.get().nextInt(0, neighbours.size() - 1));
 
-                // Retry if neighbour is isolating
-                while (neighbours.size() > 1 && n.isIsolating()) {
-                    neighbours.remove(n);
-                    n = neighbours.get(RNG.get().nextInt(0, neighbours.size() - 1));
-                }
+        int openT = PopulationParameters.get().householdProperties.neighbourOpeningTime;
+        int closeT = PopulationParameters.get().householdProperties.neighbourClosingTime;
+        // If we should visit a neighbour, do so at random
+        if (new Probability(1.0 / (closeT - openT)).sample()) {
+            List<Household> neighbours = getNeighbours();
+            Household n = neighbours.get(RNG.get().nextInt(0, neighbours.size() - 1));
 
-                // Tried all neighbours and they are all isolating so don't go anywhere
-                if (n.isIsolating()) {
-                    return;
-                }
-
-                // Do the visit
-                for (Person p : getPeople()) {
-                    if (!p.hasMoved() && isInhabitant(p) && !p.isQuarantined()) {
-                        p.moveTo(this, n);
-                    }
-                }
-
-                // Enable if we want one neighbour visit max per day
-                // visitsNeighbourToday = false;
+            // Retry if neighbour is isolating
+            while (neighbours.size() > 1 && n.isIsolating()) {
+                neighbours.remove(n);
+                n = neighbours.get(RNG.get().nextInt(0, neighbours.size() - 1));
             }
+
+            // Tried all neighbours and they are all isolating so don't go anywhere
+            if (n.isIsolating()) {
+                return;
+            }
+
+            // Do the visit
+            for (Person p : getPeople()) {
+                if (!p.hasMoved() && isInhabitant(p) && !p.isQuarantined()) {
+                    p.moveTo(this, n);
+                }
+            }
+
+            // Enable if we want one neighbour visit max per day
+            // visitsNeighbourToday = false;
+        }
     }
     
     private void familyTrip(Time t, Supplier<CommunalPlace> randPlace, Probability pVisit) {
@@ -338,13 +338,13 @@ public abstract class Household extends Place implements Home {
 
     private void moveShop(Time t, Places places) {
         Probability visitProb = PopulationParameters.get().householdProperties.pGoShopping;
-        visitProb.adjust(lockdownShopVisitFrequencyAdjustment);
+        visitProb = visitProb.adjust(lockdownShopVisitFrequencyAdjustment);
         familyTrip(t, places::getRandomShop, visitProb);
     }
 
     private void moveRestaurant(Time t, Places places) {
         Probability visitProb = PopulationParameters.get().householdProperties.pGoRestaurant;
-        visitProb.adjust(lockdownShopVisitFrequencyAdjustment);
+        visitProb = visitProb.adjust(lockdownRestaurantVisitFrequencyAdjustment);
         familyTrip(t, places::getRandomRestaurant, visitProb);
     }
 
@@ -380,9 +380,9 @@ public abstract class Household extends Place implements Home {
     
     public void determineDailyNeighbourVisit() {
         // Determine if we will attempt to visit a neighbour tomorrow
-        Probability neighbourVisist = getNeighbourVisitProbability();
-        neighbourVisist.adjust(lockdownNeighbourVisitFrequencyAdjustment);
-        visitsNeighbourToday = neighbourVisist.sample();
+        Probability neighbourVisit = getNeighbourVisitProbability();
+        neighbourVisit = neighbourVisit.adjust(lockdownNeighbourVisitFrequencyAdjustment);
+        visitsNeighbourToday = neighbourVisit.sample();
     }
     
     public void trySendPensionersToCare(Places places) {
