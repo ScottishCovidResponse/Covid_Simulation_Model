@@ -21,6 +21,7 @@ public class LockdownEventDeserialiser implements JsonDeserializer<LockdownEvent
         components.put("OfficeEasing", OfficeEasingEvent.class);
         components.put("ShopEasing", ShopEasingEvent.class);
         components.put("RestaurantEasing", RestaurantEasingEvent.class);
+        components.put("HouseholdEasing", HouseholdEasingEvent.class);
     }
 
     public void setGson(Gson gson) {

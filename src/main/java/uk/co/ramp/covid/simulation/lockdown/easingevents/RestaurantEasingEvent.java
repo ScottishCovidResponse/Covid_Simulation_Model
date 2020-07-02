@@ -1,6 +1,7 @@
 package uk.co.ramp.covid.simulation.lockdown.easingevents;
 
 import uk.co.ramp.covid.simulation.place.CommunalPlace;
+import uk.co.ramp.covid.simulation.place.Household;
 import uk.co.ramp.covid.simulation.population.Population;
 import uk.co.ramp.covid.simulation.util.Probability;
 import uk.co.ramp.covid.simulation.util.Time;
@@ -15,6 +16,14 @@ public class RestaurantEasingEvent extends CommunalPlaceEasingEvent {
                            Double visitFrequencyAdjustment) {
         super(s, p, keyPremises, socialDistance);
         this.visitFrequencyAdjustment = visitFrequencyAdjustment;
+    }
+
+    @Override
+    protected void apply() {
+        super.apply();
+        for (Household h : population.getHouseholds()) {
+            h.setLockdownRestaurantVisitFrequencyAdjustment(visitFrequencyAdjustment);
+        }
     }
 
     @Override
