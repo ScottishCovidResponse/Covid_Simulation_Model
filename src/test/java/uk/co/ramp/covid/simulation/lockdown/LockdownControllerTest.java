@@ -6,7 +6,7 @@ import uk.co.ramp.covid.simulation.util.Time;
 import uk.co.ramp.covid.simulation.place.Nursery;
 import uk.co.ramp.covid.simulation.place.School;
 import uk.co.ramp.covid.simulation.population.Population;
-import uk.co.ramp.covid.simulation.testutil.PopulationGenerator;
+import uk.co.ramp.covid.simulation.util.PopulationGenerator;
 import uk.co.ramp.covid.simulation.testutil.SimulationTest;
 
 import static org.junit.Assert.*;

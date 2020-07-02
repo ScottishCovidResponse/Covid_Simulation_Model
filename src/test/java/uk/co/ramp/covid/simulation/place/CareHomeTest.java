@@ -8,7 +8,7 @@ import uk.co.ramp.covid.simulation.parameters.PopulationParameters;
 import uk.co.ramp.covid.simulation.population.Pensioner;
 import uk.co.ramp.covid.simulation.population.Person;
 import uk.co.ramp.covid.simulation.population.Population;
-import uk.co.ramp.covid.simulation.testutil.PopulationGenerator;
+import uk.co.ramp.covid.simulation.util.PopulationGenerator;
 import uk.co.ramp.covid.simulation.testutil.SimulationTest;
 import uk.co.ramp.covid.simulation.util.Probability;
 
@@ -57,7 +57,7 @@ public class CareHomeTest extends SimulationTest {
         int populationSize = 10000;
         PopulationParameters.get().pensionerProperties.pEntersCareHome = new Probability(0.8);
         // There can be lots of people in the care home so we crank this up to avoid getting almost 0 transmission probs
-        PopulationParameters.get().buildingProperties.careHomeTransmissionConstant = 100.0;
+        PopulationParameters.get().buildingProperties.careHomeExpectedInteractionsPerHour = 100.0;
         CovidParameters.get().diseaseParameters.pSymptomaticCasePensioner = new Probability(1.0);
         CovidParameters.get().diseaseParameters.pensionerProgressionPhase2 = 100.0;
         // Makes it less likely we get symptoms before we are infectious

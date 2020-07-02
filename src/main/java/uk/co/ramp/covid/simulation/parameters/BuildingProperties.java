@@ -7,14 +7,14 @@ import java.util.List;
 
 public class BuildingProperties {
     public Double baseTransmissionConstant = null;
-    public Double hospitalTransmissionConstant = null;
-    public Double constructionSiteTransmissionConstant = null;
-    public Double nurseryTransmissionConstant = null;
-    public Double officeTransmissionConstant = null;
-    public Double restaurantTransmissionConstant = null;
-    public Double schoolTransmissionConstant = null;
-    public Double shopTransmissionConstant = null;
-    public Double careHomeTransmissionConstant = null;
+    public Double hospitalExpectedInteractionsPerHour = null;
+    public Double constructionSiteExpectedInteractionsPerHour = null;
+    public Double nurseryExpectedInteractionsPerHour = null;
+    public Double officeExpectedInteractionsPerHour = null;
+    public Double restaurantExpectedInteractionsPerHour = null;
+    public Double schoolExpectedInteractionsPerHour = null;
+    public Double shopExpectedInteractionsPerHour = null;
+    public Double careHomeExpectedInteractionsPerHour = null;
 
     public Probability pHospitalKey = null;
     public Probability pConstructionSiteKey = null;

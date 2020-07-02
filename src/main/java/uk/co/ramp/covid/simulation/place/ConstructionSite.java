@@ -10,7 +10,7 @@ public class ConstructionSite extends CommunalPlace {
 
     public ConstructionSite(Size s) {
         super(s);
-        transAdjustment = PopulationParameters.get().buildingProperties.constructionSiteTransmissionConstant;
+        expectedInteractionsPerHour = PopulationParameters.get().buildingProperties.constructionSiteExpectedInteractionsPerHour;
         times = OpeningTimes.nineFiveWeekdays();
     }
 

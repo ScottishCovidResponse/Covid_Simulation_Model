@@ -3,7 +3,7 @@ package uk.co.ramp.covid.simulation.population;
 import com.google.gson.JsonParseException;
 import org.junit.Test;
 import uk.co.ramp.covid.simulation.output.DailyStats;
-import uk.co.ramp.covid.simulation.testutil.PopulationGenerator;
+import uk.co.ramp.covid.simulation.util.PopulationGenerator;
 import uk.co.ramp.covid.simulation.testutil.SimulationTest;
 
 import java.util.List;

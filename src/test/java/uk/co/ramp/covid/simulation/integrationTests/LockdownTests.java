@@ -5,9 +5,10 @@ import org.junit.Test;
 import uk.co.ramp.covid.simulation.output.DailyStats;
 import uk.co.ramp.covid.simulation.place.*;
 import uk.co.ramp.covid.simulation.population.Child;
+import uk.co.ramp.covid.simulation.place.Hospital;
 import uk.co.ramp.covid.simulation.population.Person;
 import uk.co.ramp.covid.simulation.population.Population;
-import uk.co.ramp.covid.simulation.testutil.PopulationGenerator;
+import uk.co.ramp.covid.simulation.util.PopulationGenerator;
 import uk.co.ramp.covid.simulation.testutil.SimulationTest;
 import uk.co.ramp.covid.simulation.util.Time;
 
@@ -25,22 +26,25 @@ public class LockdownTests extends SimulationTest  {
 
         //pop.setLockdown(2,4,0.5);
 
-        Time t = new Time(0);
-        
-        // First 2 days people go to work as usual
-        for (int i = 0; i < simDays; i++) {
-            pop.timeStep(t, new DailyStats(t));
-            t = t.advance();
+        pop.setPostHourHook((population, time) -> {
+            // Skip the first hour lockdown starts since people might still be at
+            // work as they get the message they need to leave
+            if (time.getDay() == 2 && time.getHour() == 1) {
+                return;
+            }
 
-            // We only check hospitals since they 1. support furlough, 2. aren't visitable by staff members
-            for (Hospital plc : pop.getPlaces().getHospitals()) {
+            for (Hospital plc : population.getPlaces().getNonCovidHospitals()) {
                 for (Person p : plc.getPeople()) {
-                    if (p.getPrimaryCommunalPlace() == plc && !p.isHospitalised()) {
-                        assertFalse(p.isFurloughed());
+                    if (p.getPrimaryCommunalPlace() == plc
+                            && !p.isHospitalised()
+                            && !(p.hasHospitalAppt() && p.getHospitalAppt().isOccurring(time))) {
+                            assertFalse(p.isFurloughed());
                     }
                 }
             }
-        }
+        });
+
+        pop.simulate(simDays);
     }
 
     @Ignore("Refactor to new lockdown system")
@@ -55,6 +59,7 @@ public class LockdownTests extends SimulationTest  {
 //        );
 
         // First week only even aged kids go to school
+        // TODO: refactor with test hook
         Time t = new Time(0);
         for (int i = 0; i < 7; i++) {
            for (int j = 0; j < 24; j++) {

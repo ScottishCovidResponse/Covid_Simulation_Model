@@ -9,7 +9,7 @@ import uk.co.ramp.covid.simulation.output.DailyStats;
 import uk.co.ramp.covid.simulation.parameters.PopulationParameters;
 import uk.co.ramp.covid.simulation.place.householdtypes.SmallFamily;
 import uk.co.ramp.covid.simulation.population.*;
-import uk.co.ramp.covid.simulation.testutil.PopulationGenerator;
+import uk.co.ramp.covid.simulation.util.PopulationGenerator;
 import uk.co.ramp.covid.simulation.testutil.SimulationTest;
 import uk.co.ramp.covid.simulation.util.Probability;
 
@@ -60,27 +60,23 @@ public class ShopTest extends SimulationTest {
         int populationSize = 12000;
         Population p = PopulationGenerator.genValidPopulation(populationSize);
         p.allocatePeople();
-        List<Person> staff;
-        Time t = new Time(0);
-        //Run for a whole week
-        for (int day = 0; day < 7; day++) {
-            DailyStats s = new DailyStats(t);
-            for (int i = 0; i < 24; i++) {
-                p.timeStep(t, s);
-                t = t.advance();
-                for (Shop place : p.getPlaces().getShops()) {
-                    // After time step staff for i + 1 hour are in place
-                    staff = place.getStaff(t);
-                    int open = place.times.getOpen();
-                    int close = place.times.getClose();
-                    if (i + 1 < open || i + 1>= close) {
-                        assertEquals("Day "+day+" time "+ (i + i) + " Unexpected staff at shop", 0, staff.size());
-                    } else {
-                        assertTrue("Day "+day+" time "+ (i + i) + " No staff at shop", staff.size() > 0);
-                    }
+        
+        p.setPostHourHook((pop, time) -> {
+            for (Shop place : pop.getPlaces().getShops()) {
+                List<Person> staff = place.getStaff(time);
+                int open = place.times.getOpen();
+                int close = place.times.getClose();
+                if (time.getHour() < open || time.getHour() >= close) {
+                    assertEquals("Day "+ time.getDay() +" time "+ time.getHour() + " Unexpected staff at shop",
+                            0, staff.size());
+                } else {
+                    assertTrue("Day "+ time.getDay() +" time "+ time.getHour() + " No staff at shop",
+                            staff.size() > 0);
                 }
             }
-        }
+        });
+        
+        p.simulate(7);
     }
 
 

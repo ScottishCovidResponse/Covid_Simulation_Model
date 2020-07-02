@@ -22,6 +22,7 @@ import uk.co.ramp.covid.simulation.util.ProbabilityDistribution;
 import uk.co.ramp.covid.simulation.util.RNG;
 
 import java.util.*;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -34,12 +35,16 @@ public class Population {
 
     private final ArrayList<Household> households;
     private final ArrayList<Person> allPeople;
+    private final Transport publicTransport;
     private final Places places;
 
     private LockdownController lockdownController;
 
     private final RandomDataGenerator rng;
     private Integer externalInfectionDays = 0;
+
+    // Hook to make it easier to test properties after each hour
+    private BiConsumer<Population, Time> postHourHook;
 
     public Population(int populationSize) throws ImpossibleAllocationException, ImpossibleWorkerDistributionException {
         this.rng = RNG.get();
@@ -58,7 +63,11 @@ public class Population {
         this.allPeople = new ArrayList<>(populationSize);
         this.places = new Places();
 
+        postHourHook = (p,t) -> {};
+
         lockdownController = new LockdownController(this);
+
+        publicTransport = new Transport(populationSize);
 
         allocatePopulation();
     }
@@ -69,6 +78,13 @@ public class Population {
         allocatePeople();
         allocateCareHomes();
         assignNeighbours();
+        assignPublicTransport();
+    }
+
+    private void assignPublicTransport() {
+        for (Household h : getHouseholds()) {
+            h.determinePublicTransportTakers(publicTransport);
+        }
     }
 
     private void allocateCareHomes() {
@@ -334,6 +350,8 @@ public class Population {
             p.doInfect(t, dStats, contactsWriter);
             p.determineMovement(t, dStats, lockdownController.inLockdown(t), getPlaces());
         }
+
+        publicTransport.doInfect(t, dStats, contactsWriter);
         
         for (Household h : households) {
             h.commitMovement();
@@ -346,6 +364,7 @@ public class Population {
         if (contactsWriter != null) {
             contactsWriter.finishTimeStep(t);
         }
+
     }
     
     public List<DailyStats> simulateFromTime(Time startTime, int nDays) {
@@ -375,8 +394,15 @@ public class Population {
             for (int k = 0; k < 24; k++) {
                 timeStep(t, dStats, contactsWriter);
                 t = t.advance();
+                postHourHook.accept(this, t);
             }
             households.forEach(Household::dayEnd);
+
+            // At the end of each day we also determine possible hospital visits for the next day
+            for (Person p : allPeople) {
+                p.deteremineHospitalVisits(t, lockdownController.inLockdown(t), places);
+            }
+
             stats.add(this.processCases(dStats));
 
             if (!rprinted) {
@@ -457,5 +483,9 @@ public class Population {
 
     public LockdownController getLockdownController() {
         return lockdownController;
+    }
+
+    public void setPostHourHook(BiConsumer<Population, Time> postHourHook) {
+        this.postHourHook = postHourHook;
     }
 }

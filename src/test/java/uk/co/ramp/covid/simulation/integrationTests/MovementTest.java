@@ -11,7 +11,7 @@ import uk.co.ramp.covid.simulation.parameters.PopulationParameters;
 import uk.co.ramp.covid.simulation.place.*;
 import uk.co.ramp.covid.simulation.place.householdtypes.SingleAdult;
 import uk.co.ramp.covid.simulation.population.*;
-import uk.co.ramp.covid.simulation.testutil.PopulationGenerator;
+import uk.co.ramp.covid.simulation.util.PopulationGenerator;
 import uk.co.ramp.covid.simulation.testutil.SimulationTest;
 import uk.co.ramp.covid.simulation.util.Probability;
 
@@ -38,149 +38,121 @@ public class MovementTest extends SimulationTest {
     @Test
     public void allChildrenGoToSchool() {
         Set<Child> schooled = new HashSet<>();
-        Time t = new Time(24);
-        DailyStats s = new DailyStats(t);
-        for (int i = 0; i < 24; i++) {
-            p.timeStep(t, s);
-
-            for (School school : p.getPlaces().getSchools()) {
+        
+        p.setPostHourHook((pop, time) -> {
+            for (School school : pop.getPlaces().getSchools()) {
                 for (Person c : school.getPeople()) {
                     if (c instanceof Child) {
                         schooled.add((Child) c);
                     }
                 }
             }
-
-            t = t.advance();
-        }
-
-        int numChildren = 0;
-        for (Person per : p.getAllPeople()) {
-            if (per instanceof Child) {
-                numChildren++;
-            }
-        }
-
+        });
+        
+        p.simulate(1);
+        
+        long numChildren = p.getAllPeople().stream().filter(p -> p instanceof Child).count();
+        
         assertEquals("Some children not at school", numChildren, schooled.size());
     }
 
     @Test
     public void someInfantsGoToNursery() {
         Set<Infant> nursed = new HashSet<>();
-        Time t = new Time(24);
-        DailyStats s = new DailyStats(t);
-        for (int i = 0; i < 24; i++) {
-            p.timeStep(t, s);
-
-            for (Nursery nursery : p.getPlaces().getNurseries()) {
+        
+        p.setPostHourHook((pop, time) -> {
+            for (Nursery nursery : pop.getPlaces().getNurseries()) {
                 for (Person c : nursery.getPeople()) {
                     if (c instanceof Infant) {
                         nursed.add((Infant) c);
                     }
                 }
             }
-
-            t = t.advance();
-        }
-
-        // TODO: We can check specifics once we know how many infants go to nursery.
-        // This is not trivial since not all infants who go to nursery will go on day 1.
+        });
+       
+        p.simulate(1);
         assertTrue("No infants at nursery", nursed.size() > 0);
     }
 
     @Test
     public void someAdultsGoToWork() {
         Set<Adult> working = new HashSet<>();
-        Time t = new Time(24);
-        DailyStats s = new DailyStats(t);
-        for (int i = 0; i < 24; i++) {
-            p.timeStep(t, s);
-
-            for (CommunalPlace place : p.getPlaces().getAllPlaces()) {
+        
+        p.setPostHourHook((pop, time) -> {
+            for (CommunalPlace place : pop.getPlaces().getAllPlaces()) {
                 for (Person per : place.getPeople()) {
                     if (per instanceof Adult) {
                         working.add((Adult) per);
                     }
                 }
             }
-            t = t.advance();
-        }
-
+        });
+        
+        p.simulate(1);
+        
         assertTrue("No-one goes to work", working.size() > 0);
     }
 
     @Test
     public void someNonWorkersGoShopping() {
         Set<Person> shopping = new HashSet<>();
-        Time t = new Time(24);
-        DailyStats s = new DailyStats(t);
-        for (int i = 0; i < 24; i++) {
-            p.timeStep(t, s);
-
-            for (Shop place : p.getPlaces().getShops()) {
+        
+        p.setPostHourHook((pop, time) -> {
+            for (Shop place : pop.getPlaces().getShops()) {
                 for (Person per : place.getPeople()) {
-                    // TODO-FIXME: Technically shop workers can also shop where they work if they are not currently working.
                     if (per.getPrimaryCommunalPlace() != place) {
                         shopping.add(per);
                     }
                 }
             }
-            t = t.advance();
-        }
-
+        });
+       
+        p.simulate(1);
         assertTrue("No-one visits shops", shopping.size() > 0);
     }
 
     @Test
     public void someNonWorkersGoSToRestaurants() {
         Set<Person> eating = new HashSet<>();
-        Time t = new Time(24);
-        DailyStats s = new DailyStats(t);
-        for (int i = 0; i < 24; i++) {
-            p.timeStep(t, s);
 
-            for (Restaurant place : p.getPlaces().getRestaurants()) {
+        p.setPostHourHook((pop, time) -> {
+            for (Restaurant place : pop.getPlaces().getRestaurants()) {
                 for (Person per : place.getPeople()) {
-                    // TODO-FIXME: Technically restaurant workers can also eat where they work if they are not currently working.
                     if (per.getPrimaryCommunalPlace() != place) {
                         eating.add(per);
                     }
                 }
             }
-            t = t.advance();
-        }
+        });
 
+        p.simulate(1);
         assertTrue("No-one visits restaurants", eating.size() > 0);
     }
 
     @Test
     public void someNonWorkersGoToHospital() {
         // Phase 2 movement set when we construct population so we need to reconstruct it here
-        CovidParameters.get().hospitalisationParameters.pPhase2GoesToHosptial = new Probability(1.0);
+        CovidParameters.get().diseaseParameters.hospitalisedSurvive = new Probability(1.0);
         CovidParameters.get().diseaseParameters.adultProgressionPhase2 = 100.0;
         CovidParameters.get().diseaseParameters.childProgressionPhase2 = 100.0;
         CovidParameters.get().diseaseParameters.pensionerProgressionPhase2 = 100.0;
-
-        // 10 days ensures some people are infected and move to phase 2
-        final int simTime = 24 * 10;
 
         p = PopulationGenerator.genValidPopulation(populationSize);
         p.seedVirus(200);
 
         Set<Person> visiting = new HashSet<>();
-        Time t = new Time(24);
-        DailyStats s = new DailyStats(t);
-        for (int i = 0; i < simTime; i++) {
-            p.timeStep(t, s);
-            for (Hospital place : p.getPlaces().getHospitals()) {
+
+        p.setPostHourHook((pop, time) -> {
+            for (Hospital place : pop.getPlaces().getAllHospitals()) {
                 for (Person per : place.getPeople()) {
                     if (per.getPrimaryCommunalPlace() != place || per.isHospitalised()) {
                         visiting.add(per);
                     }
                 }
             }
-            t = t.advance();
-        }
+        });
+        
+        p.simulate(10);
         assertTrue("No-one visits hospitals", visiting.size() > 0);
     }
 
@@ -188,59 +160,49 @@ public class MovementTest extends SimulationTest {
     @Test
     public void somePeopleVisitNeighbours() {
         Set<Person> visiting = new HashSet<>();
-        Time t = new Time(24);
         PopulationParameters.get().householdProperties.householdVisitsNeighbourDaily = 0.5;
-        p.getHouseholds().forEach(h -> h.determineDailyNeighbourVisit());
-        DailyStats s = new DailyStats(t);
-        for (int i = 0; i < 24; i++) {
-            p.timeStep(t, s);
 
-            for (Household place : p.getHouseholds()) {
+        p.setPostHourHook((pop, time) -> {
+            for (Household place : pop.getHouseholds()) {
                 visiting.addAll(place.getVisitors());
             }
-            t = t.advance();
-        }
+        });
+        
+        p.simulate(1);
         assertTrue("No-one visits neighbours", visiting.size() > 0);
     }
 
     @Test
     public void weDontLosePeople() {
-        Time t = new Time(24);
-        DailyStats s = new DailyStats(t);
-        for (int i = 0; i < 24; i++) {
-            p.timeStep(t, s);
-
+        p.setPostHourHook((pop, time) -> {
             int npeople = 0;
-            for (Place place : p.getPlaces().getAllPlaces()) {
+            for (Place place : pop.getPlaces().getAllPlaces()) {
                 npeople += place.getNumPeople();
             }
 
-            for (Household hld : p.getHouseholds()) {
+            for (Household hld : pop.getHouseholds()) {
                 npeople += hld.getNumPeople();
             }
             assertEquals("People have been lost", populationSize, npeople);
-            t = t.advance();
-        }
+        });
+
+        p.simulate(1);
     }
 
     @Test
     public void openPlacesShouldBeStaffed() {
-        int day = 1;
-        Time t = new Time(24);
-        DailyStats s = new DailyStats(t);
-        for (int i = 0; i < 24; i++) {
-            p.timeStep(t, s);
-            t = t.advance();
 
-            for (CommunalPlace place : p.getPlaces().getAllPlaces()) {
-                List<Person> staff = place.getStaff(t);
-                if (place.isOpen(t)) {
+        p.setPostHourHook((pop, time) -> {
+            for (CommunalPlace place : pop.getPlaces().getAllPlaces()) {
+                List<Person> staff = place.getStaff(time);
+                if (place.isOpen(time)) {
                     assertTrue("No staff found in open place", staff.size() > 0);
                 } else {
                     assertEquals("Unexpected staff found in closed place", 0, staff.size());
                 }
             }
-        }
+        });
+        p.simulate(1);
     }
 
     private void doesNotGoOut(Household iso, List<Person> isolating) {
@@ -279,54 +241,44 @@ public class MovementTest extends SimulationTest {
 
     @Test
     public void stopIsolatingAfterTimerExpires() {
-        int daysIsolated = 2;
-        Time t = new Time(24);
-        DailyStats s = new DailyStats(t);
+        final int daysIsolated = 2;
+
         Household iso = p.getHouseholds().get(0);
         iso.forceIsolationtimer(daysIsolated);
         List<Person> isolating = iso.getInhabitants();
-
-        // Handle the first isolation day
-        for (int i = 0; i < 24; i++) {
-            p.timeStep(t, s);
+        
+        p.setPostHourHook((pop, time) -> {
             doesNotGoOut(iso, isolating);
-            t = t.advance();
-        }
-        p.getHouseholds().forEach(h -> h.dayEnd());
+        });
 
-        // Second day isolating
-        for (int i = 0; i < 24; i++) {
-            p.timeStep(t, s);
-            doesNotGoOut(iso, isolating);
-            t = t.advance();
-        }
-        p.getHouseholds().forEach(h -> h.dayEnd());
+        // 2 Days isolationg
+        p.simulate(daysIsolated);
 
-        // Now we can go out again
-        int excursions = 0;
-        for (int i = 0; i < 24; i++) {
-            p.timeStep(t, s);
-
-            for (CommunalPlace place : p.getPlaces().getAllPlaces()) {
+        // Since arrays pass by reference this allows updating inside the lambda
+        final Integer[] excursions = {0};
+        p.setPostHourHook((pop, time) -> {
+            for (CommunalPlace place : pop.getPlaces().getAllPlaces()) {
                 for (Person per : isolating) {
                     if (place.personInPlace(per)) {
-                        excursions++;
+                        excursions[0]++;
                     }
                 }
             }
 
-            for (Household h : p.getHouseholds()) {
+            for (Household h : pop.getHouseholds()) {
                 if (h != iso) {
                     for (Person per : isolating) {
                         if (h.personInPlace(per)) {
-                            excursions++;
+                            excursions[0]++;
                         }
                     }
                 }
             }
-            t = t.advance();
-        }
-        assertTrue(excursions > 0);
+        });
+
+        // Now we can go out again
+        p.simulateFromTime(new Time(48), 1);
+        assertTrue(excursions[0] > 0);
     }
 
     @Test
@@ -337,24 +289,19 @@ public class MovementTest extends SimulationTest {
 
         Population p = PopulationGenerator.genValidPopulation(populationSize);
 
-        Time t = new Time(24);
-        DailyStats s = new DailyStats(t);
         Household iso = p.getHouseholds().get(0);
         iso.forceIsolationtimer(daysIsolated);
         List<Person> isolating = iso.getInhabitants();
 
-        // Handle the first isolation day
-        for (int i = 0; i < 24; i++) {
-            p.timeStep(t, s);
+        // Isolate for a day
+        p.setPostHourHook((pop, time) -> {
             doesNotGoOut(iso, isolating);
-            t = t.advance();
-        }
-        p.getHouseholds().forEach(h -> h.dayEnd());
+        });
+        p.simulate(1);
 
-        // Second day isolating
-        for (int i = 0; i < 24; i++) {
-            p.timeStep(t, s);
-            if (i == 5) {
+        // New infection happens on day 2 (hour 5)
+        p.setPostHourHook((pop, t) -> {
+            if (t.getHour() == 5) {
                 Person per = isolating.get(0);
                 per.infect();
                 per.getcVirus().forceSymptomatic(true);
@@ -366,9 +313,8 @@ public class MovementTest extends SimulationTest {
                 per.cStatus();
             }
             doesNotGoOut(iso, isolating);
-            t = t.advance();
-        }
-        p.getHouseholds().forEach(h -> h.dayEnd());
+        });
+        p.simulateFromTime(new Time(24), 1);
 
         // Initial 2 days are over but we should still be isolating since there's a new case
         assertTrue(iso.isIsolating());
@@ -379,7 +325,7 @@ public class MovementTest extends SimulationTest {
         // As most tests are positive we force lots of infections to check some go negative.
         p.seedVirus(100);
         CovidParameters.get().testParameters.pDiagnosticTestAvailable = new Probability(1.0);
-        p.simulate(50);
+        p.simulate(30);
 
         int numTested = 0;
         int numNegative = 0;
@@ -479,29 +425,25 @@ public class MovementTest extends SimulationTest {
 
     @Test
     public void neighboursShouldLeaveEmptyHouses() {
-        final int simHours = 100;
-        Time t = new Time(0);
+        final int simDays = 5;
         p = PopulationGenerator.genValidPopulation(populationSize);
         p.seedVirus(nInfections);
 
         // Going to an empty neighbours house is okay, but only for 1 hour (when you discover they aren't in)
         List<Set<Person>> inEmptyNeighbourHouse = new ArrayList<>();
-        DailyStats s = new DailyStats(t);
-        for (int i = 0; i < simHours; i++) {
+        
+        p.setPostHourHook((population, time) -> {
             inEmptyNeighbourHouse.add(new HashSet<>());
-
-            p.timeStep(t, s);
-            t = t.advance();
-
-            for (Household h : p.getHouseholds()) {
+            for (Household h : population.getHouseholds()) {
                 if (h.getNumInhabitants() == 0) {
-                    inEmptyNeighbourHouse.get(i).addAll(h.getVisitors());
+                    inEmptyNeighbourHouse.get(time.getAbsTime() - 1).addAll(h.getVisitors());
                 }
             }
+        });
+        
+        p.simulate(simDays);
 
-        }
-
-        for (int i = 0; i < simHours - 1; i++) {
+        for (int i = 0; i < simDays * 24 - 1; i++) {
             for (Person p : inEmptyNeighbourHouse.get(i)) {
                 assertFalse(inEmptyNeighbourHouse.get(i+1).contains(p));
             }
@@ -510,13 +452,12 @@ public class MovementTest extends SimulationTest {
 
     @Test
     public void peopleAreInASinglePlace() {
-        final int simHours = 100;
-        Time t = new Time(0);
+        final int simDays = 5;
+
         p = PopulationGenerator.genValidPopulation(populationSize);
         p.seedVirus(nInfections);
         
-        DailyStats s = new DailyStats(t);
-        for (int i = 0; i < simHours; i++) {
+        p.setPostHourHook((pop, time) -> {
             Set<Person> seen = new HashSet<>();
 
             for (Place place : p.getPlaces().getAllPlaces()) {
@@ -530,10 +471,41 @@ public class MovementTest extends SimulationTest {
                     assertTrue(seen.add(per));
                 }
             }
-
-            p.timeStep(t, s);
-            t = t.advance();
-        }
+        });
+        
+        p.simulate(simDays);
 
     }
+
+    @Test
+    public void peopleAttendHospitalAppts() {
+        final int simDays = 14;
+
+        // We need to force > 1 hospital, else it will be designated COVID and no accept patients
+        PopulationParameters.get().buildingDistribution.populationToHospitalsRatio = 5000;
+        p = PopulationGenerator.genValidPopulation(populationSize);
+        p.seedVirus(nInfections);
+
+        // Final arrays to allow variable capture in the lambda
+        final int[] hospitalApptVisitors = {0};
+        final int[] hospitalApptCare = {0};
+        p.setPostHourHook((pop, time) -> {
+            for (Hospital h : pop.getPlaces().getAllHospitals()) {
+                for (Person p : h.getPeople()) {
+                    if (h.isPatient(p, time)) {
+                        hospitalApptVisitors[0]++;
+                        if (p.isInCare()) {
+                            hospitalApptCare[0]++;
+                        }
+                    }
+                }
+            }
+        });
+
+        p.simulate(simDays);
+        
+        assertNotEquals("No one had a hospital appt", 0, hospitalApptVisitors[0]);
+        assertNotEquals("No one from care had a hospital appt", 0, hospitalApptCare[0]);
+    }
+
 }

@@ -7,7 +7,7 @@ import uk.co.ramp.covid.simulation.output.DailyStats;
 import uk.co.ramp.covid.simulation.util.Time;
 import uk.co.ramp.covid.simulation.parameters.PopulationParameters;
 import uk.co.ramp.covid.simulation.population.*;
-import uk.co.ramp.covid.simulation.testutil.PopulationGenerator;
+import uk.co.ramp.covid.simulation.util.PopulationGenerator;
 import uk.co.ramp.covid.simulation.testutil.SimulationTest;
 
 import java.util.ArrayList;
@@ -32,38 +32,31 @@ public class SchoolTest extends SimulationTest {
         int populationSize = 10000;
         Population p = PopulationGenerator.genValidPopulation(populationSize);
         p.allocatePeople();
-        List<Person> staff;
-        Time t = new Time(0);
-        //Run for a whole week
-        for (int day = 0; day < 7; day++) {
-            int totStaff;
-            int startTime = Shifts.schoolTimes().getShift(day).getStart();
-            int endTime = Shifts.schoolTimes().getShift(day).getEnd();
-            DailyStats s = new DailyStats(t);
-            for (int i = 0; i < 24; i++) {
-                p.timeStep(t, s);
-                t = t.advance();
-                totStaff = 0;
-                for (School place : p.getPlaces().getSchools()) {
-                    staff = place.getStaff(t);
-                    totStaff += staff.size();
-                }
-
-                if (day < 5) {
-
-                    //Staff should be at school during school times only
-                    if (i + 1 < startTime || i + 1 >= endTime) {
-                        assertEquals("Unexpected staff at school", 0, totStaff);
-                    } else {
-                        assertTrue("No staff at school", totStaff > 0);
-                    }
-                } else {
-                    //Staff should not be at school on weekends
-                    assertEquals("Unexpected staff at school", 0, totStaff);
-                }
+        
+        p.setPostHourHook((pop, time) -> {
+            int totStaff = 0;
+            for (School place : pop.getPlaces().getSchools()) {
+                List<Person> staff = place.getStaff(time);
+                totStaff += staff.size();
             }
 
-        }
+            if (time.getDay() < 5) {
+                int startTime = Shifts.schoolTimes().getShift(time.getDay()).getStart();
+                int endTime = Shifts.schoolTimes().getShift(time.getDay()).getEnd();
+                
+                //Staff should be at school during school times only
+                if (time.getHour() < startTime || time.getHour() >= endTime) {
+                    assertEquals("Unexpected staff at school", 0, totStaff);
+                } else {
+                    assertTrue("No staff at school", totStaff > 0);
+                }
+            } else {
+                //Staff should not be at school on weekends
+                assertEquals("Unexpected staff at school", 0, totStaff);
+            }
+        });
+        
+        p.simulate(7);
     }
     
     private void checkSchoolsPopulated(Population p) {
@@ -102,41 +95,19 @@ public class SchoolTest extends SimulationTest {
         int populationSize = 10000;
         Population p = PopulationGenerator.genValidPopulation(populationSize);
         
-        // Schools are open at midday so we sample then
-        Time t = new Time(0);
-        for (int i = 0; i < 12; i++) {
-            p.timeStep(t, new DailyStats(t));
-            t = t.advance();
-        }
-        checkSchoolsPopulated(p);
-
-        // Day 1 - open
-        for (int i = 0; i < 24; i++) {
-            p.timeStep(t, new DailyStats(t));
-            t = t.advance();
-        }
-        checkSchoolsPopulated(p);
-
-        // Day 2 - holiday
-        for (int i = 0; i < 24; i++) {
-            p.timeStep(t, new DailyStats(t));
-            t = t.advance();
-        }
-        checkSchoolsNotPopulated(p);
-
-        // Day 3 - open
-        for (int i = 0; i < 24; i++) {
-            p.timeStep(t, new DailyStats(t));
-            t = t.advance();
-        }
-        checkSchoolsPopulated(p);
-
-        // Day 4 - holiday
-        for (int i = 0; i < 24; i++) {
-            p.timeStep(t, new DailyStats(t));
-            t = t.advance();
-        }
-        checkSchoolsNotPopulated(p);
+        p.setPostHourHook((pop, time) -> {
+            // Schools are open at midday so we sample then
+            if (time.getHour() == 12) {
+                // Holidays on day 2/4
+                if (time.getAbsDay() == 2 || time.getAbsDay() == 4) {
+                    checkSchoolsNotPopulated(pop);
+                } else {
+                    checkSchoolsPopulated(pop);
+                }
+            }
+        });
+        
+        p.simulate(5);
     }
 
 }

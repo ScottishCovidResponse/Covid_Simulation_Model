@@ -24,17 +24,18 @@ public class Covid {
     private double symptomDelay;
     private double p1;
     private double p2;
-    private final double mortalityRate;
+    private final double caseMortalityRate;
     private int infCounter;
     private final Person ccase;
     private final RandomDataGenerator rng;
+    private boolean dies;
     
     private final InfectionLog log;
 
     public Covid(Person ccase) {
         this.rng = RNG.get();
         this.ccase = ccase;
-        this.mortalityRate = CovidParameters.get().diseaseParameters.mortalityRate;
+        this.caseMortalityRate = CovidParameters.get().diseaseParameters.caseMortalityRate;
 
         this.infCounter = 0;
         this.setSymptomatic();
@@ -73,7 +74,7 @@ public class Covid {
     public boolean isDead() {
         return dead;
     }
-    
+     
     private void setSymptomatic() {
         if(ccase.getAge() >= 70) {
             // This is set to 70 and 20 because the paper form LSHTM that informed this use these cut-offs
@@ -110,6 +111,22 @@ public class Covid {
 
             if (ccase.avoidsPhase2(rng.nextUniform(0, 1))) {
                 p2 = 0;
+            }
+            
+            if(p2 > 0) {
+                final boolean goesToHospital;
+
+            	dies = rng.nextUniform(0,  1) < caseMortalityRate * ccase.getCovidMortalityAgeAdjustment();
+            	if(dies) {
+            		goesToHospital = CovidParameters.get().diseaseParameters.hospitalisedDie.sample();
+            	}
+            	else {
+            		goesToHospital = CovidParameters.get().diseaseParameters.hospitalisedSurvive.sample();
+            	}
+            	if(goesToHospital) {
+            		ccase.setWillBeHospitalised();
+            	}
+
             }
         }
     }
@@ -155,21 +172,20 @@ public class Covid {
             	log.registerSymptomatic(t);
             }
             phase1 = false;
-            double rVal = rng.nextUniform(0, 1);
-            if (rVal < mortalityRate / 24 * ccase.getCovidMortalityAgeAdjustment()) {
+             status = CStatus.PHASE2;
+            
+        } else if (latentPeriod + p1 + p2 <= infCounter) {
+            if(dies) {
                 dead = true;
                 phase2 = false;
-                status = CStatus.DEAD;
+            	status = CStatus.DEAD;
             } else {
-                status = CStatus.PHASE2;
+            	recovered = true;
+            	phase1 = false;
+            	phase2 = false;
+            	isSymptomatic = false;
+            	status = CStatus.RECOVERED;
             }
-        } else if (latentPeriod + p1 + p2 <= infCounter) {
-            recovered = true;
-            phase1 = false;
-            phase2 = false;
-            isSymptomatic = false;
-            status = CStatus.RECOVERED;
-
         }
         if(symptomDelay < infCounter && !recovered) {
             // This check ensures we don't isolate twice with the same case

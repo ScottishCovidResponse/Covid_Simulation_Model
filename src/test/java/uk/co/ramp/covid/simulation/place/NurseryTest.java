@@ -7,7 +7,7 @@ import uk.co.ramp.covid.simulation.output.DailyStats;
 import uk.co.ramp.covid.simulation.util.Time;
 import uk.co.ramp.covid.simulation.parameters.PopulationParameters;
 import uk.co.ramp.covid.simulation.population.*;
-import uk.co.ramp.covid.simulation.testutil.PopulationGenerator;
+import uk.co.ramp.covid.simulation.util.PopulationGenerator;
 import uk.co.ramp.covid.simulation.testutil.SimulationTest;
 
 import static org.junit.Assert.assertEquals;
@@ -32,37 +32,31 @@ public class NurseryTest extends SimulationTest {
         int populationSize = 10000;
         Population p = PopulationGenerator.genValidPopulation(populationSize);
         p.allocatePeople();
-        List<Person> staff;
-        Time t = new Time(0);
-        //Run for a whole week
-        for (int day = 0; day < 7; day++) {
-            int totStaff;
-            int startTime = Shifts.schoolTimes().getShift(day).getStart();
-            int endTime = Shifts.schoolTimes().getShift(day).getEnd();
-            DailyStats s = new DailyStats(t);
-            for (int i = 0; i < 24; i++) {
-                p.timeStep(t, s);
-                t = t.advance();
-                totStaff = 0;
-                for (Nursery place : p.getPlaces().getNurseries()) {
-                    staff = place.getStaff(t);
-                    totStaff += staff.size();
-                }
-
-                if (day < 5) {
-                    //Staff should be at nursery during school times only
-                    if (i + 1 < startTime || i + 1 >= endTime) {
-                        assertEquals("Unexpected staff at nursery", 0, totStaff);
-                    } else {
-                        assertTrue("No staff at nursery", totStaff > 0);
-                    }
-                } else {
-                    //Staff should not be at nursery on weekends
-                    assertEquals("Unexpected staff at nursery", 0, totStaff);
-                }
+        
+        p.setPostHourHook((pop, time) -> {
+            int totStaff = 0;
+            for (Nursery place : p.getPlaces().getNurseries()) {
+                List<Person> staff = place.getStaff(time);
+                totStaff += staff.size();
             }
 
-        }
+            if (time.getDay() < 5) {
+                int startTime = Shifts.schoolTimes().getShift(time.getDay()).getStart();
+                int endTime = Shifts.schoolTimes().getShift(time.getDay()).getEnd();
+                
+                //Staff should be at nursery during school times only
+                if (time.getHour() < startTime || time.getHour() >= endTime) {
+                    assertEquals("Unexpected staff at nursery", 0, totStaff);
+                } else {
+                    assertTrue("No staff at nursery", totStaff > 0);
+                }
+            } else {
+                //Staff should not be at nursery on weekends
+                assertEquals("Unexpected staff at nursery", 0, totStaff);
+            }
+        });
+      
+        p.simulate(7);
     }
 
     @Test

@@ -10,7 +10,7 @@ public class Office extends CommunalPlace {
 
     public Office(Size s)  {
         super(s);
-        transAdjustment = PopulationParameters.get().buildingProperties.officeTransmissionConstant;
+        expectedInteractionsPerHour = PopulationParameters.get().buildingProperties.officeExpectedInteractionsPerHour;
         times = OpeningTimes.nineFiveWeekdays();
     }
 

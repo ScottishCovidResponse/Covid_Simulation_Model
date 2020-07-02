@@ -44,6 +44,7 @@ public class DailyStats {
     private int careHomeInfectionsWorker = 0;
     private int careHomeInfectionsResident = 0;
     private int seedInfections = 0;
+    private int transportInfections = 0;
 
     // Age Statistics
     private int adultInfected = 0;
@@ -147,10 +148,9 @@ public class DailyStats {
                 shopInfectionsWorker, careHomeInfectionsWorker, homeInfectionsInhabitant, careHomeInfectionsResident,
                 constructionSiteInfectionsVisitor, hospitalInfectionsVisitor, nurseryInfectionsVisitor, 
                 officeInfectionsVisitor, restaurantInfectionsVisitor, schoolInfectionsVisitor, shopInfectionsVisitor,
-                homeInfectionsVisitor, adultInfected, pensionerInfected, childInfected, infantInfected, adultDeaths,
+                homeInfectionsVisitor, transportInfections, adultInfected, pensionerInfected, childInfected, infantInfected, adultDeaths,
                 pensionerDeaths, childDeaths, infantDeaths, homeDeaths, hospitalDeaths, careHomeDeaths, additionalDeaths,
-                inHospital, newlyHospitalised,
-                secInfections, generationTime);
+                inHospital, newlyHospitalised, secInfections, generationTime);
     }
 
     public int getTotalDailyInfections () {
@@ -172,6 +172,7 @@ public class DailyStats {
                 careHomeInfectionsWorker +
                 homeInfectionsInhabitant +
                 homeInfectionsVisitor +
+                transportInfections +
                 seedInfections;
     }
 
@@ -404,7 +405,11 @@ public class DailyStats {
     public void incHomeDeaths() { homeDeaths++; }
 
     public void incCareHomeDeaths() { careHomeDeaths++; }
+
+    public void incTransportInfections() { transportInfections++; }
     
+    public int getTransportInfections() { return transportInfections; }
+
     public void incAdditionalDeaths() { additionalDeaths++; }
     
     public int getAdditionalDeaths() { return additionalDeaths; }
@@ -414,4 +419,5 @@ public class DailyStats {
     public int getNewlyHospitalised() { return newlyHospitalised; }
 
     public int getNumInHospital() { return inHospital; }
+
 }

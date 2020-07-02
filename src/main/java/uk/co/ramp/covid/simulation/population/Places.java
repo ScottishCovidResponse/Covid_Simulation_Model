@@ -15,7 +15,8 @@ public class Places {
 
     private final ProbabilityDistribution<Office> offices;
     private final ProbabilityDistribution<ConstructionSite> constructionSites;
-    private final ProbabilityDistribution<Hospital> hospitals;
+    private final ProbabilityDistribution<Hospital> allHospitals;
+    private final ProbabilityDistribution<Hospital> nonCovidHospitals;
     private final ProbabilityDistribution<CovidHospital> covidHospitals;
     private final ProbabilityDistribution<Nursery> nurseries;
     private final ProbabilityDistribution<Restaurant> restaurants;
@@ -37,7 +38,8 @@ public class Places {
     public Places() {
         offices = new ProbabilityDistribution<>();
         constructionSites = new ProbabilityDistribution<>();
-        hospitals = new ProbabilityDistribution<>();
+        allHospitals = new ProbabilityDistribution<>();
+        nonCovidHospitals = new ProbabilityDistribution<>();
         covidHospitals = new ProbabilityDistribution<>();
         nurseries = new ProbabilityDistribution<>();
         restaurants = new ProbabilityDistribution<>();
@@ -56,7 +58,7 @@ public class Places {
     }
 
     public Hospital getRandomHospital() {
-        return hospitals.sample();
+        return allHospitals.sample();
     }
 
     public CovidHospital getRandomCovidHospital() {
@@ -81,6 +83,10 @@ public class Places {
 
     public CareHome getRandomCareHome() {
         return careHomes.sample();
+    }
+
+    public Hospital getRandomNonCovidHospital() {
+        return nonCovidHospitals.sample();
     }
     
     private <T extends CommunalPlace> T getNextWorkplace(ProbabilityDistribution<T> places,
@@ -124,7 +130,7 @@ public class Places {
     }
 
     public Hospital getNextHospitalJob() {
-        return getNextWorkplace(hospitals, () -> hospitalsUnallocated,
+        return getNextWorkplace(allHospitals, () -> hospitalsUnallocated,
                 o -> hospitalsUnallocated = o, this::getRandomHospital);
     }
 
@@ -164,6 +170,25 @@ public class Places {
         all.addAll(places);
 
         // In the case of 0 buildings we need to expand the probabilities to fill the distribution
+        createPlaceDistribution(finalDist, places, s, m, l);
+    }
+
+    private <T extends CommunalPlace> void createPlaceDistribution(ProbabilityDistribution<T> finalDist,
+                                                                   List<T> places) {
+        int s = 0, m = 0, l = 0;
+        for (T h : places) {
+            switch (h.getSize()) {
+                case SMALL:
+                    s++;
+                    break;
+                case MED:
+                    m++;
+                    break;
+                case LARGE:
+                    l++;
+                    break;
+            }
+        }
         createPlaceDistribution(finalDist, places, s, m, l);
     }
 
@@ -243,33 +268,22 @@ public class Places {
             }
         };
 
-        createNGeneric(cons, n, p, hospitals);
+        createNGeneric(cons, n, p, allHospitals);
 
-        // Add COVID hospitals to their own distribution as well
+        // Hospitals are also cached based on their type to allow easy access for appts/covid cases
         // Limited use of instanceof to ensure a safe cast
         List<CovidHospital> chospitals = new ArrayList<>();
-        for (Hospital h : getHospitals()) {
+        List<Hospital> nonCHospitals = new ArrayList<>();
+        for (Hospital h : getAllHospitals()) {
             if (h instanceof CovidHospital) {
                 chospitals.add((CovidHospital) h);
+            } else {
+                nonCHospitals.add(h);
             }
         }
 
-        int s = 0, m = 0, l = 0;
-        for (CovidHospital h : chospitals) {
-            switch (h.getSize()) {
-                case SMALL:
-                    s++;
-                    break;
-                case MED:
-                    m++;
-                    break;
-                case LARGE:
-                    l++;
-                    break;
-            }
-        }
-
-        createPlaceDistribution(covidHospitals, chospitals, s, m, l);
+        createPlaceDistribution(covidHospitals, chospitals);
+        createPlaceDistribution(nonCovidHospitals, nonCHospitals);
     }
 
     public void createNSchools(int n) {
@@ -319,12 +333,16 @@ public class Places {
         return constructionSites.toList();
     }
 
-    public List<Hospital> getHospitals() {
-        return hospitals.toList();
+    public List<Hospital> getAllHospitals() {
+        return allHospitals.toList();
     }
 
     public List<CovidHospital> getCovidHospitals() {
         return covidHospitals.toList();
+    }
+
+    public List<Hospital> getNonCovidHospitals() {
+        return nonCovidHospitals.toList();
     }
 
     public List<Nursery> getNurseries() {
@@ -346,4 +364,5 @@ public class Places {
     public List<CareHome> getCareHomes() {
         return careHomes.toList();
     }
+
 }

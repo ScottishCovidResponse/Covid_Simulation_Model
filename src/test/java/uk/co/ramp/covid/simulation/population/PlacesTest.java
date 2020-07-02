@@ -244,7 +244,7 @@ public class PlacesTest extends SimulationTest {
         p.createNHospitals(n);
 
         int s = 0, m = 0, l = 0;
-        for (Hospital o : p.getHospitals()) {
+        for (Hospital o : p.getAllHospitals()) {
             switch (o.getSize()) {
                 case SMALL: s++; break;
                 case MED: m++; break;
@@ -383,7 +383,7 @@ public class PlacesTest extends SimulationTest {
         assertEquals(n*7, p.getAllPlaces().size());
         assertTrue(p.getAllPlaces().containsAll(p.getOffices()));
         assertTrue(p.getAllPlaces().containsAll(p.getConstructionSites()));
-        assertTrue(p.getAllPlaces().containsAll(p.getHospitals()));
+        assertTrue(p.getAllPlaces().containsAll(p.getAllHospitals()));
         assertTrue(p.getAllPlaces().containsAll(p.getNurseries()));
         assertTrue(p.getAllPlaces().containsAll(p.getRestaurants()));
         assertTrue(p.getAllPlaces().containsAll(p.getSchools()));
@@ -419,7 +419,7 @@ public class PlacesTest extends SimulationTest {
         Places p = new Places();
         p.createNHospitals(n);
 
-        List<Hospital> hs = p.getHospitals();
+        List<Hospital> hs = p.getAllHospitals();
         assertEquals(n, hs.size());
         assertTrue(p.getAllPlaces().containsAll(hs));
     }

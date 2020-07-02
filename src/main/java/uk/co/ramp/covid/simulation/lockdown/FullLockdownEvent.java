@@ -7,17 +7,17 @@ import uk.co.ramp.covid.simulation.util.Time;
 
 public class FullLockdownComponent extends LockdownComponent {
     
-    private double sDist;
+    private double socialDistance;
 
-    public FullLockdownComponent(Time s, Time e, Population p, double sDist) {
+    public FullLockdownComponent(Time s, Time e, Population p, double socialDistance) {
         super(s, e, p);
-        this.sDist = sDist;
+        this.socialDistance = socialDistance;
     }
 
     @Override
     protected void start() {
         for (CommunalPlace cPlace : population.getPlaces().getAllPlaces()) {
-            cPlace.enterLockdown(sDist);
+            cPlace.enterLockdown(socialDistance);
         }
         
         for (Person p : population.getAllPeople()) {
@@ -34,11 +34,6 @@ public class FullLockdownComponent extends LockdownComponent {
         for (Person p : population.getAllPeople()) {
             p.unFurlough();
         }
-    }
-
-    @Override
-    protected void tick(Time t) {
-
     }
 
     @Override

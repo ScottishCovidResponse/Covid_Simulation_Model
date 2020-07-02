@@ -18,19 +18,20 @@
           "sdInfectiousDuration": 0.4,
           "phase1Betaa": 25.0,
           "phase1Betab": 30.0,
-          "aSymptomaticTransAdjustment": 0.15,
+          "aSymptomaticTransAdjustment": 0.5,
           "symptomaticTransAdjustment": 1.0,
-          "mortalityRate":0.025,
+          "caseMortalityRate":0.25,
           "childProgressionPhase2":0.01,
           "adultProgressionPhase2":0.2,
-          "pensionerProgressionPhase2":0.8
+          "pensionerProgressionPhase2":0.8,
+          "hospitalisedSurvive":0.25,
+          "hospitalisedDie":0.8
       },
       "infectionSeedProperties": {
-          "infectionRateIncreaseAdult":0.000002,
-          "infectionRateIncreaseInfantChildPensioner":0.000001
+          "infectionRateIncreaseAdult":0.000003,
+          "infectionRateIncreaseInfantChildPensioner":0.0000015
       },
       "hospitalisationParameters": {
-          "pPhase2GoesToHosptial":0.52,
           "hospitalisationTransmissionReduction":0.05
       },
       "careHomeParameters": {
@@ -164,15 +165,15 @@
             }
         },
         "buildingProperties":{
-           "baseTransmissionConstant":0.7,
-           "hospitalTransmissionConstant":10.0,
-           "constructionSiteTransmissionConstant":5.0,
-           "nurseryTransmissionConstant":10.0,
-           "officeTransmissionConstant":5.0,
-           "restaurantTransmissionConstant":10.0,
-           "schoolTransmissionConstant":30.0,
-           "shopTransmissionConstant":5.0,
-           "careHomeTransmissionConstant":5.0,
+           "baseTransmissionConstant":0.32,
+           "hospitalExpectedInteractionsPerHour":10.0,
+           "constructionSiteExpectedInteractionsPerHour":5.0,
+           "nurseryExpectedInteractionsPerHour":10.0,
+           "officeExpectedInteractionsPerHour":5.0,
+           "restaurantExpectedInteractionsPerHour":10.0,
+           "schoolExpectedInteractionsPerHour":30.0,
+           "shopExpectedInteractionsPerHour":5.0,
+           "careHomeExpectedInteractionsPerHour":5.0,
            "pHospitalKey":1.0,
            "pHospitalStaffWillFurlough":0.5,
             "pConstructionSiteKey":0.5,
@@ -209,11 +210,148 @@
           "pLockCompliance": 0.8
         },
         "personProperties":{
-            "pTransmission":0.7,
+            "pTransmission":0.32,
             "pSusceptibleChild": 0.5,
             "pQuarantinesIfSymptomatic":0.9,
             "symptomToQuarantineDelay": 12,
             "symptomToTestingDelay": 24
+        },
+        "publicTransportParameters": {
+            "expectedInteractions": 5.0,
+            "pFamilyTakesTransport": 0.2
+        },
+        "hospitalApptProperties": {
+          "dayCaseStartTime": 8,
+          "meanDayCaseTime": 8,
+          "SDDayCaseTime": 1,
+          "inPatientFirstStartTime": 1,
+          "inPatientLastStartTime": 23,
+          "outPatientFirstStartTime": 8,
+          "outPatientLastStartTime": 17,
+          "meanOutPatientTime": 2,
+          "lockdownApptDecreasePercentage": 0.75
+        },
+        "hospitalAppts": {
+          "f_0_9": {
+            "pOutPatient": 0.000401541756159,
+            "pDayCase": 4.54E-05,
+            "pInPatient": 6.16E-05,
+            "inPatientLengthDays": 2.73559539052497
+          },
+          "f_10_19": {
+            "pOutPatient": 0.000479670039136,
+            "pDayCase": 6.16E-05,
+            "pInPatient": 0.000125221133291,
+            "inPatientLengthDays": 2.17544416243655
+          },
+          "f_20_29": {
+            "pOutPatient": 0.000778868668611,
+            "pDayCase": 7.56E-05,
+            "pInPatient": 0.000223929306622,
+            "inPatientLengthDays": 1.72618562304661
+          },
+          "f_30_39": {
+            "pOutPatient": 0.00095664674423,
+            "pDayCase": 0.000119935225117,
+            "pInPatient": 0.000261225823052,
+            "inPatientLengthDays": 2.19782942078566
+          },
+          "f_40_49": {
+            "pOutPatient": 0.000950248621002,
+            "pDayCase": 0.000197216107055,
+            "pInPatient": 0.000333327397794,
+            "inPatientLengthDays": 2.53955014058107
+          },
+          "f_50_59": {
+            "pOutPatient": 0.001063642368321,
+            "pDayCase": 0.000308822270111,
+            "pInPatient": 0.00048941402856,
+            "inPatientLengthDays": 2.96244288420818
+          },
+          "f_60_69": {
+            "pOutPatient": 0.00115230647347,
+            "pDayCase": 0.000432419376772,
+            "pInPatient": 0.000732166548608,
+            "inPatientLengthDays": 3.66609683977084
+          },
+          "f_70_79": {
+            "pOutPatient": 0.001369547179473,
+            "pDayCase": 0.000577112373824,
+            "pInPatient": 0.001283355651979,
+            "inPatientLengthDays": 4.37807255762134
+          },
+          "f_80_89": {
+            "pOutPatient": 0.001431749830061,
+            "pDayCase": 0.000467551100777,
+            "pInPatient": 0.002366015924496,
+            "inPatientLengthDays": 5.85550215562937
+          },
+          "f_90_100": {
+            "pOutPatient": 0.00094706232489,
+            "pDayCase": 0.000214965707851,
+            "pInPatient": 0.003410258451716,
+            "inPatientLengthDays": 6.8627015008338
+          },
+          "m_0_9": {
+            "pOutPatient": 0.000485114278485,
+            "pDayCase": 6.11E-05,
+            "pInPatient": 7.75E-05,
+            "inPatientLengthDays": 2.96758587324625
+          },
+          "m_10_19": {
+            "pOutPatient": 0.000412902010942,
+            "pDayCase": 6.06E-05,
+            "pInPatient": 0.000101896744885,
+            "inPatientLengthDays": 1.86326378539493
+          },
+          "m_20_29": {
+            "pOutPatient": 0.000416086293651,
+            "pDayCase": 7.94E-05,
+            "pInPatient": 0.000181973561272,
+            "inPatientLengthDays": 1.79731075697211
+          },
+          "m_30_39": {
+            "pOutPatient": 0.000532341685228,
+            "pDayCase": 0.000117774145134,
+            "pInPatient": 0.000270600119176,
+            "inPatientLengthDays": 2.27237399905794
+          },
+          "m_40_49": {
+            "pOutPatient": 0.000618565765709,
+            "pDayCase": 0.000167590895749,
+            "pInPatient": 0.000368600804436,
+            "inPatientLengthDays": 2.62675993184468
+          },
+          "m_50_59": {
+            "pOutPatient": 0.000766824424817,
+            "pDayCase": 0.000283970458043,
+            "pInPatient": 0.000554193874955,
+            "inPatientLengthDays": 3.03248211394851
+          },
+          "m_60_69": {
+            "pOutPatient": 0.001041158658017,
+            "pDayCase": 0.000467358946161,
+            "pInPatient": 0.00092408462924,
+            "inPatientLengthDays": 3.55899676249171
+          },
+          "m_70_79": {
+            "pOutPatient": 0.001385113956109,
+            "pDayCase": 0.000653349745179,
+            "pInPatient": 0.001545275242064,
+            "inPatientLengthDays": 4.10105128377923
+          },
+          "m_80_89": {
+            "pOutPatient": 0.001610695770532,
+            "pDayCase": 0.000651909565844,
+            "pInPatient": 0.002740121899958,
+            "inPatientLengthDays": 5.25539880381683
+          },
+          "m_90_100": {
+            "pOutPatient": 0.001219404824793,
+            "pDayCase": 0.000385631273111,
+            "pInPatient": 0.004144215530903,
+            "inPatientLengthDays": 6.23815593796473
+          }
         }
     }
 }
