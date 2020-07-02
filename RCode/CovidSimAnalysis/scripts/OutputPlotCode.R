@@ -6,7 +6,7 @@ library(rio)
 
 healthboard <- "Lothian"
 
-datafile <- "exampledata/Lothian/out_25187310_20200624.csv"
+datafile <- "exampledata/Lothian/out_25617390_20200702.csv"
 
 cPop <- 910000
 lockdown <- 55
@@ -59,7 +59,7 @@ ggsave(paste(plotFile, "AllInfected.jpg", sep = "/"), basicInfectedAllPlot, heig
 
 
 #### Molten data frame
-baselineI <- aggregate.data.frame(baseline[,3:39] / cPop, by = list(day = baseline$day), median)
+baselineI <- aggregate.data.frame(baseline[,3:40] / cPop, by = list(day = baseline$day), median)
 baselineIMelt <- melt(baselineI, id.vars = "day")
 
 baselineIMelt$Infection[baselineIMelt$variable == "L"] <- "Latent"
@@ -82,13 +82,14 @@ ggsave(paste(plotFile, "InfectedType.jpg", sep = "/"), allInfPlot, height = 6, w
 # Site of infection v2 ----------------------------------------------------
 
 baselineSOIMelt <- melt(baseline, id.vars = c("iter", "day"))
-baselineSOIMelt$Status <- factor(NA, levels = c("Home", "Pupil", "Resident", "Worker", "Visitor"))
+baselineSOIMelt$Status <- factor(NA, levels = c("Home", "Pupil", "Resident", "Transport", "Worker", "Visitor"))
 baselineSOIMelt$Status[grepl("IHome_I", baselineSOIMelt$variable)] <- "Home"
 baselineSOIMelt$Status[grepl("_W", baselineSOIMelt$variable)] <- "Worker"
 baselineSOIMelt$Status[grepl("_V", baselineSOIMelt$variable)] <- "Visitor"
 baselineSOIMelt$Status[grepl("_R", baselineSOIMelt$variable)] <- "Resident"
 baselineSOIMelt$Status[grepl("INur_V", baselineSOIMelt$variable)] <- "Pupil"
 baselineSOIMelt$Status[grepl("ISch_V", baselineSOIMelt$variable)] <- "Pupil"
+baselineSOIMelt$Status[grepl("Transport", baselineSOIMelt$variable)] <- "Transport"
 
 baselineSOIRed <- baselineSOIMelt[!is.na(baselineSOIMelt$Status),]
 baselineSOIRedAgg <- aggregate(baselineSOIRed$value, by = list("iter" = baselineSOIRed$iter, "day" = baselineSOIRed$day, "Status" = baselineSOIRed$Status), sum)
@@ -120,6 +121,7 @@ baselineSOIAgg2$SiteR[grepl("Off", baselineSOIAgg2$Site)] <- "Office"
 baselineSOIAgg2$SiteR[grepl("Res", baselineSOIAgg2$Site)] <- "Restaurant"
 baselineSOIAgg2$SiteR[grepl("Sch", baselineSOIAgg2$Site)] <- "School"
 baselineSOIAgg2$SiteR[grepl("Sho", baselineSOIAgg2$Site)] <- "Shop"
+baselineSOIAgg2$SiteR[grepl("Transport", baselineSOIAgg2$Site)] <- "Travel"
 
 
 siteOfInfectionBarAll <- ggplot(baselineSOIAgg2, aes(x = SiteR, y = x / nIter / cPop, fill = Status)) + geom_bar(stat = "identity", position = "stack") + ylab("Proportion of population infected") + xlab("Site of infection") + theme(text = element_text(size = 16), axis.text.x = element_text(angle = 45, hjust = 1))
@@ -138,6 +140,7 @@ baselineSOIAgg2$SiteR[grepl("Off", baselineSOIAgg2$Site)] <- "Office"
 baselineSOIAgg2$SiteR[grepl("Res", baselineSOIAgg2$Site)] <- "Restaurant"
 baselineSOIAgg2$SiteR[grepl("Sch", baselineSOIAgg2$Site)] <- "School"
 baselineSOIAgg2$SiteR[grepl("Sho", baselineSOIAgg2$Site)] <- "Shop"
+baselineSOIAgg2$SiteR[grepl("Transport", baselineSOIAgg2$Site)] <- "Travel"
 
 
 siteOfInfectionBarPreLock <- ggplot(baselineSOIAgg2, aes(x = SiteR, y = x / nIter / cPop, fill = Status)) + 
