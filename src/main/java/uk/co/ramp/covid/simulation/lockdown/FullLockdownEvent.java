@@ -29,8 +29,8 @@ public class FullLockdownEvent extends LockdownEvent {
         }
 
         for (Household h : population.getHouseholds()) {
-            // TODO: This should be settable
-            h.setLockdownShopVisitFrequencyAdjustment(0.5);
+            h.setLockdownShopVisitFrequencyAdjustment(
+                    PopulationParameters.get().householdProperties.lockdownShoppingProbabilityAdjustment);
             h.setLockdownRestaurantVisitFrequencyAdjustment(0.0);
             // Note: Only applies to those that are lockdown compliant
             h.setLockdownNeighbourVisitFrequencyAdjustment(0.0);
