@@ -2,7 +2,6 @@ package uk.co.ramp.covid.simulation.lockdown;
 
 import com.google.gson.*;
 import uk.co.ramp.covid.simulation.lockdown.easingevents.*;
-import uk.co.ramp.covid.simulation.place.Shop;
 
 import java.lang.reflect.Type;
 import java.util.HashMap;

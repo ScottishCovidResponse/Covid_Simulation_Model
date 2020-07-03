@@ -269,8 +269,8 @@ public class HospitalTest extends SimulationTest {
         PopulationParameters.get().hospitalApptProperties.lockdownApptDecreasePercentage = lockdownAdjust;
         Population pop = PopulationGenerator.genValidPopulation(populationSize);
         pop.seedVirus(nInfections);
-        
-        // pop.setLockdown(15, 30, 1.0);
+
+        pop.getLockdownController().addComponent(new FullLockdownEvent(Time.timeFromDay(15), pop, 1.0));
 
         final int[] hospitalApptsBeforeLockdown = {0};
         final int[] hospitalApptsInLockdown = {0};
@@ -278,7 +278,7 @@ public class HospitalTest extends SimulationTest {
             for (Hospital h : pop.getPlaces().getAllHospitals()) {
                 for (Person p : h.getPeople()) {
                     if (h.isPatient(p, time)) {
-                        if (population.getLockdownController().inLockdown(time)) {
+                        if (time.getAbsDay() >= 15) {
                             hospitalApptsInLockdown[0]++;
                         } else {
                             hospitalApptsBeforeLockdown[0]++;
@@ -290,11 +290,11 @@ public class HospitalTest extends SimulationTest {
 
         pop.simulate(28);
 
-        assertTrue("Expected: " + hospitalApptsInLockdown + " < " + hospitalApptsBeforeLockdown[0],
+        assertTrue("Expected: " + hospitalApptsInLockdown[0] + " < " + hospitalApptsBeforeLockdown[0],
                 hospitalApptsInLockdown[0] < hospitalApptsBeforeLockdown[0]);
 
         // The reduction is 75% but we check for > 50% reduction just to give some padding for the randomness
-        assertTrue("Expected:" + hospitalApptsInLockdown + " < " + hospitalApptsBeforeLockdown[0] * 0.5,
+        assertTrue("Expected:" + hospitalApptsInLockdown[0] + " < " + hospitalApptsBeforeLockdown[0] * 0.5,
                 hospitalApptsInLockdown[0] < hospitalApptsBeforeLockdown[0] * 0.5);
 
     }

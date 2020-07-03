@@ -42,6 +42,9 @@ public class Population {
 
     private final RandomDataGenerator rng;
     private Integer externalInfectionDays = 0;
+    
+    private boolean rPrinted = false;
+    private boolean shouldPrintR = false;
 
     // Hook to make it easier to test properties after each hour
     private BiConsumer<Population, Time> postHourHook;
@@ -375,9 +378,7 @@ public class Population {
     public List<DailyStats> simulateFromTime(Time startTime, int nDays, ContactsWriter contactsWriter) {
         List<DailyStats> stats = new ArrayList<>(nDays);
         Time t = startTime;
-
-        boolean rprinted = false;
-
+        
         // To ensure we disallow neighbour visits on day 0 if required, we need to implement
         // lockdown first here (events are popped once they are done so this only happens once on day 0)
         lockdownController.implementLockdown(t);
@@ -393,7 +394,7 @@ public class Population {
                 seedInfections(t, dStats);
             }
 
-            LOGGER.info("Day = {}, Lockdown = {}", t.getAbsDay(), lockdownController.inLockdown(t));
+            LOGGER.info("Day = {}", t.getAbsDay());
             for (int k = 0; k < 24; k++) {
                 timeStep(t, dStats, contactsWriter);
                 t = t.advance();
@@ -403,13 +404,15 @@ public class Population {
 
             // At the end of each day we also determine possible hospital visits for the next day
             for (Person p : allPeople) {
-                p.deteremineHospitalVisits(t, lockdownController.inLockdown(t), places);
+                p.deteremineHospitalVisits(t, places);
             }
 
             stats.add(this.processCases(dStats));
 
-            if (!rprinted) {
-                rprinted = handleR(dStats, t.getAbsDay());
+            if (!rPrinted) {
+                if (shouldPrintR || dStats.getRecovered() >= populationSize * 0.05) {
+                    printR(dStats, t.getAbsDay());
+                }
             }
 
         }
@@ -432,13 +435,12 @@ public class Population {
     }
 
     /** Log the R value for the first 5% of recoveries or lockdown */
-    private boolean handleR(DailyStats s, int absDay) {
-        if (s.getRecovered() >= populationSize * 0.05 || lockdownController.inLockdown(Time.timeFromDay(absDay))) {
+    private void printR(DailyStats s, int absDay) {
+        if (s.getRecovered() >= populationSize * 0.05) {
             RStats rs = new RStats(this);
             LOGGER.info("R0 in initial stage: " + rs.getMeanRBefore(absDay));
-            return true;
+            rPrinted = true;
         }
-        return false;
     }
 
     // This method generates output at the end of each day
@@ -490,5 +492,9 @@ public class Population {
 
     public void setPostHourHook(BiConsumer<Population, Time> postHourHook) {
         this.postHourHook = postHourHook;
+    }
+    
+    public void setShouldPrintR() {
+        shouldPrintR = true;
     }
 }

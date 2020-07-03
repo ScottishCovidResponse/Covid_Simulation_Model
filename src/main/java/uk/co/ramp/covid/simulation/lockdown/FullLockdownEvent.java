@@ -1,5 +1,6 @@
 package uk.co.ramp.covid.simulation.lockdown;
 
+import uk.co.ramp.covid.simulation.parameters.PopulationParameters;
 import uk.co.ramp.covid.simulation.place.CommunalPlace;
 import uk.co.ramp.covid.simulation.place.Household;
 import uk.co.ramp.covid.simulation.population.Person;
@@ -23,6 +24,8 @@ public class FullLockdownEvent extends LockdownEvent {
         
         for (Person p : population.getAllPeople()) {
             p.furlough();
+            p.setLockdownHospitalApptAdjustment(
+                    PopulationParameters.get().hospitalApptProperties.lockdownApptDecreasePercentage);
         }
 
         for (Household h : population.getHouseholds()) {
@@ -32,6 +35,9 @@ public class FullLockdownEvent extends LockdownEvent {
             // Note: Only applies to those that are lockdown compliant
             h.setLockdownNeighbourVisitFrequencyAdjustment(0.0);
         }
+
+        // Log initial R if needed
+        population.setShouldPrintR();
     }
 
 

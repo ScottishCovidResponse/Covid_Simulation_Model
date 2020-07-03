@@ -54,6 +54,8 @@ public abstract class Person {
     private boolean moved = false;
     private Transport transport = null;
 
+    private double lockdownHospitalApptAdjustment = 0.0;
+
     public abstract void reportInfection(DailyStats s);
     public abstract void reportDeath (DailyStats s);
     public abstract void allocateCommunalPlace(Places p);
@@ -366,19 +368,15 @@ public abstract class Person {
 
     // We can't determine this in household in case the person is working nightshift
     // Time is always the start of a day
-    public void deteremineHospitalVisits(Time t, boolean lockdown, Places places) {
+    public void deteremineHospitalVisits(Time t, Places places) {
         HospitalApptInfo info = PopulationParameters.get().hospitalAppsParams().getParams(sex, age);
         
         // Appts might be across days so don't regenerate if we already have one
         if (hasHospitalAppt() && !getHospitalAppt().isOver(t)) {
             return;
         }
-
-        double lockdownAdjust = 1.0;
-        if (lockdown) {
-            double decreaseP = PopulationParameters.get().hospitalApptProperties.lockdownApptDecreasePercentage;
-            lockdownAdjust = lockdownAdjust - decreaseP;
-        }
+       
+        double lockdownAdjust = 1.0 - lockdownHospitalApptAdjustment;
 
         if (new Probability(info.pInPatient.asDouble() * lockdownAdjust).sample()) {
             
@@ -454,5 +452,9 @@ public abstract class Person {
 
     public void unFurlough() {
         furloughed = false;
+    }
+
+    public void setLockdownHospitalApptAdjustment(double lockdownHospitalApptAdjustment) {
+        this.lockdownHospitalApptAdjustment = lockdownHospitalApptAdjustment;
     }
 }

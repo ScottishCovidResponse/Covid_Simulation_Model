@@ -35,9 +35,4 @@ public class LockdownController {
         }
         events.removeAll(finished);
     }
-
-    public boolean inLockdown(Time t) {
-        // TODO: this will be propogated insde the classes to we don't pass this around.
-       return false;
-    }
 }
