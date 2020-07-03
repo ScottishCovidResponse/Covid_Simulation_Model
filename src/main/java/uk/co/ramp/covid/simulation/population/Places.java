@@ -34,8 +34,6 @@ public class Places {
     private boolean schoolsUnallocated = false;
     private boolean shopsUnallocated = false;
     private boolean careHomeUnallocated = false;
-    
-    private Map<String, Supplier<List<? extends CommunalPlace>>> placeMap;
 
     private final List<CommunalPlace> all;
 
@@ -51,18 +49,6 @@ public class Places {
         shops = new ProbabilityDistribution<>();
         careHomes = new ProbabilityDistribution<>();
         all = new ArrayList<>();
-        createPlaceMap();
-    }
-    
-    private void createPlaceMap() {
-        placeMap = new HashMap<>();
-        placeMap.put("ConstructionSites", () -> getConstructionSites());
-        placeMap.put("Hospitals", () -> getNonCovidHospitals());
-        placeMap.put("COVIDHospitals", () -> getCovidHospitals());
-        placeMap.put("Nurseries", () -> getNurseries());
-        placeMap.put("Restaurants", () -> getRestaurants());
-        placeMap.put("Schools", () -> getSchools());
-        placeMap.put("CareHomes", () -> getCareHomes());
     }
 
     public Office getRandomOffice() {
@@ -381,11 +367,4 @@ public class Places {
         return careHomes.toList();
     }
 
-    public List<? extends CommunalPlace> getByName(String placeType) {
-        Supplier<List<? extends CommunalPlace>> f = placeMap.get(placeType);
-        if (f != null) {
-            return f.get();
-        }
-        return null;
-    }
 }
