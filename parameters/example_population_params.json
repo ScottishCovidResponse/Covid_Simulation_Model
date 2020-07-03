@@ -28,8 +28,8 @@
           "hospitalisedDie":0.8
       },
       "infectionSeedProperties": {
-          "InitialSeedAdult":0.0000005,
-          "InitialSeedInfantChildPensioner":0.00000025,
+          "InitialSeedAdult":0.000001,
+          "InitialSeedInfantChildPensioner":0.0000005,
           "rateIncreaseSeed":1.1
       },
       "hospitalisationParameters": {
