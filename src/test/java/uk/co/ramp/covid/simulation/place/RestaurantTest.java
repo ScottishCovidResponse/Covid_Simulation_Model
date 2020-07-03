@@ -50,7 +50,7 @@ public class RestaurantTest extends SimulationTest {
     public void testSendHome() {
         PopulationParameters.get().buildingProperties.pLeaveRestaurant = new Probability(1.0);
         int time = restaurant.times.getClose() - 1;
-        restaurant.determineMovement(new Time(time), new DailyStats(new Time(time)), false, null);
+        restaurant.determineMovement(new Time(time), new DailyStats(new Time(time)), null);
         restaurant.commitMovement();
         int expPeople = 0;
         assertEquals("Unexpected people left in restaurant", expPeople, restaurant.getNumPeople());

@@ -125,7 +125,7 @@ public class CareHomeTest extends SimulationTest {
         CareHome ch = new CareHome(CommunalPlace.Size.MED);
         ch.addPerson(new Pensioner(80, FEMALE));
         ch.addPerson(new Pensioner(85, MALE));
-        ch.determineMovement(time, new DailyStats(time), false, null);
+        ch.determineMovement(time, new DailyStats(time), null);
         ch.commitMovement();
         int expPeople = 2;
         assertEquals("People Unexpectedly left the care home", expPeople, ch.getNumPeople());

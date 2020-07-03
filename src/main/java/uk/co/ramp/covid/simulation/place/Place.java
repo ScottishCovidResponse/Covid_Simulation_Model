@@ -224,8 +224,12 @@ public abstract class Place {
             }
         }
     }
+    
+    public void setSocialDistancing(double sdist) {
+        sDistance = sdist;
+    }
 
 
     /** Handles movement between people in this place */
-    public abstract void determineMovement(Time t, DailyStats s, boolean lockdown, Places places);
+    public abstract void determineMovement(Time t, DailyStats s, Places places);
 }

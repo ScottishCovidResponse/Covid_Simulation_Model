@@ -23,6 +23,10 @@ public class Probability {
         }
         this.p = p;
     }
+
+    public Probability adjust(double adj) {
+       return new Probability(p * adj);
+    }
     
     public boolean sample() {
         return RNG.get().nextUniform(0.0,1.0) < p;

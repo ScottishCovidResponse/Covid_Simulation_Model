@@ -65,7 +65,7 @@ public class NurseryTest extends SimulationTest {
         nursery.addPerson(new Infant(1, FEMALE));
         nursery.addPerson(new Infant(2, MALE));
         int time = nursery.times.getClose() - 1;
-        nursery.determineMovement(new Time(time), new DailyStats(new Time(time)), false, null);
+        nursery.determineMovement(new Time(time), new DailyStats(new Time(time)), null);
         nursery.commitMovement();
         int expPeople = 0;
         assertEquals("Unexpected infants left in nursery", expPeople, nursery.getNumPeople());

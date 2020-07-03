@@ -62,9 +62,9 @@ public class Restaurant extends CommunalPlace {
     }
 
     @Override
-    public void determineMovement(Time t, DailyStats s, boolean lockdown, Places places) {
+    public void determineMovement(Time t, DailyStats s, Places places) {
         movePhase2(t, s, places);
-        moveShifts(t, lockdown);
+        moveShifts(t);
         moveVisitors(t, PopulationParameters.get().buildingProperties.pLeaveRestaurant);
     }
 
