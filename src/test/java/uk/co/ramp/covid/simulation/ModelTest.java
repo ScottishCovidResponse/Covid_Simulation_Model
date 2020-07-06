@@ -8,7 +8,6 @@ import uk.co.ramp.covid.simulation.lockdown.FullLockdownEvent;
 import uk.co.ramp.covid.simulation.output.DailyStats;
 import uk.co.ramp.covid.simulation.parameters.CovidParameters;
 import uk.co.ramp.covid.simulation.parameters.ParameterIO;
-import uk.co.ramp.covid.simulation.testutil.SimulationTest;
 import uk.co.ramp.covid.simulation.util.Time;
 
 import java.io.IOException;
@@ -19,13 +18,13 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-public class ModelTest extends SimulationTest {
+public class ModelTest {
 
-    private static int population = 10000;
-    private static int nInfections = 150;
-    private static int nIter = 1;
-    private static int nDays = 60;
-    private static int RNG = 402;
+    private static final int population = 10000;
+    private static final int nInfections = 150;
+    private static final int nIter = 1;
+    private static final int nDays = 60;
+    private static final int testSeed = 402;
 
     // To avoid recomputes
     private static List<List<DailyStats>> cachedStats = null;
@@ -42,7 +41,7 @@ public class ModelTest extends SimulationTest {
                 .setExternalInfectionDays(0)
                 .setIters(nIter)
                 .setnDays(nDays)
-                .setRNGSeed(RNG)
+                .setRNGSeed(testSeed)
                 .setNoOutput();
 
         cachedStats = cachedRun.run(0);
@@ -115,7 +114,7 @@ public class ModelTest extends SimulationTest {
                 .setExternalInfectionDays(0)
                 .setIters(nIter)
                 .setnDays(nDays)
-                .setRNGSeed(RNG)
+                .setRNGSeed(testSeed)
                 .setNoOutput();
 
         List<List<DailyStats>> run2res = repeatRun.run(0);
@@ -165,7 +164,7 @@ public class ModelTest extends SimulationTest {
                 .setIters(nIter)
                 .setnDays(nDays)
                 .setNoOutput()
-                .setRNGSeed(RNG)
+                .setRNGSeed(testSeed)
                 .addLockdownEvent(new FullLockdownEvent(Time.timeFromDay(startLock), null,2.0));
 
         List<List<DailyStats>> stats2 = m2.run(0);

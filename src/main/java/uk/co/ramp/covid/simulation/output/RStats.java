@@ -51,7 +51,7 @@ public class RStats {
     /** Returns the mean R between two days */
     public Double getMeanRBetween(int startDay, int endDay) {
         rflag = true;
-        return getMeanRGeneric(endDay, (a, b) -> a.compareTo(startDay) > 0 && a.compareTo(b) <= 0);
+        return getMeanRGeneric(endDay, (a, b) -> a.compareTo(startDay) >= 0 && a.compareTo(b) <= 0);
     }
 
     /** Returns the mean generation time for a given day */
