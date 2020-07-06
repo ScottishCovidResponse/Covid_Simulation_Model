@@ -68,7 +68,6 @@ public class ParameterIOTest {
         assertEquals(0.144, PopulationParameters.get().householdProperties.householdVisitsNeighbourDaily, EPSILON);
         assertEquals(2, (int) PopulationParameters.get().householdProperties.expectedNeighbours);
 
-        assertEqualsP(0.9, PopulationParameters.get().personProperties.pTransmission);
         assertEqualsP(0.7, PopulationParameters.get().personProperties.pQuarantinesIfSymptomatic);
 
         assertEqualsP(0.8, PopulationParameters.get().householdProperties.pVisitorsLeaveHousehold);
