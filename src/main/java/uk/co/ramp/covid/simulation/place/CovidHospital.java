@@ -11,14 +11,16 @@ public class CovidHospital extends Hospital {
     @Override
     public void movePatients(Time t) {
         for (Person p : getPeople()) {
-            if (p.hasMoved() || p.isWorking(this, t)) {
+            if (p.hasMoved()) {
                 continue;
             }
 
             if (p.isHospitalised()) {
                 p.stayInPlace(this);
             } else {
-                p.returnHome(this);
+                if (!p.isWorking(this, t)) {
+                    p.returnHome(this);
+                }
             }
         }
     }

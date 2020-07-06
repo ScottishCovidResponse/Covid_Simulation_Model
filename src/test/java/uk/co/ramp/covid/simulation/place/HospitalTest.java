@@ -275,14 +275,12 @@ public class HospitalTest extends SimulationTest {
         final int[] hospitalApptsBeforeLockdown = {0};
         final int[] hospitalApptsInLockdown = {0};
         pop.setPostHourHook((population, time) -> {
-            for (Hospital h : pop.getPlaces().getAllHospitals()) {
-                for (Person p : h.getPeople()) {
-                    if (h.isPatient(p, time)) {
-                        if (time.getAbsDay() >= 15) {
-                            hospitalApptsInLockdown[0]++;
-                        } else {
-                            hospitalApptsBeforeLockdown[0]++;
-                        }
+            for (Person p : population.getAllPeople()) {
+                if (p.hasHospitalAppt()) {
+                    if (time.getAbsDay() >= 15) {
+                        hospitalApptsInLockdown[0]++;
+                    } else {
+                        hospitalApptsBeforeLockdown[0]++;
                     }
                 }
             }
