@@ -34,7 +34,6 @@ public abstract class Person {
     private Home home;
     private boolean recovered;
     private Covid cVirus;
-    private final double transmissionProb;
     
     private boolean isQuarantined;
     private boolean willQuarantine;
@@ -70,7 +69,6 @@ public abstract class Person {
         this.age = age;
         this.sex = sex;
         this.rng = RNG.get();
-        this.transmissionProb = PopulationParameters.get().personProperties.pTransmission.asDouble();
         this.willQuarantine = PopulationParameters.get().personProperties.pQuarantinesIfSymptomatic.sample();
         this.personId = nPeople++;
         
@@ -338,7 +336,7 @@ public abstract class Person {
     }
 
     public void seedInfectionChallenge(Time t, DailyStats s) {
-        Probability infectionChance = new Probability(getInfectionSeedRate() * t.getAbsDay() * this.covidSusceptibleVal);
+        Probability infectionChance = new Probability(getInfectionSeedInitial() * Math.pow(getInfectionSeedRate(), t.getAbsDay()) * this.covidSusceptibleVal);
         if (infectionChance.sample()) {
             cVirus = new Covid(this);
             cVirus.getInfectionLog().registerInfected(t);
@@ -358,7 +356,7 @@ public abstract class Person {
         transport = t;
     }
 
-    protected abstract double getInfectionSeedRate();
+    protected abstract double getInfectionSeedInitial();
     
     public void forceFurlough() {
         furloughed = true;
@@ -452,6 +450,10 @@ public abstract class Person {
 
     public void unFurlough() {
         furloughed = false;
+    }
+   
+    public double getInfectionSeedRate() {
+        return CovidParameters.get().infectionSeedProperties.rateIncreaseSeed;
     }
 
     public void setLockdownHospitalApptAdjustment(double lockdownHospitalApptAdjustment) {
