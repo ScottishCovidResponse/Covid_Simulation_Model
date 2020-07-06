@@ -37,8 +37,8 @@ public class Model {
     private String outputDirectory = null;
     private String networkOutputDir = null;
     
-    private List<LockdownEvent> lockdownEvents = null;
-    private List<LockdownEventGenerator> lockdownGenerators = null;
+    private List<LockdownEvent> lockdownEvents = new ArrayList<>();
+    private List<LockdownEventGenerator> lockdownGenerators = new ArrayList<>();
 
     public Model() {}
 
@@ -79,17 +79,11 @@ public class Model {
     }
     
     public Model addLockdownEvent(LockdownEvent e) {
-        if (lockdownEvents == null) {
-            lockdownEvents = new ArrayList<>();
-        }
         lockdownEvents.add(e);
         return this;
     }
 
     public Model addLockdownGenerator(LockdownEventGenerator e) {
-        if (lockdownGenerators == null) {
-            lockdownGenerators = new ArrayList<>();
-        }
         lockdownGenerators.add(e);
         return this;
     }

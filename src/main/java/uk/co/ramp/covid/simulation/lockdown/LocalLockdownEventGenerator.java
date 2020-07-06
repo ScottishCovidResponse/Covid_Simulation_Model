@@ -46,7 +46,7 @@ public class LocalLockdownEventGenerator extends LockdownEventGenerator {
         int newCases = infected - prevInfected;
         prevInfected = infected;
 
-        // We need to skipt the first day check so we can get the *new* cases
+        // We need to skip the first day the generator is active so we only respond to *new* cases
         if (gotInitialInfections) {
             if ((double) newCases / population.getAllPeople().size() >= newCasesThreshold) {
                 LOGGER.info("New cases threshold breached. Applying lockdown");
@@ -67,8 +67,7 @@ public class LocalLockdownEventGenerator extends LockdownEventGenerator {
             return events;
         }
 
-        events = handleHospitalisedLockdown(now);
-        return events;
+        return handleHospitalisedLockdown(now);
     }
 
     private List<LockdownEvent> handleHospitalisedLockdown(Time now) {
