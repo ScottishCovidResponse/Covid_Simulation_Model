@@ -1,9 +1,11 @@
 package uk.co.ramp.covid.simulation.place;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.google.gson.JsonParseException;
 
+import uk.co.ramp.covid.simulation.lockdown.FullLockdownEvent;
 import uk.co.ramp.covid.simulation.output.DailyStats;
 import uk.co.ramp.covid.simulation.util.Time;
 import uk.co.ramp.covid.simulation.parameters.CovidParameters;
@@ -194,7 +196,7 @@ public class HospitalTest extends SimulationTest {
             hospitalWorkersPreLockdown.addAll(h.getStaff(Time.timeFromDay(1)));
         }
         
-        pop.getLockdownController().setLockdown(Time.timeFromDay(2), Time.timeFromDay(4), 1.0);
+        pop.getLockdownController().addComponent(new FullLockdownEvent(Time.timeFromDay(2), pop,1.0));
         
         Set<Person> hospitalWorkersInLockdown = new HashSet<>();
         pop.simulateFromTime(Time.timeFromDay(1), 2);
@@ -217,7 +219,7 @@ public class HospitalTest extends SimulationTest {
         adult2.setHome(h);
         hospital.addPerson(adult1);
         hospital.addPerson(adult2);
-        hospital.determineMovement(new Time(0), new DailyStats(new Time(0)), false, null);
+        hospital.determineMovement(new Time(0), new DailyStats(new Time(0)), null);
         hospital.commitMovement();
         int expPeople = 0;
         assertEquals("Unexpected people left in hospital", expPeople, hospital.getNumPeople());
@@ -267,8 +269,8 @@ public class HospitalTest extends SimulationTest {
         PopulationParameters.get().hospitalApptProperties.lockdownApptDecreasePercentage = lockdownAdjust;
         Population pop = PopulationGenerator.genValidPopulation(populationSize);
         pop.seedVirus(nInfections);
-        
-        pop.setLockdown(15, 30, 1.0);
+
+        pop.getLockdownController().addComponent(new FullLockdownEvent(Time.timeFromDay(15), pop, 1.0));
 
         final int[] hospitalApptsBeforeLockdown = {0};
         final int[] hospitalApptsInLockdown = {0};
@@ -276,7 +278,7 @@ public class HospitalTest extends SimulationTest {
             for (Hospital h : pop.getPlaces().getAllHospitals()) {
                 for (Person p : h.getPeople()) {
                     if (h.isPatient(p, time)) {
-                        if (population.getLockdownController().inLockdown(time)) {
+                        if (time.getAbsDay() >= 15) {
                             hospitalApptsInLockdown[0]++;
                         } else {
                             hospitalApptsBeforeLockdown[0]++;
@@ -288,11 +290,11 @@ public class HospitalTest extends SimulationTest {
 
         pop.simulate(28);
 
-        assertTrue("Expected: " + hospitalApptsInLockdown + " < " + hospitalApptsBeforeLockdown[0],
+        assertTrue("Expected: " + hospitalApptsInLockdown[0] + " < " + hospitalApptsBeforeLockdown[0],
                 hospitalApptsInLockdown[0] < hospitalApptsBeforeLockdown[0]);
 
         // The reduction is 75% but we check for > 50% reduction just to give some padding for the randomness
-        assertTrue("Expected:" + hospitalApptsInLockdown + " < " + hospitalApptsBeforeLockdown[0] * 0.5,
+        assertTrue("Expected:" + hospitalApptsInLockdown[0] + " < " + hospitalApptsBeforeLockdown[0] * 0.5,
                 hospitalApptsInLockdown[0] < hospitalApptsBeforeLockdown[0] * 0.5);
 
     }

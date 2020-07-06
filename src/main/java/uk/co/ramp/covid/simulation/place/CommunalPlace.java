@@ -54,6 +54,9 @@ public abstract class CommunalPlace extends Place {
 
     public void overrideKeyPremises(boolean key) {
         keyPremises = key;
+        if (keyPremises && closed) {
+            closed = false;
+        }
     }
 
     public Size getSize() {
@@ -65,7 +68,7 @@ public abstract class CommunalPlace extends Place {
 
     /** Move everyone based on their shift patterns */
     // Everone who has been hospitalised (and their families) will have left at this point
-    public void moveShifts(Time t, boolean lockdown, Function<Person, Boolean> filter) {
+    public void moveShifts(Time t, Function<Person, Boolean> filter) {
         for (Person p : getPeople() ) {
             if (p.hasMoved() || filter.apply(p) || !p.isWorking(this, t)) {
                 continue;
@@ -79,8 +82,8 @@ public abstract class CommunalPlace extends Place {
         }
     }
     
-    public void moveShifts(Time t, boolean lockdown) {
-        moveShifts(t, lockdown, p -> false);
+    public void moveShifts(Time t) {
+        moveShifts(t, p -> false);
     }
 
     /** Moves Phase2 people to either hospital or back home */
@@ -170,9 +173,9 @@ public abstract class CommunalPlace extends Place {
     }
 
     @Override
-    public void determineMovement(Time t, DailyStats s, boolean lockdown, Places places) {
+    public void determineMovement(Time t, DailyStats s, Places places) {
         movePhase2(t, s, places);
-        moveShifts(t, lockdown);
+        moveShifts(t);
     }
 
     public boolean isKeyPremises() {
@@ -201,5 +204,17 @@ public abstract class CommunalPlace extends Place {
     public void exitLockdown() {
         sDistance = 1.0;
         closed = false;
+    }
+    
+    public void close() {
+        closed = true;
+    }
+    
+    public void open() {
+        closed = false;
+    }
+    
+    public boolean isClosed() {
+        return closed;
     }
 }

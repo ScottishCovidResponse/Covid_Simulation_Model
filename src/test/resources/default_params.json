@@ -205,6 +205,7 @@
           "pNeighbourFromSameGroup":0.6,
           "pNeighbourFromOtherGroup":0.2,
           "pGoShopping":0.071,
+          "lockdownShoppingProbabilityAdjustment": 0.5,
           "pGoRestaurant": 0.071,
           "pWillIsolate": 0.5,
           "householdIsolationPeriod": 14,
