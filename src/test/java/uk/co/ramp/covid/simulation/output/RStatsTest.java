@@ -48,8 +48,8 @@ public class RStatsTest extends SimulationTest {
 
     @Test
     public void testMeanRWithLockdown() {
-        int startLock = 30;
-        int nDays = 60;
+        int startLock = 20;
+        int nDays = 40;
         pop.seedVirus(10);
         pop.getLockdownController().addComponent(
                 new FullLockdownEvent(Time.timeFromDay(startLock), pop, 2.0));

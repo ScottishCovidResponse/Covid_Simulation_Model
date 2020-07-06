@@ -260,9 +260,9 @@ public class HospitalTest extends SimulationTest {
 
     @Test
     public void hospitalApptsDecreaseDuringLockdown() {
-        int populationSize = 20000;
+        int populationSize = 10000;
         int nInfections = 100;
-        double lockdownAdjust = 0.75;
+        double lockdownAdjust = 0.90;
 
         // Need to force some non-covid hospitals
         PopulationParameters.get().buildingDistribution.populationToHospitalsRatio = 3000;
