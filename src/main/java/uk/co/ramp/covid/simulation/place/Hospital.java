@@ -59,14 +59,16 @@ public class Hospital extends CommunalPlace {
 
     public void movePatients(Time t) {
         for (Person p : getPeople()) {
-            if (p.hasMoved() || p.worksNextHour(this, t)) {
+            if (p.hasMoved()) {
                 continue;
             }
 
             if (isPatient(p, t.advance())) {
                 p.stayInPlace(this);
             } else {
-                p.returnHome(this);
+                if (!p.worksNextHour(this, t)) {
+                    p.returnHome(this);
+                }
             }
         }
     }
@@ -74,8 +76,8 @@ public class Hospital extends CommunalPlace {
     @Override
     public void determineMovement(Time t, DailyStats s, Places places) {
         movePhase2(t, s, places, Person::isHospitalised);
-        moveShifts(t, p -> p.isHospitalised() || isPatient(p, t));
         movePatients(t);
+        moveShifts(t);
     }
 
     @Override
