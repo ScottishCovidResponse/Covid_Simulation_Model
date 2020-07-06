@@ -65,7 +65,7 @@ public class OfficeTest extends SimulationTest {
         office.addPerson(new Adult(30, FEMALE));
         office.addPerson(new Adult(35, MALE));
         int time = office.times.getClose() - 1;
-        office.determineMovement(new Time(time), new DailyStats(new Time(time)), false, null);
+        office.determineMovement(new Time(time), new DailyStats(new Time(time)), null);
         office.commitMovement();
         int expPeople = 0;
         assertEquals("Unexpected people left in office", expPeople, office.getNumPeople());

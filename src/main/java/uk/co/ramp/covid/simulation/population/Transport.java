@@ -23,7 +23,7 @@ public class Transport extends Place {
 
     // No-one "leaves" public transport in the usual manner since they are already going elsewhere
     @Override
-    public void determineMovement(Time t, DailyStats s, boolean lockdown, Places places) { }
+    public void determineMovement(Time t, DailyStats s, Places places) { }
 
     @Override
     protected double getTransConstant() {

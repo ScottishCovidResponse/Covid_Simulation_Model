@@ -1,10 +1,15 @@
 package uk.co.ramp.covid.simulation.output;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
+import uk.co.ramp.covid.simulation.lockdown.FullLockdownEvent;
 import uk.co.ramp.covid.simulation.population.Population;
 import uk.co.ramp.covid.simulation.util.PopulationGenerator;
 import uk.co.ramp.covid.simulation.testutil.SimulationTest;
+import uk.co.ramp.covid.simulation.util.Time;
+
+import java.sql.Timestamp;
 
 import static org.junit.Assert.*;
 
@@ -41,14 +46,15 @@ public class RStatsTest extends SimulationTest {
         assertTrue("Mean generation time unexpectedly = 0", rs.getMeanGenerationTime(0) > 0);
     }
 
+    @Test
     public void testMeanRWithLockdown() {
         int populationSize = 50000;
         pop = PopulationGenerator.genValidPopulation(populationSize);
         int startLock = 30;
-        int endLock = 90;
         int nDays = 90;
         pop.seedVirus(10);
-        pop.setLockdown(startLock, endLock, 2.0);
+        pop.getLockdownController().addComponent(
+                new FullLockdownEvent(Time.timeFromDay(startLock), pop, 2.0));
         pop.simulate(nDays);
         RStats rs = new RStats(pop);
         double peakR = 0.0;

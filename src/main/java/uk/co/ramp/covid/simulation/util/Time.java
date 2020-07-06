@@ -1,5 +1,6 @@
 package uk.co.ramp.covid.simulation.util;
 
+import com.google.gson.*;
 import java.util.Objects;
 
 /** Time tracks the current simulation time */
@@ -63,4 +64,8 @@ public class Time implements Comparable<Time> {
         return Integer.compare(getAbsTime(), t.getAbsTime());
     }
 
+    public static JsonDeserializer<Time> deserializer = (json, typeOfT, context) -> {
+        int day = json.getAsInt();
+        return Time.timeFromDay(day);
+    };
 }

@@ -85,7 +85,7 @@ public class DailyStats {
             case DEAD: dead++; break;
         }
         
-        if (p.isHospitalised()) {
+        if (p.isHospitalised() && !(p.cStatus() == CStatus.DEAD)) {
             inHospital++;
         }
     }

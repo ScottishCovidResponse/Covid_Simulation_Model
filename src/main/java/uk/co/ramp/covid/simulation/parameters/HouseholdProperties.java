@@ -11,6 +11,7 @@ public class HouseholdProperties {
     public Probability pNeighbourFromOtherGroup = null;
 
     public Probability pGoShopping = null;
+    public Double lockdownShoppingProbabilityAdjustment  = null;
     public Probability pGoRestaurant = null;
     public Integer householdIsolationPeriod = null;
     public Probability pWillIsolate = null;

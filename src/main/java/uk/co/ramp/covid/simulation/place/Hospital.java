@@ -72,9 +72,9 @@ public class Hospital extends CommunalPlace {
     }
     
     @Override
-    public void determineMovement(Time t, DailyStats s, boolean lockdown, Places places) {
+    public void determineMovement(Time t, DailyStats s, Places places) {
         movePhase2(t, s, places, Person::isHospitalised);
-        moveShifts(t, lockdown, p -> p.isHospitalised() || isPatient(p, t));
+        moveShifts(t, p -> p.isHospitalised() || isPatient(p, t));
         movePatients(t);
     }
 
