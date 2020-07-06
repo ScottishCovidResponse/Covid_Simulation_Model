@@ -338,7 +338,7 @@ public abstract class Person {
     }
 
     public void seedInfectionChallenge(Time t, DailyStats s) {
-        Probability infectionChance = new Probability(getInfectionSeedRate() * t.getAbsDay() * this.covidSusceptibleVal);
+        Probability infectionChance = new Probability(getInfectionSeedInitial() * Math.pow(getInfectionSeedRate(), t.getAbsDay()) * this.covidSusceptibleVal);
         if (infectionChance.sample()) {
             cVirus = new Covid(this);
             cVirus.getInfectionLog().registerInfected(t);
@@ -358,7 +358,7 @@ public abstract class Person {
         transport = t;
     }
 
-    protected abstract double getInfectionSeedRate();
+    protected abstract double getInfectionSeedInitial();
     
     public void forceFurlough() {
         furloughed = true;
@@ -453,6 +453,9 @@ public abstract class Person {
     public void unFurlough() {
         furloughed = false;
     }
+   
+    public double getInfectionSeedRate() {
+        return CovidParameters.get().infectionSeedProperties.rateIncreaseSeed;
 
     public void setLockdownHospitalApptAdjustment(double lockdownHospitalApptAdjustment) {
         this.lockdownHospitalApptAdjustment = lockdownHospitalApptAdjustment;
