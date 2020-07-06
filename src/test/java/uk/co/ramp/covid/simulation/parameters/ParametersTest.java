@@ -9,12 +9,12 @@ import java.io.IOException;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-public class PopulationParametersTest {
+public class ParametersTest {
 
     @Test
     public void testIsValid() throws IOException {
         //Test that valid parameters are handled correctly
-        ParameterIO.readParametersFromFile("src/test/resources/default_params.json");
+        ParameterIO.readParametersFromFile("parameters/example_population_params.json");
         assertTrue(PopulationParameters.get().isValid());
     }
 

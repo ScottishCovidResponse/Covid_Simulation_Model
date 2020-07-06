@@ -15,7 +15,7 @@ import uk.co.ramp.covid.simulation.parameters.ParameterIO;
 public class SimulationTest {
     @Before
     public void readDefaultParams() throws JsonParseException, IOException {
-        ParameterIO.readParametersFromFile("src/test/resources/default_params.json");
+        ParameterIO.readParametersFromFile("parameters/example_population_params.json");
     }
 
     @Before

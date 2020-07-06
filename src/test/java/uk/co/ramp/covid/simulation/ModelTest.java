@@ -146,7 +146,6 @@ public class ModelTest extends SimulationTest {
         Model m  = Model.readModelFromFile("src/test/resources/test_model_params.json");
         m.setNoOutput();
         assertTrue(m.isValid());
-        m.run(0);
     }
     
     @Test
