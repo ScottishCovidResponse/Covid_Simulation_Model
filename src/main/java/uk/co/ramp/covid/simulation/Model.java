@@ -177,18 +177,14 @@ public class Model {
             p.setExternalInfectionDays(externalInfectionDays);
             p.seedVirus(nInitialInfections);
 
-            if (lockdownGenerators != null) {
-                for (LockdownEventGenerator gen : lockdownGenerators) {
-                    gen.setPopulation(p);
-                    p.getLockdownController().addComponent(gen);
-                }
+            for (LockdownEventGenerator gen : lockdownGenerators) {
+                gen.setPopulation(p);
+                p.getLockdownController().addComponent(gen);
             }
 
-            if (lockdownEvents != null) {
-                for (LockdownEvent c : lockdownEvents) {
-                    c.setPopulation(p);
-                    p.getLockdownController().addComponent(c);
-                }
+            for (LockdownEvent c : lockdownEvents) {
+                c.setPopulation(p);
+                p.getLockdownController().addComponent(c);
             }
 
             List<DailyStats> iterStats = p.simulate(nDays, contactsWriter);
