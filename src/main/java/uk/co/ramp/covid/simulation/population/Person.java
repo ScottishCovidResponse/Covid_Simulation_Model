@@ -34,7 +34,6 @@ public abstract class Person {
     private Home home;
     private boolean recovered;
     private Covid cVirus;
-    private final double transmissionProb;
     
     private boolean isQuarantined;
     private boolean willQuarantine;
@@ -70,7 +69,6 @@ public abstract class Person {
         this.age = age;
         this.sex = sex;
         this.rng = RNG.get();
-        this.transmissionProb = PopulationParameters.get().personProperties.pTransmission.asDouble();
         this.willQuarantine = PopulationParameters.get().personProperties.pQuarantinesIfSymptomatic.sample();
         this.personId = nPeople++;
         
