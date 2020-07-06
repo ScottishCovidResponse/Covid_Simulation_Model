@@ -456,6 +456,7 @@ public abstract class Person {
    
     public double getInfectionSeedRate() {
         return CovidParameters.get().infectionSeedProperties.rateIncreaseSeed;
+    }
 
     public void setLockdownHospitalApptAdjustment(double lockdownHospitalApptAdjustment) {
         this.lockdownHospitalApptAdjustment = lockdownHospitalApptAdjustment;
