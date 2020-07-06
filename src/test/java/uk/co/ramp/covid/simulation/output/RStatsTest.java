@@ -19,7 +19,7 @@ public class RStatsTest extends SimulationTest {
 
     @Before
     public void setupParams() {
-        int populationSize = 50000;
+        int populationSize = 10000;
         pop = PopulationGenerator.genValidPopulation(populationSize);
     }
 
@@ -48,25 +48,17 @@ public class RStatsTest extends SimulationTest {
 
     @Test
     public void testMeanRWithLockdown() {
-        int populationSize = 50000;
-        pop = PopulationGenerator.genValidPopulation(populationSize);
         int startLock = 30;
-        int nDays = 90;
+        int nDays = 60;
         pop.seedVirus(10);
         pop.getLockdownController().addComponent(
                 new FullLockdownEvent(Time.timeFromDay(startLock), pop, 2.0));
         pop.simulate(nDays);
         RStats rs = new RStats(pop);
-        double peakR = 0.0;
 
-        for (int i = 0; i < nDays; i++) {
-            //Get the peak R value before lockdown starts
-            if (i < startLock) peakR = Math.max(peakR, rs.getMeanRBefore(i + 1));
-            //Test that the R value during lockdown is always below the peak R
-            if (i > startLock + 5) {
-                assertTrue("Peak R occurred at Day " + i, rs.getMeanRBefore(i + 1) < peakR);
-            }
-        }
+        double meanRBeforeLockdown = rs.getMeanRBefore(startLock);
+        double meanRDuringLockdown = rs.getMeanRBetween(startLock, nDays);
 
+        assertTrue(meanRDuringLockdown < meanRBeforeLockdown);
     }
 }
