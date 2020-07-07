@@ -1,7 +1,6 @@
 package uk.co.ramp.covid.simulation.lockdown.easingevents;
 
 import uk.co.ramp.covid.simulation.lockdown.LockdownEvent;
-import uk.co.ramp.covid.simulation.parameters.PopulationParameters;
 import uk.co.ramp.covid.simulation.place.CommunalPlace;
 import uk.co.ramp.covid.simulation.place.Household;
 import uk.co.ramp.covid.simulation.population.Person;

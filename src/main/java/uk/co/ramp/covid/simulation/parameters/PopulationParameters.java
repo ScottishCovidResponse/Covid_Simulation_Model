@@ -27,7 +27,7 @@ public class PopulationParameters {
     public HospitalApptProperties hospitalApptProperties;
 
     // For easier parsing we have 2 structures for appt info. One we parse, and one we query
-    private Map<String, HospitalApptInfo> hospitalAppts;
+    private final Map<String, HospitalApptInfo> hospitalAppts;
 
     // Marking this transient is the easiest way to avoid this being serialized since the map
     // above has all the same information

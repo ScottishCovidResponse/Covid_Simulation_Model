@@ -105,7 +105,7 @@ public abstract class Place {
                     i = j;
                     j = k;
                 }
-                pairs.add(new Pair<Integer, Integer>(i, j));
+                pairs.add(new Pair<>(i, j));
             }
         }
         return pairs;
@@ -209,7 +209,7 @@ public abstract class Place {
         }
     }
 
-    public void keepFamilyInPlace(Person p, CommunalPlace place, Time t) {
+    public void keepFamilyInPlace(Person p, Time t) {
         for (Person q : people) {
             if (p != q && q.getHome() == p.getHome() && !p.hasMoved()) {
                 q.stayInPlace(this);

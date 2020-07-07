@@ -11,8 +11,8 @@ public abstract class LockdownEvent {
     protected Time start;
 
     // The Population we are controlling
-    // Transient to avoid deserialising this for now
-    protected transient Population population = null;
+    // Transient to avoid de-serialising this for now
+    protected transient Population population;
 
     public LockdownEvent(Time start, Population p) {
         this.start = start;

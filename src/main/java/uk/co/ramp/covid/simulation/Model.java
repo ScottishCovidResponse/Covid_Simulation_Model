@@ -37,8 +37,8 @@ public class Model {
     private String outputDirectory = null;
     private String networkOutputDir = null;
     
-    private List<LockdownEvent> lockdownEvents = new ArrayList<>();
-    private List<LockdownEventGenerator> lockdownGenerators = new ArrayList<>();
+    private final List<LockdownEvent> lockdownEvents = new ArrayList<>();
+    private final List<LockdownEventGenerator> lockdownGenerators = new ArrayList<>();
 
     public Model() {}
 

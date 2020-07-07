@@ -9,7 +9,7 @@ import java.util.Map;
 public class HospitalApptParameters {
     
     // For simplicity we keep n copies of the apptInfo, one for each sex/age in the range
-    private Map<PopulationDistribution.SexAge, HospitalApptInfo> apptInfo;
+    private final Map<PopulationDistribution.SexAge, HospitalApptInfo> apptInfo;
     
     public HospitalApptParameters(Map<String, HospitalApptInfo> m) {
         apptInfo = new HashMap<>();

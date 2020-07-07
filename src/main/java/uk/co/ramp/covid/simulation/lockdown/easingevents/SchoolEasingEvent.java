@@ -11,7 +11,7 @@ import java.util.List;
 
 public class SchoolEasingEvent extends CommunalPlaceEasingEvent {
     
-    private Probability pAttendsSchool = null;
+    private final Probability pAttendsSchool;
 
     public SchoolEasingEvent(Time s, Population p, Probability keyPremises, Double socialDistance,
                              Probability visitAdjustment) {

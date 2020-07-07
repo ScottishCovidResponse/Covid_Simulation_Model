@@ -9,7 +9,7 @@ import uk.co.ramp.covid.simulation.util.Time;
 
 public class FullLockdownEvent extends LockdownEvent {
     
-    private Double socialDistance = null;
+    private final Double socialDistance;
 
     public FullLockdownEvent(Time s, Population p, double socialDistance) {
         super(s, p);

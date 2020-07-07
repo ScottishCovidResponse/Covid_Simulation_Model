@@ -38,7 +38,7 @@ public class Population {
     private final Transport publicTransport;
     private final Places places;
 
-    private LockdownController lockdownController;
+    private final LockdownController lockdownController;
 
     private final RandomDataGenerator rng;
     private Integer externalInfectionDays = 0;
@@ -68,7 +68,7 @@ public class Population {
 
         postHourHook = (p,t) -> {};
 
-        lockdownController = new LockdownController(this);
+        lockdownController = new LockdownController();
 
         publicTransport = new Transport(populationSize);
 

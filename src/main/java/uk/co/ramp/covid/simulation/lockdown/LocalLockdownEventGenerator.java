@@ -13,7 +13,6 @@ public class LocalLockdownEventGenerator extends LockdownEventGenerator {
 
     private Double newCasesThreshold = null;
     private Integer numHospitalisedThreshold = null;
-
     private Double socialDistance = null;
     
     private int prevInfected = 0;

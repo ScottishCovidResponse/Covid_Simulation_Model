@@ -10,7 +10,7 @@ import java.util.Set;
  * symptomatic and who it infected */
 public class InfectionLog {
 
-    public class SecondaryInfection {
+    public static class SecondaryInfection {
         private final Person p;
         private final Time t;
 

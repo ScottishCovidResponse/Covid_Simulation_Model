@@ -36,7 +36,7 @@ public abstract class Person {
     private Covid cVirus;
     
     private boolean isQuarantined;
-    private boolean willQuarantine;
+    private final boolean willQuarantine;
     
     private Boolean testOutcome = null;
     protected final RandomDataGenerator rng;
@@ -216,7 +216,7 @@ public abstract class Person {
     public CStatus cStatus() {
         if (this.getInfectionStatus()) {
             if (this.cVirus.isLatent()) { return CStatus.LATENT; }
-            if (this.cVirus.isAsymptomatic()) { return CStatus.ASYMPTOMATIC; };
+            if (this.cVirus.isAsymptomatic()) { return CStatus.ASYMPTOMATIC; }
             if (this.cVirus.isPhase1()) { return CStatus.PHASE1; }
             if (this.cVirus.isPhase2()) { return CStatus.PHASE2; }
             if (this.cVirus.isDead()) { return CStatus.DEAD; }
@@ -362,7 +362,7 @@ public abstract class Person {
         furloughed = true;
     }
 
-    public void furlough() {};
+    public void furlough() {}
 
     // We can't determine this in household in case the person is working nightshift
     // Time is always the start of a day

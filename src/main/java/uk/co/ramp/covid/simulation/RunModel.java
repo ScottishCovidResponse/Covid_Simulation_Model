@@ -58,11 +58,11 @@ public class RunModel {
         try {
             ParameterIO.readParametersFromFile(fpath);
         } catch (IOException e) {
-            System.err.println("Chould not read from parameters file: " + fpath);
+            System.err.println("Could not read from parameters file: " + fpath);
             System.err.println(e);
             System.exit(1);
         } catch (JsonParseException e) {
-            System.err.println("Chould not parse JSON from parameters file: " + fpath);
+            System.err.println("Could not parse JSON from parameters file: " + fpath);
             System.err.println(e);
             System.exit(1);
         }

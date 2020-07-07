@@ -67,7 +67,7 @@ public abstract class CommunalPlace extends Place {
     }
 
     /** Move everyone based on their shift patterns */
-    // Everone who has been hospitalised (and their families) will have left at this point
+    // Everyone who has been hospitalised (and their families) will have left at this point
     public void moveShifts(Time t, Function<Person, Boolean> filter) {
         for (Person p : getPeople() ) {
             if (p.hasMoved() || filter.apply(p) || !p.isWorking(this, t)) {
@@ -130,7 +130,7 @@ public abstract class CommunalPlace extends Place {
                 sendFamilyHome(p, this, t);
             } else {
                 p.stayInPlace(this);
-                keepFamilyInPlace(p, this, t);
+                keepFamilyInPlace(p, t);
             }
         }
     }
