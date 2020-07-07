@@ -16,8 +16,8 @@ public abstract class Household extends Place implements Home {
 
     private final List<Household> neighbours;
     
-    private boolean willIsolate;
-    private boolean lockdownCompliant;
+    private final boolean willIsolate;
+    private final boolean lockdownCompliant;
     private int isolationTimer = 0;
     private boolean visitsNeighbourToday = false;
 
@@ -117,7 +117,7 @@ public abstract class Household extends Place implements Home {
                 sendFamilyHome(p, null, t);
             } else {
                 p.stayInPlace(this);
-                keepFamilyInPlace(p, null, t);
+                keepFamilyInPlace(p, t);
             }
         }
     }

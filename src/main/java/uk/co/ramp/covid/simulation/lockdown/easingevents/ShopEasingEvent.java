@@ -10,7 +10,7 @@ import java.util.List;
 
 public class ShopEasingEvent extends CommunalPlaceEasingEvent {
     
-    private Double visitFrequencyAdjustment = null;
+    private final Double visitFrequencyAdjustment;
 
     public ShopEasingEvent(Time s, Population p, Probability keyPremises, Double socialDistance,
                            Double visitFrequencyAdjustment) {

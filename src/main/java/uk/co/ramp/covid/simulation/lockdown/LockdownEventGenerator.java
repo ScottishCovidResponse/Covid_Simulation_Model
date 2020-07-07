@@ -10,7 +10,7 @@ public abstract class LockdownEventGenerator {
     protected Time start = null;
     protected Time end = null;
 
-    // Transient to avoid deserialisation
+    // Transient to avoid de-serialisation
     protected transient Population population = null;
     
     public LockdownEventGenerator() {}

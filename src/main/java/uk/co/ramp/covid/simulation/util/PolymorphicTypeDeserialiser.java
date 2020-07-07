@@ -7,7 +7,7 @@ import java.util.Map;
 
 public class PolymorphicTypeDeserialiser<T> implements JsonDeserializer<T> {
 
-    private Map<String, Class<?>> components;
+    private final Map<String, Class<?>> components;
     private Gson gson; // to handle recursive parse
 
     public PolymorphicTypeDeserialiser(Map<String, Class<?>> buildable) {

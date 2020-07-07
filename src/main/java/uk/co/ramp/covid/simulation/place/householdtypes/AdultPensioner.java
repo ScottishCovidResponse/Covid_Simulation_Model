@@ -2,7 +2,7 @@ package uk.co.ramp.covid.simulation.place.householdtypes;
 
 import uk.co.ramp.covid.simulation.place.Household;
 
-/** AdultPensioner: one adult aged 16-64 and one of pensionable age and no children */
+/** AdultPensioner: one adult aged 18-64 and one of pensionable age and no children */
 
 public class AdultPensioner extends Household {
     public AdultPensioner() {

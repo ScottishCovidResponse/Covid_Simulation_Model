@@ -167,7 +167,7 @@ public class Covid {
             status = CStatus.PHASE1;
         } else if (latentPeriod + p1 + p2 > infCounter) {
             phase2 = true;
-            if(!isSymptomatic) { // This if statement is needed because the case could or could not have reached this point wihtout symptoms
+            if(!isSymptomatic) { // This if statement is needed because the case could or could not have reached this point without symptoms
             	isSymptomatic = true; 
             	log.registerSymptomatic(t);
             }

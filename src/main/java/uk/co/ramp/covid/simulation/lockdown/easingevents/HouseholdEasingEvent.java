@@ -7,7 +7,7 @@ import uk.co.ramp.covid.simulation.util.Time;
 
 public class HouseholdEasingEvent extends LockdownEvent {
     
-    private Double neighbourVisitAdjustment = null;
+    private final Double neighbourVisitAdjustment;
 
     public HouseholdEasingEvent(Time start, Population p, Double neighbourVisitAdjustment) {
         super(start, p);

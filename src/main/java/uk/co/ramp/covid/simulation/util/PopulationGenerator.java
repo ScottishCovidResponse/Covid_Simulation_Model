@@ -18,7 +18,6 @@ public class PopulationGenerator {
                 break;
             } catch (ImpossibleAllocationException | ImpossibleWorkerDistributionException e2) {
                 LOGGER.info("Could not generate valid population. Retrying");
-                continue;
             }
         }
         

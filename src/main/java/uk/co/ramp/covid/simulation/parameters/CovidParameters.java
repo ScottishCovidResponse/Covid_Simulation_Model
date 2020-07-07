@@ -17,11 +17,11 @@ public class CovidParameters {
         return cparams;
     }
 
-    public CovidTestParameters testParameters = null;
-    public DiseaseParameters diseaseParameters = null;
-    public InfectionSeedingProperties infectionSeedProperties = null;
-    public HospitalisationParameters hospitalisationParameters = null;
-    public CareHomeParameters careHomeParameters = null;
+    public CovidTestParameters testParameters;
+    public DiseaseParameters diseaseParameters;
+    public InfectionSeedingProperties infectionSeedProperties;
+    public HospitalisationParameters hospitalisationParameters;
+    public CareHomeParameters careHomeParameters;
 
     public CovidParameters() {
         testParameters = new CovidTestParameters();

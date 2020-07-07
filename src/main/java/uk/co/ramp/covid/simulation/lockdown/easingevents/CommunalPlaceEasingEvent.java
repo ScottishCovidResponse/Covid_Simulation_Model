@@ -10,8 +10,8 @@ import java.util.List;
 
 /** Lockdown component to ease restrictions on places */
 public abstract class CommunalPlaceEasingEvent extends LockdownEvent {
-    private Probability keyPremises = null;
-    private Double socialDistance = null;
+    private final Probability keyPremises;
+    private final Double socialDistance;
 
 
     public CommunalPlaceEasingEvent(Time s, Population p, Probability keyPremises, Double socialDistance) {
