@@ -72,7 +72,7 @@ public abstract class Person {
         this.willQuarantine = PopulationParameters.get().personProperties.pQuarantinesIfSymptomatic.sample();
         this.personId = nPeople++;
         
-        this.covidMortalityAgeAdjustment = Math.pow((double) age / 85.0, 2.0);
+        this.covidMortalityAgeAdjustment = Math.pow((double) age / 75.0, 2.0);
         
         if(age <= 20) this.covidSusceptibleVal = PopulationParameters.get().personProperties.pSusceptibleChild; // The original paper gave parameters broken at age 20
         else this.covidSusceptibleVal = 1.0;
