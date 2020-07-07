@@ -39,5 +39,14 @@
             "keyPremises": 1.0,
             "pAttendsSchool": 1.0
         }
+    ],
+    "lockdownGenerators": [
+        {
+            "type": "LocalLockdownEventGenerator",
+            "start": 200,
+            "newCasesThreshold": 0.0001,
+            "numHospitalisedThreshold": 200,
+            "socialDistance": 1.0
+        }
     ]
 }

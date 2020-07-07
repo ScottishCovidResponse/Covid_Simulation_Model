@@ -7,8 +7,7 @@ import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import uk.co.ramp.covid.simulation.lockdown.LockdownEvent;
-import uk.co.ramp.covid.simulation.lockdown.LockdownEventDeserialiser;
+import uk.co.ramp.covid.simulation.lockdown.*;
 import uk.co.ramp.covid.simulation.output.DailyStats;
 import uk.co.ramp.covid.simulation.output.network.ContactsWriter;
 import uk.co.ramp.covid.simulation.output.network.PeopleWriter;
@@ -38,7 +37,8 @@ public class Model {
     private String outputDirectory = null;
     private String networkOutputDir = null;
     
-    private List<LockdownEvent> lockdownEvents = null;
+    private List<LockdownEvent> lockdownEvents = new ArrayList<>();
+    private List<LockdownEventGenerator> lockdownGenerators = new ArrayList<>();
 
     public Model() {}
 
@@ -79,10 +79,12 @@ public class Model {
     }
     
     public Model addLockdownEvent(LockdownEvent e) {
-        if (lockdownEvents == null) {
-            lockdownEvents = new ArrayList<>();
-        }
         lockdownEvents.add(e);
+        return this;
+    }
+
+    public Model addLockdownGenerator(LockdownEventGenerator e) {
+        lockdownGenerators.add(e);
         return this;
     }
 
@@ -175,11 +177,14 @@ public class Model {
             p.setExternalInfectionDays(externalInfectionDays);
             p.seedVirus(nInitialInfections);
 
-            if (lockdownEvents != null) {
-                for (LockdownEvent c : lockdownEvents) {
-                    c.setPopulation(p);
-                    p.getLockdownController().addComponent(c);
-                }
+            for (LockdownEventGenerator gen : lockdownGenerators) {
+                gen.setPopulation(p);
+                p.getLockdownController().addComponent(gen);
+            }
+
+            for (LockdownEvent c : lockdownEvents) {
+                c.setPopulation(p);
+                p.getLockdownController().addComponent(c);
             }
 
             List<DailyStats> iterStats = p.simulate(nDays, contactsWriter);
@@ -281,13 +286,20 @@ public class Model {
     public static Model readModelFromFile(String path) throws IOException, JsonParseException {
         Reader file = new FileReader(path);
 
-        LockdownEventDeserialiser lcDeserialiser = new LockdownEventDeserialiser();
+        PolymorphicTypeDeserialiser<LockdownEvent> dLockdownEvents = new PolymorphicTypeDeserialiser<>(
+                LockdownTypeMaps.getLockdownEventMap()
+        );
+        PolymorphicTypeDeserialiser<LockdownEventGenerator> dLockdownGenerators = new PolymorphicTypeDeserialiser<>(
+                LockdownTypeMaps.getLockdownEventGeneratorMap()
+        );
         Gson gson = new GsonBuilder()
-                .registerTypeAdapter(LockdownEvent.class, lcDeserialiser)
+                .registerTypeAdapter(LockdownEvent.class, dLockdownEvents)
+                .registerTypeAdapter(LockdownEventGenerator.class, dLockdownGenerators)
                 .registerTypeAdapter(Time.class, Time.deserializer)
                 .registerTypeAdapter(Probability.class, Probability.deserializer)
                 .create();
-        lcDeserialiser.setGson(gson);
+        dLockdownEvents.setGson(gson);
+        dLockdownGenerators.setGson(gson);
         
         return gson.fromJson(file, Model.class);
     }
