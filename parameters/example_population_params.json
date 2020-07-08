@@ -36,7 +36,7 @@
           "hospitalisationTransmissionReduction":0.05
       },
       "careHomeParameters": {
-          "PPETransmissionReduction": 0.05,
+          "PPETransmissionReduction": 0.5,
           "hoursAfterSymptomsBeforeQuarantine": 12
       }
     },

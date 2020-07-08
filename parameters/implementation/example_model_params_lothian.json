@@ -6,9 +6,76 @@
     "nIters":1,
     "rngSeed":42,
     "outputDirectory":"",
-    "lockDown":{
-        "start":55,
-        "end":160,
-        "socialDistance":0.5
-    }
+    "lockdownEvents": [
+        {
+            "type" : "FullLockdown",
+            "start": 56,
+            "socialDistance": 0.4
+        },
+        {
+            "type": "ConstructionSiteEasing",
+            "start": 86,
+            "socialDistance": 0.5,
+            "keyPremises": 0.5
+        },
+        {
+          "type": "HouseholdEasing",
+          "start": 116,
+          "neighbourVisitAdjustment": 0.5
+        },
+        {
+            "type": "ConstructionSiteEasing",
+            "start": 116,
+            "socialDistance": 0.5,
+            "keyPremises": 0.75
+        },
+        {
+            "type": "ShopEasing",
+            "start": 116,
+            "socialDistance": 0.5,
+            "keyPremises": 0.5,
+            "visitFrequencyAdjustment": 0.5
+        },
+        {
+            "type": "RestaurantEasing",
+            "start": 116,
+            "socialDistance": 0.2,
+            "keyPremises": 0.25,
+            "visitFrequencyAdjustment": 0.25
+        },
+        {
+            "type": "ConstructionSiteEasing",
+            "start": 146,
+            "socialDistance": 0.75,
+            "keyPremises": 1.0
+        },
+        {
+            "type": "ShopEasing",
+            "start": 146,
+            "socialDistance": 0.5,
+            "keyPremises": 0.75,
+            "visitFrequencyAdjustment": 0.75
+        },
+        {
+            "type": "RestaurantEasing",
+            "start": 146,
+            "socialDistance": 0.2,
+            "keyPremises": 0.5,
+            "visitFrequencyAdjustment": 0.5
+        },
+        {
+            "type": "SchoolEasing",
+            "start": 205,
+            "socialDistance": 1.0,
+            "keyPremises": 1.0,
+            "pAttendsSchool": 0.5
+        },
+        {
+            "type": "SchoolEasing",
+            "start": 225,
+            "socialDistance": 1.0,
+            "keyPremises": 1.0,
+            "pAttendsSchool": 1.0
+        }
+    ]
 }
