@@ -420,4 +420,8 @@ public class DailyStats {
 
     public int getNumInHospital() { return inHospital; }
 
+    public Double getSecInfections() { return secInfections; }
+
+    public Double getGenerationTime() { return generationTime; }
+
 }
