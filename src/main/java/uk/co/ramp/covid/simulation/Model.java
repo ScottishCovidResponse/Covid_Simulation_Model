@@ -239,8 +239,7 @@ public class Model {
         }
     }
 
-
-    private void outputCSV(Path outF, int startIterID, List<List<DailyStats>> stats) {
+    public static void outputCSV(Appendable out, int startIterID, List<List<DailyStats>> stats) throws IOException {
     final String[] headers = {"iter", "day", "H", "L", "A", "P1", "P2", "D", "R", "ISeed",
                               "ICs_W","IHos_W","INur_W","IOff_W","IRes_W","ISch_W","ISho_W","ICHome_W",
                               "IHome_I", "ICHome_R",
@@ -249,25 +248,29 @@ public class Model {
                               "DAdul","DPen","DChi","DInf","DHome", "DHospital", "DCareHome", "DAdditional",
                               "NumHospital", "HospitalisedToday",
                               "SecInfections", "GenerationTime" };
+        CSVPrinter printer = new CSVPrinter(out, CSVFormat.DEFAULT.withHeader(headers));
+        for (int i = 0; i < stats.size(); i++) {
+            for (DailyStats s : stats.get(i)) {
+                s.appendCSV(printer, startIterID + i);
+            }
+        }
+    }
+    
+    private static void outputCSV(Path outF, int startIterID, List<List<DailyStats>> stats) {
         try {
             FileWriter out = new FileWriter(outF.toFile());
-            CSVPrinter printer = new CSVPrinter(out, CSVFormat.DEFAULT.withHeader(headers));
-            for (int i = 0; i < nIters; i++) {
-                for (DailyStats s : stats.get(i)) {
-                    s.appendCSV(printer, startIterID + i);
-                }
-            }
+            outputCSV(out, startIterID, stats);
             out.close();
         } catch (IOException e) {
             LOGGER.error(e);
         }
     }
 
-    private void extraOutputsForThibaud(Path outputDir, List<List<DailyStats>> stats) {
+    private static void extraOutputsForThibaud(Path outputDir, List<List<DailyStats>> stats) {
         try {
             CSVPrinter dailyInfectionsCSV = new CSVPrinter(new FileWriter(outputDir.resolve("dailyInfections.csv").toFile()), CSVFormat.DEFAULT);
             CSVPrinter deathsCSV = new CSVPrinter(new FileWriter(outputDir.resolve("deaths.csv").toFile()), CSVFormat.DEFAULT);
-            for (int i = 0; i < nIters; i++) {
+            for (int i = 0; i < stats.size(); i++) {
                 for (DailyStats s : stats.get(i)) {
                     dailyInfectionsCSV.print(s.getTotalDailyInfections());
                     deathsCSV.print(s.getTotalDeaths());
