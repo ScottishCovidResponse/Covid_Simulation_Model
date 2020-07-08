@@ -50,12 +50,16 @@ public class RStatsTest extends SimulationTest {
     public void testMeanRWithLockdown() {
         int startLock = 20;
         int nDays = 40;
+        // Ensure enough infections for a reasonable R value
         pop.seedVirus(100);
         pop.getLockdownController().addComponent(
                 new FullLockdownEvent(Time.timeFromDay(startLock), pop, 2.0));
         pop.simulate(nDays);
         RStats rs = new RStats(pop);
 
+        // Taking the mean with 10 days before lockdown and 20 days before the end accounts for the fact that
+        // the generation time for COVID is 5-20 days (so the R value can be lower just before
+        // a lockdown/near the end of the run).
         double meanRBeforeLockdown = rs.getMeanRBefore(startLock - 10);
         double meanRDuringLockdown = rs.getMeanRBetween(startLock, nDays - 20);
 
