@@ -38,6 +38,9 @@ public class FullLockdownEvent extends LockdownEvent {
 
         // Log initial R if needed
         population.setShouldPrintR();
+
+        // Travel restrictions during lockdown
+        population.getSeeder().stopTravelSeeding();
     }
 
 

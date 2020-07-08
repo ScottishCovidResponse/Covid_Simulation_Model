@@ -1,15 +1,12 @@
 package uk.co.ramp.covid.simulation.output;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import uk.co.ramp.covid.simulation.lockdown.FullLockdownEvent;
 import uk.co.ramp.covid.simulation.population.Population;
 import uk.co.ramp.covid.simulation.util.PopulationGenerator;
 import uk.co.ramp.covid.simulation.testutil.SimulationTest;
 import uk.co.ramp.covid.simulation.util.Time;
-
-import java.sql.Timestamp;
 
 import static org.junit.Assert.*;
 
@@ -25,7 +22,7 @@ public class RStatsTest extends SimulationTest {
 
     @Test
     public void meanRWithNoInfectionsIsNull() {
-        pop.seedVirus(0);
+        pop.getSeeder().forceNInfections(0);
         pop.simulate(20);
         RStats rs = new RStats(pop);
 
@@ -37,7 +34,7 @@ public class RStatsTest extends SimulationTest {
 
     @Test
     public void meanRPositiveWhenInfectionsOccur() {
-        pop.seedVirus(20);
+        pop.getSeeder().forceNInfections(20);
         pop.simulate(20);
         RStats rs = new RStats(pop);
 
@@ -51,7 +48,7 @@ public class RStatsTest extends SimulationTest {
         int startLock = 20;
         int nDays = 40;
         // Ensure enough infections for a reasonable R value
-        pop.seedVirus(100);
+        pop.getSeeder().forceNInfections(100);
         pop.getLockdownController().addComponent(
                 new FullLockdownEvent(Time.timeFromDay(startLock), pop, 2.0));
         pop.simulate(nDays);

@@ -65,7 +65,7 @@ public class CareHomeTest extends SimulationTest {
         CovidParameters.get().diseaseParameters.meanLatentPeriod = 0.5;
 
         Population pop = PopulationGenerator.genValidPopulation(populationSize);
-        pop.seedVirus(100);
+        pop.getSeeder().forceNInfections(100);
 
         // Find a pensioner to infect
         Pensioner inf = null;

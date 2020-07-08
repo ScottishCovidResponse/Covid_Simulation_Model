@@ -198,7 +198,7 @@ public class PopulationTest extends SimulationTest {
     public void testSeedVirus() {
         int nInfections = 10;
         int nInfected = 0;
-        pop.seedVirus(nInfections);
+        pop.getSeeder().forceNInfections(nInfections);
 
         //Check that there are just 10 infections amongst the population
         for (Person p : pop.getAllPeople()) {

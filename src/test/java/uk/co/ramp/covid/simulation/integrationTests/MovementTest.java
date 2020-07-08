@@ -32,7 +32,7 @@ public class MovementTest extends SimulationTest {
         PopulationParameters.get().householdProperties.pWillIsolate = new Probability(1.0);
 
         p = PopulationGenerator.genValidPopulation(populationSize);
-        p.seedVirus(nInfections);
+        p.getSeeder().forceNInfections(nInfections);
     }
 
     @Test
@@ -138,7 +138,7 @@ public class MovementTest extends SimulationTest {
         CovidParameters.get().diseaseParameters.pensionerProgressionPhase2 = 100.0;
 
         p = PopulationGenerator.genValidPopulation(populationSize);
-        p.seedVirus(200);
+        p.getSeeder().forceNInfections(200);
 
         Set<Person> visiting = new HashSet<>();
 
@@ -323,7 +323,7 @@ public class MovementTest extends SimulationTest {
     @Test
     public void somePeopleGetTested() {
         // As most tests are positive we force lots of infections to check some go negative.
-        p.seedVirus(100);
+        p.getSeeder().forceNInfections(100);
         CovidParameters.get().testParameters.pDiagnosticTestAvailable = new Probability(1.0);
         p.simulate(30);
 
@@ -392,7 +392,7 @@ public class MovementTest extends SimulationTest {
         PopulationParameters.get().personProperties.pQuarantinesIfSymptomatic = new Probability(1.0);
         CovidParameters.get().diseaseParameters.adultProgressionPhase2 = 100.0;
         p = PopulationGenerator.genValidPopulation(populationSize);
-        p.seedVirus(nInfections);
+        p.getSeeder().forceNInfections(nInfections);
 
         Household iso = null;
         for (Household h : p.getHouseholds()) {
@@ -427,7 +427,7 @@ public class MovementTest extends SimulationTest {
     public void neighboursShouldLeaveEmptyHouses() {
         final int simDays = 5;
         p = PopulationGenerator.genValidPopulation(populationSize);
-        p.seedVirus(nInfections);
+        p.getSeeder().forceNInfections(nInfections);
 
         // Going to an empty neighbours house is okay, but only for 1 hour (when you discover they aren't in)
         List<Set<Person>> inEmptyNeighbourHouse = new ArrayList<>();
@@ -455,8 +455,8 @@ public class MovementTest extends SimulationTest {
         final int simDays = 5;
 
         p = PopulationGenerator.genValidPopulation(populationSize);
-        p.seedVirus(nInfections);
-        
+        p.getSeeder().forceNInfections(nInfections);
+
         p.setPostHourHook((pop, time) -> {
             Set<Person> seen = new HashSet<>();
 
@@ -484,7 +484,7 @@ public class MovementTest extends SimulationTest {
         // We need to force > 1 hospital, else it will be designated COVID and no accept patients
         PopulationParameters.get().buildingDistribution.populationToHospitalsRatio = 5000;
         p = PopulationGenerator.genValidPopulation(populationSize);
-        p.seedVirus(nInfections);
+        p.getSeeder().forceNInfections(nInfections);
 
         // Final arrays to allow variable capture in the lambda
         final int[] hospitalApptVisitors = {0};

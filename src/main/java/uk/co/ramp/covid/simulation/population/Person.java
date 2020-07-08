@@ -336,8 +336,13 @@ public abstract class Person {
     }
 
     public void seedInfectionChallenge(Time t, DailyStats s) {
-        Probability infectionChance = new Probability(getInfectionSeedInitial() * Math.pow(getInfectionSeedRate(), t.getAbsDay()) * this.covidSusceptibleVal);
-        if (infectionChance.sample()) {
+        double dayAdjust = Math.pow(getInfectionSeedRate(), t.getAbsDay());
+        Probability infectionChance = new Probability(getInfectionSeedInitial() * dayAdjust * covidSusceptibleVal);
+        seedInfectionChallenge(infectionChance, t, s);
+    }
+
+    public void seedInfectionChallenge(Probability p, Time t, DailyStats s) {
+        if (p.sample()) {
             cVirus = new Covid(this);
             cVirus.getInfectionLog().registerInfected(t);
             s.incSeedInfections();

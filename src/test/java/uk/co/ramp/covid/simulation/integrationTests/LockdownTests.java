@@ -6,7 +6,7 @@ import uk.co.ramp.covid.simulation.lockdown.FullLockdownEvent;
 import uk.co.ramp.covid.simulation.lockdown.easingevents.HouseholdEasingEvent;
 import uk.co.ramp.covid.simulation.lockdown.easingevents.RestaurantEasingEvent;
 import uk.co.ramp.covid.simulation.lockdown.easingevents.SchoolEasingEvent;
-import uk.co.ramp.covid.simulation.output.DailyStats;
+import uk.co.ramp.covid.simulation.lockdown.easingevents.TravelEasingEvent;
 import uk.co.ramp.covid.simulation.parameters.PopulationParameters;
 import uk.co.ramp.covid.simulation.place.*;
 import uk.co.ramp.covid.simulation.population.Child;
@@ -168,6 +168,34 @@ public class LockdownTests extends SimulationTest  {
 
         assertEquals(0, visitorsDuringLockdown[0]);
         assertNotEquals(0, visitorsAfterLockdown[0]);
+    }
+
+    @Test
+    public void travelSeedingInfectsPeople() {
+        int populationSize = 20000;
+        Population pop = PopulationGenerator.genValidPopulation(populationSize);
+
+        // For testing we only let infections come from travel
+        pop.getLockdownController().addComponent(new TravelEasingEvent(Time.timeFromDay(2), pop, new Probability(0.1)));
+
+        pop.setPostHourHook((population, time) -> {
+            // No infections the first 2 days (since there's no seeds
+            if (time.getDay() < 2) {
+                for (Person p : population.getAllPeople()) {
+                    assertFalse(p.isinfected());
+                }
+            } else {
+                // Since seeding happens daily not hourly we just sample at hour 1
+                if (time.getHour() == 1) {
+                    long nInfected = population.getAllPeople().stream()
+                            .filter(p -> p.isinfected() &&
+                                    p.getcVirus().getInfectionLog().getInfectionTime().getAbsDay() == time.getAbsDay())
+                            .count();
+                    assertNotEquals(0, nInfected);
+                }
+            }
+        });
+        pop.simulate(5);
     }
     
 }

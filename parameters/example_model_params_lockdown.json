@@ -38,6 +38,11 @@
             "socialDistance": 1.0,
             "keyPremises": 1.0,
             "pAttendsSchool": 1.0
+        },
+        {
+            "type": "TravelEasing",
+            "start": 200,
+            "pTravelSeed": 0.000001
         }
     ],
     "lockdownGenerators": [
