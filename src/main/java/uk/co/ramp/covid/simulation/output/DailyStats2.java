@@ -16,7 +16,7 @@ import java.util.List;
 public class DailyStats2 {
     private static final Logger LOGGER = LogManager.getLogger(DailyStats2.class);
 
-    private List<Value> all = new ArrayList<>(); // in csv column order
+    private List<Value<?>> all = new ArrayList<>(); // in csv column order
     private List<IntValue> population = new ArrayList<>();
     private List<IntValue> infected = new ArrayList<>();
     private List<IntValue> dailyInfections = new ArrayList<>();
@@ -77,34 +77,48 @@ public class DailyStats2 {
     private IntValue newlyHospitalised = add("HospitalisedToday");
             
     // Infection rate stats
-    public DoubleValue secInfections = new DoubleValue("SecInfections");
-    private DoubleValue generationTime = new DoubleValue("GenerationTime");
+    public Value<Double> secInfections = new Value<Double>("SecInfections");
+    private Value<Double> generationTime = new Value<Double>("GenerationTime");
 
-    public class Value {
+    public class Value<T> {
         private final String csvHeader;
         protected String nameForLog;
+        protected T value;
 
         protected Value(String csvHeader) {
             all.add(this);
             this.csvHeader = csvHeader;            
         }
 
+        public T get() { return value; }
+        public void set(T value) { this.value = value; }
         public String header() { return csvHeader; } 
 
         public String logString() {
             return nameForLog + " " + toString();
         }
+
+        @Override
+        public String toString() { return value.toString(); }
+
+        @Override
+        public int hashCode() { return value.hashCode(); }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            Value<?> other = (Value<?>) o;
+            return value.equals(other.value);
+        }
     }
-    
-    public class IntValue extends Value {
-        private int value = 0;
+
+    public class IntValue extends Value<Integer> {
 
         public IntValue(String csvHeader) {
             super(csvHeader);
         }
         
-        public int get() { return value; }
-        public void set(int value) { this.value = value; }
         public void increment() { value++; }        
         
         public IntValue log(String name) {
@@ -117,50 +131,8 @@ public class DailyStats2 {
             list.add(this);
             return this;
         }
-        
-        @Override
-        public String toString() { return Integer.toString(value); }
-        
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            IntValue other = (IntValue) o;
-            return value == other.value;
-        }
-
-        @Override
-        public int hashCode() {
-            return value;
-        }
     }
-    
-    public class DoubleValue extends Value {
-        private double realValue;
-        
-        public DoubleValue(String csvHeader) {
-            super(csvHeader);
-        }
-        
-        public void set(double value) { this.realValue = value; }
 
-        @Override
-        public String toString() { return Double.toString(realValue); }
-        
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            DoubleValue other = (DoubleValue) o;
-            return realValue == other.realValue;
-        }
-
-        @Override
-        public int hashCode() {
-            return Double.hashCode(realValue);
-        }        
-    }
-    
     private IntValue add(String csvHeader) { return new IntValue(csvHeader); }
     
     public DailyStats2(Time t) {
