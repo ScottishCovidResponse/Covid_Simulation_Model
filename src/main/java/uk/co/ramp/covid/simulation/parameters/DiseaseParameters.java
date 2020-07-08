@@ -18,6 +18,7 @@ public class DiseaseParameters {
     public Double phase1Betab = null;
     public Double aSymptomaticTransAdjustment = null;
     public Double symptomaticTransAdjustment = null;
+    public Double caseMortalityBase = null;
     public Double caseMortalityRate = null;
     public Double childProgressionPhase2 = null;
     public Double adultProgressionPhase2 = null;
