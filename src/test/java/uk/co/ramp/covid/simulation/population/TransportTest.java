@@ -18,7 +18,7 @@ public class TransportTest extends SimulationTest {
                 .setnInitialInfections(100)
                 .setExternalInfectionDays(0)
                 .setIters(1)
-                .setnDays(80)
+                .setnDays(20)
                 .setRNGSeed(42)
                 .setNoOutput();
 

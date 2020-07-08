@@ -1,14 +1,13 @@
 package uk.co.ramp.covid.simulation;
 
-import org.junit.Before;
-import org.junit.Ignore;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.google.gson.JsonParseException;
 import uk.co.ramp.covid.simulation.lockdown.FullLockdownEvent;
 import uk.co.ramp.covid.simulation.output.DailyStats;
 import uk.co.ramp.covid.simulation.parameters.CovidParameters;
-import uk.co.ramp.covid.simulation.testutil.SimulationTest;
+import uk.co.ramp.covid.simulation.parameters.ParameterIO;
 import uk.co.ramp.covid.simulation.util.Time;
 
 import java.io.IOException;
@@ -19,45 +18,45 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-public class ModelTest extends SimulationTest {
+public class ModelTest {
 
-    int population;
-    int nInfections;
-    int nIter;
-    int nDays;
-    int RNGSeed;
+    private static final int population = 10000;
+    private static final int nInfections = 150;
+    private static final int nIter = 1;
+    private static final int nDays = 60;
+    private static final int testSeed = 402;
 
-    @Before
-    public void setupParams() {
-        population = 10000;
-        nInfections = 10;
-        nIter = 1;
-        nDays = 60;
-        RNGSeed = 402;
-    }
+    // To avoid recomputes
+    private static List<List<DailyStats>> cachedStats = null;
 
-    @Test
-    public void testBaseLine() {
-        final int inf = nInfections * 5;
+    @BeforeClass
+    public static void singleRun() throws IOException {
+        ParameterIO.readParametersFromFile("parameters/example_population_params.json");
 
         double startTime = System.currentTimeMillis();
-        Model m = new Model()
+        
+        Model cachedRun = new Model()
                 .setPopulationSize(population)
-                .setnInitialInfections(inf)
+                .setnInitialInfections(nInfections)
                 .setExternalInfectionDays(0)
                 .setIters(nIter)
                 .setnDays(nDays)
-                .setRNGSeed(RNGSeed)
+                .setRNGSeed(testSeed)
                 .setNoOutput();
 
-        List<List<DailyStats>> stats = m.run(0);
+        cachedStats = cachedRun.run(0);
 
-        int lastTotalInfected = inf;
         //Output model performance
         double runLength = (System.currentTimeMillis() - startTime)/1000.0;
         System.out.printf("Total run time (secs): %.3f\n", runLength);
         System.out.printf("Mean run time per day: %.3f\n", runLength/nDays);
+    }
 
+    @Test
+    public void testBaseLine() {
+        List<List<DailyStats>> stats = cachedStats;
+
+        int lastTotalInfected = nInfections;
         for (DailyStats s : stats.get(0)) {
             assertEquals(10000, s.getTotalPopulation());
 
@@ -73,7 +72,7 @@ public class ModelTest extends SimulationTest {
         }
 
         // Check all infections occurred somewhere
-        int totalDailyInfects = inf;
+        int totalDailyInfects = nInfections;
         int cummulativeI;
         for (DailyStats s : stats.get(0)) {
             cummulativeI = s.getTotalInfected() + s.getRecovered() + s.getDead();
@@ -109,32 +108,21 @@ public class ModelTest extends SimulationTest {
     @Test
     public void modelsWithSameRNGSeedGiveSameResult() {
 
-        Model run1 = new Model()
+        Model repeatRun = new Model()
                 .setPopulationSize(population)
                 .setnInitialInfections(nInfections)
                 .setExternalInfectionDays(0)
                 .setIters(nIter)
                 .setnDays(nDays)
-                .setRNGSeed(RNGSeed)
+                .setRNGSeed(testSeed)
                 .setNoOutput();
 
-        List<List<DailyStats>> run1res = run1.run(0);
+        List<List<DailyStats>> run2res = repeatRun.run(0);
 
-        Model run2 = new Model()
-                .setPopulationSize(population)
-                .setnInitialInfections(nInfections)
-                .setExternalInfectionDays(0)
-                .setIters(nIter)
-                .setnDays(nDays)
-                .setRNGSeed(RNGSeed)
-                .setNoOutput();
+        assertEquals(cachedStats.size(), run2res.size());
+        assertEquals(cachedStats.get(0).size(), run2res.get(0).size());
 
-        List<List<DailyStats>> run2res = run2.run(0);
-
-        assertEquals(run1res.size(), run2res.size());
-        assertEquals(run1res.get(0).size(), run2res.get(0).size());
-
-        List<DailyStats> r1 = run1res.get(0);
+        List<DailyStats> r1 = cachedStats.get(0);
         List<DailyStats> r2 = run2res.get(0);
         for (int i = 0; i < r1.size(); i++) {
             assertEquals(r1.get(i), r2.get(i));
@@ -167,40 +155,27 @@ public class ModelTest extends SimulationTest {
     public void testLockdown() {
 
         int startLock = 30;
-        nInfections = 100;
-
-        //Run the model with no lockdown
-        Model m1 = new Model()
-                .setPopulationSize(population)
-                .setnInitialInfections(nInfections * 10)
-                .setExternalInfectionDays(0)
-                .setIters(nIter)
-                .setnDays(nDays)
-                .setRNGSeed(RNGSeed)
-                .setNoOutput();
-
-        List<List<DailyStats>> stats1 = m1.run(0);
 
         //Re-run the model with partial lockdown
         Model m2 = new Model()
                 .setPopulationSize(population)
-                .setnInitialInfections(nInfections * 10)
+                .setnInitialInfections(nInfections)
                 .setExternalInfectionDays(0)
                 .setIters(nIter)
                 .setnDays(nDays)
-                .setRNGSeed(RNGSeed)
                 .setNoOutput()
+                .setRNGSeed(testSeed)
                 .addLockdownEvent(new FullLockdownEvent(Time.timeFromDay(startLock), null,2.0));
 
         List<List<DailyStats>> stats2 = m2.run(0);
 
         //Check that there are the same number of infections in both scenarios before lockdown starts
-        int inf1 = stats1.get(0).get(startLock - 1).getTotalInfected();
+        int inf1 = cachedStats.get(0).get(startLock - 1).getTotalInfected();
         int inf2 = stats2.get(0).get(startLock - 1).getTotalInfected();
         assertEquals("infection numbers don't match before lockdown", inf1, inf2);
 
         //Check that there are fewer infections in the lockdown scenario
-        inf1 = stats1.get(0).get(nDays - 1).getTotalInfected();
+        inf1 = cachedStats.get(0).get(nDays - 1).getTotalInfected();
         inf2 = stats2.get(0).get(nDays - 1).getTotalInfected();
         assertTrue("Unexpected more infections under lockdown." + inf1 + " > " + inf2, inf1 > inf2);
 
