@@ -174,8 +174,8 @@ public class Model {
                 }
             }
 
-            p.setExternalInfectionDays(externalInfectionDays);
-            p.seedVirus(nInitialInfections);
+            p.getSeeder().setExternalInfectionDays(externalInfectionDays);
+            p.getSeeder().forceNInfections(nInitialInfections);
 
             for (LockdownEventGenerator gen : lockdownGenerators) {
                 gen.setPopulation(p);

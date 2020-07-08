@@ -1,6 +1,5 @@
 package uk.co.ramp.covid.simulation.place;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.google.gson.JsonParseException;
@@ -60,7 +59,7 @@ public class HospitalTest extends SimulationTest {
         CovidParameters.get().diseaseParameters.caseMortalityRate = 0.0;
 
         Population pop = PopulationGenerator.genValidPopulation(populationSize);
-        pop.seedVirus(nInfections);
+        pop.getSeeder().forceNInfections(nInfections);
 
         Person inf = null;
         for (Person p : pop.getAllPeople()) {
@@ -125,7 +124,7 @@ public class HospitalTest extends SimulationTest {
         CovidParameters.get().diseaseParameters.pensionerProgressionPhase2 = 100.0;
 
         Population pop = PopulationGenerator.genValidPopulation(populationSize);
-        pop.seedVirus(nInfections);
+        pop.getSeeder().forceNInfections(nInfections);
 
         pop.setPostHourHook((population, time) -> {
             for (CovidHospital h : population.getPlaces().getCovidHospitals()) {
@@ -148,7 +147,7 @@ public class HospitalTest extends SimulationTest {
         CovidParameters.get().diseaseParameters.caseMortalityRate = 0.0;
 
         Population pop = PopulationGenerator.genValidPopulation(populationSize);
-        pop.seedVirus(nInfections);
+        pop.getSeeder().forceNInfections(nInfections);
 
         Person inf = null;
         for (Person p : pop.getAllPeople()) {
@@ -188,7 +187,7 @@ public class HospitalTest extends SimulationTest {
         // Need to force some non-covid hospitals
         PopulationParameters.get().buildingDistribution.populationToHospitalsRatio = 3000;
         Population pop = PopulationGenerator.genValidPopulation(populationSize);
-        pop.seedVirus(nInfections);
+        pop.getSeeder().forceNInfections(nInfections);
 
         Set<Person> hospitalWorkersPreLockdown = new HashSet<>();
         pop.simulate(1);
@@ -234,8 +233,8 @@ public class HospitalTest extends SimulationTest {
         // Need to force some non-covid hospitals
         PopulationParameters.get().buildingDistribution.populationToHospitalsRatio = 3000;
         Population pop = PopulationGenerator.genValidPopulation(populationSize);
-        pop.seedVirus(nInfections);
-        
+        pop.getSeeder().forceNInfections(nInfections);
+
         pop.setPostHourHook((population, time) -> {
             for (Hospital h : population.getPlaces().getAllHospitals()) {
                 for (Person p : h.getPeople()) {
@@ -268,7 +267,7 @@ public class HospitalTest extends SimulationTest {
         PopulationParameters.get().buildingDistribution.populationToHospitalsRatio = 3000;
         PopulationParameters.get().hospitalApptProperties.lockdownApptDecreasePercentage = lockdownAdjust;
         Population pop = PopulationGenerator.genValidPopulation(populationSize);
-        pop.seedVirus(nInfections);
+        pop.getSeeder().forceNInfections(nInfections);
 
         pop.getLockdownController().addComponent(new FullLockdownEvent(Time.timeFromDay(15), pop, 1.0));
 

@@ -43,8 +43,7 @@ public class Population {
     private final InfectionSeeder seeder;
 
     private final RandomDataGenerator rng;
-    private Integer externalInfectionDays = 0;
-    
+
     private boolean rPrinted = false;
     private boolean shouldPrintR = false;
 
@@ -330,11 +329,6 @@ public class Population {
     }
 
 
-    // Force infections into a defined number of people
-    public void seedVirus(int nInfections) {
-       seeder.forceNInfections(nInfections);
-    }
-    
     public void timeStep(Time t, DailyStats dStats) {
         timeStep(t, dStats, null);
     }
@@ -468,10 +462,6 @@ public class Population {
 
     public Places getPlaces() {
         return places;
-    }
-
-    public void setExternalInfectionDays(Integer days) {
-        seeder.setExternalInfectionDays(days);
     }
 
     public LockdownController getLockdownController() {

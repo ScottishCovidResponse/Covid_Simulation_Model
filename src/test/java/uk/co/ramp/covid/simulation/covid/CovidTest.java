@@ -115,7 +115,7 @@ public class CovidTest extends SimulationTest {
     public void testCovidStatus() throws ImpossibleWorkerDistributionException {
         int populationSize = 12000;
         Population p = PopulationGenerator.genValidPopulation(populationSize);
-        p.seedVirus(100);
+        p.getSeeder().forceNInfections(100);
         p.allocatePeople();
         
         p.setPostHourHook((pop, time) -> {

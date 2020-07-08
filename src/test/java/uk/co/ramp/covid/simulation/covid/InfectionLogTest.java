@@ -22,7 +22,7 @@ public class InfectionLogTest extends SimulationTest {
 
     @Test
     public void secondaryInfectionsAreLogged() {
-        pop.seedVirus(10);
+        pop.getSeeder().forceNInfections(10);
         pop.simulate(20);
         int totalSecondary = 0;
         for (Person p : pop.getAllPeople()) {
@@ -35,7 +35,7 @@ public class InfectionLogTest extends SimulationTest {
 
     @Test
     public void symptomaticCasesAreLogged() {
-        pop.seedVirus(1);
+        pop.getSeeder().forceNInfections(1);
 
         Person infected = null;
         for (Person p : pop.getAllPeople()) {
