@@ -163,10 +163,10 @@ public class DailyStatsTest extends SimulationTest {
 
     @Test
     public void testConsistentDeaths() {
-        int population = 20000;
+        int population = 10000;
         int nInfections = 300;
         int nIter = 1;
-        int nDays = 60;
+        int nDays = 50;
         int RNGSeed = 42;
         
         // Try to force at least 1 care home death for test purposes
