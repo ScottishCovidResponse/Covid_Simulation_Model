@@ -6,7 +6,7 @@ library(rio)
 
 healthboard <- "Lothian"
 
-datafile <- "exampledata/Lothian/out_25633706_20200704.csv"
+datafile <- "exampledata/current/out.csv"
 
 cPop <- 910000
 lockdown <- 55

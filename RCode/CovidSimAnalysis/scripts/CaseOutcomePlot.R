@@ -20,7 +20,7 @@ outcomeDF$Severe[outcomeDF$Age >= 18 & outcomeDF$Age < 65] <- outcomeDF$Severe[o
 outcomeDF$Severe[outcomeDF$Age >= 65] <- outcomeDF$Severe[outcomeDF$Age >= 65] * 0.8
 
 outcomeDF$Death <- outcomeDF$Severe
-outcomeDF$Death <- outcomeDF$Death * 0.25 * ((outcomeDF$Age / 85) ^ 2)
+outcomeDF$Death <- ifelse(outcomeDF$Age > 50, outcomeDF$Death * 0.5 * (((outcomeDF$Age - 50) / 50) + 0.05) ^2, outcomeDF$Death * 0.5 * 0.05)
 
 outcomeDF$Severe <- outcomeDF$Severe - outcomeDF$Death
 
