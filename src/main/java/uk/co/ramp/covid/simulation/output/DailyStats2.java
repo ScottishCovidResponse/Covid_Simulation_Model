@@ -27,56 +27,56 @@ public class DailyStats2 {
     // Daily cumulative statistics
     public IntValue healthy = add("H").log("Healthy").addTo(population);
     public IntValue exposed = add("L").log("Latent").addTo(population).addTo(infected);
-    private IntValue asymptomatic = add("A").log("Asymptomatic").addTo(population).addTo(infected);
-    private IntValue phase1 = add("P1").log("Phase 1").addTo(population).addTo(infected);
-    private IntValue phase2 = add("P2").log("Phase 2").addTo(population).addTo(infected);
-    private IntValue dead = add("D").log("Dead").addTo(population);
-    private IntValue recovered = add("R").log("Recovered").addTo(population);
+    public IntValue asymptomatic = add("A").log("Asymptomatic").addTo(population).addTo(infected);
+    public IntValue phase1 = add("P1").log("Phase 1").addTo(population).addTo(infected);
+    public IntValue phase2 = add("P2").log("Phase 2").addTo(population).addTo(infected);
+    public IntValue dead = add("D").log("Dead").addTo(population);
+    public IntValue recovered = add("R").log("Recovered").addTo(population);
 
     // Daily only statistics
-    private IntValue seedInfections = add("ISeed").addTo(dailyInfections);
-    private IntValue constructionSiteInfectionsWorker = add("ICs_W").addTo(dailyInfections);
-    private IntValue hospitalInfectionsWorker = add("IHos_W").addTo(dailyInfections);
-    private IntValue nurseryInfectionsWorker = add("INur_W").addTo(dailyInfections);
-    private IntValue officeInfectionsWorker = add("IOff_W").addTo(dailyInfections);
-    private IntValue restaurantInfectionsWorker = add("IRes_W").addTo(dailyInfections);
-    private IntValue schoolInfectionsWorker = add("ISch_W").addTo(dailyInfections);
-    private IntValue shopInfectionsWorker = add("ISho_W").addTo(dailyInfections);
-    private IntValue careHomeInfectionsWorker = add("ICHome_W").addTo(dailyInfections);
-    private IntValue homeInfectionsInhabitant = add("IHome_I").addTo(dailyInfections);
-    private IntValue careHomeInfectionsResident = add("ICHome_R").addTo(dailyInfections);
-    private IntValue constructionSiteInfectionsVisitor = add("ICs_V").addTo(dailyInfections);
-    private IntValue hospitalInfectionsVisitor = add("IHos_V").addTo(dailyInfections);
-    private IntValue nurseryInfectionsVisitor = add("INur_V").addTo(dailyInfections);
-    private IntValue officeInfectionsVisitor = add("IOff_V").addTo(dailyInfections);
-    private IntValue restaurantInfectionsVisitor  = add("IRes_V").addTo(dailyInfections);
-    private IntValue schoolInfectionsVisitor = add("ISch_V").addTo(dailyInfections);
-    private IntValue shopInfectionsVisitor = add("ISho_V").addTo(dailyInfections);
-    private IntValue homeInfectionsVisitor = add("IHome_V").addTo(dailyInfections);
+    public IntValue seedInfections = add("ISeed").addTo(dailyInfections);
+    public IntValue constructionSiteInfectionsWorker = add("ICs_W").addTo(dailyInfections);
+    public IntValue hospitalInfectionsWorker = add("IHos_W").addTo(dailyInfections);
+    public IntValue nurseryInfectionsWorker = add("INur_W").addTo(dailyInfections);
+    public IntValue officeInfectionsWorker = add("IOff_W").addTo(dailyInfections);
+    public IntValue restaurantInfectionsWorker = add("IRes_W").addTo(dailyInfections);
+    public IntValue schoolInfectionsWorker = add("ISch_W").addTo(dailyInfections);
+    public IntValue shopInfectionsWorker = add("ISho_W").addTo(dailyInfections);
+    public IntValue careHomeInfectionsWorker = add("ICHome_W").addTo(dailyInfections);
+    public IntValue homeInfectionsInhabitant = add("IHome_I").addTo(dailyInfections);
+    public IntValue careHomeInfectionsResident = add("ICHome_R").addTo(dailyInfections);
+    public IntValue constructionSiteInfectionsVisitor = add("ICs_V").addTo(dailyInfections);
+    public IntValue hospitalInfectionsVisitor = add("IHos_V").addTo(dailyInfections);
+    public IntValue nurseryInfectionsVisitor = add("INur_V").addTo(dailyInfections);
+    public IntValue officeInfectionsVisitor = add("IOff_V").addTo(dailyInfections);
+    public IntValue restaurantInfectionsVisitor  = add("IRes_V").addTo(dailyInfections);
+    public IntValue schoolInfectionsVisitor = add("ISch_V").addTo(dailyInfections);
+    public IntValue shopInfectionsVisitor = add("ISho_V").addTo(dailyInfections);
+    public IntValue homeInfectionsVisitor = add("IHome_V").addTo(dailyInfections);
 
     // Age Statistics
-    private IntValue adultInfected = add("IAdu");
-    private IntValue pensionerInfected = add("IPen");
-    private IntValue childInfected  = add("IChi");
-    private IntValue infantInfected = add("IInf");
+    public IntValue adultInfected = add("IAdu");
+    public IntValue pensionerInfected = add("IPen");
+    public IntValue childInfected  = add("IChi");
+    public IntValue infantInfected = add("IInf");
 
     // Fatality Statistics
-    private IntValue adultDeaths = add("DAdul").addTo(deaths);
-    private IntValue pensionerDeaths = add("DPen").addTo(deaths);
-    private IntValue childDeaths = add("DChi").addTo(deaths);
-    private IntValue infantDeaths = add("DInf").addTo(deaths);
-    private IntValue homeDeaths = add("DHome");
-    private IntValue hospitalDeaths = add("DHospital");
-    private IntValue careHomeDeaths = add("DCareHome");
-    private IntValue additionalDeaths = add("DAdditional"); // Deaths in a workplace/school/etc
+    public IntValue adultDeaths = add("DAdul").addTo(deaths);
+    public IntValue pensionerDeaths = add("DPen").addTo(deaths);
+    public IntValue childDeaths = add("DChi").addTo(deaths);
+    public IntValue infantDeaths = add("DInf").addTo(deaths);
+    public IntValue homeDeaths = add("DHome");
+    public IntValue hospitalDeaths = add("DHospital");
+    public IntValue careHomeDeaths = add("DCareHome");
+    public IntValue additionalDeaths = add("DAdditional"); // Deaths in a workplace/school/etc
 
     // Hospitalisation Stats
-    private IntValue inHospital = add("NumHospital").log("Hospitalised");
-    private IntValue newlyHospitalised = add("HospitalisedToday");
+    public IntValue inHospital = add("NumHospital").log("Hospitalised");
+    public IntValue newlyHospitalised = add("HospitalisedToday");
             
     // Infection rate stats
     public Value<Double> secInfections = new Value<Double>("SecInfections");
-    private Value<Double> generationTime = new Value<Double>("GenerationTime");
+    public Value<Double> generationTime = new Value<Double>("GenerationTime");
 
     public class Value<T> {
         private final String csvHeader;
