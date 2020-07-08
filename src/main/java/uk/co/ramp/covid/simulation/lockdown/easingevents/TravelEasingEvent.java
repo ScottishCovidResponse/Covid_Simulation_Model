@@ -6,7 +6,7 @@ import uk.co.ramp.covid.simulation.util.Probability;
 import uk.co.ramp.covid.simulation.util.Time;
 
 public class TravelEasingEvent extends LockdownEvent {
-    final Probability pTravelSeed;
+    private final Probability pTravelSeed;
 
     public TravelEasingEvent(Time start, Population p, Probability pTravelSeed) {
         super(start, p);

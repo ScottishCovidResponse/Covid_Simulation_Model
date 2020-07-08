@@ -50,10 +50,9 @@ public class InfectionSeeder {
         int i = 0;
         while (i < n) {
             int nInt = RNG.get().nextInt(0, households.size() - 1);
-            if (households.get(nInt).getHouseholdSize() > 0) {
-                if (households.get(nInt).seedInfection()) {
-                    i++;
-                }
+            if (households.get(nInt).getHouseholdSize() > 0
+                    && households.get(nInt).seedInfection()) {
+                i++;
             }
         }
     }
