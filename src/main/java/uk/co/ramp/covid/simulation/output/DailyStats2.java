@@ -3,7 +3,8 @@ package uk.co.ramp.covid.simulation.output;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import uk.co.ramp.covid.simulation.util.Time;
-import uk.co.ramp.covid.simulation.population.*;
+import uk.co.ramp.covid.simulation.population.Person;
+import uk.co.ramp.covid.simulation.population.Population;
 
 import java.util.Objects;
 import java.util.stream.Stream;
