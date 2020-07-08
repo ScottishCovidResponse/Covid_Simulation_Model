@@ -252,6 +252,16 @@ hospitalCurrentPlot <- ggplot(data = deathCum, aes(x=day, y= mi * cPop)) +
 ggsave(paste(plotFile, "HospitalisedPerDay.jpg", sep = "/"), hospitalCurrentPlot, height = 6, width = 6, units = "in")
 
 
+# In hospital
+deathCum <- dailyCrunch(baseline, baseline$NumHospital)
+
+hospitalCurrentPlot <- ggplot(data = deathCum, aes(x=day, y= mi * cPop)) +
+  geom_line() +
+  geom_ribbon(aes(x=day, ymin = li * cPop, ymax = ui * cPop), fill="red", alpha = .15) + geom_vline(xintercept = lockdown) + ylab("Total hospitalised patients") + xlab("Day") + geom_point(data = hospitalised, mapping = aes(x = Date, y = NHS.Lothian)) +
+  theme(text = element_text(size = 16))
+
+ggsave(paste(plotFile, "HospitalisedTotal.jpg", sep = "/"), hospitalCurrentPlot, height = 6, width = 6, units = "in")
+
 deathPlace <- baselineIMelt[baselineIMelt$variable %in% c("DHome", "DHospital", "DCareHome"),]
 deathPlaceAgg <- aggregate(deathPlace$value * cPop, by = list("DeathLocation" = deathPlace$variable), sum)
 

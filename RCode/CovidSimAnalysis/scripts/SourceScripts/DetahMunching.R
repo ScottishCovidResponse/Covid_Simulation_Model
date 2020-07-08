@@ -8,3 +8,6 @@ deathdf$cumDeaths <- cumsum(as.vector(unlist(hbDeaths)))
 deathDataCumSum <- apply(deathData[,2:ncol(deathData)], 1, function(x) cumsum(x))
 
 hospitalised <- read.csv("deathData/NHS_HealthBoard_Data.csv")
+hospitalised$Date <- hospitalised$Date - min(hospitalised$Date) + 58
+#hospitalised$Date <- as.Date(hospitalised$Date, origin = "1900-01-01")
+hospitalised <- subset(hospitalised, select = c("Date", "NHS.Lothian"))
