@@ -39,6 +39,8 @@ public class Population {
     private final Places places;
 
     private final LockdownController lockdownController;
+    
+    private final InfectionSeeder seeder;
 
     private final RandomDataGenerator rng;
     private Integer externalInfectionDays = 0;
@@ -71,6 +73,8 @@ public class Population {
         lockdownController = new LockdownController();
 
         publicTransport = new Transport(populationSize);
+        
+        seeder = new InfectionSeeder(this);
 
         allocatePopulation();
     }
@@ -328,13 +332,7 @@ public class Population {
 
     // Force infections into a defined number of people
     public void seedVirus(int nInfections) {
-        for (int i = 1; i <= nInfections; i++) {
-            int nInt = rng.nextInt(0, numHouseholds - 1);
-            if (households.get(nInt).getHouseholdSize() > 0) {
-                if (!households.get(nInt).seedInfection()) i--;
-            }
-            if (households.get(nInt).getHouseholdSize() == 0) i--;
-        }
+       seeder.forceNInfections(nInfections);
     }
     
     public void timeStep(Time t, DailyStats dStats) {
@@ -388,11 +386,7 @@ public class Population {
             DailyStats dStats = new DailyStats(t);
             lockdownController.implementLockdown(t);
 
-            // ExternalSeeding runs from 0-externalInfectionDays inclusive.
-            // As infections on day 0 are 0 this gives a full externalInfectionsDays worth of infections.
-            if (t.getAbsDay() <= externalInfectionDays) {
-                seedInfections(t, dStats);
-            }
+            seeder.seedInfections(t, dStats);
 
             LOGGER.info("Day = {}", t.getAbsDay());
             for (int k = 0; k < 24; k++) {
@@ -426,12 +420,6 @@ public class Population {
     // Step through nDays in 1 hour time steps
     public List<DailyStats> simulate(int nDays, ContactsWriter contactsWriter) {
         return simulateFromTime(new Time(), nDays, contactsWriter);
-    }
-
-    private void seedInfections(Time t, DailyStats s) {
-        for (Person p : getAllPeople()) {
-            p.seedInfectionChallenge(t, s);
-        }
     }
 
     /** Log the R value for the first 5% of recoveries or lockdown */
@@ -483,7 +471,7 @@ public class Population {
     }
 
     public void setExternalInfectionDays(Integer days) {
-        externalInfectionDays = days;
+        seeder.setExternalInfectionDays(days);
     }
 
     public LockdownController getLockdownController() {
@@ -497,4 +485,6 @@ public class Population {
     public void setShouldPrintR() {
         shouldPrintR = true;
     }
+    
+    public InfectionSeeder getSeeder() { return seeder; }
 }
