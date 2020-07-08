@@ -50,14 +50,14 @@ public class RStatsTest extends SimulationTest {
     public void testMeanRWithLockdown() {
         int startLock = 20;
         int nDays = 40;
-        pop.seedVirus(10);
+        pop.seedVirus(100);
         pop.getLockdownController().addComponent(
                 new FullLockdownEvent(Time.timeFromDay(startLock), pop, 2.0));
         pop.simulate(nDays);
         RStats rs = new RStats(pop);
 
-        double meanRBeforeLockdown = rs.getMeanRBefore(startLock);
-        double meanRDuringLockdown = rs.getMeanRBetween(startLock, nDays);
+        double meanRBeforeLockdown = rs.getMeanRBefore(startLock - 10);
+        double meanRDuringLockdown = rs.getMeanRBetween(startLock, nDays - 20);
 
         assertTrue(meanRDuringLockdown < meanRBeforeLockdown);
     }
