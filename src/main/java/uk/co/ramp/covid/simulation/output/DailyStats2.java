@@ -1,12 +1,10 @@
 package uk.co.ramp.covid.simulation.output;
 
-import org.apache.commons.csv.CSVPrinter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import uk.co.ramp.covid.simulation.util.Time;
 import uk.co.ramp.covid.simulation.population.*;
 
-import java.io.IOException;
 import java.util.Objects;
 import java.util.stream.Stream;
 import java.util.ArrayList;
@@ -182,11 +180,9 @@ public class DailyStats2 {
         //        day, healthy, exposed, asymptomatic,phase1, phase2, inHospital, dead, recovered);
     }
 
-    // TODO: We should probably either move the outputCSV method in here,
-    // or alternatively return the list of values (and not pass in the CSVPrinter here)
-    public void appendCSV(CSVPrinter csv, int iter) throws IOException {
+    public Iterable<?> csvRecords(int iter) {
         this.iter.set(iter);
-        csv.printRecord(all);
+        return all;
     }
 
     public Stream<String> csvHeaders() {
