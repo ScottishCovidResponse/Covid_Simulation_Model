@@ -3,6 +3,7 @@ package uk.co.ramp.covid.simulation.output;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import uk.co.ramp.covid.simulation.util.Time;
+import uk.co.ramp.covid.simulation.population.CStatus;
 import uk.co.ramp.covid.simulation.population.Person;
 import uk.co.ramp.covid.simulation.population.Population;
 
@@ -149,7 +150,7 @@ public class DailyStats2 {
             case DEAD: dead.increment(); break;
         }
         
-        if (p.isHospitalised()) {
+        if (p.isHospitalised() && !(p.cStatus() == CStatus.DEAD)) {
             inHospital.increment();
         }
     }
