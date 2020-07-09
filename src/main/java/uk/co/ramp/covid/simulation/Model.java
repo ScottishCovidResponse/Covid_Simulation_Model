@@ -3,11 +3,10 @@ package uk.co.ramp.covid.simulation;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonParseException;
-import org.apache.commons.csv.CSVFormat;
-import org.apache.commons.csv.CSVPrinter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import uk.co.ramp.covid.simulation.lockdown.*;
+import uk.co.ramp.covid.simulation.output.CsvOutput;
 import uk.co.ramp.covid.simulation.output.DailyStats;
 import uk.co.ramp.covid.simulation.output.network.ContactsWriter;
 import uk.co.ramp.covid.simulation.output.network.PeopleWriter;
@@ -223,8 +222,8 @@ public class Model {
         }
         
         // By here the output directory will be available
-        outputCSV(outP.resolve("out.csv"), iterId, s);
-        extraOutputsForThibaud(outP, s);
+        CsvOutput.writeDailyStats(outP.resolve("out.csv"), iterId, s);
+        CsvOutput.extraOutputsForThibaud(outP, s);
         ParameterIO.writeParametersToFile(outP.resolve("population_params.json"));
         outputModelParams(outP.resolve("model_params.json"));
        
@@ -234,49 +233,6 @@ public class Model {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         try (Writer writer = new FileWriter(outF.toFile())) {
             gson.toJson(this, writer);
-        } catch (IOException e) {
-            LOGGER.error(e);
-        }
-    }
-
-
-    private void outputCSV(Path outF, int startIterID, List<List<DailyStats>> stats) {
-    final String[] headers = {"iter", "day", "H", "L", "A", "P1", "P2", "D", "R", "ISeed",
-                              "ICs_W","IHos_W","INur_W","IOff_W","IRes_W","ISch_W","ISho_W","ICHome_W",
-                              "IHome_I", "ICHome_R",
-                              "ICs_V","IHos_V","INur_V","IOff_V","IRes_V","ISch_V","ISho_V","IHome_V", "ITransport",
-                              "IAdu","IPen","IChi","IInf",
-                              "DAdul","DPen","DChi","DInf","DHome", "DHospital", "DCareHome", "DAdditional",
-                              "NumHospital", "HospitalisedToday",
-                              "SecInfections", "GenerationTime" };
-        try {
-            FileWriter out = new FileWriter(outF.toFile());
-            CSVPrinter printer = new CSVPrinter(out, CSVFormat.DEFAULT.withHeader(headers));
-            for (int i = 0; i < nIters; i++) {
-                for (DailyStats s : stats.get(i)) {
-                    s.appendCSV(printer, startIterID + i);
-                }
-            }
-            out.close();
-        } catch (IOException e) {
-            LOGGER.error(e);
-        }
-    }
-
-    private void extraOutputsForThibaud(Path outputDir, List<List<DailyStats>> stats) {
-        try {
-            CSVPrinter dailyInfectionsCSV = new CSVPrinter(new FileWriter(outputDir.resolve("dailyInfections.csv").toFile()), CSVFormat.DEFAULT);
-            CSVPrinter deathsCSV = new CSVPrinter(new FileWriter(outputDir.resolve("deaths.csv").toFile()), CSVFormat.DEFAULT);
-            for (int i = 0; i < nIters; i++) {
-                for (DailyStats s : stats.get(i)) {
-                    dailyInfectionsCSV.print(s.getTotalDailyInfections());
-                    deathsCSV.print(s.getTotalDeaths());
-                }
-                dailyInfectionsCSV.println();
-                deathsCSV.println();
-            }
-            dailyInfectionsCSV.close(true);
-            deathsCSV.close(true);
         } catch (IOException e) {
             LOGGER.error(e);
         }
