@@ -130,7 +130,7 @@ public abstract class CommunalPlace extends Place {
                 sendFamilyHome(p, this, t);
             } else {
                 p.stayInPlace(this);
-                keepFamilyInPlace(p, t);
+                keepFamilyInPlace(p);
             }
         }
     }

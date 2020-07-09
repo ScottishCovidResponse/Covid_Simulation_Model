@@ -250,10 +250,6 @@ public abstract class Person {
     	return this.cVirus.getTransAdjustment();
     }
 
-    public boolean hasPrimaryCommunalPlace() {
-        return primaryPlace != null;
-    }
-
     public abstract boolean avoidsPhase2(double testP);
 
     public boolean isWorking(CommunalPlace communalPlace, Time t) {

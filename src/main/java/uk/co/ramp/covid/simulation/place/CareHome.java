@@ -70,8 +70,6 @@ public class CareHome extends CommunalPlace implements Home {
         remainInPlace();
     }
 
-    @Override
-    public void isolate() { }
 
     @Override
     public void stopIsolating() { }

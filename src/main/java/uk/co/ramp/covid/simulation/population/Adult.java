@@ -70,7 +70,7 @@ public class Adult extends Person {
                 primaryPlace = p.getNextRestaurantJob();
             } break;
             case CAREHOME: {
-                primaryPlace = p.getRandomCareHome();
+                primaryPlace = p.getNextCareHomeJob();
             } break;
             case NONE: {
                 // do nothing
