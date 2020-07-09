@@ -36,8 +36,13 @@ public class Places {
     private boolean careHomeUnallocated = false;
 
     private final List<CommunalPlace> all;
-
+    private final List<Household> households;
+    
     public Places() {
+        this(0);
+    }
+
+    public Places(int numHouseholds) {
         offices = new ProbabilityDistribution<>();
         constructionSites = new ProbabilityDistribution<>();
         allHospitals = new ProbabilityDistribution<>();
@@ -48,7 +53,18 @@ public class Places {
         schools = new ProbabilityDistribution<>();
         shops = new ProbabilityDistribution<>();
         careHomes = new ProbabilityDistribution<>();
+        households = new ArrayList<>(numHouseholds);
+        createHouseholds(numHouseholds);
         all = new ArrayList<>();
+    }
+
+    private void createHouseholds(int numHouseholds) {
+        ProbabilityDistribution<Supplier<Household>> p =
+                PopulationParameters.get().householdDistribution.householdTypeDistribution();
+
+        for (int i = 0; i < numHouseholds; i++) {
+            households.add(p.sample().get());
+        }
     }
 
     public Office getRandomOffice() {
@@ -365,6 +381,10 @@ public class Places {
 
     public List<CareHome> getCareHomes() {
         return careHomes.toList();
+    }
+
+    public List<Household> getHouseholds() {
+        return households;
     }
 
 }

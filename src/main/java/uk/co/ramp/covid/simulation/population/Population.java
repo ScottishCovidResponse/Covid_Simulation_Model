@@ -33,7 +33,6 @@ public class Population {
     private final int populationSize;
     private final int numHouseholds;
 
-    private final ArrayList<Household> households;
     private final ArrayList<Person> allPeople;
     private final Transport publicTransport;
     private final Places places;
@@ -62,10 +61,9 @@ public class Population {
         if (numHouseholds > populationSize) {
             throw new ImpossibleAllocationException("More households than people requested");
         }
-
-        this.households = new ArrayList<>(numHouseholds);
+        
         this.allPeople = new ArrayList<>(populationSize);
-        this.places = new Places();
+        this.places = new Places(numHouseholds);
 
         postHourHook = (p,t) -> {};
 
@@ -122,16 +120,6 @@ public class Population {
         }
     }
 
-    // Creates households based on probability of different household types
-    private void createHouseholds() {
-        ProbabilityDistribution<Supplier<Household>> p = PopulationParameters.get().householdDistribution.householdTypeDistribution();
-
-        for (int i = 0; i < numHouseholds; i++) {
-            households.add(p.sample().get());
-        }
-
-    }
-
     // We know based on the bitset indexes that this cast is safe so ignore warnings here
     @SuppressWarnings("unchecked")
     private <T extends Person> void allocateRequired(BitSet remaining, Supplier<Boolean> required, Consumer<T> add)
@@ -162,8 +150,6 @@ public class Population {
     }
 
     private void populateHouseholds() throws ImpossibleAllocationException {
-        createHouseholds();
-
         BitSet infantIndex = new BitSet(populationSize);
         BitSet childIndex = new BitSet(populationSize);
         BitSet adultIndex = new BitSet(populationSize);
@@ -181,7 +167,7 @@ public class Population {
         adultAnyAge.or(pensionerIndex);
 
         // Fill requirements first
-        for (Household h : households) {
+        for (Household h : places.getHouseholds()) {
             allocateRequired(adultAnyAge, h::adultAnyAgeRequired, h::addAdultOrPensioner);
 
             // Set intersections keep adultAnyAge in sync with adults/pensioners
@@ -201,7 +187,7 @@ public class Population {
 
         // Now fill in anyone who is missing
         while (!adultIndex.isEmpty() || !pensionerIndex.isEmpty() || !childOrInfant.isEmpty()) {
-            for (Household h : households) {
+            for (Household h : places.getHouseholds()) {
                 allocateAllowed(adultAnyAge, h::additionalAdultAnyAgeAllowed, h::addAdultOrPensioner);
                 adultIndex.and(adultAnyAge);
                 pensionerIndex.and(adultAnyAge);
@@ -244,7 +230,7 @@ public class Population {
 
     // Allocates people to communal places - work environments
     public void allocatePeople() throws ImpossibleWorkerDistributionException {
-        for (Household h : households) {
+        for (Household h : places.getHouseholds()) {
             for (Person p : h.getPeople() ) {
                 p.allocateCommunalPlace(places);
             }
@@ -265,7 +251,7 @@ public class Population {
         List<Household> familyGroup = new ArrayList<>();
         List<Household> pensionerGroup = new ArrayList<>();
 
-        for (Household h : households) {
+        for (Household h : places.getHouseholds()) {
             switch (h.getNeighbourGroup()) {
                 case ADULT: adultGroup.add(h); break;
                 case FAMILY: familyGroup.add(h); break;
@@ -295,7 +281,7 @@ public class Population {
 
         createNeighbourGroupDistributions(adultDist, familyDist, pensionerDist);
 
-        for (Household h : households) {
+        for (Household h : places.getHouseholds()) {
             int expectedNeighbours = PopulationParameters.get().householdProperties.expectedNeighbours;
             int nneighbours = (int) rng.nextPoisson(expectedNeighbours);
 
@@ -335,7 +321,7 @@ public class Population {
     
     public void timeStep(Time t, DailyStats dStats, ContactsWriter contactsWriter) {
         // Movement places people in "next" buffers (to avoid people moving twice in an hour)
-        for (Household h : households) {
+        for (Household h : places.getHouseholds()) {
             h.handleSymptomaticCases(t);
             h.doInfect(t, dStats, contactsWriter);
             h.determineMovement(t, dStats, getPlaces());
@@ -348,7 +334,7 @@ public class Population {
 
         publicTransport.doInfect(t, dStats, contactsWriter);
         
-        for (Household h : households) {
+        for (Household h : places.getHouseholds()) {
             h.commitMovement();
         }
 
@@ -374,7 +360,7 @@ public class Population {
         // To ensure we disallow neighbour visits on day 0 if required, we need to implement
         // lockdown first here (events are popped once they are done so this only happens once on day 0)
         lockdownController.implementLockdown(t);
-        households.forEach(Household::determineDailyNeighbourVisit);
+        places.getHouseholds().forEach(Household::determineDailyNeighbourVisit);
 
         for (int i = 0; i < nDays; i++) {
             DailyStats dStats = new DailyStats(t);
@@ -388,7 +374,7 @@ public class Population {
                 t = t.advance();
                 postHourHook.accept(this, t);
             }
-            households.forEach(Household::dayEnd);
+            places.getHouseholds().forEach(Household::dayEnd);
 
             // At the end of each day we also determine possible hospital visits for the next day
             for (Person p : allPeople) {
@@ -434,8 +420,8 @@ public class Population {
         return stats;
     }
 
-    public ArrayList<Household> getHouseholds() {
-        return households;
+    public List<Household> getHouseholds() {
+        return places.getHouseholds();
     }
 
     public int getPopulationSize() {
