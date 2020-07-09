@@ -380,14 +380,14 @@ public class PlacesTest extends SimulationTest {
         p.createNConstructionSites(n);
         p.createNSchools(n);
 
-        assertEquals(n*7, p.getAllPlaces().size());
-        assertTrue(p.getAllPlaces().containsAll(p.getOffices()));
-        assertTrue(p.getAllPlaces().containsAll(p.getConstructionSites()));
-        assertTrue(p.getAllPlaces().containsAll(p.getAllHospitals()));
-        assertTrue(p.getAllPlaces().containsAll(p.getNurseries()));
-        assertTrue(p.getAllPlaces().containsAll(p.getRestaurants()));
-        assertTrue(p.getAllPlaces().containsAll(p.getSchools()));
-        assertTrue(p.getAllPlaces().containsAll(p.getShops()));
+        assertEquals(n*7, p.getCommunalPlaces().size());
+        assertTrue(p.getCommunalPlaces().containsAll(p.getOffices()));
+        assertTrue(p.getCommunalPlaces().containsAll(p.getConstructionSites()));
+        assertTrue(p.getCommunalPlaces().containsAll(p.getAllHospitals()));
+        assertTrue(p.getCommunalPlaces().containsAll(p.getNurseries()));
+        assertTrue(p.getCommunalPlaces().containsAll(p.getRestaurants()));
+        assertTrue(p.getCommunalPlaces().containsAll(p.getSchools()));
+        assertTrue(p.getCommunalPlaces().containsAll(p.getShops()));
 
     }
 
@@ -399,7 +399,7 @@ public class PlacesTest extends SimulationTest {
         
         List<Office> offices = p.getOffices();
         assertEquals(n, offices.size());
-        assertTrue(p.getAllPlaces().containsAll(offices));
+        assertTrue(p.getCommunalPlaces().containsAll(offices));
     }
 
     @Test
@@ -410,7 +410,7 @@ public class PlacesTest extends SimulationTest {
 
         List<ConstructionSite> cs = p.getConstructionSites();
         assertEquals(n, cs.size());
-        assertTrue(p.getAllPlaces().containsAll(cs));
+        assertTrue(p.getCommunalPlaces().containsAll(cs));
     }
 
     @Test
@@ -421,7 +421,7 @@ public class PlacesTest extends SimulationTest {
 
         List<Hospital> hs = p.getAllHospitals();
         assertEquals(n, hs.size());
-        assertTrue(p.getAllPlaces().containsAll(hs));
+        assertTrue(p.getCommunalPlaces().containsAll(hs));
     }
 
     @Test
@@ -432,7 +432,7 @@ public class PlacesTest extends SimulationTest {
 
         List<Nursery> ns = p.getNurseries();
         assertEquals(n, ns.size());
-        assertTrue(p.getAllPlaces().containsAll(ns));
+        assertTrue(p.getCommunalPlaces().containsAll(ns));
     }
 
     @Test
@@ -443,7 +443,7 @@ public class PlacesTest extends SimulationTest {
 
         List<Restaurant> rs = p.getRestaurants();
         assertEquals(n, rs.size());
-        assertTrue(p.getAllPlaces().containsAll(rs));
+        assertTrue(p.getCommunalPlaces().containsAll(rs));
     }
 
     @Test
@@ -454,7 +454,7 @@ public class PlacesTest extends SimulationTest {
 
         List<School> ss = p.getSchools();
         assertEquals(n, ss.size());
-        assertTrue(p.getAllPlaces().containsAll(ss));
+        assertTrue(p.getCommunalPlaces().containsAll(ss));
     }
 
     @Test
@@ -465,6 +465,6 @@ public class PlacesTest extends SimulationTest {
 
         List<Shop> ss = p.getShops();
         assertEquals(n, ss.size());
-        assertTrue(p.getAllPlaces().containsAll(ss));
+        assertTrue(p.getCommunalPlaces().containsAll(ss));
     }
 }

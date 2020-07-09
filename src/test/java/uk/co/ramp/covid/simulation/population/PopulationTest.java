@@ -238,7 +238,7 @@ public class PopulationTest extends SimulationTest {
 
     @Test
     public void allPlacesStaffed() {
-        for (CommunalPlace q : pop.getPlaces().getAllPlaces()) {
+        for (CommunalPlace q : pop.getPlaces().getCommunalPlaces()) {
             assertTrue("Place not fully staffed, nStaff: " + q.getnStaff(), q.isFullyStaffed());
         }
     }

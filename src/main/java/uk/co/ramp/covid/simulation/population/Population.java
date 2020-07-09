@@ -225,7 +225,7 @@ public class Population {
         places.createNRestaurants(nRestaurants);
         places.createNCareHomes(nCareHomes);
 
-        LOGGER.info("Total number of establishments = {}", places.getAllPlaces().size());
+        LOGGER.info("Total number of establishments = {}", places.getCommunalPlaces().size());
     }
 
     // Allocates people to communal places - work environments
@@ -237,7 +237,7 @@ public class Population {
         }
 
         // Sometimes given parameters/randomness it's not possible to staff everywhere. In this case we throw an error.
-        for (CommunalPlace p : places.getAllPlaces()) {
+        for (CommunalPlace p : places.getCommunalPlaces()) {
             if (!p.isFullyStaffed()) {
                 throw new ImpossibleWorkerDistributionException("Not enough workers to fill required positions");
             }
@@ -320,11 +320,8 @@ public class Population {
     }
     
     public void timeStep(Time t, DailyStats dStats, ContactsWriter contactsWriter) {
-        // Movement places people in "next" buffers (to avoid people moving twice in an hour)
         for (Household h : places.getHouseholds()) {
             h.handleSymptomaticCases(t);
-            h.doInfect(t, dStats, contactsWriter);
-            h.determineMovement(t, dStats, getPlaces());
         }
 
         for (Place p : places.getAllPlaces()) {
@@ -333,10 +330,6 @@ public class Population {
         }
 
         publicTransport.doInfect(t, dStats, contactsWriter);
-        
-        for (Household h : places.getHouseholds()) {
-            h.commitMovement();
-        }
 
         for (Place p : places.getAllPlaces()) {
             p.commitMovement();

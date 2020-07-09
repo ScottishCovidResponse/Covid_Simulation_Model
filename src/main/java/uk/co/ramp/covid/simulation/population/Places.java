@@ -5,9 +5,7 @@ import uk.co.ramp.covid.simulation.place.*;
 import uk.co.ramp.covid.simulation.util.ProbabilityDistribution;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -35,7 +33,8 @@ public class Places {
     private boolean shopsUnallocated = false;
     private boolean careHomeUnallocated = false;
 
-    private final List<CommunalPlace> all;
+    private final List<Place> allPlaces;
+    private final List<CommunalPlace> communalPlaces;
     private final List<Household> households;
     
     public Places() {
@@ -43,6 +42,12 @@ public class Places {
     }
 
     public Places(int numHouseholds) {
+        communalPlaces = new ArrayList<>();
+        allPlaces = new ArrayList<>();
+        households = new ArrayList<>(numHouseholds);
+
+        createHouseholds(numHouseholds);
+
         offices = new ProbabilityDistribution<>();
         constructionSites = new ProbabilityDistribution<>();
         allHospitals = new ProbabilityDistribution<>();
@@ -53,9 +58,6 @@ public class Places {
         schools = new ProbabilityDistribution<>();
         shops = new ProbabilityDistribution<>();
         careHomes = new ProbabilityDistribution<>();
-        households = new ArrayList<>(numHouseholds);
-        createHouseholds(numHouseholds);
-        all = new ArrayList<>();
     }
 
     private void createHouseholds(int numHouseholds) {
@@ -63,7 +65,9 @@ public class Places {
                 PopulationParameters.get().householdDistribution.householdTypeDistribution();
 
         for (int i = 0; i < numHouseholds; i++) {
-            households.add(p.sample().get());
+            Household h = p.sample().get();
+            households.add(h);
+            allPlaces.add(h);
         }
     }
 
@@ -185,7 +189,8 @@ public class Places {
             }
             places.add(constructorN.apply(size, i));
         }
-        all.addAll(places);
+        communalPlaces.addAll(places);
+        allPlaces.addAll(places);
 
         // In the case of 0 buildings we need to expand the probabilities to fill the distribution
         createPlaceDistribution(finalDist, places, s, m, l);
@@ -339,8 +344,12 @@ public class Places {
         createNGeneric((s, x) -> new CareHome(s), n, p, careHomes);
     }
 
-    public List<CommunalPlace> getAllPlaces() {
-        return this.all;
+    public List<CommunalPlace> getCommunalPlaces() {
+        return this.communalPlaces;
+    }
+
+    public List<Place> getAllPlaces() {
+        return this.allPlaces;
     }
 
     public List<Office> getOffices() {
