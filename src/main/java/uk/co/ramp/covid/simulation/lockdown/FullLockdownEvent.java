@@ -18,7 +18,7 @@ public class FullLockdownEvent extends LockdownEvent {
 
     @Override
     protected void apply() {
-        for (CommunalPlace cPlace : population.getPlaces().getAllPlaces()) {
+        for (CommunalPlace cPlace : population.getPlaces().getCommunalPlaces()) {
             cPlace.enterLockdown(socialDistance);
         }
         

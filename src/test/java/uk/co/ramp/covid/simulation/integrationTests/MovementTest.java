@@ -79,7 +79,7 @@ public class MovementTest extends SimulationTest {
         Set<Adult> working = new HashSet<>();
         
         p.setPostHourHook((pop, time) -> {
-            for (CommunalPlace place : pop.getPlaces().getAllPlaces()) {
+            for (CommunalPlace place : pop.getPlaces().getCommunalPlaces()) {
                 for (Person per : place.getPeople()) {
                     if (per instanceof Adult) {
                         working.add((Adult) per);
@@ -176,7 +176,7 @@ public class MovementTest extends SimulationTest {
     public void weDontLosePeople() {
         p.setPostHourHook((pop, time) -> {
             int npeople = 0;
-            for (Place place : pop.getPlaces().getAllPlaces()) {
+            for (Place place : pop.getPlaces().getCommunalPlaces()) {
                 npeople += place.getNumPeople();
             }
 
@@ -193,7 +193,7 @@ public class MovementTest extends SimulationTest {
     public void openPlacesShouldBeStaffed() {
 
         p.setPostHourHook((pop, time) -> {
-            for (CommunalPlace place : pop.getPlaces().getAllPlaces()) {
+            for (CommunalPlace place : pop.getPlaces().getCommunalPlaces()) {
                 List<Person> staff = place.getStaff(time);
                 if (place.isOpen(time)) {
                     assertTrue("No staff found in open place", staff.size() > 0);
@@ -206,7 +206,7 @@ public class MovementTest extends SimulationTest {
     }
 
     private void doesNotGoOut(Household iso, List<Person> isolating) {
-        for (CommunalPlace place : p.getPlaces().getAllPlaces()) {
+        for (CommunalPlace place : p.getPlaces().getCommunalPlaces()) {
             for (Person per : isolating) {
                 if (per.isHospitalised()) {
                     continue;
@@ -257,7 +257,7 @@ public class MovementTest extends SimulationTest {
         // Since arrays pass by reference this allows updating inside the lambda
         final Integer[] excursions = {0};
         p.setPostHourHook((pop, time) -> {
-            for (CommunalPlace place : pop.getPlaces().getAllPlaces()) {
+            for (CommunalPlace place : pop.getPlaces().getCommunalPlaces()) {
                 for (Person per : isolating) {
                     if (place.personInPlace(per)) {
                         excursions[0]++;
@@ -460,7 +460,7 @@ public class MovementTest extends SimulationTest {
         p.setPostHourHook((pop, time) -> {
             Set<Person> seen = new HashSet<>();
 
-            for (Place place : p.getPlaces().getAllPlaces()) {
+            for (Place place : p.getPlaces().getCommunalPlaces()) {
                 for (Person per : place.getPeople()) {
                     assertTrue(seen.add(per));
                 }

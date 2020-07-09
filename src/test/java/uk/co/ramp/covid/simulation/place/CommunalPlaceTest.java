@@ -31,7 +31,7 @@ public class CommunalPlaceTest extends SimulationTest {
     @Test
     public void testAllPlaces() {
         p.setPostHourHook((pop, time) -> {
-            for (CommunalPlace place : pop.getPlaces().getAllPlaces()) {
+            for (CommunalPlace place : pop.getPlaces().getCommunalPlaces()) {
                 // Get place opening and closing time
                 int open = place.getTimes().getOpen();
                 int close = place.getTimes().getClose();

@@ -221,7 +221,7 @@ public abstract class Household extends Place implements Home {
 
     private void moveHospital(Time t) {
         for (Person p : getPeople() ) {
-            if (p.hasMoved() || !p.hasHospitalAppt()) {
+            if (p.hasMoved() || !isInhabitant(p) || !p.hasHospitalAppt()) {
                 continue;
             }
 
@@ -229,7 +229,8 @@ public abstract class Household extends Place implements Home {
                // Children need to find an adult to go with them else they don't go
                if (p instanceof Child || p instanceof Infant) {
                    for (Person per : getPeople() ) {
-                       if (per != p && (per instanceof Adult || per instanceof Pensioner)
+                       if (per != p && isInhabitant(p)
+                               && (per instanceof Adult || per instanceof Pensioner)
                                && !per.hasMoved() && !per.hasHospitalAppt()) {
                            // Giving them the same appt ensures they leave at the same time
                            per.setHospitalAppt(p.getHospitalAppt());
