@@ -7,8 +7,8 @@ import java.util.Map;
 public class Shifts {
 
     public static class Shift {
-        private int start;
-        private int end;
+        private final int start;
+        private final int end;
 
         public Shift(int s, int e) {
             start = s;
@@ -19,16 +19,8 @@ public class Shifts {
             return start;
         }
 
-        public void setStart(int start) {
-            this.start = start;
-        }
-
         public int getEnd() {
             return end;
-        }
-
-        public void setEnd(int end) {
-            this.end = end;
         }
     }
 

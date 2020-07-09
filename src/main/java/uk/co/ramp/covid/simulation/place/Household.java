@@ -117,7 +117,7 @@ public abstract class Household extends Place implements Home {
                 sendFamilyHome(p, null, t);
             } else {
                 p.stayInPlace(this);
-                keepFamilyInPlace(p, t);
+                keepFamilyInPlace(p);
             }
         }
     }

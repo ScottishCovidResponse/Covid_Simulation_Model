@@ -434,16 +434,6 @@ public class Population {
         return stats;
     }
 
-    // This sets the schools exempt from lockdown if that is triggered. Somewhat fudged at present by setting the schools to be KeyPremises - not entirely what thta was intended for, but it works
-    private void schoolExemption() {
-        for (School s : places.getSchools()) {
-                s.overrideKeyPremises(true);
-        }
-        for (Nursery n : places.getNurseries()) {
-            n.overrideKeyPremises(true);
-        }
-    }
-
     public ArrayList<Household> getHouseholds() {
         return households;
     }

@@ -209,7 +209,7 @@ public abstract class Place {
         }
     }
 
-    public void keepFamilyInPlace(Person p, Time t) {
+    public void keepFamilyInPlace(Person p) {
         for (Person q : people) {
             if (p != q && q.getHome() == p.getHome() && !p.hasMoved()) {
                 q.stayInPlace(this);
