@@ -1,5 +1,6 @@
 package uk.co.ramp.covid.simulation.population;
 
+import org.junit.Before;
 import org.junit.Test;
 import uk.co.ramp.covid.simulation.parameters.PopulationParameters;
 import uk.co.ramp.covid.simulation.place.*;
@@ -12,13 +13,29 @@ import static org.junit.Assert.*;
 
 public class PlacesTest extends SimulationTest {
 
+    private Places p;
+    private int population = 20000;
+    private int iters = 2000; // samples to take for random testing
+    private int n = 200;
+    private double DELTA = 0.05;
+    
+    @Before
+    public void createPlaces() {
+        // Force it so we expect a fixed number of places of each type
+        PopulationParameters.get().buildingDistribution.populationToHospitalsRatio = population / n;
+        PopulationParameters.get().buildingDistribution.populationToShopsRatio = population / n;
+        PopulationParameters.get().buildingDistribution.populationToSchoolsRatio = population / n;
+        PopulationParameters.get().buildingDistribution.populationToRestaurantsRatio = population / n;
+        PopulationParameters.get().buildingDistribution.populationToOfficesRatio = population / n;
+        PopulationParameters.get().buildingDistribution.populationToConstructionSitesRatio = population / n;
+        PopulationParameters.get().buildingDistribution.populationToCareHomesRatio = population / n;
+        PopulationParameters.get().buildingDistribution.populationToNurseriesRatio = population / n;
+        
+        p = new Places(population, 0);
+    }
+
     @Test
     public void getRandomOffice() {
-        int n = 100;
-        int iters = 10000; // Number of samples to try
-        Places p = new Places();
-        p.createNOffices(n);
-
         List<Office> samples = new ArrayList<>();
         for (int i = 0; i < iters ; i++) {
             samples.add(p.getRandomOffice());
@@ -38,7 +55,6 @@ public class PlacesTest extends SimulationTest {
         assertTrue("We should sample large offices more often than medium", l > m);
         assertTrue("We should sample medium offices more often than small", m > s);
 
-        double DELTA = 0.02;
         assertEquals(PopulationParameters.get().workerDistribution.sizeAllocation.pLarge.asDouble(),  (double) l/ (double) iters, DELTA);
         assertEquals(PopulationParameters.get().workerDistribution.sizeAllocation.pMed.asDouble(), (double) m / (double) iters, DELTA);
         assertEquals(PopulationParameters.get().workerDistribution.sizeAllocation.pSmall.asDouble(), (double) s / (double) iters, DELTA);
@@ -46,11 +62,6 @@ public class PlacesTest extends SimulationTest {
 
     @Test
     public void getRandomConstructionSite() {
-        int n = 100;
-        int iters = 10000; // Number of samples to try
-        Places p = new Places();
-        p.createNConstructionSites(n);
-
         List<ConstructionSite> samples = new ArrayList<>();
         for (int i = 0; i < iters ; i++) {
             samples.add(p.getRandomConstructionSite());
@@ -70,7 +81,7 @@ public class PlacesTest extends SimulationTest {
         assertTrue("We should sample large constructionSites more often than medium", l > m);
         assertTrue("We should sample medium constructionSites more often than small", m > s);
 
-        double DELTA = 0.02;
+       
         assertEquals(PopulationParameters.get().workerDistribution.sizeAllocation.pLarge.asDouble(),  (double) l/ (double) iters, DELTA);
         assertEquals(PopulationParameters.get().workerDistribution.sizeAllocation.pMed.asDouble(), (double) m / (double) iters, DELTA);
         assertEquals(PopulationParameters.get().workerDistribution.sizeAllocation.pSmall.asDouble(), (double) s / (double) iters, DELTA);
@@ -78,11 +89,6 @@ public class PlacesTest extends SimulationTest {
 
     @Test
     public void getRandomHospital() {
-        int n = 100;
-        int iters = 10000; // Number of samples to try
-        Places p = new Places();
-        p.createNHospitals(n);
-
         List<Hospital> samples = new ArrayList<>();
         for (int i = 0; i < iters ; i++) {
             samples.add(p.getRandomHospital());
@@ -103,11 +109,6 @@ public class PlacesTest extends SimulationTest {
 
     @Test
     public void getRandomNursery() {
-        int n = 100;
-        int iters = 10000; // Number of samples to try
-        Places p = new Places();
-        p.createNNurseries(n);
-
         List<Nursery> samples = new ArrayList<>();
         for (int i = 0; i < iters ; i++) {
             samples.add(p.getRandomNursery());
@@ -128,11 +129,6 @@ public class PlacesTest extends SimulationTest {
 
     @Test
     public void getRandomRestaurant() {
-        int n = 100;
-        int iters = 10000; // Number of samples to try
-        Places p = new Places();
-        p.createNRestaurants(n);
-
         List<Restaurant> samples = new ArrayList<>();
         for (int i = 0; i < iters ; i++) {
             samples.add(p.getRandomRestaurant());
@@ -152,7 +148,6 @@ public class PlacesTest extends SimulationTest {
         assertTrue("We should sample large restaurants more often than medium", l > m);
         assertTrue("We should sample medium restaurants more often than small", m > s);
 
-        double DELTA = 0.02;
         assertEquals(PopulationParameters.get().workerDistribution.sizeAllocation.pLarge.asDouble(),  (double) l/ (double) iters, DELTA);
         assertEquals(PopulationParameters.get().workerDistribution.sizeAllocation.pMed.asDouble(), (double) m / (double) iters, DELTA);
         assertEquals(PopulationParameters.get().workerDistribution.sizeAllocation.pSmall.asDouble(), (double) s / (double) iters, DELTA);
@@ -160,11 +155,6 @@ public class PlacesTest extends SimulationTest {
 
     @Test
     public void getRandomSchool() {
-        int n = 100;
-        int iters = 10000; // Number of samples to try
-        Places p = new Places();
-        p.createNSchools(n);
-
         List<School> samples = new ArrayList<>();
         for (int i = 0; i < iters ; i++) {
             samples.add(p.getRandomSchool());
@@ -185,11 +175,6 @@ public class PlacesTest extends SimulationTest {
 
     @Test
     public void getRandomShop() {
-        int n = 100;
-        int iters = 10000; // Number of samples to try
-        Places p = new Places();
-        p.createNShops(n);
-
         List<Shop> samples = new ArrayList<>();
         for (int i = 0; i < iters ; i++) {
             samples.add(p.getRandomShop());
@@ -209,18 +194,33 @@ public class PlacesTest extends SimulationTest {
         assertTrue("We should sample large shops more often than medium", l > m);
         assertTrue("We should sample medium shops more often than small", m > s);
 
-        double DELTA = 0.02;
         assertEquals(PopulationParameters.get().workerDistribution.sizeAllocation.pLarge.asDouble(),  (double) l/ (double) iters, DELTA);
         assertEquals(PopulationParameters.get().workerDistribution.sizeAllocation.pMed.asDouble(), (double) m / (double) iters, DELTA);
         assertEquals(PopulationParameters.get().workerDistribution.sizeAllocation.pSmall.asDouble(), (double) s / (double) iters, DELTA);
     }
 
     @Test
-    public void createNOffices() {
-        int n = 1000;
-        Places p = new Places();
-        p.createNOffices(n);
+    public void getRandomCareHome() {
+        List<CareHome> samples = new ArrayList<>();
+        for (int i = 0; i < iters ; i++) {
+            samples.add(p.getRandomCareHome());
+        }
 
+        int s = 0, m = 0, l = 0;
+        for (CareHome o : samples) {
+            switch (o.getSize()) {
+                case SMALL: s++; break;
+                case MED: m++; break;
+                case LARGE: l++; break;
+            }
+        }
+
+        assertTrue("We only have medium careHomes", s == 0 && m > 0 && l == 0);
+        assertEquals(iters, m);
+    }
+
+    @Test
+    public void createNOffices() {
         int s = 0, m = 0, l = 0;
         for (Office o : p.getOffices()) {
             switch (o.getSize()) {
@@ -239,10 +239,6 @@ public class PlacesTest extends SimulationTest {
 
     @Test
     public void createNHospitals() {
-        int n = 1000;
-        Places p = new Places();
-        p.createNHospitals(n);
-
         int s = 0, m = 0, l = 0;
         for (Hospital o : p.getAllHospitals()) {
             switch (o.getSize()) {
@@ -261,10 +257,6 @@ public class PlacesTest extends SimulationTest {
 
     @Test
     public void createNSchools() {
-        int n = 1000;
-        Places p = new Places();
-        p.createNSchools(n);
-
         int s = 0, m = 0, l = 0;
         for (School o : p.getSchools()) {
             switch (o.getSize()) {
@@ -283,10 +275,6 @@ public class PlacesTest extends SimulationTest {
 
     @Test
     public void createNNurseries() {
-        int n = 1000;
-        Places p = new Places();
-        p.createNNurseries(n);
-
         int s = 0, m = 0, l = 0;
         for (Nursery o : p.getNurseries()) {
             switch (o.getSize()) {
@@ -305,10 +293,6 @@ public class PlacesTest extends SimulationTest {
 
     @Test
     public void createNRestaurants() {
-        int n = 10000;
-        Places p = new Places();
-        p.createNRestaurants(n);
-
         int s = 0, m = 0, l = 0;
         for (Restaurant o : p.getRestaurants()) {
             switch (o.getSize()) {
@@ -326,10 +310,6 @@ public class PlacesTest extends SimulationTest {
 
     @Test
     public void createNShops() {
-        int n = 1000;
-        Places p = new Places();
-        p.createNShops(n);
-
         int s = 0, m = 0, l = 0;
         for (Shop o : p.getShops()) {
             switch (o.getSize()) {
@@ -348,10 +328,6 @@ public class PlacesTest extends SimulationTest {
 
     @Test
     public void createNConstructionSites() {
-        int n = 1000;
-        Places p = new Places();
-        p.createNConstructionSites(n);
-
         int s = 0, m = 0, l = 0;
         for (ConstructionSite o : p.getConstructionSites()) {
             switch (o.getSize()) {
@@ -370,17 +346,7 @@ public class PlacesTest extends SimulationTest {
 
     @Test
     public void getAllPlaces() {
-        int n = 100;
-        Places p = new Places();
-        p.createNOffices(n);
-        p.createNShops(n);
-        p.createNRestaurants(n);
-        p.createNNurseries(n);
-        p.createNHospitals(n);
-        p.createNConstructionSites(n);
-        p.createNSchools(n);
-
-        assertEquals(n*7, p.getCommunalPlaces().size());
+        assertEquals(n*8, p.getCommunalPlaces().size());
         assertTrue(p.getCommunalPlaces().containsAll(p.getOffices()));
         assertTrue(p.getCommunalPlaces().containsAll(p.getConstructionSites()));
         assertTrue(p.getCommunalPlaces().containsAll(p.getAllHospitals()));
@@ -388,15 +354,11 @@ public class PlacesTest extends SimulationTest {
         assertTrue(p.getCommunalPlaces().containsAll(p.getRestaurants()));
         assertTrue(p.getCommunalPlaces().containsAll(p.getSchools()));
         assertTrue(p.getCommunalPlaces().containsAll(p.getShops()));
-
+        assertTrue(p.getCommunalPlaces().containsAll(p.getCareHomes()));
     }
 
     @Test
     public void getOffices() {
-        int n = 1000;
-        Places p = new Places();
-        p.createNOffices(n);
-        
         List<Office> offices = p.getOffices();
         assertEquals(n, offices.size());
         assertTrue(p.getCommunalPlaces().containsAll(offices));
@@ -404,10 +366,6 @@ public class PlacesTest extends SimulationTest {
 
     @Test
     public void getConstructionSites() {
-        int n = 1000;
-        Places p = new Places();
-        p.createNConstructionSites(n);
-
         List<ConstructionSite> cs = p.getConstructionSites();
         assertEquals(n, cs.size());
         assertTrue(p.getCommunalPlaces().containsAll(cs));
@@ -415,10 +373,6 @@ public class PlacesTest extends SimulationTest {
 
     @Test
     public void getHospitals() {
-        int n = 1000;
-        Places p = new Places();
-        p.createNHospitals(n);
-
         List<Hospital> hs = p.getAllHospitals();
         assertEquals(n, hs.size());
         assertTrue(p.getCommunalPlaces().containsAll(hs));
@@ -426,10 +380,6 @@ public class PlacesTest extends SimulationTest {
 
     @Test
     public void getNurseries() {
-        int n = 1000;
-        Places p = new Places();
-        p.createNNurseries(n);
-
         List<Nursery> ns = p.getNurseries();
         assertEquals(n, ns.size());
         assertTrue(p.getCommunalPlaces().containsAll(ns));
@@ -437,10 +387,6 @@ public class PlacesTest extends SimulationTest {
 
     @Test
     public void getRestaurants() {
-        int n = 1000;
-        Places p = new Places();
-        p.createNRestaurants(n);
-
         List<Restaurant> rs = p.getRestaurants();
         assertEquals(n, rs.size());
         assertTrue(p.getCommunalPlaces().containsAll(rs));
@@ -448,10 +394,6 @@ public class PlacesTest extends SimulationTest {
 
     @Test
     public void getSchools() {
-        int n = 1000;
-        Places p = new Places();
-        p.createNSchools(n);
-
         List<School> ss = p.getSchools();
         assertEquals(n, ss.size());
         assertTrue(p.getCommunalPlaces().containsAll(ss));
@@ -459,11 +401,14 @@ public class PlacesTest extends SimulationTest {
 
     @Test
     public void getShops() {
-        int n = 1000;
-        Places p = new Places();
-        p.createNShops(n);
-
         List<Shop> ss = p.getShops();
+        assertEquals(n, ss.size());
+        assertTrue(p.getCommunalPlaces().containsAll(ss));
+    }
+
+    @Test
+    public void getCareHomes() {
+        List<CareHome> ss = p.getCareHomes();
         assertEquals(n, ss.size());
         assertTrue(p.getCommunalPlaces().containsAll(ss));
     }

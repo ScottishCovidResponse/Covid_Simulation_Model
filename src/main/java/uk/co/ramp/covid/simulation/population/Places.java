@@ -1,5 +1,7 @@
 package uk.co.ramp.covid.simulation.population;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import uk.co.ramp.covid.simulation.parameters.PopulationParameters;
 import uk.co.ramp.covid.simulation.place.*;
 import uk.co.ramp.covid.simulation.util.ProbabilityDistribution;
@@ -12,6 +14,7 @@ import java.util.function.Supplier;
 
 /** Helper class to manage communal places of particular types */
 public class Places {
+    private static final Logger LOGGER = LogManager.getLogger(Places.class);
 
     private final ProbabilityDistribution<Office> offices;
     private final ProbabilityDistribution<ConstructionSite> constructionSites;
@@ -36,12 +39,8 @@ public class Places {
     private final List<Place> allPlaces;
     private final List<CommunalPlace> communalPlaces;
     private final List<Household> households;
-    
-    public Places() {
-        this(0);
-    }
 
-    public Places(int numHouseholds) {
+    public Places(int populationSize, int numHouseholds) {
         communalPlaces = new ArrayList<>();
         allPlaces = new ArrayList<>();
         households = new ArrayList<>(numHouseholds);
@@ -58,6 +57,31 @@ public class Places {
         schools = new ProbabilityDistribution<>();
         shops = new ProbabilityDistribution<>();
         careHomes = new ProbabilityDistribution<>();
+
+        createCommunalPlaces(populationSize);
+    }
+
+    // This creates the Communal places of different types where people mix
+    private void createCommunalPlaces(int populationSize) {
+        int nHospitals = populationSize / PopulationParameters.get().buildingDistribution.populationToHospitalsRatio;
+        int nSchools = populationSize / PopulationParameters.get().buildingDistribution.populationToSchoolsRatio;
+        int nShops = populationSize / PopulationParameters.get().buildingDistribution.populationToShopsRatio;
+        int nOffices = populationSize / PopulationParameters.get().buildingDistribution.populationToOfficesRatio;
+        int nConstructionSites = populationSize / PopulationParameters.get().buildingDistribution.populationToConstructionSitesRatio;
+        int nNurseries = populationSize / PopulationParameters.get().buildingDistribution.populationToNurseriesRatio;
+        int nRestaurants = populationSize / PopulationParameters.get().buildingDistribution.populationToRestaurantsRatio;
+        int nCareHomes = populationSize / PopulationParameters.get().buildingDistribution.populationToCareHomesRatio;
+
+        createNHospitals(nHospitals);
+        createNSchools(nSchools);
+        createNShops(nShops);
+        createNOffices(nOffices);
+        createNConstructionSites(nConstructionSites);
+        createNNurseries(nNurseries);
+        createNRestaurants(nRestaurants);
+        createNCareHomes(nCareHomes);
+
+        LOGGER.info("Total number of communal places = {}", getCommunalPlaces().size());
     }
 
     private void createHouseholds(int numHouseholds) {
@@ -272,14 +296,14 @@ public class Places {
         }
     }
 
-    public void createNOffices(int n) {
+    private void createNOffices(int n) {
         ProbabilityDistribution<CommunalPlace.Size> p =
                 PopulationParameters.get().buildingDistribution.officeSizeDistribution.sizeDistribution();
         createNGeneric((s, x) -> new Office(s), n, p, offices);
     }
 
     // Hospitals creation has some special features to distinguish those that are designated Covid wards
-    public void createNHospitals(int n) {
+    private void createNHospitals(int n) {
         ProbabilityDistribution<CommunalPlace.Size> p =
                 PopulationParameters.get().buildingDistribution.hospitalSizeDistribution.sizeDistribution();
 
@@ -309,36 +333,37 @@ public class Places {
         createPlaceDistribution(nonCovidHospitals, nonCHospitals);
     }
 
-    public void createNSchools(int n) {
+    private void createNSchools(int n) {
         ProbabilityDistribution<CommunalPlace.Size> p =
                 PopulationParameters.get().buildingDistribution.schoolSizeDistribution.sizeDistribution();
         createNGeneric((s, x) -> new School(s), n, p, schools);
     }
-    public void createNNurseries(int n) {
+
+    private void createNNurseries(int n) {
         ProbabilityDistribution<CommunalPlace.Size> p =
                 PopulationParameters.get().buildingDistribution.nurserySizeDistribution.sizeDistribution();
         createNGeneric((s, x) -> new Nursery(s), n, p, nurseries);
     }
 
-    public void createNRestaurants(int n) {
+    private void createNRestaurants(int n) {
         ProbabilityDistribution<CommunalPlace.Size> p =
                 PopulationParameters.get().buildingDistribution.restaurantSizeDistribution.sizeDistribution();
         createNGeneric((s, x) -> new Restaurant(s), n, p, restaurants);
     }
 
-    public void createNShops(int n) {
+    private void createNShops(int n) {
         ProbabilityDistribution<CommunalPlace.Size> p =
                 PopulationParameters.get().buildingDistribution.shopSizeDistribution.sizeDistribution();
         createNGeneric((s, x) -> new Shop(s), n, p, shops);
     }
 
-    public void createNConstructionSites(int n) {
+    private void createNConstructionSites(int n) {
         ProbabilityDistribution<CommunalPlace.Size> p =
                 PopulationParameters.get().buildingDistribution.constructionSiteSizeDistribution.sizeDistribution();
         createNGeneric((s, x) -> new ConstructionSite(s), n, p, constructionSites);
     }
 
-    public void createNCareHomes(int n) {
+    private void createNCareHomes(int n) {
         ProbabilityDistribution<CommunalPlace.Size> p =
                 PopulationParameters.get().buildingDistribution.careHomeSizeDistribution.sizeDistribution();
         createNGeneric((s, x) -> new CareHome(s), n, p, careHomes);

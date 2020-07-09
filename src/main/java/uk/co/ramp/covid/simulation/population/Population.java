@@ -63,7 +63,7 @@ public class Population {
         }
         
         this.allPeople = new ArrayList<>(populationSize);
-        this.places = new Places(numHouseholds);
+        this.places = new Places(populationSize, numHouseholds);
 
         postHourHook = (p,t) -> {};
 
@@ -78,7 +78,6 @@ public class Population {
     
     private void allocatePopulation() throws ImpossibleAllocationException, ImpossibleWorkerDistributionException {
         populateHouseholds();
-        createMixing();
         allocatePeople();
         allocateCareHomes();
         assignNeighbours();
@@ -205,28 +204,7 @@ public class Population {
 
     }
 
-    // This creates the Communal places of different types where people mix
-    private void createMixing() {
-        int nHospitals = populationSize / PopulationParameters.get().buildingDistribution.populationToHospitalsRatio;
-        int nSchools = populationSize / PopulationParameters.get().buildingDistribution.populationToSchoolsRatio;
-        int nShops = populationSize / PopulationParameters.get().buildingDistribution.populationToShopsRatio;
-        int nOffices = populationSize / PopulationParameters.get().buildingDistribution.populationToOfficesRatio;
-        int nConstructionSites = populationSize / PopulationParameters.get().buildingDistribution.populationToConstructionSitesRatio;
-        int nNurseries = populationSize / PopulationParameters.get().buildingDistribution.populationToNurseriesRatio;
-        int nRestaurants = populationSize / PopulationParameters.get().buildingDistribution.populationToRestaurantsRatio;
-        int nCareHomes = populationSize / PopulationParameters.get().buildingDistribution.populationToCareHomesRatio;
 
-        places.createNHospitals(nHospitals);
-        places.createNSchools(nSchools);
-        places.createNShops(nShops);
-        places.createNOffices(nOffices);
-        places.createNConstructionSites(nConstructionSites);
-        places.createNNurseries(nNurseries);
-        places.createNRestaurants(nRestaurants);
-        places.createNCareHomes(nCareHomes);
-
-        LOGGER.info("Total number of establishments = {}", places.getCommunalPlaces().size());
-    }
 
     // Allocates people to communal places - work environments
     public void allocatePeople() throws ImpossibleWorkerDistributionException {
