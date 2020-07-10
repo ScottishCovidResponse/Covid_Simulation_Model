@@ -508,8 +508,9 @@ public abstract class Household extends Place implements Home {
     
     public void startFullShielding() {
         for (Person p : getPeople())  {
-            // TODO: Parameters
-            if (isInhabitant(p) && p.getAge() >= 75 && new Probability(0.8).sample()) {
+            if (isInhabitant(p)
+                    && p.getAge() >= PopulationParameters.get().householdProperties.minShieldingAge
+                    && PopulationParameters.get().householdProperties.pEntersShielding.sample()) {
                 shieldingStatus = ShieldingStatus.FULL;
             }
         }
