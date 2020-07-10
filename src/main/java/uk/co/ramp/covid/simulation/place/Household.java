@@ -208,7 +208,7 @@ public abstract class Household extends Place implements Home {
             }
 
             // Partial shielding allow neighbour visits
-            if (!(shieldingStatus == ShieldingStatus.FULL) && !neighbours.isEmpty()) {
+            if (shieldingStatus != ShieldingStatus.FULL && !neighbours.isEmpty()) {
                 moveNeighbour(t);
             }
 
