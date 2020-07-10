@@ -20,7 +20,8 @@
           "phase1Betab": 30.0,
           "aSymptomaticTransAdjustment": 0.5,
           "symptomaticTransAdjustment": 1.0,
-          "caseMortalityRate":0.25,
+          "caseMortalityBase": 0.05,
+          "caseMortalityRate":0.5,
           "childProgressionPhase2":0.01,
           "adultProgressionPhase2":0.2,
           "pensionerProgressionPhase2":0.8,
@@ -36,7 +37,7 @@
           "hospitalisationTransmissionReduction":0.05
       },
       "careHomeParameters": {
-          "PPETransmissionReduction": 0.05,
+          "PPETransmissionReduction": 0.5,
           "hoursAfterSymptomsBeforeQuarantine": 12
       }
     },
@@ -166,7 +167,7 @@
             }
         },
         "buildingProperties":{
-           "baseTransmissionConstant":0.32,
+           "baseTransmissionConstant":0.35,
            "hospitalExpectedInteractionsPerHour":7.0,
            "constructionSiteExpectedInteractionsPerHour":5.0,
            "nurseryExpectedInteractionsPerHour":10.0,
@@ -177,9 +178,9 @@
            "careHomeExpectedInteractionsPerHour":7.0,
            "pHospitalKey":1.0,
            "pHospitalStaffWillFurlough":0.5,
-            "pConstructionSiteKey":0.5,
-            "pOfficeKey":0.5,
-            "pShopKey":0.5,
+            "pConstructionSiteKey":0.4,
+            "pOfficeKey":0.2,
+            "pShopKey":0.4,
             "pLeaveShop": 0.5,
             "pLeaveRestaurant": 0.4,
             "schoolHolidays": [
@@ -202,7 +203,7 @@
             "pNeighbourFromSameGroup":0.6,
             "pNeighbourFromOtherGroup":0.2,
             "pGoShopping":0.071,
-            "lockdownShoppingProbabilityAdjustment": 0.5,
+            "lockdownShoppingProbabilityAdjustment": 0.25,
             "pGoRestaurant": 0.071,
             "pWillIsolate": 0.5,
             "householdIsolationPeriod": 14,
