@@ -1,12 +1,8 @@
 package uk.co.ramp.covid.simulation.integrationTests;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import uk.co.ramp.covid.simulation.lockdown.FullLockdownEvent;
-import uk.co.ramp.covid.simulation.lockdown.easingevents.HouseholdEasingEvent;
-import uk.co.ramp.covid.simulation.lockdown.easingevents.RestaurantEasingEvent;
-import uk.co.ramp.covid.simulation.lockdown.easingevents.SchoolEasingEvent;
-import uk.co.ramp.covid.simulation.lockdown.easingevents.TravelEasingEvent;
+import uk.co.ramp.covid.simulation.lockdown.easingevents.*;
 import uk.co.ramp.covid.simulation.parameters.PopulationParameters;
 import uk.co.ramp.covid.simulation.place.*;
 import uk.co.ramp.covid.simulation.population.Child;
@@ -197,5 +193,126 @@ public class LockdownTests extends SimulationTest  {
         });
         pop.simulate(5);
     }
-    
+
+    @Test
+    public void shieldingHouseholdsDontGoOut() {
+        int populationSize = 20000;
+        Population pop = PopulationGenerator.genValidPopulation(populationSize);
+
+        // Start in lockdown
+        pop.getLockdownController().addComponent(new FullLockdownEvent(Time.timeFromDay(0), pop, 0.5));
+
+        pop.setPostHourHook((population, time) -> {
+            // Some households should be shielding when lockdown starts
+            long nShielding = population.getHouseholds().stream().filter(h -> h.isShielding()).count();
+            assertNotEquals(0, nShielding);
+
+            // People shielding shouldn't be anywhere (other than a hospital)
+            for (CommunalPlace p : population.getPlaces().getCommunalPlaces()) {
+                if (p instanceof Hospital) { continue; }
+                for (Person per : p.getPeople()) {
+                    // We only consider standard homes
+                    if (per.getHome() instanceof  CareHome) { continue; }
+                    
+                    Household h = (Household) per.getHome();
+                    assertFalse(h.isShielding());
+                }
+            }
+            
+            for (Household h : population.getPlaces().getHouseholds()) {
+                for (Person per : h.getPeople()) {
+                    if (per.getHome() != h) {
+                        // Care home inhabitants don't visit people so this cast is safe
+                        Household hvisitor = (Household) per.getHome();
+                        assertFalse(hvisitor.isShielding());
+                    }
+                }
+            }
+        });
+        pop.simulate(5);
+    }
+
+    @Test
+    public void partialShieldingIsAllowed() {
+        int populationSize = 20000;
+        Population pop = PopulationGenerator.genValidPopulation(populationSize);
+
+        // Start in lockdown
+        pop.getLockdownController().addComponent(new FullLockdownEvent(Time.timeFromDay(0), pop, 0.5));
+        pop.getLockdownController().addComponent(new ShieldingEasingEvent(Time.timeFromDay(2), pop, new Probability(0.8)));
+
+        final long[] shieldingBeforeEasing = {0};
+        final long[] shieldingAfterEasing = {0};
+        final int[] shieldingVisits = {0};
+        pop.setPostHourHook((population, time) -> {
+            // Sample some shielding stats for comparison
+            if (time.getAbsTime() == 12) {
+                shieldingBeforeEasing[0] =  population.getHouseholds().stream().filter(h -> h.isShielding()).count();
+            }
+            if (time.getAbsTime() == 56) {
+                shieldingAfterEasing[0] =  population.getHouseholds().stream().filter(h -> h.isShielding()).count();
+            }
+
+            if (time.getAbsDay() >= 2) {
+                // Partial shielding allows hospital and neighbour visits
+                for (CommunalPlace p : population.getPlaces().getCommunalPlaces()) {
+                    if (p instanceof Hospital) {
+                        continue;
+                    }
+                    for (Person per : p.getPeople()) {
+                        // We only consider standard homes
+                        if (per.getHome() instanceof CareHome) {
+                            continue;
+                        }
+                        Household h = (Household) per.getHome();
+                        assertFalse(h.isShielding());
+                    }
+                }
+
+                // Some neighbours should be visited by shielding households
+                // (no guarantee that will be this hour so we count and check later)
+                for (Household h : population.getPlaces().getHouseholds()) {
+                    for (Person per : h.getPeople()) {
+                        if (per.getHome() != h) {
+                            // Care home inhabitants don't visit people so this cast is safe
+                            Household hvisitor = (Household) per.getHome();
+                            if (hvisitor.isShielding()) {
+                                shieldingVisits[0]++;
+                            }
+                        }
+                    }
+                }
+            }
+
+
+        });
+        pop.simulate(5);
+        
+        assertTrue(shieldingAfterEasing[0] <= shieldingBeforeEasing[0]);
+        assertNotEquals(0, shieldingVisits[0]);
+    }
+
+    @Test
+    public void shieldingCanBeDisabled() {
+        int populationSize = 20000;
+        Population pop = PopulationGenerator.genValidPopulation(populationSize);
+
+        // Start in lockdown
+        pop.getLockdownController().addComponent(new FullLockdownEvent(Time.timeFromDay(0), pop, 0.5));
+        pop.getLockdownController().addComponent(new ShieldingEasingEvent(Time.timeFromDay(2), pop));
+
+        pop.setPostHourHook((population, time) -> {
+            // Give 1 hour for the lockdown easing to kick in
+            if (time.getAbsTime() >= 49) {
+                long nShielding = population.getHouseholds().stream().filter(h -> h.isShielding()).count();
+                assertEquals(0, nShielding);
+            } else {
+                long nShielding = population.getHouseholds().stream().filter(h -> h.isShielding()).count();
+                assertNotEquals(0, nShielding);
+            }
+        });
+        
+        pop.simulate(5);
+    }
+
 }
