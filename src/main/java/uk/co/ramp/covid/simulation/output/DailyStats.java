@@ -134,10 +134,14 @@ public class DailyStats {
 
     public int getShopInfectionsVisitor() { return shopInfectionsVisitor; }
 
+    public String logString() {
+        return LOGGER.getMessageFactory().newMessage("Day = {} Healthy = {} Latent = {} Asymptomatic = {} Phase 1 = {} " +
+                "Phase 2 = {} Hospitalised = {} Dead = {} Recovered = {}",
+                day, healthy, exposed, asymptomatic,phase1, phase2, inHospital, dead, recovered).getFormattedMessage();
+    }
+
     public void log(){
-        LOGGER.info("Day = {} Healthy = {} Latent = {} Asymptomatic = {} Phase 1 = {} " +
-                        "Phase 2 = {} Hospitalised = {} Dead = {} Recovered = {}",
-                day, healthy, exposed, asymptomatic,phase1, phase2, inHospital, dead, recovered);
+        LOGGER.info(logString());
     }
 
     public void appendCSV(CSVPrinter csv, int iter) throws IOException {
