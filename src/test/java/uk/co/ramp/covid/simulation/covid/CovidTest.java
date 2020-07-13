@@ -27,7 +27,6 @@ public class CovidTest extends SimulationTest {
         CovidParameters.get().diseaseParameters.pSymptomaticCasePensioner = new Probability(1.0);
         CovidParameters.get().diseaseParameters.pensionerProgressionPhase2 = 100.0;
 
-        CStatus cStatus = null;
         Person pensioner = new Pensioner(85, Person.Sex.MALE);
         Household h = new SingleOlder();
         pensioner.setHome(h);
@@ -37,32 +36,33 @@ public class CovidTest extends SimulationTest {
         double latentPeriod = virus.getLatentPeriod() - 1;
         Time t = new Time();
         for (int i = 0; i < latentPeriod; i++) {
-        	cStatus = virus.stepInfection(t);
+        	virus.stepInfection(t);
         	t.advance();
         }
-        assertEquals(CStatus.LATENT, cStatus);
+        assertEquals(CStatus.LATENT, virus.getStatus());
 
         //Test that the person becomes phase1 after the latent period
-        cStatus = virus.stepInfection(t);
-        assertEquals(CStatus.PHASE1, cStatus);
+        virus.stepInfection(t);
+        assertEquals(CStatus.PHASE1, virus.getStatus());
 
         //Test that the person becomes dead after the phase2 period
         double p1Period = virus.getP1();
         double p2Period = virus.getP2();
         for (int i = 0; i < latentPeriod + p1Period + p2Period-1; i++) {
-            if(!virus.isDead()) cStatus = virus.stepInfection(t);
+            if(!virus.isDead()) {
+                virus.stepInfection(t);
+            }
             t.advance();
         }
         assertTrue(virus.isSymptomatic());
         virus.stepInfection(t.advance());
         virus.stepInfection(t.advance());
-        assertEquals(CStatus.DEAD, cStatus);
+        assertEquals(CStatus.DEAD, virus.getStatus());
     }
 
     //Test that a child steps through the infection from latent to recovered
     @Test
     public void testStepInfectionRecover() {
-        CStatus cStatus = null;
         Time t = new Time();
         Person child = new Child(6, Person.Sex.FEMALE);
         Household h = new SmallFamily();
@@ -76,10 +76,9 @@ public class CovidTest extends SimulationTest {
 
         //Test that the person becomes recovered after the total infection period
         for (int i = 0; i < latentPeriod + p1Period; i++) {
-            cStatus = virus.stepInfection(t);
+            virus.stepInfection(t);
         }
-      //  cStatus = virus.stepInfection();
-        assertEquals(CStatus.RECOVERED, cStatus);
+        assertEquals(CStatus.RECOVERED, virus.getStatus());
         assertFalse(virus.isSymptomatic());
     }
 
@@ -95,19 +94,19 @@ public class CovidTest extends SimulationTest {
         double latentPeriod = virus.getLatentPeriod();
         double asymptomaticPeriod = virus.getAsymptomaticPeriod();
 
-        CStatus cStatus = virus.stepInfection(t);
+        virus.stepInfection(t);
         
         //Test that the person is asymptomatic after the total infection period
         for (int i = 0; i < latentPeriod; i++) {
-            cStatus = virus.stepInfection(t);
+            virus.stepInfection(t);
         }
-        assertEquals(CStatus.ASYMPTOMATIC, cStatus);
+        assertEquals(CStatus.ASYMPTOMATIC, virus.getStatus());
         
         for (int i = 0; i < asymptomaticPeriod; i++) {
-        	cStatus = virus.stepInfection(t);
+        	virus.stepInfection(t);
         }
         
-        assertEquals(CStatus.RECOVERED, cStatus);
+        assertEquals(CStatus.RECOVERED, virus.getStatus());
         assertFalse(virus.isSymptomatic());
     }
 
@@ -121,7 +120,7 @@ public class CovidTest extends SimulationTest {
         p.setPostHourHook((pop, time) -> {
             // Check if every infected person's status is correct
             for (Person person : pop.getAllPeople()) {
-                if (person.isinfected()) {
+                if (person.isInfected()) {
                     assertFalse(person.cStatus().equals(CStatus.HEALTHY) ||
                             person.cStatus().equals(CStatus.RECOVERED));
                 }

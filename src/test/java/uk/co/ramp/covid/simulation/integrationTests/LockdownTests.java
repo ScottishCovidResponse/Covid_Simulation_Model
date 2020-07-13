@@ -1,6 +1,5 @@
 package uk.co.ramp.covid.simulation.integrationTests;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import uk.co.ramp.covid.simulation.lockdown.FullLockdownEvent;
 import uk.co.ramp.covid.simulation.lockdown.easingevents.HouseholdEasingEvent;
@@ -182,13 +181,13 @@ public class LockdownTests extends SimulationTest  {
             // No infections the first 2 days (since there's no seeds
             if (time.getDay() < 2) {
                 for (Person p : population.getAllPeople()) {
-                    assertFalse(p.isinfected());
+                    assertFalse(p.isInfected());
                 }
             } else {
                 // Since seeding happens daily not hourly we just sample at hour 1
                 if (time.getHour() == 1) {
                     long nInfected = population.getAllPeople().stream()
-                            .filter(p -> p.isinfected() &&
+                            .filter(p -> p.isInfected() &&
                                     p.getcVirus().getInfectionLog().getInfectionTime().getAbsDay() == time.getAbsDay())
                             .count();
                     assertNotEquals(0, nInfected);

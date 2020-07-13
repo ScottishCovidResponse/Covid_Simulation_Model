@@ -11,14 +11,9 @@ import uk.co.ramp.covid.simulation.population.*;
 import uk.co.ramp.covid.simulation.util.RNG;
 
 public class Covid {
-    private boolean latent;
-    private boolean asymptomatic;
     private boolean symptomaticCase;
     private boolean isSymptomatic;
-    private boolean phase1;
-    private boolean phase2;
-    private boolean recovered;
-    private boolean dead;
+    private CStatus status;
     private double latentPeriod;
     private double asymptomaticPeriod;
     private double symptomDelay;
@@ -41,7 +36,7 @@ public class Covid {
         this.setSymptomatic();
         this.setPeriods();
 
-        this.latent = true;
+        this.status = CStatus.LATENT;
         
         this.log = new InfectionLog();
     }
@@ -51,28 +46,8 @@ public class Covid {
     	this.setPeriods();
     }
 
-    public boolean isLatent() {
-        return latent;
-    }
-
-    public boolean isAsymptomatic() {
-        return asymptomatic;
-    }
-
-    public boolean isPhase1() {
-        return phase1;
-    }
-
-    public boolean isPhase2() {
-        return phase2;
-    }
-
-    public boolean isRecovered() {
-        return recovered;
-    }
-
     public boolean isDead() {
-        return dead;
+        return status == CStatus.DEAD;
     }
      
     private void setSymptomatic() {
@@ -131,70 +106,53 @@ public class Covid {
         }
     }
 
-    public CStatus stepInfection(Time t) {
+    public void stepInfection(Time t) {
     	if(symptomaticCase) {
-    	    return this.stepInfectionSymptomatic(t);
+    	    stepInfectionSymptomatic(t);
+        } else {
+            stepInfectionAsymptomatic();
         }
-    	return this.stepInfectionAsymptomatic();
     }
     
     // Cycle through the infection for that timestep
-    public CStatus stepInfectionAsymptomatic() {
+    public void stepInfectionAsymptomatic() {
         infCounter++;
-        CStatus status = CStatus.LATENT;
         if (latentPeriod > infCounter) {
-            latent = true;
+            status = CStatus.LATENT;
         } else if (latentPeriod + asymptomaticPeriod > infCounter) {
-            asymptomatic = true;
-            latent = false;
             status = CStatus.ASYMPTOMATIC;
         } else if (latentPeriod + asymptomaticPeriod <= infCounter) {
-            recovered = true;
-            asymptomatic = false;
             status = CStatus.RECOVERED;
         }
-        return status;
     }
 
-    public CStatus stepInfectionSymptomatic(Time t) {
+    public void stepInfectionSymptomatic(Time t) {
         infCounter++;
-        CStatus status = CStatus.LATENT;
         if (latentPeriod > infCounter) {
-            latent = true;
+            status = CStatus.LATENT;
         } else if (latentPeriod + p1 > infCounter) {
-            phase1 = true;
-            latent = false;
             status = CStatus.PHASE1;
         } else if (latentPeriod + p1 + p2 > infCounter) {
-            phase2 = true;
             if(!isSymptomatic) { // This if statement is needed because the case could or could not have reached this point without symptoms
             	isSymptomatic = true; 
             	log.registerSymptomatic(t);
             }
-            phase1 = false;
-             status = CStatus.PHASE2;
-            
+            status = CStatus.PHASE2;
         } else if (latentPeriod + p1 + p2 <= infCounter) {
             if(dies) {
-                dead = true;
-                phase2 = false;
             	status = CStatus.DEAD;
             } else {
-            	recovered = true;
-            	phase1 = false;
-            	phase2 = false;
             	isSymptomatic = false;
             	status = CStatus.RECOVERED;
             }
         }
-        if(symptomDelay < infCounter && !recovered) {
+        if(symptomDelay < infCounter && status != CStatus.RECOVERED) {
             // This check ensures we don't isolate twice with the same case
             if (!isSymptomatic) {
                 isSymptomatic = true;
                 log.registerSymptomatic(t);
             }
         }
-        return status;
     }
 
     public double getLatentPeriod() {
@@ -222,7 +180,7 @@ public class Covid {
     }
 
     public double getTransAdjustment() {
-        if (asymptomatic) {
+        if (status == CStatus.ASYMPTOMATIC) {
             return CovidParameters.get().diseaseParameters.aSymptomaticTransAdjustment;
         } else {
             return CovidParameters.get().diseaseParameters.symptomaticTransAdjustment;
@@ -231,5 +189,9 @@ public class Covid {
 
     public InfectionLog getInfectionLog() {
         return log;
+    }
+
+    public CStatus getStatus() {
+        return status;
     }
 }

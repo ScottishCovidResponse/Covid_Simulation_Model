@@ -21,7 +21,7 @@ public class LocalLockdownEventGenerator extends LockdownEventGenerator {
     private int getNumInfected() {
         int inf = 0;
         for (Person p : population.getAllPeople()) {
-            if (p.isinfected()) {
+            if (p.isInfected()) {
                 inf++;
             }
         }

@@ -248,7 +248,7 @@ public abstract class Household extends Place implements Home {
 
       public void handleSymptomaticCases(Time t) {
         for (Person p : getPeople()) {
-            if (isInhabitant(p) && p.isinfected()) {
+            if (isInhabitant(p) && p.isInfected()) {
                 Time symptomaticTime = p.getcVirus().getInfectionLog().getSymptomaticTime();
                 
                 if (symptomaticTime == null) {

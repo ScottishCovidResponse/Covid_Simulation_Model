@@ -21,7 +21,7 @@ public class PersonTest extends SimulationTest {
         Person person = new Adult(30, Person.Sex.MALE);
         boolean inf = person.forceInfect();
         assertTrue("Unexpected value returned by infect()", inf);
-        assertTrue("Person unexpectedly not infected", person.getInfectionStatus());
+        assertTrue("Person unexpectedly not infected", person.isInfected());
     }
 
     @Test
@@ -29,7 +29,8 @@ public class PersonTest extends SimulationTest {
         //Test that stepInfection returns a valid status
         Person person = new Adult(30, Person.Sex.FEMALE);
         person.infChallenge(1.0);
-        assertNotNull("Invalid CStatus", person.stepInfection(new Time()));
+        person.stepInfection(new Time());
+        assertNotNull("Invalid CStatus", person.cStatus());
     }
 
     @Test

@@ -123,7 +123,7 @@ public abstract class Place {
     protected void stepInfections(Time t, DailyStats stats) {
         List<Person> deaths = new ArrayList<>();
         for (Person cPers : people) {
-            if (cPers.getInfectionStatus() && !cPers.isRecovered()) {
+            if (cPers.isInfected()) {
                 cPers.stepInfection(t);
                 if (cPers.cStatus() == CStatus.DEAD) {
                     registerDeath(cPers, stats);
