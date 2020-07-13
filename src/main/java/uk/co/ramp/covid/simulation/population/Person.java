@@ -242,7 +242,9 @@ public abstract class Person {
     public abstract boolean avoidsPhase2(double testP);
 
     public boolean isWorking(CommunalPlace communalPlace, Time t) {
-        if (primaryPlace == null || shifts == null
+        if (primaryPlace == null
+                || shifts == null
+                || primaryPlace != communalPlace
                 || isFurloughed() || isHospitalised
                 || !communalPlace.isOpen(t)) {
             return false;
@@ -255,9 +257,7 @@ public abstract class Person {
             end += 24;
         }
 
-        return primaryPlace == communalPlace
-                && t.getHour() >= start
-                && t.getHour() < end;
+        return t.getHour() >= start && t.getHour() < end;
     }
     
     public boolean worksNextHour(CommunalPlace communalPlace, Time t) {
