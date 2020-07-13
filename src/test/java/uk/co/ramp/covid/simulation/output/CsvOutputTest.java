@@ -89,8 +89,4 @@ public class CsvOutputTest extends SimulationTest {
             }
         }
     }
-    
-    private String doubleToString(Double d) {
-        return d == null ? "" : d.toString();
-    }
 }
