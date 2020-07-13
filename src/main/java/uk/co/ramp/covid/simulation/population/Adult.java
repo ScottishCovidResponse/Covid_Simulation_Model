@@ -33,12 +33,12 @@ public class Adult extends Person {
 
     @Override
     public void reportInfection(DailyStats s) {
-        s.incInfectionsAdult();
+        s.adultInfected.increment();
     }
 
     @Override
     public void reportDeath(DailyStats s) {
-        s.incDeathsAdult();
+        s.adultDeaths.increment();
     }
 
     @Override

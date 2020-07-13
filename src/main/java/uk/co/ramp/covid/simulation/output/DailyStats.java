@@ -1,248 +1,202 @@
 package uk.co.ramp.covid.simulation.output;
 
-import org.apache.commons.csv.CSVPrinter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import uk.co.ramp.covid.simulation.util.Time;
-import uk.co.ramp.covid.simulation.population.*;
+import uk.co.ramp.covid.simulation.population.CStatus;
+import uk.co.ramp.covid.simulation.population.Person;
+import uk.co.ramp.covid.simulation.population.Population;
 
-import java.io.IOException;
 import java.util.Objects;
+import java.util.stream.Stream;
+import java.util.ArrayList;
+import java.util.List;
 
 /** DailyStats accumulates statistics, e.g. healthy/dead, for a particular day */
 public class DailyStats {
     private static final Logger LOGGER = LogManager.getLogger(DailyStats.class);
 
-    private final int day;
+    private List<Value<?>> all = new ArrayList<>(); // in csv column order
+    private List<IntValue> population = new ArrayList<>();
+    private List<IntValue> infected = new ArrayList<>();
+    private List<IntValue> dailyInfections = new ArrayList<>();
+    private List<IntValue> logged = new ArrayList<>();
+    private List<IntValue> deaths = new ArrayList<>();
+
+    public IntValue iter = add("iter");
+    public IntValue day = add("day").log("Day");
 
     // Daily cumulative statistics
-    private int healthy = 0;
-    private int exposed = 0;
-    private int asymptomatic = 0;
-    private int phase1 = 0;
-    private int phase2 = 0;
-    private int dead = 0;
-    private int recovered = 0;
+    public IntValue healthy = add("H").log("Healthy").addTo(population);
+    public IntValue exposed = add("L").log("Latent").addTo(population).addTo(infected);
+    public IntValue asymptomatic = add("A").log("Asymptomatic").addTo(population).addTo(infected);
+    public IntValue phase1 = add("P1").log("Phase 1").addTo(population).addTo(infected);
+    public IntValue phase2 = add("P2").log("Phase 2").addTo(population).addTo(infected);
+    public IntValue dead = add("D").log("Dead").addTo(population);
+    public IntValue recovered = add("R").log("Recovered").addTo(population);
 
     // Daily only statistics
-    private int homeInfectionsInhabitant = 0;
-    private int homeInfectionsVisitor = 0;
-    private int constructionSiteInfectionsWorker = 0;
-    private int constructionSiteInfectionsVisitor = 0;
-    private int hospitalInfectionsWorker = 0;
-    private int hospitalInfectionsVisitor = 0;
-    private int nurseryInfectionsWorker = 0;
-    private int nurseryInfectionsVisitor = 0;
-    private int officeInfectionsWorker = 0;
-    private int officeInfectionsVisitor = 0;
-    private int restaurantInfectionsWorker = 0;
-    private int restaurantInfectionsVisitor  = 0;
-    private int schoolInfectionsWorker = 0;
-    private int schoolInfectionsVisitor = 0;
-    private int shopInfectionsWorker = 0;
-    private int shopInfectionsVisitor = 0;
-    private int careHomeInfectionsWorker = 0;
-    private int careHomeInfectionsResident = 0;
-    private int seedInfections = 0;
-    private int transportInfections = 0;
+    public IntValue seedInfections = add("ISeed").addTo(dailyInfections);
+    public IntValue constructionSiteInfectionsWorker = add("ICs_W").addTo(dailyInfections);
+    public IntValue hospitalInfectionsWorker = add("IHos_W").addTo(dailyInfections);
+    public IntValue nurseryInfectionsWorker = add("INur_W").addTo(dailyInfections);
+    public IntValue officeInfectionsWorker = add("IOff_W").addTo(dailyInfections);
+    public IntValue restaurantInfectionsWorker = add("IRes_W").addTo(dailyInfections);
+    public IntValue schoolInfectionsWorker = add("ISch_W").addTo(dailyInfections);
+    public IntValue shopInfectionsWorker = add("ISho_W").addTo(dailyInfections);
+    public IntValue careHomeInfectionsWorker = add("ICHome_W").addTo(dailyInfections);
+    public IntValue homeInfectionsInhabitant = add("IHome_I").addTo(dailyInfections);
+    public IntValue careHomeInfectionsResident = add("ICHome_R").addTo(dailyInfections);
+    public IntValue constructionSiteInfectionsVisitor = add("ICs_V").addTo(dailyInfections);
+    public IntValue hospitalInfectionsVisitor = add("IHos_V").addTo(dailyInfections);
+    public IntValue nurseryInfectionsVisitor = add("INur_V").addTo(dailyInfections);
+    public IntValue officeInfectionsVisitor = add("IOff_V").addTo(dailyInfections);
+    public IntValue restaurantInfectionsVisitor  = add("IRes_V").addTo(dailyInfections);
+    public IntValue schoolInfectionsVisitor = add("ISch_V").addTo(dailyInfections);
+    public IntValue shopInfectionsVisitor = add("ISho_V").addTo(dailyInfections);
+    public IntValue homeInfectionsVisitor = add("IHome_V").addTo(dailyInfections);
+    public IntValue transportInfections = add("ITransport").addTo(dailyInfections);
 
     // Age Statistics
-    private int adultInfected = 0;
-    private int pensionerInfected = 0;
-    private int childInfected  = 0;
-    private int infantInfected = 0;
+    public IntValue adultInfected = add("IAdu");
+    public IntValue pensionerInfected = add("IPen");
+    public IntValue childInfected  = add("IChi");
+    public IntValue infantInfected = add("IInf");
 
     // Fatality Statistics
-    private int adultDeaths = 0;
-    private int pensionerDeaths = 0;
-    private int childDeaths = 0;
-    private int infantDeaths = 0;
-    private int hospitalDeaths = 0;
-    private int homeDeaths = 0;
-    private int careHomeDeaths = 0;
-    private int additionalDeaths = 0; //Deaths in a workplace/school/etc
-
-    // Infection rate stats
-    private Double secInfections = null;
-    private Double generationTime = null;
+    public IntValue adultDeaths = add("DAdul").addTo(deaths);
+    public IntValue pensionerDeaths = add("DPen").addTo(deaths);
+    public IntValue childDeaths = add("DChi").addTo(deaths);
+    public IntValue infantDeaths = add("DInf").addTo(deaths);
+    public IntValue homeDeaths = add("DHome");
+    public IntValue hospitalDeaths = add("DHospital");
+    public IntValue careHomeDeaths = add("DCareHome");
+    public IntValue additionalDeaths = add("DAdditional"); // Deaths in a workplace/school/etc
 
     // Hospitalisation Stats
-    private int inHospital = 0;
-    private int newlyHospitalised = 0;
+    public IntValue inHospital = add("NumHospital").log("Hospitalised");
+    public IntValue newlyHospitalised = add("HospitalisedToday");
+            
+    // Infection rate stats
+    public Value<Double> secInfections = new Value<Double>("SecInfections");
+    public Value<Double> generationTime = new Value<Double>("GenerationTime");
+
+    public class Value<T extends Number> {
+        private final String csvHeader;
+        protected String nameForLog;
+        protected T value;
+
+        protected Value(String csvHeader) {
+            all.add(this);
+            this.csvHeader = csvHeader;
+        }
+
+        public void set(T value) { this.value = value; }
+        public String header() { return csvHeader; } 
+
+        public String logString() {
+            return nameForLog + " = " + toString();
+        }
+
+        @Override
+        public String toString() {
+            return value == null ? "" : value.toString();
+        }
+
+        @Override
+        public int hashCode() { return value.hashCode(); }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            Value<?> other = (Value<?>) o;
+            return Objects.equals(value, other.value);
+        }
+    }
+
+    public class IntValue extends Value<Integer> {
+
+        public IntValue(String csvHeader) {
+            super(csvHeader);
+            value = 0;
+        }
+
+        public int get() { return value; }
+        public void increment() { value++; }
+
+        public IntValue log(String name) {
+            logged.add(this);
+            this.nameForLog = name;
+            return this;
+        }
+
+        public IntValue addTo(List<IntValue> list) {
+            list.add(this);
+            return this;
+        }
+    }
+
+    private IntValue add(String csvHeader) { return new IntValue(csvHeader); }
 
     public DailyStats(Time t) {
-        this.day = t.getAbsDay();
+        day.set(t.getAbsDay());
     }
 
     public void processPerson(Person p) {
         switch (p.cStatus()) {
-            case HEALTHY: healthy++; break;
-            case LATENT: exposed++; break;
-            case ASYMPTOMATIC: asymptomatic++; break;
-            case PHASE1: phase1++; break;
-            case PHASE2: phase2++; break;
-            case RECOVERED: recovered++; break;
-            case DEAD: dead++; break;
+            case HEALTHY: healthy.increment(); break;
+            case LATENT: exposed.increment(); break;
+            case ASYMPTOMATIC: asymptomatic.increment(); break;
+            case PHASE1: phase1.increment(); break;
+            case PHASE2: phase2.increment(); break;
+            case RECOVERED: recovered.increment(); break;
+            case DEAD: dead.increment(); break;
         }
-        
+
         if (p.isHospitalised() && !(p.cStatus() == CStatus.DEAD)) {
-            inHospital++;
+            inHospital.increment();
         }
     }
 
-    public void incrementDeaths(int deaths) {
-       dead += deaths;
+    private int sum(List<IntValue> stats) {
+        return stats.stream().mapToInt(s -> s.value).sum();
     }
 
     public int getTotalPopulation() {
-        return healthy + exposed + asymptomatic + phase1 + phase2 + dead + recovered;
+        return sum(population);
     }
 
     public int getTotalInfected() {
-        return exposed + asymptomatic + phase1 + phase2;
+        return sum(infected);
     }
 
-    public int getConstructionSiteInfectionsWorker() { return constructionSiteInfectionsWorker; }
-
-    public int getHomeInfectionsInhabitant() { return homeInfectionsInhabitant; }
-
-    public int getHomeInfectionsVisitor() { return homeInfectionsVisitor; }
-
-    public int getConstructionSiteInfectionsVisitor() { return constructionSiteInfectionsVisitor; }
-
-    public int getHospitalInfectionsWorker() { return hospitalInfectionsWorker; }
-
-    public int getHospitalInfectionsVisitor() { return hospitalInfectionsVisitor; }
-
-    public int getNurseryInfectionsWorker() { return nurseryInfectionsWorker; }
-
-    public int getNurseryInfectionsVisitor() { return nurseryInfectionsVisitor; }
-
-    public int getOfficeInfectionsWorker() { return officeInfectionsWorker; }
-
-    public int getOfficeInfectionsVisitor() { return officeInfectionsVisitor; }
-
-    public int getRestaurantInfectionsWorker() { return restaurantInfectionsWorker; }
-
-    public int getRestaurantInfectionsVisitor() { return restaurantInfectionsVisitor; }
-
-    public int getSchoolInfectionsWorker() { return schoolInfectionsWorker; }
-
-    public int getSchoolInfectionsVisitor() { return schoolInfectionsVisitor; }
-
-    public int getShopInfectionsWorker() { return shopInfectionsWorker; }
-
-    public int getShopInfectionsVisitor() { return shopInfectionsVisitor; }
+    public int getTotalDailyInfections() {
+        return sum(dailyInfections);
+    }
 
     public String logString() {
-        return LOGGER.getMessageFactory().newMessage("Day = {} Healthy = {} Latent = {} Asymptomatic = {} Phase 1 = {} " +
-                "Phase 2 = {} Hospitalised = {} Dead = {} Recovered = {}",
-                day, healthy, exposed, asymptomatic,phase1, phase2, inHospital, dead, recovered).getFormattedMessage();
+        return String.join(" ", logged.stream().map(s -> s.logString()).toArray(String[]::new));
     }
-
+    
     public void log(){
         LOGGER.info(logString());
     }
 
-    public void appendCSV(CSVPrinter csv, int iter) throws IOException {
-        csv.printRecord(iter, day, healthy, exposed, asymptomatic,
-                phase1, phase2, dead, recovered, seedInfections,
-                constructionSiteInfectionsWorker, hospitalInfectionsWorker, 
-                nurseryInfectionsWorker, officeInfectionsWorker, restaurantInfectionsWorker, schoolInfectionsWorker, 
-                shopInfectionsWorker, careHomeInfectionsWorker, homeInfectionsInhabitant, careHomeInfectionsResident,
-                constructionSiteInfectionsVisitor, hospitalInfectionsVisitor, nurseryInfectionsVisitor, 
-                officeInfectionsVisitor, restaurantInfectionsVisitor, schoolInfectionsVisitor, shopInfectionsVisitor,
-                homeInfectionsVisitor, transportInfections, adultInfected, pensionerInfected, childInfected, infantInfected, adultDeaths,
-                pensionerDeaths, childDeaths, infantDeaths, homeDeaths, hospitalDeaths, careHomeDeaths, additionalDeaths,
-                inHospital, newlyHospitalised, secInfections, generationTime);
+    public Iterable<?> csvRecords(int iter) {
+        this.iter.set(iter);
+        return all;
     }
 
-    public int getTotalDailyInfections () {
-        return constructionSiteInfectionsVisitor +
-                constructionSiteInfectionsWorker +
-                hospitalInfectionsVisitor +
-                hospitalInfectionsWorker +
-                restaurantInfectionsVisitor +
-                restaurantInfectionsWorker +
-                shopInfectionsVisitor +
-                shopInfectionsWorker +
-                schoolInfectionsVisitor +
-                schoolInfectionsWorker +
-                officeInfectionsVisitor +
-                officeInfectionsWorker +
-                nurseryInfectionsVisitor +
-                nurseryInfectionsWorker +
-                careHomeInfectionsResident +
-                careHomeInfectionsWorker +
-                homeInfectionsInhabitant +
-                homeInfectionsVisitor +
-                transportInfections +
-                seedInfections;
+    public Stream<String> csvHeaders() {
+        return all.stream().map(value -> value.header());
     }
 
-    public int getHealthy() {
-        return healthy;
-    }
-
-    public int getExposed() {
-        return exposed;
-    }
-
-    public int getAsymptomatic() {
-        return asymptomatic;
-    }
-
-    public int getPhase1() {
-        return phase1;
-    }
-
-    public int getPhase2() {
-        return phase2;
-    }
-
-    public int getDead() {
-        return dead;
-    }
-
-    public int getRecovered() {
-        return recovered;
-    }
-
-    public int getDay() {
-        return day;
-    }
-
-    public int getAdultInfected() { return adultInfected; }
-
-    public int getPensionerInfected() { return pensionerInfected; }
-
-    public int getChildInfected() { return childInfected; }
-
-    public int getInfantInfected() { return infantInfected; }
-
-    public int getAdultDeaths() { return adultDeaths; }
-
-    public int getPensionerDeaths() { return pensionerDeaths; }
-
-    public int getChildDeaths() { return childDeaths; }
-
-    public int getInfantDeaths() { return infantDeaths; }
-
-    public int getHospitalDeaths() { return hospitalDeaths; }
-
-    public int getHomeDeaths() { return homeDeaths; }
-
-    public int getTotalDeaths() { return adultDeaths + pensionerDeaths + childDeaths + infantDeaths; }
+    public int getTotalDeaths() { return sum(deaths); }
 
     @Override
     public int hashCode() {
-        return Objects.hash(day, healthy, exposed, asymptomatic, phase1, phase2, dead, recovered,
-                homeInfectionsInhabitant, homeInfectionsVisitor, constructionSiteInfectionsWorker,
-                constructionSiteInfectionsVisitor, hospitalInfectionsWorker, hospitalInfectionsVisitor,
-                nurseryInfectionsWorker, nurseryInfectionsVisitor, officeInfectionsWorker, officeInfectionsVisitor,
-                restaurantInfectionsWorker, restaurantInfectionsVisitor, schoolInfectionsWorker, schoolInfectionsVisitor,
-                shopInfectionsWorker, shopInfectionsVisitor, adultInfected, pensionerInfected, childInfected, infantInfected,
-                adultDeaths, pensionerDeaths, childDeaths, infantDeaths);
+        return Objects.hash(all);
     }
 
     @Override
@@ -250,182 +204,12 @@ public class DailyStats {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         DailyStats that = (DailyStats) o;
-        return day == that.day &&
-                healthy == that.healthy &&
-                exposed == that.exposed &&
-                asymptomatic == that.asymptomatic &&
-                phase1 == that.phase1 &&
-                phase2 == that.phase2 &&
-                dead == that.dead &&
-                recovered == that.recovered &&
-                homeInfectionsInhabitant == that.homeInfectionsInhabitant &&
-                homeInfectionsVisitor == that.homeInfectionsVisitor &&
-                constructionSiteInfectionsWorker == that.constructionSiteInfectionsWorker &&
-                constructionSiteInfectionsVisitor == that.constructionSiteInfectionsVisitor &&
-                hospitalInfectionsWorker == that.hospitalInfectionsWorker &&
-                hospitalInfectionsVisitor == that.hospitalInfectionsVisitor &&
-                nurseryInfectionsWorker == that.nurseryInfectionsWorker &&
-                nurseryInfectionsVisitor == that.nurseryInfectionsVisitor &&
-                officeInfectionsWorker == that.officeInfectionsWorker &&
-                officeInfectionsVisitor == that.officeInfectionsVisitor &&
-                restaurantInfectionsWorker == that.restaurantInfectionsWorker &&
-                restaurantInfectionsVisitor == that.restaurantInfectionsVisitor &&
-                schoolInfectionsWorker == that.schoolInfectionsWorker &&
-                schoolInfectionsVisitor == that.schoolInfectionsVisitor &&
-                shopInfectionsWorker == that.shopInfectionsWorker &&
-                shopInfectionsVisitor == that.shopInfectionsVisitor &&
-                adultInfected == that.adultInfected &&
-                pensionerInfected == that.pensionerInfected &&
-                childInfected == that.childInfected &&
-                infantInfected == that.infantInfected &&
-                adultDeaths == that.adultDeaths &&
-                pensionerDeaths == that.pensionerDeaths &&
-                childDeaths == that.childDeaths &&
-                infantDeaths == that.infantDeaths;
-    }
-    
-    public int getSeedInfections() { return seedInfections; }
-
-    public void incSeedInfections() { seedInfections++; }
-
-    public void incDeathsAdult() { adultDeaths++; }
-
-    public void incDeathsChild() {
-        childDeaths++;
-    }
-
-    public void incDeathsInfant() {
-        infantDeaths++;
-    }
-
-    public void incDeathsPensioner() {
-        pensionerDeaths++;
-    }
-
-    public void incInfectionsAdult() {
-        adultInfected++;
-    }
-
-    public void incInfectionsChild() {
-        childInfected++;
-    }
-
-    public void incInfectionsPensioner() {
-        pensionerInfected++;
-    }
-
-    public void incInfectionsInfant() {
-        infantInfected++;
-    }
-
-    public void incInfectionsConstructionSiteVisitor() {
-        constructionSiteInfectionsVisitor++;
-    }
-
-    public void incInfectionsOfficeVisitor() {
-        officeInfectionsVisitor++;
-    }
-
-    public void incInfectionsHospitalVisitor() {
-        hospitalInfectionsVisitor++;
-    }
-
-    public void incInfectionsSchoolVisitor() {
-        schoolInfectionsVisitor++;
-    }
-    
-    public void incInfectionsRestaurantVisitor() {
-        restaurantInfectionsVisitor++;
-    }
-    
-    public void incInfectionsShopVisitor() {
-        shopInfectionsVisitor++;
-    }
-
-    public void incInfectionsNurseryVisitor() {
-        nurseryInfectionsVisitor++;
-    }
-
-    public void incInfectionsHomeVisitor() {
-        homeInfectionsVisitor++;
-    }
-
-    public void incInfectionConstructionSiteWorker() {
-        constructionSiteInfectionsWorker++;
-    }
-
-    public void incInfectionOfficeWorker() {
-        officeInfectionsWorker++;
-    }
-
-    public void incInfectionHospitalWorker() {
-        hospitalInfectionsWorker++;
-    }
-
-    public void incInfectionsSchoolWorker() {
-        schoolInfectionsWorker++;
-    }
-
-    public void incInfectionsRestaurantWorker() {
-        restaurantInfectionsWorker++;
-    }
-
-    public void incInfectionsShopWorker() {
-        shopInfectionsWorker++;
-    }
-
-    public void incInfectionsNurseryWorker() {
-        nurseryInfectionsWorker++;
-    }
-
-    public void incInfectionsHomeInhabitant() {
-        homeInfectionsInhabitant++;
+        return all.equals(that.all);
     }
 
     public void determineRValues(Population p) {
         RStats rs = new RStats(p);
-        secInfections = rs.getSecInfections(day);
-        generationTime = rs.getMeanGenerationTime(day);
+        secInfections.set(rs.getSecInfections(day.get()));
+        generationTime.set(rs.getMeanGenerationTime(day.get()));
     }
-
-    public void incInfectionCareHomeWorker() {
-        careHomeInfectionsWorker++;
-    }
-
-    public void incInfectionCareHomeResident() {
-        careHomeInfectionsResident++;
-    }
-
-    public int getCareHomeInfectionsResident() { return careHomeInfectionsResident; }
-
-    public int getCareHomeInfectionsWorker() { return careHomeInfectionsWorker; }
-    
-    public int getCareHomeDeaths() { return careHomeDeaths; }
-
-    public void incHospitalDeaths() {
-        hospitalDeaths++;
-    }
-
-    public void incHomeDeaths() { homeDeaths++; }
-
-    public void incCareHomeDeaths() { careHomeDeaths++; }
-
-    public void incTransportInfections() { transportInfections++; }
-    
-    public int getTransportInfections() { return transportInfections; }
-
-    public void incAdditionalDeaths() { additionalDeaths++; }
-    
-    public int getAdditionalDeaths() { return additionalDeaths; }
-    
-    public void incHospitalised() { newlyHospitalised++; }
-
-    public int getNewlyHospitalised() { return newlyHospitalised; }
-
-    public int getNumInHospital() { return inHospital; }
-
-    public Double getSecInfections() { return secInfections; }
-
-    public Double getGenerationTime() { return generationTime; }
-
 }

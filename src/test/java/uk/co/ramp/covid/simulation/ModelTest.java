@@ -63,10 +63,10 @@ public class ModelTest {
             // Check there are deaths, but not too many
             // Near the start of runs this is sometimes untrue, e.g. we may have 8 recoveries and 1 death,
             // so we wait for enough recoveries for this to make sense.
-            if (s.getRecovered() >= 50) {
-                assertTrue(s.getDead() <= s.getRecovered() * 0.1);
+            if (s.recovered.get() >= 50) {
+                assertTrue(s.dead.get() <= s.recovered.get() * 0.1);
             }
-            assertTrue(s.getDead() + nInfections >= s.getRecovered() * 0.005);
+            assertTrue(s.dead.get() + nInfections >= s.recovered.get() * 0.005);
             assertTrue(s.getTotalInfected() <= lastTotalInfected * 2);
             lastTotalInfected = s.getTotalInfected();
         }
@@ -75,9 +75,9 @@ public class ModelTest {
         int totalDailyInfects = nInfections;
         int cummulativeI;
         for (DailyStats s : stats.get(0)) {
-            cummulativeI = s.getTotalInfected() + s.getRecovered() + s.getDead();
+            cummulativeI = s.getTotalInfected() + s.recovered.get() + s.dead.get();
             totalDailyInfects += s.getTotalDailyInfections();
-            assertEquals(s.getHealthy(), population - cummulativeI);
+            assertEquals(s.healthy.get(), population - cummulativeI);
             assertEquals(cummulativeI, totalDailyInfects);
         }
 
@@ -88,14 +88,14 @@ public class ModelTest {
         
         int totalDead = 0;
         for (DailyStats s : stats.get(0)) {
-            adultDeaths = s.getAdultDeaths();
-            pensionerDeaths += s.getPensionerDeaths();
-            childDeaths += s.getChildDeaths();
-            totalDead += s.getHomeDeaths() + s.getHospitalDeaths() + s.getCareHomeDeaths() + s.getAdditionalDeaths();
+            adultDeaths = s.adultDeaths.get();
+            pensionerDeaths += s.pensionerDeaths.get();
+            childDeaths += s.childDeaths.get();
+            totalDead += s.homeDeaths.get() + s.hospitalDeaths.get() + s.careHomeDeaths.get() + s.additionalDeaths.get();
         }
         
         List<DailyStats> s = stats.get(0);
-        assertEquals(s.get(s.size() - 1).getDead(), totalDead);
+        assertEquals(s.get(s.size() - 1).dead.get(), totalDead);
 
         if (CovidParameters.get().diseaseParameters.adultProgressionPhase2 < (double) CovidParameters.get().diseaseParameters.pensionerProgressionPhase2) {
             assertTrue(adultDeaths <= pensionerDeaths);
@@ -106,7 +106,7 @@ public class ModelTest {
 
         // "Regression Test" - Update this expected result, and enable this
         //    test when making any changes which should not affect results.
-        //assertEquals("Day = 59 Healthy = 1338 Latent = 379 Asymptomatic = 606 Phase 1 = 373 Phase 2 = 266 Hospitalised = 76 Dead = 81 Recovered = 6957",
+        //assertEquals("Day = 59 Healthy = 1338 Latent = 379 Asymptomatic = 606 Phase 1 = 373 Phase 2 = 266 Dead = 81 Recovered = 6957 Hospitalised = 76",
         //        s.get(s.size() - 1).logString());
     }
 

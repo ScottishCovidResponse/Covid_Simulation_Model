@@ -45,9 +45,9 @@ public class CareHome extends CommunalPlace implements Home {
     @Override
     public void reportInfection(Time t, Person p, DailyStats s) {
         if (!p.isInCare()) {
-            s.incInfectionCareHomeWorker();
+            s.careHomeInfectionsWorker.increment();
         } else {
-            s.incInfectionCareHomeResident();
+            s.careHomeInfectionsResident.increment();
         }
     }
 
@@ -76,7 +76,7 @@ public class CareHome extends CommunalPlace implements Home {
 
     @Override
     public void reportDeath(DailyStats s) {
-        s.incCareHomeDeaths();
+        s.careHomeDeaths.increment();
     }
 
     @Override

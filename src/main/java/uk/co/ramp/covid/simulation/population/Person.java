@@ -171,7 +171,7 @@ public abstract class Person {
 
     public void hospitalise(DailyStats s) {
         isHospitalised = true;
-        s.incHospitalised();
+        s.newlyHospitalised.increment();
     }
 
     public boolean goesToHosptialInPhase2() {
@@ -348,7 +348,7 @@ public abstract class Person {
         if (p.sample()) {
             cVirus = new Covid(this);
             cVirus.getInfectionLog().registerInfected(t);
-            s.incSeedInfections();
+            s.seedInfections.increment();
         }
     }
     

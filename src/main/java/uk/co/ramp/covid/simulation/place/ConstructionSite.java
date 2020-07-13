@@ -23,9 +23,9 @@ public class ConstructionSite extends CommunalPlace {
     @Override
     public void reportInfection(Time t, Person p, DailyStats s) {
         if (p.isWorking(this, t)) {
-            s.incInfectionConstructionSiteWorker();
+            s.constructionSiteInfectionsWorker.increment();
         } else {
-            s.incInfectionsConstructionSiteVisitor();
+            s.constructionSiteInfectionsVisitor.increment();
         }
     }
 

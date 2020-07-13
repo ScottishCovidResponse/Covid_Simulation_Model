@@ -84,13 +84,13 @@ public class DailyStatsTest extends SimulationTest {
                 .setNoOutput();
 
         List<List<DailyStats>> stats = run1.run(0);
-        int healthy = stats.get(0).get(nDays - 1).getHealthy();
-        int exposed = stats.get(0).get(nDays - 1).getExposed();
-        int asymptomatic = stats.get(0).get(nDays - 1).getAsymptomatic();
-        int phase1 = stats.get(0).get(nDays - 1).getPhase1();
-        int phase2 = stats.get(0).get(nDays - 1).getPhase2();
-        int dead = stats.get(0).get(nDays - 1).getDead();
-        int recovered = stats.get(0).get(nDays - 1).getRecovered();
+        int healthy = stats.get(0).get(nDays - 1).healthy.get();
+        int exposed = stats.get(0).get(nDays - 1).exposed.get();
+        int asymptomatic = stats.get(0).get(nDays - 1).asymptomatic.get();
+        int phase1 = stats.get(0).get(nDays - 1).phase1.get();
+        int phase2 = stats.get(0).get(nDays - 1).phase2.get();
+        int dead = stats.get(0).get(nDays - 1).dead.get();
+        int recovered = stats.get(0).get(nDays - 1).recovered.get();
         int expInfections = exposed + asymptomatic + phase1 + phase2;
 
         assertTrue("Number of healthy = 0", healthy > 0);
@@ -103,42 +103,42 @@ public class DailyStatsTest extends SimulationTest {
         assertEquals("Inconsistent number of infections", expInfections, stats.get(0).get(nDays - 1).getTotalInfected());
 
         for (int i = 0; i < stats.get(0).size(); i++) {
-            adultDeaths += stats.get(0).get(i).getAdultDeaths();
-            childDeaths += stats.get(0).get(i).getChildDeaths();
-            pensionerDeaths += stats.get(0).get(i).getPensionerDeaths();
-            infantDeaths += stats.get(0).get(i).getInfantDeaths();
-            adultInfected += stats.get(0).get(i).getAdultInfected();
-            childInfected += stats.get(0).get(i).getChildInfected();
-            pensionerInfected += stats.get(0).get(i).getPensionerInfected();
-            infantInfected += stats.get(0).get(i).getInfantInfected();
+            adultDeaths += stats.get(0).get(i).adultDeaths.get();
+            childDeaths += stats.get(0).get(i).childDeaths.get();
+            pensionerDeaths += stats.get(0).get(i).pensionerDeaths.get();
+            infantDeaths += stats.get(0).get(i).infantDeaths.get();
+            adultInfected += stats.get(0).get(i).adultInfected.get();
+            childInfected += stats.get(0).get(i).childInfected.get();
+            pensionerInfected += stats.get(0).get(i).pensionerInfected.get();
+            infantInfected += stats.get(0).get(i).infantInfected.get();
             dailyInfected += stats.get(0).get(i).getTotalDailyInfections();
-            seedInfections += stats.get(0).get(i).getSeedInfections();
+            seedInfections += stats.get(0).get(i).seedInfections.get();
 
-            homeInfectionsInhabitant += stats.get(0).get(i).getHomeInfectionsInhabitant();
-            homeInfectionsVisitor += stats.get(0).get(i).getHomeInfectionsVisitor();
-            constructionSiteInfectionsWorker += stats.get(0).get(i).getConstructionSiteInfectionsWorker();
-            constructionSiteInfectionsVisitor += stats.get(0).get(i).getConstructionSiteInfectionsVisitor();
-            hospitalInfectionsWorker += stats.get(0).get(i).getHospitalInfectionsWorker();
-            hospitalInfectionsVisitor += stats.get(0).get(i).getHospitalInfectionsVisitor();
-            nurseryInfectionsWorker += stats.get(0).get(i).getNurseryInfectionsWorker();
-            nurseryInfectionsVisitor += stats.get(0).get(i).getNurseryInfectionsVisitor();
-            officeInfectionsWorker += stats.get(0).get(i).getOfficeInfectionsWorker();
-            officeInfectionsVisitor += stats.get(0).get(i).getOfficeInfectionsVisitor();
-            restaurantInfectionsWorker += stats.get(0).get(i).getRestaurantInfectionsWorker();
-            restaurantInfectionsVisitor += stats.get(0).get(i).getRestaurantInfectionsVisitor();
-            schoolInfectionsWorker += stats.get(0).get(i).getSchoolInfectionsWorker();
-            schoolInfectionsVisitor += stats.get(0).get(i).getSchoolInfectionsVisitor();
-            shopInfectionsWorker += stats.get(0).get(i).getShopInfectionsWorker();
-            shopInfectionsVisitor += stats.get(0).get(i).getShopInfectionsVisitor();
-            careHomeInfectionsWorker += stats.get(0).get(i).getCareHomeInfectionsWorker();
-            careHomeInfectionsResident += stats.get(0).get(i).getCareHomeInfectionsResident();
-            transportInfections += stats.get(0).get(i).getTransportInfections();
+            homeInfectionsInhabitant += stats.get(0).get(i).homeInfectionsInhabitant.get();
+            homeInfectionsVisitor += stats.get(0).get(i).homeInfectionsVisitor.get();
+            constructionSiteInfectionsWorker += stats.get(0).get(i).constructionSiteInfectionsWorker.get();
+            constructionSiteInfectionsVisitor += stats.get(0).get(i).constructionSiteInfectionsVisitor.get();
+            hospitalInfectionsWorker += stats.get(0).get(i).hospitalInfectionsWorker.get();
+            hospitalInfectionsVisitor += stats.get(0).get(i).hospitalInfectionsVisitor.get();
+            nurseryInfectionsWorker += stats.get(0).get(i).nurseryInfectionsWorker.get();
+            nurseryInfectionsVisitor += stats.get(0).get(i).nurseryInfectionsVisitor.get();
+            officeInfectionsWorker += stats.get(0).get(i).officeInfectionsWorker.get();
+            officeInfectionsVisitor += stats.get(0).get(i).officeInfectionsVisitor.get();
+            restaurantInfectionsWorker += stats.get(0).get(i).restaurantInfectionsWorker.get();
+            restaurantInfectionsVisitor += stats.get(0).get(i).restaurantInfectionsVisitor.get();
+            schoolInfectionsWorker += stats.get(0).get(i).schoolInfectionsWorker.get();
+            schoolInfectionsVisitor += stats.get(0).get(i).schoolInfectionsVisitor.get();
+            shopInfectionsWorker += stats.get(0).get(i).shopInfectionsWorker.get();
+            shopInfectionsVisitor += stats.get(0).get(i).shopInfectionsVisitor.get();
+            careHomeInfectionsWorker += stats.get(0).get(i).careHomeInfectionsWorker.get();
+            careHomeInfectionsResident += stats.get(0).get(i).careHomeInfectionsResident.get();
+            transportInfections += stats.get(0).get(i).transportInfections.get();
 
             // Hospitalised will double count people (since you might in in hospital multiple days),
             // so we need to account for this in the test cases
-            hospitalised += stats.get(0).get(i).getNumInHospital();
-            newlyHospitalised += stats.get(0).get(i).getNewlyHospitalised();
-            totalPhase2 +=  stats.get(0).get(i).getPhase2();
+            hospitalised += stats.get(0).get(i).inHospital.get();
+            newlyHospitalised += stats.get(0).get(i).newlyHospitalised.get();
+            totalPhase2 +=  stats.get(0).get(i).phase2.get();
         }
         int expDeaths = adultDeaths + childDeaths + pensionerDeaths + infantDeaths;
         int expInfected = adultInfected + childInfected + pensionerInfected + infantInfected + seedInfections;
@@ -151,7 +151,7 @@ public class DailyStatsTest extends SimulationTest {
                 schoolInfectionsWorker + schoolInfectionsVisitor +
                 shopInfectionsWorker + shopInfectionsVisitor + transportInfections +
                 seedInfections + careHomeInfectionsResident + careHomeInfectionsWorker;
-        assertEquals("Inconsistent number of deaths", expDeaths, stats.get(0).get(nDays - 1).getDead());
+        assertEquals("Inconsistent number of deaths", expDeaths, stats.get(0).get(nDays - 1).dead.get());
         assertEquals("Inconsistent number of infected", expInfected, dailyInfected);
         assertEquals("Inconsistent number of place infections", expPlaceInfections, dailyInfected);
         
@@ -190,10 +190,10 @@ public class DailyStatsTest extends SimulationTest {
         int totalAdditionalDeaths = 0;
         int totalDeaths = 0;
         for (DailyStats s : stats.get(0)) {
-            totalHospitalDeaths += s.getHospitalDeaths();
-            totalCareHomeDeaths += s.getCareHomeDeaths();
-            totalHomeDeaths += s.getHomeDeaths();
-            totalAdditionalDeaths += s.getAdditionalDeaths();
+            totalHospitalDeaths += s.hospitalDeaths.get();
+            totalCareHomeDeaths += s.careHomeDeaths.get();
+            totalHomeDeaths += s.homeDeaths.get();
+            totalAdditionalDeaths += s.additionalDeaths.get();
             totalDeaths += s.getTotalDeaths();
         }
         int actualDeaths = totalHospitalDeaths + totalCareHomeDeaths + totalHomeDeaths + totalAdditionalDeaths;

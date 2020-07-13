@@ -15,12 +15,12 @@ public class Child extends Person {
 
     @Override
     public void reportInfection(DailyStats s) {
-        s.incInfectionsChild();
+        s.childInfected.increment();
     }
 
     @Override
     public void reportDeath(DailyStats s) {
-        s.incDeathsChild();
+        s.childDeaths.increment();
     }
 
     // All children go to school

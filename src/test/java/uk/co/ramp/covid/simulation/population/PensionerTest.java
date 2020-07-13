@@ -23,10 +23,10 @@ public class PensionerTest extends SimulationTest {
         stats = p.simulate(nDays);
 
         pensioner.reportInfection(stats.get(0));
-        assertEquals("Unexpected number of pensioner infections", 1, stats.get(0).getPensionerInfected());
+        assertEquals("Unexpected number of pensioner infections", 1, stats.get(0).pensionerInfected.get());
 
         pensioner.reportDeath(stats.get(0));
-        assertEquals("Unexpected number of pensioner deaths", 1, stats.get(0).getPensionerDeaths());
+        assertEquals("Unexpected number of pensioner deaths", 1, stats.get(0).pensionerDeaths.get());
     }
 
     @Test (expected = InvalidAgeException.class)

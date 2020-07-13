@@ -24,9 +24,9 @@ public class School extends CommunalPlace {
     @Override
     public void reportInfection(Time t, Person p, DailyStats s) {
         if (p.isWorking(this, t) && p.getAge() >= 18) {
-            s.incInfectionsSchoolWorker();
+            s.schoolInfectionsWorker.increment();
         } else {
-            s.incInfectionsSchoolVisitor();
+            s.schoolInfectionsVisitor.increment();
         }
     }
 

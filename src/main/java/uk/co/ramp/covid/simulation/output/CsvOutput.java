@@ -25,9 +25,10 @@ public class CsvOutput {
         CSVPrinter printer = new CSVPrinter(out, CSVFormat.DEFAULT.withHeader(headers));
         for (int i = 0; i < stats.size(); i++) {
             for (DailyStats s : stats.get(i)) {
-                s.appendCSV(printer, startIterID + i);
+                printer.printRecord(s.csvRecords(startIterID + i));
             }
         }
+        printer.close();
     }
     
     public static void writeDailyStats(Path outF, int startIterID, List<List<DailyStats>> stats) {

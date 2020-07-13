@@ -14,12 +14,12 @@ public class Pensioner extends Person {
 
     @Override
     public void reportInfection(DailyStats s) {
-        s.incInfectionsPensioner();
+        s.pensionerInfected.increment();
     }
 
     @Override
     public void reportDeath(DailyStats s) {
-        s.incDeathsPensioner();
+        s.pensionerDeaths.increment();
     }
 
     @Override
