@@ -1,5 +1,6 @@
 package uk.co.ramp.covid.simulation.place;
 
+import uk.co.ramp.covid.simulation.parameters.CovidParameters;
 import uk.co.ramp.covid.simulation.population.Person;
 import uk.co.ramp.covid.simulation.util.Time;
 
@@ -23,5 +24,13 @@ public class CovidHospital extends Hospital {
                 }
             }
         }
+    }
+
+    @Override
+    public double getEnvironmentAdjustment(Person susceptible, Person infected, Time t) {
+        if(!susceptible.isHospitalised() && infected.isHospitalised()) {
+            return CovidParameters.get().hospitalisationParameters.hospitalisationTransmissionReduction;
+        }
+        return environmentAdjustment;
     }
 }

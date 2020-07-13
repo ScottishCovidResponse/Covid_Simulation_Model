@@ -94,12 +94,4 @@ public class Hospital extends CommunalPlace {
         return transP;
     }
     
-    @Override
-    public double getEnvironmentAdjustment(Person susceptible, Person infected, Time t) {
-    	
-    	if(!susceptible.isHospitalised() && infected.isHospitalised() && this instanceof CovidHospital) {
-    		return CovidParameters.get().hospitalisationParameters.hospitalisationTransmissionReduction;
-    	}
-    	else return environmentAdjustment;
-    }
 }
