@@ -103,6 +103,11 @@ public class ModelTest {
         if (CovidParameters.get().diseaseParameters.childProgressionPhase2 < (double) CovidParameters.get().diseaseParameters.adultProgressionPhase2) {
             assertTrue(childDeaths <= pensionerDeaths);
         }
+
+        // "Regression Test" - Update this expected result, and enable this
+        //    test when making any changes which should not affect results.
+        //assertEquals("Day = 59 Healthy = 1338 Latent = 379 Asymptomatic = 606 Phase 1 = 373 Phase 2 = 266 Hospitalised = 76 Dead = 81 Recovered = 6957",
+        //        s.get(s.size() - 1).logString());
     }
 
     @Test
