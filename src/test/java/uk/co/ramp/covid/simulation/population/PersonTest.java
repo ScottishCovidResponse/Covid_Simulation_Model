@@ -12,14 +12,14 @@ public class PersonTest extends SimulationTest {
     public void testInfect() {
         //Test that the infect() method returns true
         Person person = new Adult(30, Person.Sex.FEMALE);
-        assertTrue("Person unexpectedly not infected", person.infect());
+        assertTrue("Person unexpectedly not infected", person.forceInfect());
     }
 
     @Test
     public void testInfectionStatus() {
         //Test that an infected person's infection status is true
         Person person = new Adult(30, Person.Sex.MALE);
-        boolean inf = person.infect();
+        boolean inf = person.forceInfect();
         assertTrue("Unexpected value returned by infect()", inf);
         assertTrue("Person unexpectedly not infected", person.getInfectionStatus());
     }

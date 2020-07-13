@@ -83,7 +83,7 @@ public abstract class Household extends Place implements Home {
         }
 
         Person cPers = inhabitants.get(RNG.get().nextInt(0, inhabitants.size() - 1));
-        if (cPers.infect()) {
+        if (cPers.forceInfect()) {
             // Seeding happens at the start so we use the default time here.
             // This will need to be altered to allow seeds during a run if required.
             cPers.getcVirus().getInfectionLog().registerInfected(new Time());

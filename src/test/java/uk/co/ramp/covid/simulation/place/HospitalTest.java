@@ -70,7 +70,7 @@ public class HospitalTest extends SimulationTest {
         }
 
         assert inf != null;
-        inf.infect();
+        inf.forceInfect();
         inf.getcVirus().forceSymptomatic(true);
 
         Time t = new Time();
@@ -158,7 +158,7 @@ public class HospitalTest extends SimulationTest {
         }
 
         assertNotNull("No person found", inf);
-        inf.infect();
+        inf.forceInfect();
         inf.getcVirus().forceSymptomatic(true);
 
         Time t = new Time();

@@ -149,14 +149,12 @@ public abstract class Person {
         return isQuarantined;
     }
 
-    public boolean infect() {
-        boolean inf = false;
-        if (!this.getInfectionStatus()) {
+    public boolean forceInfect() {
+        if (cVirus == null) {
             this.cVirus = new Covid(this);
-            inf = true;
+            return true;
         }
-
-        return inf;
+        return false;
     }
 
     public boolean isInCare() {
