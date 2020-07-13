@@ -338,7 +338,7 @@ public abstract class Person {
     }
 
     public void seedInfectionChallenge(Probability p, Time t, DailyStats s) {
-        if (p.sample()) {
+        if (cVirus == null && p.sample()) {
             cVirus = new Covid(this);
             cVirus.getInfectionLog().registerInfected(t);
             s.incSeedInfections();
