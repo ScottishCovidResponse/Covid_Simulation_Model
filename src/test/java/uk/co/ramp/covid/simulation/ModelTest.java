@@ -1,6 +1,7 @@
 package uk.co.ramp.covid.simulation;
 
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.google.gson.JsonParseException;
@@ -103,11 +104,16 @@ public class ModelTest {
         if (CovidParameters.get().diseaseParameters.childProgressionPhase2 < (double) CovidParameters.get().diseaseParameters.adultProgressionPhase2) {
             assertTrue(childDeaths <= pensionerDeaths);
         }
-
-        // "Regression Test" - Update this expected result, and enable this
-        //    test when making any changes which should not affect results.
-        //assertEquals("Day = 59 Healthy = 1338 Latent = 379 Asymptomatic = 606 Phase 1 = 373 Phase 2 = 266 Dead = 81 Recovered = 6957 Hospitalised = 76",
-        //        s.get(s.size() - 1).logString());
+    }
+    
+    @Ignore("this regression test is not kept up-to-date")
+    @Test
+    public void regressionTest() {
+        List<DailyStats> s = cachedStats.get(0);
+        // Update this expected result, and temporarily enable this test
+        //   when making any changes which should not affect results.
+        assertEquals("Day = 59 Healthy = 1338 Latent = 379 Asymptomatic = 606 Phase 1 = 373 Phase 2 = 266 Dead = 81 Recovered = 6957 Hospitalised = 76",
+                s.get(s.size() - 1).logString());
     }
 
     @Test
