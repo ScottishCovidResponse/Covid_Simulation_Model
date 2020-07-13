@@ -47,9 +47,9 @@ public class Shop extends CommunalPlace {
     @Override
     public void reportInfection(Time t, Person p, DailyStats s) {
         if (p.isWorking(this, t)) {
-            s.incInfectionsShopWorker();
+            s.shopInfectionsWorker.increment();
         } else {
-            s.incInfectionsShopVisitor();
+            s.shopInfectionsVisitor.increment();
         }
     }
 

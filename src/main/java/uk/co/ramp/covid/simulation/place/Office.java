@@ -22,9 +22,9 @@ public class Office extends CommunalPlace {
     @Override
     public void reportInfection(Time t, Person p, DailyStats s) {
         if (p.isWorking(this, t)) {
-            s.incInfectionOfficeWorker();
+            s.officeInfectionsWorker.increment();
         } else {
-            s.incInfectionsOfficeVisitor();
+            s.officeInfectionsVisitor.increment();
         }
     }
 

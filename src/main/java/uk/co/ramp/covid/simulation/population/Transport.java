@@ -48,6 +48,6 @@ public class Transport extends Place {
 
     @Override
     public void reportInfection(Time t, Person p, DailyStats s) {
-        s.incTransportInfections();
+        s.transportInfections.increment();
     }
 }

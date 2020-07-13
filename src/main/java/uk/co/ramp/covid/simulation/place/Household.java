@@ -161,9 +161,9 @@ public abstract class Household extends Place implements Home {
     @Override
     public void reportInfection(Time t, Person p, DailyStats s) {
         if (getInhabitants().contains(p)) {
-            s.incInfectionsHomeInhabitant();
+            s.homeInfectionsInhabitant.increment();
         } else {
-            s.incInfectionsHomeVisitor();
+            s.homeInfectionsVisitor.increment();
         }
     }
     
@@ -482,7 +482,7 @@ public abstract class Household extends Place implements Home {
 
     @Override
     public void reportDeath(DailyStats s) {
-        s.incHomeDeaths();
+        s.homeDeaths.increment();
     }
 
     public void setLockdownShopVisitFrequencyAdjustment(double lockdownShopVisitFrequencyAdjustment) {

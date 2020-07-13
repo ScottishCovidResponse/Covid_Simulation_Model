@@ -34,10 +34,10 @@ public class InfantTest extends SimulationTest {
         stats = p.simulate(nDays);
 
         infant.reportInfection(stats.get(0));
-        assertEquals("Unexpected number of infant infections", 1, stats.get(0).getInfantInfected());
+        assertEquals("Unexpected number of infant infections", 1, stats.get(0).infantInfected.get());
 
         infant.reportDeath(stats.get(0));
-        assertEquals("Unexpected number of infant deaths", 1, stats.get(0).getInfantDeaths());
+        assertEquals("Unexpected number of infant deaths", 1, stats.get(0).infantDeaths.get());
     }
 
     @Test (expected = InvalidAgeException.class)

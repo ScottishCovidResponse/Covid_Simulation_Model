@@ -29,12 +29,12 @@ public class Infant extends Person {
 
     @Override
     public void reportInfection(DailyStats s) {
-        s.incInfectionsInfant();
+        s.infantInfected.increment();
     }
 
     @Override
     public void reportDeath(DailyStats s) {
-        s.incDeathsInfant();
+        s.infantDeaths.increment();
     }
 
     @Override

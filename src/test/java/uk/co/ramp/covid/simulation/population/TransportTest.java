@@ -27,7 +27,7 @@ public class TransportTest extends SimulationTest {
         
         int tinf = 0;
         for (DailyStats s : istats) {
-            tinf += s.getTransportInfections();
+            tinf += s.transportInfections.get();
         }
         assertTrue(tinf > 0);
 

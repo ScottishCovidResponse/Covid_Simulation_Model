@@ -47,9 +47,9 @@ public class Hospital extends CommunalPlace {
     @Override
     public void reportInfection(Time t, Person p, DailyStats s) {
         if (p.isWorking(this, t)) {
-            s.incInfectionHospitalWorker();
+            s.hospitalInfectionsWorker.increment();
         } else {
-            s.incInfectionsHospitalVisitor();
+            s.hospitalInfectionsVisitor.increment();
         }
     }
     
@@ -82,7 +82,7 @@ public class Hospital extends CommunalPlace {
 
     @Override
     public void reportDeath(DailyStats s) {
-        s.incHospitalDeaths();
+        s.hospitalDeaths.increment();
     }
 
     @Override

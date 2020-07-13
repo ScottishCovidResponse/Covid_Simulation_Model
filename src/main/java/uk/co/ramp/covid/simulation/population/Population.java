@@ -355,7 +355,7 @@ public class Population {
             stats.add(this.processCases(dStats));
 
             if (!rPrinted) {
-                if (shouldPrintR || dStats.getRecovered() >= populationSize * 0.05) {
+                if (shouldPrintR || dStats.recovered.get() >= populationSize * 0.05) {
                     printR(dStats, t.getAbsDay());
                 }
             }
@@ -375,7 +375,7 @@ public class Population {
 
     /** Log the R value for the first 5% of recoveries or lockdown */
     private void printR(DailyStats s, int absDay) {
-        if (s.getRecovered() >= populationSize * 0.05) {
+        if (s.recovered.get() >= populationSize * 0.05) {
             RStats rs = new RStats(this);
             LOGGER.info("R0 in initial stage: " + rs.getMeanRBefore(absDay));
             rPrinted = true;

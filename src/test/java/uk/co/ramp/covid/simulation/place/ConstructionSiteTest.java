@@ -63,7 +63,7 @@ public class ConstructionSiteTest extends SimulationTest {
         List<List<DailyStats>> stats = m.run(0);
 
         for (DailyStats s : stats.get(0)) {
-            assertEquals("Unexpected construction site infections", 0, s.getConstructionSiteInfectionsWorker());
+            assertEquals("Unexpected construction site infections", 0, s.constructionSiteInfectionsWorker.get());
         }
     }
 
