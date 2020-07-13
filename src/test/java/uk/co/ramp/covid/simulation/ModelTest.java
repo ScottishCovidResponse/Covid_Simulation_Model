@@ -1,16 +1,23 @@
 package uk.co.ramp.covid.simulation;
 
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.google.gson.JsonParseException;
 import uk.co.ramp.covid.simulation.lockdown.FullLockdownEvent;
+import uk.co.ramp.covid.simulation.output.CsvOutput;
 import uk.co.ramp.covid.simulation.output.DailyStats;
 import uk.co.ramp.covid.simulation.parameters.CovidParameters;
 import uk.co.ramp.covid.simulation.parameters.ParameterIO;
 import uk.co.ramp.covid.simulation.util.Time;
 
 import java.io.IOException;
+import java.io.StringWriter;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -103,11 +110,36 @@ public class ModelTest {
         if (CovidParameters.get().diseaseParameters.childProgressionPhase2 < (double) CovidParameters.get().diseaseParameters.adultProgressionPhase2) {
             assertTrue(childDeaths <= pensionerDeaths);
         }
+    }
 
-        // "Regression Test" - Update this expected result, and enable this
-        //    test when making any changes which should not affect results.
-        //assertEquals("Day = 59 Healthy = 1338 Latent = 379 Asymptomatic = 606 Phase 1 = 373 Phase 2 = 266 Dead = 81 Recovered = 6957 Hospitalised = 76",
-        //        s.get(s.size() - 1).logString());
+    // The following "regression tests" are not being kept up-to-date, because
+    //   we want to keep our life simple, and avoid git merge conflicts.
+    // Please avoid committing changes to the expected results, and enable 
+    //   these tests temporarily when making any changes which should not
+    //   affect results.
+
+    @Ignore("this regression test is not kept up-to-date")
+    @Test
+    public void quickSimpleRegressionTest() throws IOException {
+
+        List<DailyStats> s = cachedStats.get(0);
+        assertEquals("Day = 59 Healthy = 1338 Latent = 379 Asymptomatic = 606 Phase 1 = 373 Phase 2 = 266 Dead = 81 Recovered = 6957 Hospitalised = 76",
+                s.get(s.size() - 1).logString());
+    }
+
+    @Ignore("this regression test is not kept up-to-date")
+    @Test
+    public void csvOutputRegressionTest() throws IOException {
+
+        StringWriter sw = new StringWriter();
+        CsvOutput.writeDailyStats(sw, 0, cachedStats);
+
+        Path expectedCsvPath = Paths.get("src/test/resources/regression_test_out.csv");
+        // To update test data: Files.writeString(expectedCsvPath, sw.toString());
+        String expectedCsvContents = new String(
+                Files.readAllBytes(expectedCsvPath), StandardCharsets.UTF_8);
+
+        assertEquals(expectedCsvContents, sw.toString());
     }
 
     @Test
