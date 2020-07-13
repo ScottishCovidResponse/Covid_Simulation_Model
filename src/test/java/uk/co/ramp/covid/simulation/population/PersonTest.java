@@ -28,7 +28,7 @@ public class PersonTest extends SimulationTest {
     public void testStepInfection() {
         //Test that stepInfection returns a valid status
         Person person = new Adult(30, Person.Sex.FEMALE);
-        person.infChallenge(100.0);
+        person.infChallenge(1.0);
         assertNotNull("Invalid CStatus", person.stepInfection(new Time()));
     }
 
@@ -39,7 +39,7 @@ public class PersonTest extends SimulationTest {
         assertSame("Person not healthy", CStatus.HEALTHY, person.cStatus());
 
         //Test the status of an infected person is not healthy
-        person.infChallenge(100.0);
+        person.infChallenge(1.0);
         person.stepInfection(new Time());
         assertNotSame("Person unexpectedly healthy", CStatus.HEALTHY, person.cStatus());
 

@@ -4,7 +4,6 @@
 
 package uk.co.ramp.covid.simulation.population;
 
-import org.apache.commons.math3.random.RandomDataGenerator;
 import uk.co.ramp.covid.simulation.covid.Covid;
 import uk.co.ramp.covid.simulation.parameters.CovidParameters;
 import uk.co.ramp.covid.simulation.output.DailyStats;
@@ -39,7 +38,6 @@ public abstract class Person {
     private final boolean willQuarantine;
     
     private Boolean testOutcome = null;
-    protected final RandomDataGenerator rng;
 
     private boolean isHospitalised = false;
     private boolean goesToHospitalInPhase2;
@@ -68,7 +66,6 @@ public abstract class Person {
     public Person(int age, Sex sex) {
         this.age = age;
         this.sex = sex;
-        this.rng = RNG.get();
         this.willQuarantine = PopulationParameters.get().personProperties.pQuarantinesIfSymptomatic.sample();
         this.personId = nPeople++;
         
@@ -185,8 +182,9 @@ public abstract class Person {
     }
 
     public boolean infChallenge(double environmentAdjustment) {
-        if (rng.nextUniform(0, 1) < environmentAdjustment * covidSusceptibleVal && this.cVirus == null) {
-            this.cVirus = new Covid(this);
+        Probability pInf = new Probability(environmentAdjustment * covidSusceptibleVal);
+        if (cVirus == null && pInf.sample()) {
+            cVirus = new Covid(this);
             return true;
         }
         return false;
