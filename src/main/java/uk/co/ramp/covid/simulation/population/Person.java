@@ -71,8 +71,12 @@ public abstract class Person {
         
         this.covidMortalityAgeAdjustment = Math.pow((double) age / 85.0, 2.0);
         
-        if(age <= 20) this.covidSusceptibleVal = PopulationParameters.get().personProperties.pSusceptibleChild; // The original paper gave parameters broken at age 20
-        else this.covidSusceptibleVal = 1.0;
+        if(age <= 20) {
+            // The original paper gave parameters broken at age 20
+            this.covidSusceptibleVal = PopulationParameters.get().personProperties.pSusceptibleChild;
+        } else {
+            this.covidSusceptibleVal = 1.0;
+        }
 
     }
 
