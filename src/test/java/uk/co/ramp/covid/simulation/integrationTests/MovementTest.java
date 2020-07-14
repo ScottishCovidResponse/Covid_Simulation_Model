@@ -303,7 +303,7 @@ public class MovementTest extends SimulationTest {
         p.setPostHourHook((pop, t) -> {
             if (t.getHour() == 5) {
                 Person per = isolating.get(0);
-                per.infect();
+                per.forceInfect();
                 per.getcVirus().forceSymptomatic(true);
                 // Usually there's a delay before symptonms but we just force it here
                 double time = per.getcVirus().getSymptomDelay() + 1;
@@ -369,7 +369,7 @@ public class MovementTest extends SimulationTest {
         Person per = iso.getInhabitants().get(0);
         per.forceQuarantine();
 
-        per.infect();
+        per.forceInfect();
         per.getcVirus().forceSymptomatic(true);
         // Usually there's a delay before symptonms but we just force it here
         double time = per.getcVirus().getSymptomDelay() + 1;
@@ -406,7 +406,7 @@ public class MovementTest extends SimulationTest {
         Person per = iso.getInhabitants().get(0);
         per.forceQuarantine();
 
-        per.infect();
+        per.forceInfect();
         per.getcVirus().forceSymptomatic(true);
 
         //  Usually there's a delay before symptonms but we just force it here

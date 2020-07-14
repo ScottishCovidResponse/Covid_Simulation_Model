@@ -83,7 +83,7 @@ public class CareHomeTest extends SimulationTest {
             }
         }
         assert inf != null;
-        inf.infect();
+        inf.forceInfect();
         inf.getcVirus().forceSymptomatic(true);
         
         Time t = new Time(0);

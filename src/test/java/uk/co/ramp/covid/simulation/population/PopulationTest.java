@@ -202,7 +202,7 @@ public class PopulationTest extends SimulationTest {
 
         //Check that there are just 10 infections amongst the population
         for (Person p : pop.getAllPeople()) {
-            if (p.getInfectionStatus()) {
+            if (p.isInfected()) {
                 nInfected++;
             }
         }

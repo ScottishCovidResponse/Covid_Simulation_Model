@@ -4,18 +4,14 @@
 
 package uk.co.ramp.covid.simulation.population;
 
-import org.apache.commons.math3.random.RandomDataGenerator;
 import uk.co.ramp.covid.simulation.covid.Covid;
 import uk.co.ramp.covid.simulation.parameters.CovidParameters;
 import uk.co.ramp.covid.simulation.output.DailyStats;
 import uk.co.ramp.covid.simulation.parameters.HospitalApptInfo;
-import uk.co.ramp.covid.simulation.place.Hospital;
+import uk.co.ramp.covid.simulation.place.*;
 import uk.co.ramp.covid.simulation.util.HospitalAppt;
 import uk.co.ramp.covid.simulation.util.Time;
 import uk.co.ramp.covid.simulation.parameters.PopulationParameters;
-import uk.co.ramp.covid.simulation.place.CareHome;
-import uk.co.ramp.covid.simulation.place.CommunalPlace;
-import uk.co.ramp.covid.simulation.place.Place;
 import uk.co.ramp.covid.simulation.util.Probability;
 import uk.co.ramp.covid.simulation.util.RNG;
 
@@ -39,7 +35,6 @@ public abstract class Person {
     private final boolean willQuarantine;
     
     private Boolean testOutcome = null;
-    protected final RandomDataGenerator rng;
 
     private boolean isHospitalised = false;
     private boolean goesToHospitalInPhase2;
@@ -68,14 +63,17 @@ public abstract class Person {
     public Person(int age, Sex sex) {
         this.age = age;
         this.sex = sex;
-        this.rng = RNG.get();
         this.willQuarantine = PopulationParameters.get().personProperties.pQuarantinesIfSymptomatic.sample();
         this.personId = nPeople++;
         
         this.covidMortalityAgeAdjustment = setMortality();
         
-        if(age <= 20) this.covidSusceptibleVal = PopulationParameters.get().personProperties.pSusceptibleChild; // The original paper gave parameters broken at age 20
-        else this.covidSusceptibleVal = 1.0;
+        if(age <= 20) {
+            // The original paper gave parameters broken at age 20
+            this.covidSusceptibleVal = PopulationParameters.get().personProperties.pSusceptibleChild;
+        } else {
+            this.covidSusceptibleVal = 1.0;
+        }
 
     }
 
@@ -155,14 +153,12 @@ public abstract class Person {
         return isQuarantined;
     }
 
-    public boolean infect() {
-        boolean inf = false;
-        if (!this.getInfectionStatus()) {
+    public boolean forceInfect() {
+        if (cVirus == null) {
             this.cVirus = new Covid(this);
-            inf = true;
+            return true;
         }
-
-        return inf;
+        return false;
     }
 
     public boolean isInCare() {
@@ -178,22 +174,20 @@ public abstract class Person {
         return goesToHospitalInPhase2;
     }
 
-    public boolean isinfected() {
+    public boolean isInfected() {
         return cVirus != null && !recovered;
     }
 
-    //Don't mess with this method
-    public boolean getInfectionStatus() {
-        return !(this.cVirus == null);
-    }
-
-    public CStatus stepInfection(Time t) {
-        return this.cVirus.stepInfection(t);
+    public void stepInfection(Time t) {
+        if (cVirus != null) {
+            cVirus.stepInfection(t);
+        }
     }
 
     public boolean infChallenge(double environmentAdjustment) {
-        if (rng.nextUniform(0, 1) < environmentAdjustment * covidSusceptibleVal && this.cVirus == null) {
-            this.cVirus = new Covid(this);
+        Probability pInf = new Probability(environmentAdjustment * covidSusceptibleVal);
+        if (cVirus == null && pInf.sample()) {
+            cVirus = new Covid(this);
             return true;
         }
         return false;
@@ -221,13 +215,8 @@ public abstract class Person {
 
     // This method is pretty important, it returns the Covid infection status
     public CStatus cStatus() {
-        if (this.getInfectionStatus()) {
-            if (this.cVirus.isLatent()) { return CStatus.LATENT; }
-            if (this.cVirus.isAsymptomatic()) { return CStatus.ASYMPTOMATIC; }
-            if (this.cVirus.isPhase1()) { return CStatus.PHASE1; }
-            if (this.cVirus.isPhase2()) { return CStatus.PHASE2; }
-            if (this.cVirus.isDead()) { return CStatus.DEAD; }
-            if (this.cVirus.isRecovered()) { return CStatus.RECOVERED; }
+        if (cVirus != null) {
+            return cVirus.getStatus();
         }
         return CStatus.HEALTHY;
     }
@@ -260,7 +249,9 @@ public abstract class Person {
     public abstract boolean avoidsPhase2(double testP);
 
     public boolean isWorking(CommunalPlace communalPlace, Time t) {
-        if (primaryPlace == null || shifts == null
+        if (primaryPlace == null
+                || shifts == null
+                || primaryPlace != communalPlace
                 || isFurloughed() || isHospitalised
                 || !communalPlace.isOpen(t)) {
             return false;
@@ -273,9 +264,7 @@ public abstract class Person {
             end += 24;
         }
 
-        return primaryPlace == communalPlace
-                && t.getHour() >= start
-                && t.getHour() < end;
+        return t.getHour() >= start && t.getHour() < end;
     }
     
     public boolean worksNextHour(CommunalPlace communalPlace, Time t) {
@@ -339,13 +328,14 @@ public abstract class Person {
     }
 
     public void seedInfectionChallenge(Time t, DailyStats s) {
-        double dayAdjust = Math.pow(getInfectionSeedRate(), t.getAbsDay());
+        final double seedRate = CovidParameters.get().infectionSeedProperties.rateIncreaseSeed;
+        double dayAdjust = Math.pow(seedRate, t.getAbsDay());
         Probability infectionChance = new Probability(getInfectionSeedInitial() * dayAdjust * covidSusceptibleVal);
         seedInfectionChallenge(infectionChance, t, s);
     }
 
     public void seedInfectionChallenge(Probability p, Time t, DailyStats s) {
-        if (p.sample()) {
+        if (cVirus == null && p.sample()) {
             cVirus = new Covid(this);
             cVirus.getInfectionLog().registerInfected(t);
             s.seedInfections.increment();
@@ -375,66 +365,50 @@ public abstract class Person {
     // We can't determine this in household in case the person is working nightshift
     // Time is always the start of a day
     public void deteremineHospitalVisits(Time t, Places places) {
-        HospitalApptInfo info = PopulationParameters.get().hospitalAppsParams().getParams(sex, age);
-        
         // Appts might be across days so don't regenerate if we already have one
         if (hasHospitalAppt() && !getHospitalAppt().isOver(t)) {
             return;
         }
-       
+
         double lockdownAdjust = 1.0 - lockdownHospitalApptAdjustment;
 
-        if (new Probability(info.pInPatient.asDouble() * lockdownAdjust).sample()) {
-            
-            Time startTime = new Time(t.getAbsTime() +
+        Time startTime = null;
+        int length = 0;
+
+        // Priority order: InPatient/DayCase/OutPatient
+        HospitalApptInfo info = PopulationParameters.get().hospitalAppsParams().getParams(sex, age);
+        if (info.pInPatient.adjust(lockdownAdjust).sample()) {
+            startTime = new Time(t.getAbsTime() +
                     RNG.get().nextInt(
                             PopulationParameters.get().hospitalApptProperties.inPatientFirstStartTime,
                             PopulationParameters.get().hospitalApptProperties.inPatientLastStartTime));
 
-            int length = info.inPatientLengthDays.intValue() * 24;
-            if (length < 1) {
-                length = 1;
-            }
-
-            Hospital h = places.getRandomNonCovidHospital();
-            if (h != null) {
-                hospitalAppt = new HospitalAppt(startTime, length, h);
-            }
-            
-        } else if (new Probability(info.pDayCase.asDouble() * lockdownAdjust).sample()) {
-
-            Time startTime = new Time(t.getAbsTime() +
+            length = info.inPatientLengthDays.intValue() * 24;
+        } else if (info.pDayCase.adjust(lockdownAdjust).sample()) {
+            startTime = new Time(t.getAbsTime() +
                     PopulationParameters.get().hospitalApptProperties.dayCaseStartTime);
 
-            int length = (int) RNG.get().nextGaussian(
+            length = (int) RNG.get().nextGaussian(
                     PopulationParameters.get().hospitalApptProperties.meanDayCaseTime,
                     PopulationParameters.get().hospitalApptProperties.SDDayCaseTime
             );
-            if (length < 1) { length =  1; }
-
-            // For small populations there might not be any non-COVID hospitals
-            Hospital h = places.getRandomNonCovidHospital();
-            if (h != null) {
-                hospitalAppt = new HospitalAppt(startTime, length, h);
-            }
-            
-        } else if (new Probability(info.pOutPatient.asDouble() * lockdownAdjust).sample()) {
-            
-            Time startTime = new Time(t.getAbsTime() +
+        } else if (info.pOutPatient.adjust(lockdownAdjust).sample()) {
+            startTime = new Time(t.getAbsTime() +
                     RNG.get().nextInt(
                             PopulationParameters.get().hospitalApptProperties.outPatientFirstStartTime,
                             PopulationParameters.get().hospitalApptProperties.outPatientLastStartTime));
 
-
-            int length = (int) RNG.get().nextExponential(
+            length = (int) RNG.get().nextExponential(
                     PopulationParameters.get().hospitalApptProperties.meanOutPatientTime);
-            if (length < 1) { length =  1; }
+        }
 
+        if (startTime != null) {
+            length = Math.max(length, 1);
             Hospital h = places.getRandomNonCovidHospital();
+            // For small populations you might only have a COVID hospital
             if (h != null) {
                 hospitalAppt = new HospitalAppt(startTime, length, h);
             }
-            
         } else {
             hospitalAppt = null;
         }
@@ -458,10 +432,6 @@ public abstract class Person {
 
     public void unFurlough() {
         furloughed = false;
-    }
-   
-    public double getInfectionSeedRate() {
-        return CovidParameters.get().infectionSeedProperties.rateIncreaseSeed;
     }
 
     public void setLockdownHospitalApptAdjustment(double lockdownHospitalApptAdjustment) {

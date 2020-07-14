@@ -12,24 +12,25 @@ public class PersonTest extends SimulationTest {
     public void testInfect() {
         //Test that the infect() method returns true
         Person person = new Adult(30, Person.Sex.FEMALE);
-        assertTrue("Person unexpectedly not infected", person.infect());
+        assertTrue("Person unexpectedly not infected", person.forceInfect());
     }
 
     @Test
     public void testInfectionStatus() {
         //Test that an infected person's infection status is true
         Person person = new Adult(30, Person.Sex.MALE);
-        boolean inf = person.infect();
+        boolean inf = person.forceInfect();
         assertTrue("Unexpected value returned by infect()", inf);
-        assertTrue("Person unexpectedly not infected", person.getInfectionStatus());
+        assertTrue("Person unexpectedly not infected", person.isInfected());
     }
 
     @Test
     public void testStepInfection() {
         //Test that stepInfection returns a valid status
         Person person = new Adult(30, Person.Sex.FEMALE);
-        person.infChallenge(100.0);
-        assertNotNull("Invalid CStatus", person.stepInfection(new Time()));
+        person.infChallenge(1.0);
+        person.stepInfection(new Time());
+        assertNotNull("Invalid CStatus", person.cStatus());
     }
 
     @Test
@@ -39,7 +40,7 @@ public class PersonTest extends SimulationTest {
         assertSame("Person not healthy", CStatus.HEALTHY, person.cStatus());
 
         //Test the status of an infected person is not healthy
-        person.infChallenge(100.0);
+        person.infChallenge(1.0);
         person.stepInfection(new Time());
         assertNotSame("Person unexpectedly healthy", CStatus.HEALTHY, person.cStatus());
 
