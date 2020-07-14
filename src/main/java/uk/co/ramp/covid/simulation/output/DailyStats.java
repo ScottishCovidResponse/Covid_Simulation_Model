@@ -71,6 +71,7 @@ public class DailyStats {
     public IntValue careHomeDeaths = add("DCareHome");
     public IntValue additionalDeaths = add("DAdditional"); // Deaths in a workplace/school/etc
     public Map<Integer, Integer> deathsByAge = new HashMap<>();
+    public IntValue deathsAfterInfectionToday = add("DAfterInfectionToday");
 
     // Hospitalisation Stats
     public IntValue inHospital = add("NumHospital").log("Hospitalised");
@@ -210,5 +211,16 @@ public class DailyStats {
         RStats rs = new RStats(p);
         secInfections.set(rs.getSecInfections(day.get()));
         generationTime.set(rs.getMeanGenerationTime(day.get()));
+    }
+
+    // Operates on the population *after* a run to determine those who died and were infected
+    // on the day this DailyStats tracks
+    public void determineFutureDeaths(Population population) {
+        for (Person p : population.getAllPeople()) {
+            if (p.cStatus() == CStatus.DEAD
+                    && p.getcVirus().getInfectionLog().getInfectionTime().getAbsDay() == day.get()) {
+                deathsAfterInfectionToday.increment();
+            }
+        }
     }
 }

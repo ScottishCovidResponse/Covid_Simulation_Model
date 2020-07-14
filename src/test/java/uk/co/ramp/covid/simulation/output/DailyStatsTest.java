@@ -161,6 +161,13 @@ public class DailyStatsTest extends SimulationTest {
         assertNotEquals("Some people are hospitalised (new cases)", 0, newlyHospitalised);
         assertTrue("Hospitalised should be > newlyHospitalised", hospitalised > newlyHospitalised);
         assertTrue("Hospitalised <= phase2", newlyHospitalised <= totalPhase2);
+
+        // Test consistency of deaths by infection day
+        int totalInfectionsByDay = 0;
+        for (DailyStats s : stats.get(0)) {
+            totalInfectionsByDay += s.deathsAfterInfectionToday.get();
+        }
+        assertEquals(expDeaths, totalInfectionsByDay);
     }
 
     @Test

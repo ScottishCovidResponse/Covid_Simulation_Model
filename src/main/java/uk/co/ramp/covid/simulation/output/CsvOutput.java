@@ -16,14 +16,11 @@ public class CsvOutput {
     private static final Logger LOGGER = LogManager.getLogger(CsvOutput.class);
 
     public static void writeDailyStats(Appendable out, int startIterID, List<List<DailyStats>> stats) throws IOException {
-    final String[] headers = {"iter", "day", "H", "L", "A", "P1", "P2", "D", "R", "ISeed",
-                              "ICs_W","IHos_W","INur_W","IOff_W","IRes_W","ISch_W","ISho_W","ICHome_W",
-                              "IHome_I", "ICHome_R",
-                              "ICs_V","IHos_V","INur_V","IOff_V","IRes_V","ISch_V","ISho_V","IHome_V", "ITransport",
-                              "IAdu","IPen","IChi","IInf",
-                              "DAdul","DPen","DChi","DInf","DHome", "DHospital", "DCareHome", "DAdditional",
-                              "NumHospital", "HospitalisedToday",
-                              "SecInfections", "GenerationTime" };
+        if (stats.isEmpty() || stats.get(0).isEmpty()) {
+            return;
+        }
+
+        String[] headers = stats.get(0).get(0).csvHeaders().toArray(String[]::new);
         CSVPrinter printer = new CSVPrinter(out, CSVFormat.DEFAULT.withHeader(headers));
         for (int i = 0; i < stats.size(); i++) {
             for (DailyStats s : stats.get(i)) {
