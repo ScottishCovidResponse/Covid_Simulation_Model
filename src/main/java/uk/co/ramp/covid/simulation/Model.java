@@ -224,6 +224,7 @@ public class Model {
         // By here the output directory will be available
         CsvOutput.writeDailyStats(outP.resolve("out.csv"), iterId, s);
         CsvOutput.extraOutputsForThibaud(outP, s);
+        CsvOutput.writeDeathsByAge(outP, iterId, s);
         ParameterIO.writeParametersToFile(outP.resolve("population_params.json"));
         outputModelParams(outP.resolve("model_params.json"));
        

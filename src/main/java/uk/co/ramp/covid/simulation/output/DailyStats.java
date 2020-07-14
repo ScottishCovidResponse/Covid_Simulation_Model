@@ -7,10 +7,8 @@ import uk.co.ramp.covid.simulation.population.CStatus;
 import uk.co.ramp.covid.simulation.population.Person;
 import uk.co.ramp.covid.simulation.population.Population;
 
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Stream;
-import java.util.ArrayList;
-import java.util.List;
 
 /** DailyStats accumulates statistics, e.g. healthy/dead, for a particular day */
 public class DailyStats {
@@ -72,6 +70,7 @@ public class DailyStats {
     public IntValue hospitalDeaths = add("DHospital");
     public IntValue careHomeDeaths = add("DCareHome");
     public IntValue additionalDeaths = add("DAdditional"); // Deaths in a workplace/school/etc
+    public Map<Integer, Integer> deathsByAge = new HashMap<>();
 
     // Hospitalisation Stats
     public IntValue inHospital = add("NumHospital").log("Hospitalised");

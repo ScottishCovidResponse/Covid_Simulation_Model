@@ -3,7 +3,9 @@ package uk.co.ramp.covid.simulation.output;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
@@ -57,6 +59,30 @@ public class CsvOutput {
             deathsCSV.close(true);
         } catch (IOException e) {
             LOGGER.error(e);
+        }
+    }
+
+    public static void writeDeathsByAge(Path outputDir, int startIter, List<List<DailyStats>> stats)  {
+        final String[] headers = {"iter", "age", "deaths"};
+        try {
+            FileWriter file = new FileWriter(outputDir.resolve("deathsByAge.csv").toFile());
+            CSVPrinter printer = new CSVPrinter(file, CSVFormat.DEFAULT.withHeader(headers));
+
+            for (int i = 0; i < stats.size(); i++) {
+
+                Map<Integer, Integer> combinedDeathsByAge = new HashMap<>();
+                for (DailyStats s : stats.get(i)) {
+                    s.deathsByAge.forEach((k, v) -> combinedDeathsByAge.merge(k, v, Integer::sum));
+                }
+
+                for (Map.Entry<Integer, Integer> entry : combinedDeathsByAge.entrySet()) {
+                    printer.printRecord(startIter + i, entry.getKey(), entry.getValue());
+                }
+            }
+
+            printer.close(true);
+        } catch (IOException e) {
+            LOGGER.error("Could not output deathsByAge");
         }
     }
 }
