@@ -207,7 +207,9 @@
             "pGoRestaurant": 0.071,
             "pWillIsolate": 0.5,
             "householdIsolationPeriod": 14,
-            "pLockCompliance": 0.8
+            "pLockCompliance": 0.8,
+            "minShieldingAge": 75,
+            "pEntersShielding": 0.8
         },
         "personProperties":{
             "pTransmission":0.32,

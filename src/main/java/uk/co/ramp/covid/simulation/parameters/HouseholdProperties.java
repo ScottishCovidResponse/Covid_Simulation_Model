@@ -19,6 +19,11 @@ public class HouseholdProperties {
     
     public Integer neighbourOpeningTime = null;
     public Integer neighbourClosingTime = null;
+
+    /** Minimum age (inclusive) someone in the household must be to attemot to enter shielding */
+    public Integer minShieldingAge = null;
+    /** Probability a household enters shielding during lockdown. If a member is > shieldingAge */
+    public Probability pEntersShielding = null;
     
     public boolean isValid() {
         return 2*pNeighbourFromOtherGroup.asDouble() + pNeighbourFromSameGroup.asDouble() == 1.0;

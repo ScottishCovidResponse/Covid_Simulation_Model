@@ -28,6 +28,7 @@ public class FullLockdownEasingEvent extends LockdownEvent {
             h.setLockdownShopVisitFrequencyAdjustment(1.0);
             h.setLockdownRestaurantVisitFrequencyAdjustment(1.0);
             h.setLockdownNeighbourVisitFrequencyAdjustment(1.0);
+            h.stopShielding();
         }
     }
 

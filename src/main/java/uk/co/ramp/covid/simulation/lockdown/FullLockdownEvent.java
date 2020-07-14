@@ -34,6 +34,8 @@ public class FullLockdownEvent extends LockdownEvent {
             h.setLockdownRestaurantVisitFrequencyAdjustment(0.0);
             // Note: Only applies to those that are lockdown compliant
             h.setLockdownNeighbourVisitFrequencyAdjustment(0.0);
+            
+            h.startFullShielding();
         }
 
         // Log initial R if needed

@@ -13,6 +13,8 @@ import java.util.*;
 import java.util.function.Supplier;
 
 public abstract class Household extends Place implements Home {
+    
+    private enum ShieldingStatus { FULL, PARTIAL, NONE }
 
     private final List<Household> neighbours;
     
@@ -20,6 +22,8 @@ public abstract class Household extends Place implements Home {
     private final boolean lockdownCompliant;
     private int isolationTimer = 0;
     private boolean visitsNeighbourToday = false;
+    
+    private ShieldingStatus shieldingStatus = ShieldingStatus.NONE;
 
     // Lockdown adjustments
     private double lockdownShopVisitFrequencyAdjustment = 1.0;
@@ -194,19 +198,22 @@ public abstract class Household extends Place implements Home {
             // Ordering here implies hospital appts take highest priority
             moveHospital(t);
 
-            moveShift(t);
+            if (shieldingStatus == ShieldingStatus.NONE) {
+                moveShift(t);
+            }
 
             // Shops are only open 8-22
-            if (t.getHour() + 1 >= 8 && t.getHour() + 1 < 22) {
+            if (shieldingStatus == ShieldingStatus.NONE && t.getHour() + 1 >= 8 && t.getHour() + 1 < 22) {
                 moveShop(t, places);
             }
 
-            if (!neighbours.isEmpty()) {
+            // Partial shielding allow neighbour visits
+            if (shieldingStatus != ShieldingStatus.FULL && !neighbours.isEmpty()) {
                 moveNeighbour(t);
             }
 
             // Restaurants are only open 8-22
-            if (t.getHour() + 1 >= 8 && t.getHour() + 1 < 22) {
+            if (shieldingStatus == ShieldingStatus.NONE && t.getHour() + 1 >= 8 && t.getHour() + 1 < 22) {
                 moveRestaurant(t, places);
             }
         }
@@ -497,5 +504,31 @@ public abstract class Household extends Place implements Home {
         if (lockdownCompliant) {
             this.lockdownNeighbourVisitFrequencyAdjustment = lockdownNeighbourVisitFrequencyAdjustment;
         }
+    }
+    
+    public void startFullShielding() {
+        for (Person p : getPeople())  {
+            if (isInhabitant(p)
+                    && p.getAge() >= PopulationParameters.get().householdProperties.minShieldingAge
+                    && PopulationParameters.get().householdProperties.pEntersShielding.sample()) {
+                shieldingStatus = ShieldingStatus.FULL;
+            }
+        }
+    }
+    
+    public void startPartialShielding(Probability remainInShielding) {
+        if (shieldingStatus == ShieldingStatus.FULL && remainInShielding.sample()) {
+            shieldingStatus = ShieldingStatus.PARTIAL;
+        } else {
+            shieldingStatus = ShieldingStatus.NONE;
+        }
+    }
+
+    public void stopShielding() {
+        shieldingStatus = ShieldingStatus.NONE;
+    }
+    
+    public boolean isShielding() {
+        return shieldingStatus != ShieldingStatus.NONE;
     }
 }

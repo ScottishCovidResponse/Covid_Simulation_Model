@@ -18,6 +18,7 @@ public class LockdownTypeMaps {
         components.put("RestaurantEasing", RestaurantEasingEvent.class);
         components.put("HouseholdEasing", HouseholdEasingEvent.class);
         components.put("TravelEasing", TravelEasingEvent.class);
+        components.put("ShieldingEasing", ShieldingEasingEvent.class);
         return components;
     }
 

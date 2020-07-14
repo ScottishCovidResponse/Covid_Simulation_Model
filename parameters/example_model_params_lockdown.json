@@ -43,6 +43,12 @@
             "type": "TravelEasing",
             "start": 200,
             "pTravelSeed": 0.000001
+        },
+        {
+            "type": "ShieldingEasing",
+            "start": 180,
+            "partial": true,
+            "partialShieldProbability": 0.4
         }
     ],
     "lockdownGenerators": [
