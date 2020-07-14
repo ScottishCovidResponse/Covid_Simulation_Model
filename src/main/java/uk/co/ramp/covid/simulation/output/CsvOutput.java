@@ -60,20 +60,16 @@ public class CsvOutput {
     }
 
     public static void writeDeathsByAge(Path outputDir, int startIter, List<List<DailyStats>> stats)  {
-        final String[] headers = {"iter", "age", "deaths"};
+        final String[] headers = {"iter", "day", "age", "deaths"};
         try {
             FileWriter file = new FileWriter(outputDir.resolve("deathsByAge.csv").toFile());
             CSVPrinter printer = new CSVPrinter(file, CSVFormat.DEFAULT.withHeader(headers));
 
             for (int i = 0; i < stats.size(); i++) {
-
-                Map<Integer, Integer> combinedDeathsByAge = new HashMap<>();
                 for (DailyStats s : stats.get(i)) {
-                    s.deathsByAge.forEach((k, v) -> combinedDeathsByAge.merge(k, v, Integer::sum));
-                }
-
-                for (Map.Entry<Integer, Integer> entry : combinedDeathsByAge.entrySet()) {
-                    printer.printRecord(startIter + i, entry.getKey(), entry.getValue());
+                    for (Map.Entry<Integer, Integer> entry : s.deathsByAge.entrySet()) {
+                        printer.printRecord(startIter + i, s.day.get(), entry.getKey(), entry.getValue());
+                    }
                 }
             }
 
