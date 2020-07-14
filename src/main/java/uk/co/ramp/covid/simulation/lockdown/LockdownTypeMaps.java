@@ -4,9 +4,6 @@ import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import uk.co.ramp.covid.simulation.lockdown.easingevents.*;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class LockdownTypeMaps {
 
     public static BiMap<String, Class<?>> getLockdownEventMap() {
