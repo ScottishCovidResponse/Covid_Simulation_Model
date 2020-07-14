@@ -68,4 +68,8 @@ public class Time implements Comparable<Time> {
         int day = json.getAsInt();
         return Time.timeFromDay(day);
     };
+
+    public static JsonSerializer<Time> serializer = (src, typeOfSrc, context) -> {
+        return new JsonPrimitive(src.getAbsDay());
+    };
 }

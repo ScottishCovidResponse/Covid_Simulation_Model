@@ -230,7 +230,23 @@ public class Model {
     }
 
     private void outputModelParams(Path outF) {
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        PolymorphicTypeDeserialiser<LockdownEvent> dLockdownEvents = new PolymorphicTypeDeserialiser<>(
+                LockdownTypeMaps.getLockdownEventMap()
+        );
+        PolymorphicTypeDeserialiser<LockdownEventGenerator> dLockdownGenerators = new PolymorphicTypeDeserialiser<>(
+                LockdownTypeMaps.getLockdownEventGeneratorMap()
+        );
+        
+        Gson gson = new GsonBuilder()
+                .setPrettyPrinting()
+                .registerTypeAdapter(LockdownEvent.class, dLockdownEvents)
+                .registerTypeAdapter(LockdownEventGenerator.class, dLockdownGenerators)
+                .registerTypeAdapter(Probability.class, Probability.serializer)
+                .registerTypeAdapter(Time.class, Time.serializer)
+                .create();
+        dLockdownEvents.setGson(gson);
+        dLockdownGenerators.setGson(gson);
+
         try (Writer writer = new FileWriter(outF.toFile())) {
             gson.toJson(this, writer);
         } catch (IOException e) {
