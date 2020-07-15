@@ -51,7 +51,7 @@ public abstract class Person {
     private double lockdownHospitalApptAdjustment = 0.0;
 
     public abstract void reportInfection(DailyStats s);
-    public abstract void reportDeath (DailyStats s);
+    protected abstract void reportDeath (DailyStats s);
     public abstract void allocateCommunalPlace(Places p);
     
     private final double covidMortalityAgeAdjustment;
@@ -340,6 +340,11 @@ public abstract class Person {
             cVirus.getInfectionLog().registerInfected(t);
             s.seedInfections.increment();
         }
+    }
+    
+    public void recordDeath(DailyStats s) {
+        s.deathsByAge.merge(getAge(), 1, Integer::sum);
+        reportDeath(s);
     }
     
     public boolean hasMoved() {

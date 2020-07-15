@@ -1,16 +1,16 @@
 package uk.co.ramp.covid.simulation.util;
 
 import com.google.gson.*;
+import com.google.common.collect.BiMap;
 
 import java.lang.reflect.Type;
-import java.util.Map;
 
-public class PolymorphicTypeDeserialiser<T> implements JsonDeserializer<T> {
+public class PolymorphicTypeDeserialiser<T> implements JsonDeserializer<T>, JsonSerializer<T> {
 
-    private final Map<String, Class<?>> components;
+    private final BiMap<String, Class<?>> components;
     private Gson gson; // to handle recursive parse
 
-    public PolymorphicTypeDeserialiser(Map<String, Class<?>> buildable) {
+    public PolymorphicTypeDeserialiser(BiMap<String, Class<?>> buildable) {
         components = buildable;
     }
 
@@ -30,4 +30,10 @@ public class PolymorphicTypeDeserialiser<T> implements JsonDeserializer<T> {
         return gson.fromJson(comp, (Type) type);
     }
 
+    @Override
+    public JsonElement serialize(T src, Type typeOfSrc, JsonSerializationContext context) {
+        JsonElement rest = gson.toJsonTree(src);
+        rest.getAsJsonObject().addProperty("type", components.inverse().get(src.getClass()));
+        return rest;
+    }
 }
