@@ -79,7 +79,7 @@ public abstract class Place {
 
     private void registerDeath(Person p, DailyStats stats) {
         reportDeath(stats);
-        p.reportDeath(stats);
+        p.recordDeath(stats);
     }
 
     protected double getTransConstant() {

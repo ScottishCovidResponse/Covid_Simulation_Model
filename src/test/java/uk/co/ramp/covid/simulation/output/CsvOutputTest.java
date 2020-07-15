@@ -42,7 +42,7 @@ public class CsvOutputTest extends SimulationTest {
                     + "IHome_I,ICHome_R,"
                     + "ICs_V,IHos_V,INur_V,IOff_V,IRes_V,ISch_V,ISho_V,IHome_V,ITransport,"
                     + "IAdu,IPen,IChi,IInf,"
-                    + "DAdul,DPen,DChi,DInf,DHome,DHospital,DCareHome,DAdditional,"
+                    + "DAdul,DPen,DChi,DInf,DHome,DHospital,DCareHome,DAdditional,DAfterInfectionToday,"
                     + "NumHospital,HospitalisedToday,SecInfections,GenerationTime";
             assertEquals("Wrong csv header", line, expectedHeader);
 
@@ -79,6 +79,7 @@ public class CsvOutputTest extends SimulationTest {
                         s.childDeaths, s.infantDeaths,
                         s.homeDeaths, s.hospitalDeaths,
                         s.careHomeDeaths, s.additionalDeaths,
+                        s.deathsAfterInfectionToday,
                         s.inHospital, s.newlyHospitalised,
                         s.secInfections,
                         s.generationTime

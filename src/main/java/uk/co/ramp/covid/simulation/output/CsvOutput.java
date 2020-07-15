@@ -4,6 +4,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
@@ -14,14 +15,11 @@ public class CsvOutput {
     private static final Logger LOGGER = LogManager.getLogger(CsvOutput.class);
 
     public static void writeDailyStats(Appendable out, int startIterID, List<List<DailyStats>> stats) throws IOException {
-    final String[] headers = {"iter", "day", "H", "L", "A", "P1", "P2", "D", "R", "ISeed",
-                              "ICs_W","IHos_W","INur_W","IOff_W","IRes_W","ISch_W","ISho_W","ICHome_W",
-                              "IHome_I", "ICHome_R",
-                              "ICs_V","IHos_V","INur_V","IOff_V","IRes_V","ISch_V","ISho_V","IHome_V", "ITransport",
-                              "IAdu","IPen","IChi","IInf",
-                              "DAdul","DPen","DChi","DInf","DHome", "DHospital", "DCareHome", "DAdditional",
-                              "NumHospital", "HospitalisedToday",
-                              "SecInfections", "GenerationTime" };
+        if (stats.isEmpty() || stats.get(0).isEmpty()) {
+            return;
+        }
+
+        String[] headers = stats.get(0).get(0).csvHeaders().toArray(String[]::new);
         CSVPrinter printer = new CSVPrinter(out, CSVFormat.DEFAULT.withHeader(headers));
         for (int i = 0; i < stats.size(); i++) {
             for (DailyStats s : stats.get(i)) {
@@ -57,6 +55,26 @@ public class CsvOutput {
             deathsCSV.close(true);
         } catch (IOException e) {
             LOGGER.error(e);
+        }
+    }
+
+    public static void writeDeathsByAge(Path outputDir, int startIter, List<List<DailyStats>> stats)  {
+        final String[] headers = {"iter", "day", "age", "deaths"};
+        try {
+            FileWriter file = new FileWriter(outputDir.resolve("deathsByAge.csv").toFile());
+            CSVPrinter printer = new CSVPrinter(file, CSVFormat.DEFAULT.withHeader(headers));
+
+            for (int i = 0; i < stats.size(); i++) {
+                for (DailyStats s : stats.get(i)) {
+                    for (Map.Entry<Integer, Integer> entry : s.deathsByAge.entrySet()) {
+                        printer.printRecord(startIter + i, s.day.get(), entry.getKey(), entry.getValue());
+                    }
+                }
+            }
+
+            printer.close(true);
+        } catch (IOException e) {
+            LOGGER.error("Could not output deathsByAge");
         }
     }
 }

@@ -8,7 +8,9 @@ import uk.co.ramp.covid.simulation.parameters.PopulationParameters;
 import uk.co.ramp.covid.simulation.testutil.SimulationTest;
 import uk.co.ramp.covid.simulation.util.Probability;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.Assert.*;
 
@@ -159,6 +161,13 @@ public class DailyStatsTest extends SimulationTest {
         assertNotEquals("Some people are hospitalised (new cases)", 0, newlyHospitalised);
         assertTrue("Hospitalised should be > newlyHospitalised", hospitalised > newlyHospitalised);
         assertTrue("Hospitalised <= phase2", newlyHospitalised <= totalPhase2);
+
+        // Test consistency of deaths by infection day
+        int totalInfectionsByDay = 0;
+        for (DailyStats s : stats.get(0)) {
+            totalInfectionsByDay += s.deathsAfterInfectionToday.get();
+        }
+        assertEquals(expDeaths, totalInfectionsByDay);
     }
 
     @Test
@@ -205,6 +214,16 @@ public class DailyStatsTest extends SimulationTest {
                 totalAdditionalDeaths < totalHomeDeaths && totalAdditionalDeaths < totalHospitalDeaths);
         
         assertEquals("Inconsistent number of deaths", totalDeaths, actualDeaths);
+
+        // Test consistency in deathsByAge
+        Map<Integer, Integer> combinedDeathsByAge = new HashMap<>();
+        for (DailyStats s : stats.get(0)) {
+           s.deathsByAge.forEach((k, v) -> combinedDeathsByAge.merge(k, v, Integer::sum));
+        }
+
+        final int[] deathsByAge = {0};
+        combinedDeathsByAge.forEach((k, v) -> deathsByAge[0] += v);
+        assertEquals(totalDeaths, deathsByAge[0]);
     }
 
     //Test the equals() method in DailyStats
