@@ -53,7 +53,7 @@ public class Population {
         this.rng = RNG.get();
         this.populationSize = populationSize;
 
-        this.numHouseholds = (int) (populationSize / PopulationParameters.get().householdDistribution.householdRatio);
+        this.numHouseholds = (int) (populationSize / PopulationParameters.get().householdDistribution.populationToHouseholdsRatio);
 
         if (numHouseholds == 0) {
             throw new ImpossibleAllocationException("No households requested");

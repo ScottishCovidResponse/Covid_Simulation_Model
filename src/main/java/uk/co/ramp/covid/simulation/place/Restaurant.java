@@ -65,7 +65,7 @@ public class Restaurant extends CommunalPlace {
     public void determineMovement(Time t, DailyStats s, Places places) {
         movePhase2(t, s, places);
         moveShifts(t);
-        moveVisitors(t, PopulationParameters.get().buildingProperties.pLeaveRestaurant);
+        moveVisitors(t, PopulationParameters.get().buildingProperties.pLeaveRestaurantHour);
     }
 
 }

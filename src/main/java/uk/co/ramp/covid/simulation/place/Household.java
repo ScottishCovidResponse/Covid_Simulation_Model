@@ -67,7 +67,7 @@ public abstract class Household extends Place implements Home {
     
     public void isolate() {
         if (willIsolate) {
-            isolationTimer = PopulationParameters.get().householdProperties.householdIsolationPeriod;
+            isolationTimer = PopulationParameters.get().householdProperties.householdIsolationPeriodDays;
         }
     }
     
@@ -116,7 +116,7 @@ public abstract class Household extends Place implements Home {
                 continue;
             }
 
-            if (PopulationParameters.get().householdProperties.pVisitorsLeaveHousehold.sample()) {
+            if (PopulationParameters.get().householdProperties.pVisitorsLeaveHouseholdHour.sample()) {
                 p.returnHome(this);
                 sendFamilyHome(p, null, t);
             } else {
@@ -263,7 +263,7 @@ public abstract class Household extends Place implements Home {
                 }
 
                 if (symptomaticTime.getAbsTime() <=
-                        t.getAbsTime() + PopulationParameters.get().personProperties.symptomToQuarantineDelay) {
+                        t.getAbsTime() + PopulationParameters.get().personProperties.symptomToQuarantineDelayHours) {
                     p.enterQuarantine();
 
                     // A person might choose not to quarantine, in which case the household doesn't isolate either
@@ -275,7 +275,7 @@ public abstract class Household extends Place implements Home {
                 }
 
                 if (symptomaticTime.getAbsTime() <=
-                        t.getAbsTime() + PopulationParameters.get().personProperties.symptomToTestingDelay
+                        t.getAbsTime() + PopulationParameters.get().personProperties.symptomToTestingDelayHours
                         && CovidParameters.get().testParameters.pDiagnosticTestAvailable.sample()) {
                     p.getTested();
                 }
@@ -345,13 +345,13 @@ public abstract class Household extends Place implements Home {
     }
 
     private void moveShop(Time t, Places places) {
-        Probability visitProb = PopulationParameters.get().householdProperties.pGoShopping;
+        Probability visitProb = PopulationParameters.get().householdProperties.pGoShoppingHour;
         visitProb = visitProb.adjust(lockdownShopVisitFrequencyAdjustment);
         familyTrip(t, places::getRandomShop, visitProb);
     }
 
     private void moveRestaurant(Time t, Places places) {
-        Probability visitProb = PopulationParameters.get().householdProperties.pGoRestaurant;
+        Probability visitProb = PopulationParameters.get().householdProperties.pGoRestaurantHour;
         visitProb = visitProb.adjust(lockdownRestaurantVisitFrequencyAdjustment);
         familyTrip(t, places::getRandomRestaurant, visitProb);
     }
