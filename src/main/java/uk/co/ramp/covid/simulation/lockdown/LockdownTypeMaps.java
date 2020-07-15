@@ -1,14 +1,13 @@
 package uk.co.ramp.covid.simulation.lockdown;
 
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
 import uk.co.ramp.covid.simulation.lockdown.easingevents.*;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class LockdownTypeMaps {
 
-    public static Map<String, Class<?>> getLockdownEventMap() {
-        Map<String, Class<?>> components = new HashMap<>();
+    public static BiMap<String, Class<?>> getLockdownEventMap() {
+        BiMap<String, Class<?>> components = HashBiMap.create();
         components.put("FullLockdown", FullLockdownEvent.class);
         components.put("FullLockdownEasing", FullLockdownEasingEvent.class);
         components.put("SchoolEasing", SchoolEasingEvent.class);
@@ -22,8 +21,8 @@ public class LockdownTypeMaps {
         return components;
     }
 
-    public static Map<String, Class<?>> getLockdownEventGeneratorMap() {
-        Map<String, Class<?>> components = new HashMap<>();
+    public static BiMap<String, Class<?>> getLockdownEventGeneratorMap() {
+        BiMap<String, Class<?>> components = HashBiMap.create();
         components.put("LocalLockdownEventGenerator", LocalLockdownEventGenerator.class);
         return components;
     }

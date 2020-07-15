@@ -1,7 +1,5 @@
 package uk.co.ramp.covid.simulation;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.JsonParseException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -230,9 +228,8 @@ public class Model {
     }
 
     private void outputModelParams(Path outF) {
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
         try (Writer writer = new FileWriter(outF.toFile())) {
-            gson.toJson(this, writer);
+            ParameterIO.getGson().toJson(this, writer);
         } catch (IOException e) {
             LOGGER.error(e);
         }
@@ -241,23 +238,7 @@ public class Model {
     // Also allows reading from json file
     public static Model readModelFromFile(String path) throws IOException, JsonParseException {
         Reader file = new FileReader(path);
-
-        PolymorphicTypeDeserialiser<LockdownEvent> dLockdownEvents = new PolymorphicTypeDeserialiser<>(
-                LockdownTypeMaps.getLockdownEventMap()
-        );
-        PolymorphicTypeDeserialiser<LockdownEventGenerator> dLockdownGenerators = new PolymorphicTypeDeserialiser<>(
-                LockdownTypeMaps.getLockdownEventGeneratorMap()
-        );
-        Gson gson = new GsonBuilder()
-                .registerTypeAdapter(LockdownEvent.class, dLockdownEvents)
-                .registerTypeAdapter(LockdownEventGenerator.class, dLockdownGenerators)
-                .registerTypeAdapter(Time.class, Time.deserializer)
-                .registerTypeAdapter(Probability.class, Probability.deserializer)
-                .create();
-        dLockdownEvents.setGson(gson);
-        dLockdownGenerators.setGson(gson);
-        
-        return gson.fromJson(file, Model.class);
+        return ParameterIO.getGson().fromJson(file, Model.class);
     }
 
     public void optionallyGenerateRNGSeed() {
