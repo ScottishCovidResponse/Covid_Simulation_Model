@@ -2,7 +2,7 @@
     "disease":{
       "testParameters":{
           "pDiagnosticTestDetectsSuccessfully": 0.9,
-          "pDiagnosticTestAvailable":0.5
+          "pDiagnosticTestAvailableHour":0.5
       },
       "diseaseParameters":{
           "meanLatentPeriod":123.12,
@@ -18,19 +18,19 @@
           "sdInfectiousDuration": 0.4,
           "phase1Betaa": 25.0,
           "phase1Betab": 30.0,
-          "aSymptomaticTransAdjustment": 0.5,
+          "asymptomaticTransAdjustment": 0.5,
           "symptomaticTransAdjustment": 1.0,
           "caseMortalityBase": 0.05,
           "caseMortalityRate":0.5,
           "childProgressionPhase2":0.01,
           "adultProgressionPhase2":0.2,
           "pensionerProgressionPhase2":0.8,
-          "hospitalisedSurvive":0.25,
-          "hospitalisedDie":0.8
+          "pSurvivorGoesToHospital":0.25,
+          "pFatalityGoesToHospital":0.8
       },
       "infectionSeedProperties": {
-          "InitialSeedAdult":0.000001,
-          "InitialSeedInfantChildPensioner":0.0000005,
+          "initialSeedAdult":0.000001,
+          "initialSeedInfantChildPensioner":0.0000005,
           "rateIncreaseSeed":1.1
       },
       "hospitalisationParameters": {

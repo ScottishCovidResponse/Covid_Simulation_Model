@@ -276,7 +276,7 @@ public abstract class Household extends Place implements Home {
 
                 if (symptomaticTime.getAbsTime() <=
                         t.getAbsTime() + PopulationParameters.get().personProperties.symptomToTestingDelayHours
-                        && CovidParameters.get().testParameters.pDiagnosticTestAvailable.sample()) {
+                        && CovidParameters.get().testParameters.pDiagnosticTestAvailableHour.sample()) {
                     p.getTested();
                 }
             }
