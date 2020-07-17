@@ -40,7 +40,8 @@ public class CsvOutput {
             extraOutputsForThibaud();
             writeDeathsByAge();
         } else {
-            LOGGER.warn("Trying to output csv files, but no output directory was set");
+            LOGGER.error("Trying to output csv files, but no output directory was set");
+            throw new ModelOutputException("Could not write csv stats output. No output directory was set");
         }
     }
 
@@ -69,14 +70,9 @@ public class CsvOutput {
         }
     }
     
-    public String dailyStatsAsCSVString() {
+    public String dailyStatsAsCSVString() throws IOException {
         StringWriter sw = new StringWriter();
-        try {
-            writeDailyStats(sw);
-        } catch (IOException e) {
-            LOGGER.warn("Could not convert DailyStats to CSV string");
-            return "";
-        }
+        writeDailyStats(sw);
         return sw.toString();
     }
 
