@@ -72,7 +72,7 @@ public class HouseholdTest extends SimulationTest {
 
     @Test
     public void testSendNeighboursHome() {
-        PopulationParameters.get().householdProperties.pVisitorsLeaveHousehold = new Probability(1.0);
+        PopulationParameters.get().householdProperties.pVisitorsLeaveHouseholdHour = new Probability(1.0);
         Household h = new SmallFamily();
         Person p1 = new Adult(22, Person.Sex.FEMALE);
         p1.setHome(household);

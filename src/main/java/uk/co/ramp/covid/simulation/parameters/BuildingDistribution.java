@@ -1,8 +1,14 @@
 package uk.co.ramp.covid.simulation.parameters;
 
-// Defines the number of types of building per N people
+/** Defines the number of types of building
+ *
+ *  Parameters such as populationToHospitalsRatio imply 1 hospital per populationToHospitalsRatio people
+ *  Place size distributions give probability that a place is Small, Medium, or Large, where size
+ *  controls the expected number of people that work there
+ **/
 public class BuildingDistribution {
     public Integer populationToHospitalsRatio = null;
+    /** Every covidHospitalRatio hosptials (including the first) is a designated Covid hospital */
     public Integer covidHospitalRatio = null;
     public PlaceSizeDistribution hospitalSizeDistribution = null;
 

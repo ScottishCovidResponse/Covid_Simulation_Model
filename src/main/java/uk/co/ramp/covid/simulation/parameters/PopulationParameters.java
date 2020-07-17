@@ -57,12 +57,12 @@ public class PopulationParameters {
         valid = valid && checker.isValid(householdDistribution) && householdDistribution.isValid();
         valid = valid && checker.isValid(buildingDistribution) && buildingDistribution.isValid();
         valid = valid && checker.isValid(workerDistribution) && workerDistribution.isValid();
-        valid = valid && checker.isValid(buildingProperties);
+        valid = valid && checker.isValid(buildingProperties) && buildingProperties.isValid();
         valid = valid && checker.isValid(infantProperties);
-        valid = valid && checker.isValid(pensionerProperties);
-        valid = valid && checker.isValid(personProperties);
+        valid = valid && checker.isValid(pensionerProperties) && pensionerProperties.isValid();
+        valid = valid && checker.isValid(personProperties) && personProperties.isValid();
         valid = valid && checker.isValid(householdProperties) && householdProperties.isValid();
-        valid = valid && checker.isValid(publicTransportParameters);
+        valid = valid && checker.isValid(publicTransportParameters) && publicTransportParameters.isValid();
         valid = valid && checker.isValid(hospitalApptProperties) && hospitalApptProperties.isValid();
         valid = valid && hospitalAppsParams().isValid();
         return valid;

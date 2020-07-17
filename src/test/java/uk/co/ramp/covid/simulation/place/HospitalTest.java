@@ -54,7 +54,7 @@ public class HospitalTest extends SimulationTest {
     public void recoveredPeopleLeaveHospital() {
         int populationSize = 10000;
         int nInfections = 100;
-        CovidParameters.get().diseaseParameters.hospitalisedSurvive = new Probability(1.0);
+        CovidParameters.get().diseaseParameters.pSurvivorGoesToHospital = new Probability(1.0);
         CovidParameters.get().diseaseParameters.adultProgressionPhase2 = 100.0;
         CovidParameters.get().diseaseParameters.caseMortalityRate = 0.0;
 
@@ -119,8 +119,8 @@ public class HospitalTest extends SimulationTest {
         final int nInfections = 500;
 
         PopulationParameters.get().pensionerProperties.pEntersCareHome = new Probability(0.9);
-        CovidParameters.get().diseaseParameters.hospitalisedSurvive = new Probability(1.0);
-        CovidParameters.get().diseaseParameters.hospitalisedDie = new Probability(1.0);
+        CovidParameters.get().diseaseParameters.pSurvivorGoesToHospital = new Probability(1.0);
+        CovidParameters.get().diseaseParameters.pFatalityGoesToHospital = new Probability(1.0);
         CovidParameters.get().diseaseParameters.pensionerProgressionPhase2 = 100.0;
 
         Population pop = PopulationGenerator.genValidPopulation(populationSize);
@@ -142,7 +142,7 @@ public class HospitalTest extends SimulationTest {
     public void transmissionAdjustmentApplied() {
         int populationSize = 10000;
         int nInfections = 100;
-        CovidParameters.get().diseaseParameters.hospitalisedSurvive = new Probability(1.0);
+        CovidParameters.get().diseaseParameters.pSurvivorGoesToHospital = new Probability(1.0);
         CovidParameters.get().diseaseParameters.adultProgressionPhase2 = 100.0;
         CovidParameters.get().diseaseParameters.caseMortalityRate = 0.0;
 

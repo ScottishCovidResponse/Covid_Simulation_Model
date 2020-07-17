@@ -93,10 +93,10 @@ public class Covid {
 
             	dies = rng.nextUniform(0,  1) < caseMortalityRate * ccase.getCovidMortalityAgeAdjustment();
             	if(dies) {
-            		goesToHospital = CovidParameters.get().diseaseParameters.hospitalisedDie.sample();
+            		goesToHospital = CovidParameters.get().diseaseParameters.pFatalityGoesToHospital.sample();
             	}
             	else {
-            		goesToHospital = CovidParameters.get().diseaseParameters.hospitalisedSurvive.sample();
+            		goesToHospital = CovidParameters.get().diseaseParameters.pSurvivorGoesToHospital.sample();
             	}
             	if(goesToHospital) {
             		ccase.setWillBeHospitalised();
@@ -181,7 +181,7 @@ public class Covid {
 
     public double getTransAdjustment() {
         if (status == CStatus.ASYMPTOMATIC) {
-            return CovidParameters.get().diseaseParameters.aSymptomaticTransAdjustment;
+            return CovidParameters.get().diseaseParameters.asymptomaticTransAdjustment;
         } else {
             return CovidParameters.get().diseaseParameters.symptomaticTransAdjustment;
         }

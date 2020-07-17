@@ -47,7 +47,7 @@ public class ShopTest extends SimulationTest {
 
     @Test
     public void testSendHome() {
-        PopulationParameters.get().buildingProperties.pLeaveShop = new Probability(1.0);
+        PopulationParameters.get().buildingProperties.pLeaveShopHour = new Probability(1.0);
         int time = shop.times.getClose() - 1;
         shop.determineMovement(new Time(time), new DailyStats(new Time(time)), null);
         shop.commitMovement();

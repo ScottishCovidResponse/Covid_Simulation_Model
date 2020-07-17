@@ -95,7 +95,7 @@ public class LockdownTests extends SimulationTest  {
     @Test
     public void restaurantEasingReopensRestaurants() {
         // Make it likely we would go to a restaurant in normal circumstances
-        PopulationParameters.get().householdProperties.pGoRestaurant = new Probability(1.0);
+        PopulationParameters.get().householdProperties.pGoRestaurantHour = new Probability(1.0);
 
         int populationSize = 20000;
         Population pop = PopulationGenerator.genValidPopulation(populationSize);
