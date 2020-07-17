@@ -13,7 +13,6 @@ import uk.co.ramp.covid.simulation.parameters.ParameterIO;
 import uk.co.ramp.covid.simulation.util.Time;
 
 import java.io.IOException;
-import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -130,16 +129,15 @@ public class ModelTest {
     @Ignore("this regression test is not kept up-to-date")
     @Test
     public void csvOutputRegressionTest() throws IOException {
-
-        StringWriter sw = new StringWriter();
-        CsvOutput.writeDailyStats(sw, 0, cachedStats);
+        CsvOutput output = new CsvOutput(0, cachedStats);
+        String csv = output.dailyStatsAsCSVString();
 
         Path expectedCsvPath = Paths.get("src/test/resources/regression_test_out.csv");
         // To update test data: Files.writeString(expectedCsvPath, sw.toString());
         String expectedCsvContents = new String(
                 Files.readAllBytes(expectedCsvPath), StandardCharsets.UTF_8);
 
-        assertEquals(expectedCsvContents, sw.toString());
+        assertEquals(expectedCsvContents, csv);
     }
 
     @Test
