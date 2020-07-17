@@ -18,6 +18,22 @@ public class CsvOutput {
     private static final String INFECTIONS_OVER_TIME_FNAME = "dailyInfections.csv";
     private static final String DEATHS_OVER_TIME_FNAME = "deaths.csv";
     private static final String DEATHS_BY_AGE_FNAME = "deathsByAge.csv";
+    
+    private Path outputDir;
+    private List<List<DailyStats>> stats;
+    private int startIteration;
+
+    public CsvOutput(Path outputDir, int startIteration, List<List<DailyStats>> modelStats) {
+        this.outputDir = outputDir;
+        this.startIteration = startIteration;
+        this.stats = modelStats;
+    }
+    
+    public void writeOutput() {
+        writeDailyStats(outputDir, startIteration, stats);
+        extraOutputsForThibaud(outputDir, stats);
+        writeDeathsByAge(outputDir, startIteration, stats);
+    }
 
     public static void writeDailyStats(Appendable out, int startIterID, List<List<DailyStats>> stats) throws IOException {
         if (stats.isEmpty() || stats.get(0).isEmpty()) {
@@ -36,7 +52,7 @@ public class CsvOutput {
     
     public static void writeDailyStats(Path outF, int startIterID, List<List<DailyStats>> stats) {
         try {
-            FileWriter out = new FileWriter(outF.toFile());
+            FileWriter out = new FileWriter(outF.resolve(STATS_FNAME).toFile());
             writeDailyStats(out, startIterID, stats);
             out.close();
         } catch (IOException e) {
