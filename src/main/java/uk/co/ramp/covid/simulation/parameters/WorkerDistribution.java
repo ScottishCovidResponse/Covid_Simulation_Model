@@ -6,6 +6,7 @@ import uk.co.ramp.covid.simulation.util.ProbabilityDistribution;
 
 // Probability an Adult works in a particular job
 public class WorkerDistribution {
+    /** Probabilities people work in particular jobs */
     public Probability pOffice = null;
     public Probability pShop = null;
     public Probability pHospital = null;
@@ -16,6 +17,9 @@ public class WorkerDistribution {
     public Probability pNursery = null;
     public Probability pCareHome = null;
 
+    /** Determines how many workers are assigned to Large/med/small workplaces
+     * For example 50%/30%/20% implies 50% of the workforce are in large offices
+     */
     public PlaceSizeDistribution sizeAllocation = null;
 
     public ProbabilityDistribution<Adult.Professions> professionDistribution() {

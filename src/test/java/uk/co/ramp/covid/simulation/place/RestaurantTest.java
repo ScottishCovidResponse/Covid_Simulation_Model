@@ -48,7 +48,7 @@ public class RestaurantTest extends SimulationTest {
 
     @Test
     public void testSendHome() {
-        PopulationParameters.get().buildingProperties.pLeaveRestaurant = new Probability(1.0);
+        PopulationParameters.get().buildingProperties.pLeaveRestaurantHour = new Probability(1.0);
         int time = restaurant.times.getClose() - 1;
         restaurant.determineMovement(new Time(time), new DailyStats(new Time(time)), null);
         restaurant.commitMovement();

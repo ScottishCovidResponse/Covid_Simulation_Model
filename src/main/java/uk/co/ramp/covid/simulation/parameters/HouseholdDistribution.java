@@ -10,17 +10,29 @@ import java.util.function.Supplier;
 // Household populations
 // These values define the probability of a household being an adult only, adult and child household etc
 public class HouseholdDistribution {
-    public Double householdRatio = null;
+    /** One household per populationToHouseholdsRatio people */
+    public Double populationToHouseholdsRatio = null;
 
+    // Distribution of household types
+    /** 1 non-pensioner adult */
     public Probability pSingleAdult = null;
+    /** 2 non-pensioner adults and no children */
     public Probability pSmallAdult = null;
+    /** 1 adult of any age and any number of children */
     public Probability pSingleParent = null;
+    /** 2 adults of any age and 1 or 2 children */
     public Probability pSmallFamily = null;
+    /** 2 adults of any age and 3 or more children */
     public Probability pLargeTwoAdultFamily = null;
+    /** 3 or more (any age) adults and 1 or more children */
     public Probability pLargeManyAdultFamily = null;
+    /** 3 or more adults (any age) and no children */
     public Probability pLargeAdult = null;
+    /** 1 adult and 1 pensioner */
     public Probability pAdultPensioner = null;
+    /** 2 pensioners */
     public Probability pDoubleOlder = null;
+    /** 1 pensioner */
     public Probability pSingleOlder = null;
 
     public ProbabilityDistribution<Supplier<Household>> householdTypeDistribution() {
@@ -39,7 +51,7 @@ public class HouseholdDistribution {
     }
 
     public boolean isValid() {
-        return householdTypeDistribution().isValid() && householdRatio >= 1;
+        return householdTypeDistribution().isValid() && populationToHouseholdsRatio >= 1;
     }
 
 }

@@ -132,7 +132,7 @@ public class MovementTest extends SimulationTest {
     @Test
     public void someNonWorkersGoToHospital() {
         // Phase 2 movement set when we construct population so we need to reconstruct it here
-        CovidParameters.get().diseaseParameters.hospitalisedSurvive = new Probability(1.0);
+        CovidParameters.get().diseaseParameters.pSurvivorGoesToHospital = new Probability(1.0);
         CovidParameters.get().diseaseParameters.adultProgressionPhase2 = 100.0;
         CovidParameters.get().diseaseParameters.childProgressionPhase2 = 100.0;
         CovidParameters.get().diseaseParameters.pensionerProgressionPhase2 = 100.0;
@@ -284,7 +284,7 @@ public class MovementTest extends SimulationTest {
     @Test
     public void newInfectionsResetIsolationTimer() {
         int daysIsolated = 2;
-        CovidParameters.get().testParameters.pDiagnosticTestAvailable = new Probability(0.0);
+        CovidParameters.get().testParameters.pDiagnosticTestAvailableHour = new Probability(0.0);
         PopulationParameters.get().personProperties.pQuarantinesIfSymptomatic = new Probability(1.0);
 
         Population p = PopulationGenerator.genValidPopulation(populationSize);
@@ -324,7 +324,7 @@ public class MovementTest extends SimulationTest {
     public void somePeopleGetTested() {
         // As most tests are positive we force lots of infections to check some go negative.
         p.getSeeder().forceNInfections(100);
-        CovidParameters.get().testParameters.pDiagnosticTestAvailable = new Probability(1.0);
+        CovidParameters.get().testParameters.pDiagnosticTestAvailableHour = new Probability(1.0);
         p.simulate(30);
 
         int numTested = 0;

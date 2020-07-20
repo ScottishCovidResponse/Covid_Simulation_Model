@@ -70,7 +70,7 @@ public abstract class Person {
         
         if(age <= 20) {
             // The original paper gave parameters broken at age 20
-            this.covidSusceptibleVal = PopulationParameters.get().personProperties.pSusceptibleChild;
+            this.covidSusceptibleVal = PopulationParameters.get().personProperties.susceptibleChildConstant;
         } else {
             this.covidSusceptibleVal = 1.0;
         }
@@ -382,14 +382,14 @@ public abstract class Person {
 
         // Priority order: InPatient/DayCase/OutPatient
         HospitalApptInfo info = PopulationParameters.get().hospitalAppsParams().getParams(sex, age);
-        if (info.pInPatient.adjust(lockdownAdjust).sample()) {
+        if (info.pInPatientDaily.adjust(lockdownAdjust).sample()) {
             startTime = new Time(t.getAbsTime() +
                     RNG.get().nextInt(
                             PopulationParameters.get().hospitalApptProperties.inPatientFirstStartTime,
                             PopulationParameters.get().hospitalApptProperties.inPatientLastStartTime));
 
             length = info.inPatientLengthDays.intValue() * 24;
-        } else if (info.pDayCase.adjust(lockdownAdjust).sample()) {
+        } else if (info.pDayCaseDaily.adjust(lockdownAdjust).sample()) {
             startTime = new Time(t.getAbsTime() +
                     PopulationParameters.get().hospitalApptProperties.dayCaseStartTime);
 
@@ -397,7 +397,7 @@ public abstract class Person {
                     PopulationParameters.get().hospitalApptProperties.meanDayCaseTime,
                     PopulationParameters.get().hospitalApptProperties.SDDayCaseTime
             );
-        } else if (info.pOutPatient.adjust(lockdownAdjust).sample()) {
+        } else if (info.pOutPatientDaily.adjust(lockdownAdjust).sample()) {
             startTime = new Time(t.getAbsTime() +
                     RNG.get().nextInt(
                             PopulationParameters.get().hospitalApptProperties.outPatientFirstStartTime,

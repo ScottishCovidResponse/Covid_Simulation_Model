@@ -43,7 +43,7 @@ public class CovidParameters {
         return checker.isValid(diseaseParameters)
                 && checker.isValid(testParameters)
                 && checker.isValid(infectionSeedProperties)
-                && checker.isValid(hospitalisationParameters);
+                && checker.isValid(hospitalisationParameters) && hospitalisationParameters.isValid();
     }
 
 }

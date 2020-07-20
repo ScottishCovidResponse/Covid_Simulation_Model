@@ -3,7 +3,6 @@ package uk.co.ramp.covid.simulation.output;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;
-import java.io.StringWriter;
 import java.util.Arrays;
 import java.util.List;
 
@@ -31,9 +30,9 @@ public class CsvOutputTest extends SimulationTest {
         int startIterID = 2;
         List<List<DailyStats>> stats = m.run(startIterID);        
         
-        StringWriter sw = new StringWriter();
-        CsvOutput.writeDailyStats(sw, startIterID, stats);
-        StringReader sr = new StringReader(sw.toString());
+        CsvOutput output = new CsvOutput(startIterID, stats);
+        String csv = output.dailyStatsAsCSVString();
+        StringReader sr = new StringReader(csv);
         
         try (BufferedReader br = new BufferedReader(sr)) {
             String line = br.readLine();
