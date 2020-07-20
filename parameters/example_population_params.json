@@ -143,10 +143,10 @@
                 "pMed":0.5,
                 "pLarge":0.1
             },
-            "populationToCareHomesRatio":5000,
+            "populationToCareHomesRatio":6500,
             "careHomeSizeDistribution":{
                 "pSmall":0.0,
-                "pMed":1.0,
+                "pMed":1,
                 "pLarge":0.0
             }
         },
@@ -167,7 +167,7 @@
             }
         },
         "buildingProperties":{
-           "baseTransmissionConstant":0.36,
+           "baseTransmissionConstant":0.35,
            "hospitalExpectedInteractionsPerHour":7.0,
            "constructionSiteExpectedInteractionsPerHour":5.0,
            "nurseryExpectedInteractionsPerHour":10.0,
