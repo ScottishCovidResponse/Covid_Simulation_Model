@@ -11,13 +11,14 @@
 ```
 
 4.  Consider checking:
-   - The build succeeds and tests pass.
-   - If the documentation is up-to-date.
-   - Any warnings in IntelliJ and/or Eclipse.
-   - Codacy warnings.
-   - Any mention of "TODO" or "fudge" in the code.
-   - Tests marked "@Ignore".
-   - If any parameters have been hard coded (when they should be explicitly included in inputs).
+
+    - The build succeeds and tests pass.
+    - The documentation is up-to-date.
+    - Any warnings in IntelliJ and/or Eclipse.
+    - Codacy warnings.
+    - Any mention of "TODO" or "fudge" in the code.
+    - Tests marked "@Ignore".
+    - If any parameters have been hard coded (when they should be explicitly included in inputs).
 
 5.  Update the software checklist (once we have this - **TODO: Add this when it is ready for use.**)
 
@@ -29,12 +30,12 @@
 
 9.  If something is wrong, then create a new release candidate branch (e.g. '-rc2'), fix the problems and then return to step 3 (above), rerunning the model and rechecking anything that has changed.
 
-10.  Remove the 'rc' suffix from the branch, e.g. renaming it to "release-v1.0.0".
+10. Remove the 'rc' suffix from the branch, e.g. renaming it to "release-v1.0.0".
 
-11.  Update the version number in `build.gradle`.
+11. Update the version number in `build.gradle`.
 
-12.  Create a pull request against the `master` branch.
+12. Create a pull request against the `master` branch.
 
-13.  After the PR has been reviewed and merged, then add "-SNAPSHOT" to the version number in `build.gradle`, then make a PR against `develop`.
+13. After the PR has been reviewed and merged, then add "-SNAPSHOT" to the version number in `build.gradle`, then make a PR against `develop`.
 
-14.  Use the GitHub web interface to tag the release, give it a title (e.g. "v1.0.0") and description (e.g. a description of new features), and upload a .jar file.  See <https://docs.github.com/en/github/administering-a-repository/managing-releases-in-a-repository> .
+14. Use the GitHub web interface to tag the release, give it a title (e.g. "v1.0.0") and description (e.g. a description of new features), and upload a .jar file.  See <https://docs.github.com/en/github/administering-a-repository/managing-releases-in-a-repository> .
