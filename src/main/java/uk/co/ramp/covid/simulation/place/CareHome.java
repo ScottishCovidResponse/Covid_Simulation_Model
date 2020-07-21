@@ -1,5 +1,6 @@
 package uk.co.ramp.covid.simulation.place;
 
+import uk.co.ramp.covid.simulation.util.Probability;
 import uk.co.ramp.covid.simulation.util.Time;
 import uk.co.ramp.covid.simulation.output.DailyStats;
 import uk.co.ramp.covid.simulation.parameters.CovidParameters;
@@ -7,12 +8,19 @@ import uk.co.ramp.covid.simulation.parameters.PopulationParameters;
 import uk.co.ramp.covid.simulation.population.*;
 import uk.co.ramp.covid.simulation.util.RoundRobinAllocator;
 
+import java.util.Objects;
+
 public class CareHome extends CommunalPlace implements Home {
 
     private final RoundRobinAllocator<Shifts> shifts;
 
-    public CareHome(Size s) {
+    private CareHomeResidentRange expectedResidents;
+    private int residents = 0;
+
+    public CareHome(Size s, CareHomeResidentRange expectedResidents) {
         super(s);
+
+        this.expectedResidents = expectedResidents;
 
         expectedInteractionsPerHour = PopulationParameters.get().buildingProperties.careHomeExpectedInteractionsPerHour;
 
@@ -24,6 +32,23 @@ public class CareHome extends CommunalPlace implements Home {
         shifts.put(new Shifts(14,22, 0, 1, 2));
         shifts.put(new Shifts(6,14, 3, 4, 5, 6));
         shifts.put(new Shifts(14,22, 3, 4, 5, 6));
+    }
+
+    public void addResident(Person p) {
+        people.add(p);
+        residents++;
+    }
+
+    public boolean residentsNeeded() {
+        return residents < expectedResidents.min;
+    }
+
+    public CareHomeResidentRange getResidentRange() {
+        return expectedResidents;
+    }
+
+    public boolean residentsInRange() {
+        return expectedResidents.inRange(residents);
     }
 
     @Override
@@ -101,6 +126,39 @@ public class CareHome extends CommunalPlace implements Home {
     				}
     			}
     		}
+    }
+
+    // Essentially a Pair-type
+    public static class CareHomeResidentRange {
+        // Probability the care home has this range of residents
+        public Probability probability;
+
+        public int min;
+        public int max;
+
+        public CareHomeResidentRange(int min, int max, Probability p) {
+            this.min = min; this.max = max; this.probability = p;
+        }
+
+        public int getRange() { return max - min; }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            CareHomeResidentRange that = (CareHomeResidentRange) o;
+            return min == that.min &&
+                    max == that.max;
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(probability, min, max);
+        }
+
+        public boolean inRange(int residents) {
+            return residents >= min && residents < max;
+        }
     }
 
 }

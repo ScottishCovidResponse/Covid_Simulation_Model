@@ -14,9 +14,7 @@ import uk.co.ramp.covid.simulation.util.PopulationGenerator;
 import uk.co.ramp.covid.simulation.testutil.SimulationTest;
 import uk.co.ramp.covid.simulation.util.Probability;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import static org.junit.Assert.*;
 import static org.junit.Assert.assertFalse;
@@ -118,6 +116,9 @@ public class HospitalTest extends SimulationTest {
         final int populationSize = 10000;
         final int nInfections = 500;
 
+        // Allow care homes to account for high residency numbers
+        PopulationParameters.get().buildingDistribution.careHomeResidentRanges =
+                Collections.singletonList(new CareHome.CareHomeResidentRange(1, populationSize, new Probability(1.0)));
         PopulationParameters.get().pensionerProperties.pEntersCareHome = new Probability(0.9);
         CovidParameters.get().diseaseParameters.pSurvivorGoesToHospital = new Probability(1.0);
         CovidParameters.get().diseaseParameters.pFatalityGoesToHospital = new Probability(1.0);
@@ -211,7 +212,7 @@ public class HospitalTest extends SimulationTest {
     @Test
     public void testSendHome() {
         Hospital hospital = new CovidHospital(CommunalPlace.Size.MED);
-        Home h = new CareHome(CommunalPlace.Size.MED);
+        Home h = new CareHome(CommunalPlace.Size.MED, new CareHome.CareHomeResidentRange(1, 100, new Probability(1)));
         Adult adult1 = new Adult(30, FEMALE);
         Adult adult2 = new Adult(30, MALE);
         adult1.setHome(h);
