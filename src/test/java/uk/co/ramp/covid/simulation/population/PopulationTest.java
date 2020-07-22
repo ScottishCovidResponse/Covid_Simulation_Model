@@ -10,6 +10,7 @@ import uk.co.ramp.covid.simulation.util.PopulationGenerator;
 import uk.co.ramp.covid.simulation.testutil.SimulationTest;
 import uk.co.ramp.covid.simulation.util.Probability;
 
+import java.util.Collections;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -33,6 +34,9 @@ public class PopulationTest extends SimulationTest {
     @Test
     public void populateHouseholds() {
         // We test the initial household distribution is okay before pensioner secondment
+        // Need to allow care homes to have 0 people in them (max must be > min)
+        PopulationParameters.get().buildingDistribution.careHomeResidentRanges =
+                Collections.singletonList(new CareHome.CareHomeResidentRange(0, 1, new Probability(1.0)));
         PopulationParameters.get().pensionerProperties.pEntersCareHome = new Probability(0.0);
         
         pop = PopulationGenerator.genValidPopulation(populationSize);

@@ -21,7 +21,7 @@
           "asymptomaticTransAdjustment": 0.5,
           "symptomaticTransAdjustment": 1.0,
           "caseMortalityBase": 0.05,
-          "caseMortalityRate":0.5,
+          "caseMortalityRate":0.6,
           "childProgressionPhase2":0.01,
           "adultProgressionPhase2":0.2,
           "pensionerProgressionPhase2":0.8,
@@ -143,12 +143,34 @@
                 "pMed":0.5,
                 "pLarge":0.1
             },
-            "populationToCareHomesRatio":5000,
+            "populationToCareHomesRatio":6500,
             "careHomeSizeDistribution":{
                 "pSmall":0.0,
-                "pMed":1.0,
+                "pMed":1,
                 "pLarge":0.0
-            }
+            },
+            "careHomeResidentRanges": [
+              {
+                "min": 11,
+                "max": 28,
+                "probability": 0.25
+              },
+              {
+                "min": 28,
+                "max": 40,
+                "probability": 0.25
+              },
+              {
+                "min": 40,
+                "max": 60,
+                "probability": 0.25
+              },
+              {
+                "min": 60,
+                "max": 110,
+                "probability": 0.25
+              }
+            ]
         },
         "workerDistribution":{
             "pCareHome":0.01,
@@ -212,7 +234,6 @@
             "pEntersShielding": 0.8
         },
         "personProperties":{
-            "pTransmission":0.32,
             "susceptibleChildConstant": 0.5,
             "pQuarantinesIfSymptomatic":0.9,
             "symptomToQuarantineDelayHours": 12,

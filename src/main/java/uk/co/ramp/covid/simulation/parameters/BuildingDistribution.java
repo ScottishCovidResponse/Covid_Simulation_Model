@@ -1,5 +1,9 @@
 package uk.co.ramp.covid.simulation.parameters;
 
+import uk.co.ramp.covid.simulation.place.CareHome;
+
+import java.util.List;
+
 /** Defines the number of types of building
  *
  *  Parameters such as populationToHospitalsRatio imply 1 hospital per populationToHospitalsRatio people
@@ -32,9 +36,11 @@ public class BuildingDistribution {
 
     public Integer populationToCareHomesRatio = null;
     public PlaceSizeDistribution careHomeSizeDistribution = null;
+    /** Ranges of the form (min, max, probability) that a care home has between min and max residents */
+    public List<CareHome.CareHomeResidentRange> careHomeResidentRanges = null;
 
     public boolean isValid() {
-        return populationToHospitalsRatio > 0
+        boolean valid = populationToHospitalsRatio > 0
                 && populationToConstructionSitesRatio > 0
                 && populationToNurseriesRatio > 0
                 && populationToOfficesRatio > 0
@@ -50,5 +56,9 @@ public class BuildingDistribution {
                 && nurserySizeDistribution.isValid()
                 && careHomeSizeDistribution.isValid()
                 && restaurantSizeDistribution.isValid();
+
+        double careHomeDistSum = careHomeResidentRanges.stream().
+                map(r -> r.probability.asDouble()).reduce(0.0, Double::sum);
+        return valid && careHomeDistSum == 1.0;
     }
 }

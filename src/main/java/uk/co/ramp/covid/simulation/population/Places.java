@@ -6,8 +6,7 @@ import uk.co.ramp.covid.simulation.parameters.PopulationParameters;
 import uk.co.ramp.covid.simulation.place.*;
 import uk.co.ramp.covid.simulation.util.ProbabilityDistribution;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -26,6 +25,7 @@ public class Places {
     private final ProbabilityDistribution<School> schools;
     private final ProbabilityDistribution<Shop> shops;
     private final ProbabilityDistribution<CareHome> careHomes;
+    private final ProbabilityDistribution<CareHome> careHomeResidentDist = new ProbabilityDistribution<>();
     
     private boolean officesUnallocated = false;
     private boolean constructionSitesUnallocated = false;
@@ -39,6 +39,9 @@ public class Places {
     private final List<Place> allPlaces;
     private final List<CommunalPlace> communalPlaces;
     private final List<Household> households;
+
+    private final List<CareHome.CareHomeResidentRange> careHomeResidentRanges =
+            PopulationParameters.get().buildingDistribution.careHomeResidentRanges;
 
     public Places(int populationSize, int numHouseholds) {
         communalPlaces = new ArrayList<>();
@@ -364,9 +367,45 @@ public class Places {
     }
 
     private void createNCareHomes(int n) {
+        // Note this size distribution is for *staff* not residents, who are handled in the getCareHomeForResident function
         ProbabilityDistribution<CommunalPlace.Size> p =
                 PopulationParameters.get().buildingDistribution.careHomeSizeDistribution.sizeDistribution();
-        createNGeneric((s, x) -> new CareHome(s), n, p, careHomes);
+
+        createNGeneric(
+                (s, i) -> {
+                    CareHome.CareHomeResidentRange r = careHomeResidentRanges.get(i % careHomeResidentRanges.size());
+                    return new CareHome(s, r);
+                },
+                n, p, careHomes);
+
+        createCareHomeResidentDistribution();
+    }
+
+    private void createCareHomeResidentDistribution() {
+        // We create a distribution based on the size of the range, e.g. 60-110 resident home are more
+        // likely than 21-40 resident homes.
+        // Probabilities are calculated by normalising the ranges: range / totalRange,
+        // Then bucketing by dividing by the numWithRange
+
+        int[] numberOfType = new int[careHomeResidentRanges.size()];
+        for (CareHome h : getCareHomes()) {
+            for (int i = 0; i < careHomeResidentRanges.size(); i++) {
+                if (h.getResidentRange().equals(careHomeResidentRanges.get(i))) {
+                    numberOfType[i]++;
+                }
+            }
+        }
+
+        int rangeSum = careHomeResidentRanges.stream().map(r -> r.getRange()).reduce(0, Integer::sum);
+
+        for (CareHome h : getCareHomes()) {
+            for (int i = 0; i < careHomeResidentRanges.size(); i++) {
+                if (h.getResidentRange().equals(careHomeResidentRanges.get(i))) {
+                    double p = (double) careHomeResidentRanges.get(i).getRange() / rangeSum  / numberOfType[i];
+                    careHomeResidentDist.add(p, h);
+                }
+            }
+        }
     }
 
     public List<CommunalPlace> getCommunalPlaces() {
@@ -421,4 +460,15 @@ public class Places {
         return households;
     }
 
+    public CareHome getCareHomeForResident() {
+        // Allocate all min person requirements first
+        for (CareHome h : getCareHomes()) {
+            if (h.residentsNeeded()) {
+                return h;
+            }
+        }
+
+        // Randomly assign once min person reqs are met
+        return careHomeResidentDist.sample();
+    }
 }
