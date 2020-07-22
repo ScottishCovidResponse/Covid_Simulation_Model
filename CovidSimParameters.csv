@@ -1,0 +1,125 @@
+Domain,Class,Variable,Parameter,Units,Value,Fitted,Description,Source,Improvements
+disease,testParameters,pDiagnosticTestDetectsSuccessfully,Diagnostic test sensitivity,probability,0.9,bernoulli,,Guess,
+disease,testParameters,pDiagnosticTestAvailable,This describes the probability that somebody will be tested,probability,0.5,bernoulli,,Guess,Needs to change with time
+disease,diseaseParameters,meanLatentPeriod,Latent period,hours,123.12,Lognormal,,UCD,
+disease,diseaseParameters,sdLatentPeriod,Standard deviation of the latent period,hours,0.5,Lognormal,Plucked out the sky to make our distribution look like the UCD distribution,UCD,
+disease,diseaseParameters,meanAsymptomaticPeriod,Duration of infection for asymptomatics,hours,192,Lognormal,,UCD,
+disease,diseaseParameters,sdAsymptomaticPeriod,Standard deviation of the asymptomatic period,hours,0.5,Lognormal,Plucked out the sky to make our distribution look like the UCD distribution,UCD,
+disease,diseaseParameters,pSymptomaticCaseChild,Probability of an infected child developing symptoms,Probability,0.21,bernoilli,,LSHTM,
+disease,diseaseParameters,pSymptomaticCaseAdult,Probability of an infected adult developing symptoms,Probability,0.5,bernoilli,,LSHTM,
+disease,diseaseParameters,pSymptomaticCasePensioner,Probability of an infected pensioner developing symptoms,Probability,0.69,bernoilli,,LSHTM,
+disease,diseaseParameters,meanSymptomDelay,Mean time before infectiousness that symptoms present,hours,-16.08,Gaussian,"Note the sign, so if this parameter is <0 then the symptoms appear after the patient is infectious",UCD,
+disease,diseaseParameters,meanSymptomDelaySD,Standard deviation of the time before infectiousness that symptoms present,hours,30,Gaussian,"Note the sign, so if this parameter is <0 then the symptoms appear after the patient is infectious",UCD,
+disease,diseaseParameters,meanInfectiousDuration,Duration of infectiousness for symptomatics,hours,321.6,Lognormal,,UCD,
+disease,diseaseParameters,sdInfectiousDuration,Standard deviation of infectiousness for symptomatics,hours,0.4,Lognormal,Plucked out the sky to make our distribution look like the UCD distribution,UCD,
+disease,diseaseParameters,phase1Betaa,Alpha parameter for a beta to determing the proportion of infectiousness that is mildly symptomatic,,25,,,UCD,Could do with more thought - there might be more in the UCD document
+disease,diseaseParameters,phase1Betab,Beta parameter for a beta to determing the proportion of infectiousness that is mildly symptomatic,,30,,,UCD,
+disease,diseaseParameters,aSymptomaticTransAdjustment,Adjustment for the transmission for asymptomatics,,0.5,,,UCD,
+disease,diseaseParameters,symptomaticTransAdjustment,Adjustment for the transmission for symptomatics,,1,,,UCD,
+disease,diseaseParameters,caseMortalityRate,Linear increase in mortality with age,Linear model,0.6,linear model,This is adjusted by the patient's age,Guess,Estimated to give a better fit
+disease,diseaseParameters,caseMortalityBase,Linear increase in mortality with age,Linear model,0.6,Intercept,Basic mortlaity rate,Guess,Estimated to give a better fit
+disease,diseaseParameters,childProgressionPhase2,Progression to phase 2 - child,probability,0.01,bernoulli,,Guess,Needs improvement
+disease,diseaseParameters,adultProgressionPhase2,Progression to phase 2 - adult,probability,0.2,bernoulli,,Guess,Needs improvement
+disease,diseaseParameters,pensionerProgressionPhase2,Progression to phase 2 - Pernsioner,probability,0.8,bernoulli,,Guess,Needs improvement
+disease,diseaseParameters,hospitalisedSurvive,If somebody survives infection the probability that thye were hospitalised,probability,0.25,bernoulli,,Guess,Roughly based on mortlaity data
+disease,diseaseParameters,hospitalisedDie,"If somebody dies, the probability that thye were hospitalised",probability,0.8,bernoulli,,Guess,Roughly based on mortlaity data
+disease,infectionSeedProperties,InitialSeedAdult,Initial probability of being infected as a seed for an adult,probability,0.000001,bernoulli,,Guess,Fits a sensible model
+disease,infectionSeedProperties,InitialSeedInfantChildPensioner,Initial probability of being infected as a seed for a child,probability,0.0000005,bernoulli,,Guess,Fits a sensible model
+disease,infectionSeedProperties,rateIncreaseSeed,Daily rate of increase for seeding probabilities,Rate,1.1,Rate,,Guess,12
+disease,hospitalisationParameters,hospitalisationTransmissionReduction,This is a multiplier for the transmisison rate to describe the drop in transmission due to PPE in hospitals,probability,0.05,bernoulli,,Guess,
+disease,careHomeParameters,PPETransmissionReduction,This is a multiplier for the transmisison rate to describe the drop in transmission due to PPE in care homes,probability,0.5,bernoilli,,Guess,Influence by a radio talk show with calls form care home workers
+disease,careHomeParameters,hoursAfterSymptomsBeforeQuarantine,Time to quarantine of care home residents,Time,12,,,Guess,
+Population,population,Proportion of the population by age bracket,Read in file,,,,,NRS Scotland population 2018,
+Population,householdDistribution,householdRatio,Ratio of people : households,Ratio,2.18,,,Household survey 2018,
+Population,householdDistribution,Household structure,Structure of households,probability,,,,Household survey 2018,
+Population,buildingDistribution,hospitals,Number of Hospitals per N people,,10000,,,Guess,Could be established from data
+Population,buildingDistribution:hospitalSizes,pSmall,Proportion of small premises,probability,0,,,Guess,Could be established from data
+Population,buildingDistribution:hospitalSizes,pMed,Proportion of medium premises,probability,1,,,Guess,Could be established from data
+Population,buildingDistribution:hospitalSizes,pLarge,Proportion of large premises,probability,0,,,Guess,Could be established from data
+Population,buildingDistribution,schools,Number of Schools per N people,,2500,,,Guess,Could be established from data
+Population,buildingDistribution:schoolSizes,pSmall,Proportion of small premises,probability,0,,,Guess,Could be established from data
+Population,buildingDistribution:schoolSizes,pMed,Proportion of medium premises,probability,1,,,Guess,Could be established from data
+Population,buildingDistribution:schoolSizes,pLarge,Proportion of large premises,probability,0,,,Guess,Could be established from data
+Population,buildingDistribution,shops,Number of Shops per N people,,750,,,Guess,Could be established from data
+Population,buildingDistribution:shopSizes,pSmall,Proportion of small premises,probability,0.7,,,Guess,Could be established from data
+Population,buildingDistribution:shopSizes,pMed,Proportion of medium premises,probability,0.2,,,Guess,Could be established from data
+Population,buildingDistribution:shopSizes,pLarge,Proportion of large premises,probability,0.1,,,Guess,Could be established from data
+Population,buildingDistribution,offices,Number of Offices per N people,,250,,,Guess,Could be established from data
+Population,buildingDistribution:officeSizes,pSmall,Proportion of small premises,probability,0.2,,,Guess,Could be established from data
+Population,buildingDistribution:officeSizes,pMed,Proportion of medium premises,probability,0.3,,,Guess,Could be established from data
+Population,buildingDistribution:officeSizes,pLarge,Proportion of large premises,probability,0.5,,,Guess,Could be established from data
+Population,buildingDistribution,constructionSites,Number of Construction sites per N people,,1000,,,Guess,Could be established from data
+Population,buildingDistribution:constructionSiteSizes,pSmall,Proportion of small premises,probability,0.75,,,Guess,Could be established from data
+Population,buildingDistribution:constructionSiteSizes,pMed,Proportion of medium premises,probability,0.2,,,Guess,Could be established from data
+Population,buildingDistribution:constructionSiteSizes,pLarge,Proportion of large premises,probability,0.1,,,Guess,Could be established from data
+Population,buildingDistribution,nurseries,Number of nurseries per N people,,2000,,,Guess,Could be established from data
+Population,buildingDistribution:nurserySizes,pSmall,Proportion of small premises,probability,0,,,Guess,Could be established from data
+Population,buildingDistribution:nurserySizes,pMed,Proportion of medium premises,probability,1,,,Guess,Could be established from data
+Population,buildingDistribution:nurserySizes,pLarge,Proportion of large premises,probability,0,,,Guess,Could be established from data
+Population,buildingDistribution,restaurants,Number of Restaurants per N people,,1000,,,Guess,Could be established from data
+Population,buildingDistribution:restaurantSizes,pSmall,Proportion of small premises,probability,0.3,,,Guess,Could be established from data
+Population,buildingDistribution:restaurantSizes,pMed,Proportion of medium premises,probability,0.6,,,Guess,Could be established from data
+Population,buildingDistribution:restaurantSizes,pLarge,Proportion of large premises,probability,0.1,,,Guess,Could be established from data
+Population,buildingDistribution,careHomes,Number of Care Homes per N people,,6500,,,Care home census,
+Population,buildingDistribution:careHomeSizes,pSmall,Proportion of small premises,probability,0,,,Care home census,Irrelevant
+Population,buildingDistribution:careHomeSizes,pMed,Proportion of medium premises,probability,1,,,Care home census,Irrelevant
+Population,buildingDistribution:careHomeSizes,pLarge,Proportion of large premises,probability,0,,,Care home census,Irrelevant
+Population,CareHomeResidentRanges,,Size brackets for care home sizes,probability,,,,Care home census,
+Population,workerAllocation,pOffice,Probability of working in an office,probability,0.33,,,Guess,Some employment data
+Population,workerAllocation,pShop,Probability of working in an shop,probability,0.14,,,Guess,Some employment data
+Population,workerAllocation,pHospital,Probability of working in an hospital,probability,0.09,,,Guess,Some employment data
+Population,workerAllocation,pConstruction,Probability of working in an construction site,probability,0.22,,,Guess,Some employment data
+Population,workerAllocation,pTeacher,Probability of working as a teacher,probability,0.065,,,Guess,Some employment data
+Population,workerAllocation,pRestaurant,Probability of working in a restaurant,probability,0.09,,,Guess,Some employment data
+Population,workerAllocation,pUnemployed,Probability of being unemployed,probability,0.05,,,Guess,Some employment data
+Population,sizeAllocation,pSmall,Probability of working in a small segment,probability,0.2,,,Guess,Could be established from data
+Population,sizeAllocation,pMed,Probability of working in a medium segment,probability,0.3,,,Guess,Could be established from data
+Population,sizeAllocation,pLarge,Probability of working in a large segment,probability,0.5,,,Guess,Could be established from data
+Population,buildingProperties,baseTransmissionConstant,Baseline transmisison probability,probability,0.35,,,Guess,This value is optimised to give a sensible model fit based around the R0
+Population,buildingProperties,constructionSiteExpectedInteractionsPerHour,Contact frequency,People,5,,Daily probability of contact with each other person,Guess,Could be established from data
+Population,buildingProperties,pConstructionSiteKey,Probability that the construction site is a key premises,probability,0.4,,,Guess,
+Population,buildingProperties,hospitalExpectedInteractionsPerHour,Contact frequency,People,7,,Daily probability of contact with each other person,Guess,Could be established from data
+Population,buildingProperties,pHospitalKey,Probability that the Hospital is a key premises,probability,1,,,Guess,
+Population,buildingProperties,nurseryExpectedInteractionsPerHour,Contact frequency,People,10,,Daily probability of contact with each other person,Guess,Could be established from data
+Population,buildingProperties,officeExpectedInteractionsPerHour,Contact frequency,People,5,,Daily probability of contact with each other person,Guess,Could be established from data
+Population,buildingProperties,pOfficeKey,Probability that the office is a key premises,probability,0.2,,,Guess,
+Population,buildingProperties,restaurantExpectedInteractionsPerHour,Contact frequency,People,10,,Daily probability of contact with each other person,Guess,Could be established from data
+Population,buildingProperties,schoolExpectedInteractionsPerHour,Contact frequency,People,25,,Daily probability of contact with each other person,Guess,Could be established from data
+Population,buildingProperties,shopExpectedInteractionsPerHour,Contact frequency,People,5,,Daily probability of contact with each other person,Guess,Could be established from data
+Population,buildingProperties,pShopKey,Probability that the shop is a key premises,probability,0.4,,,Guess,
+Population,buildingProperties,careHomeExpectedInteractionsPerHour,Contact frequency,People,7,,,,
+Population,buildingProperties,pHospitalStaffWillFurlough,Will hospital staff continue working,probability,0.5,,,,
+Population,buildingProperties,schoolHolidays:start,Start day of pre-lockdown schiol holidays,Day,28,,,,
+Population,buildingProperties,schoolHolidays:end,End day of pre-lockdown school holidays,Day,32,,,,
+Population,infantAllocation,pAttendsNursery,Probability that an infant attends nursery,Probability,0.12,,,Guess,
+Population,pensionerProperties,pEntersCareHome,Probability that a pensioner goes to a care home,probability,0.12,,,Data,
+Population,pensionerProperties,minAgeToEnterCare,minAgeToEnterCare,Age,80,,,Rough guess,
+Population,householdProperties,neighbourOpeningTime,Time that people start visiting neighbours,hours,9,,,Guess,
+Population,householdProperties,neighbourClosingTime,Time that people stop visiting neighbours,hours,20,,,Guess,
+Population,householdProperties,pVisitorsLeaveHousehold,Hourly probability that a visitor leaves,Rate,0.33,,,Guess,
+Population,householdProperties,householdVisitsNeighbourDaily,Daily probability that a household will attempt to visit each neighbour,probability,0.25,,,Guess,Note that a household can only visit one neighbour per day
+Population,householdProperties,expectedNeighbours,Number of neighbours per housheold,Number,7,Poisson,,Guess,
+Population,householdProperties,pNeighbourFromSameGroup,"Probability that neighbour is from the same age group - family, single adult, or pensioner",probability,0.6,,,Guess,
+Population,householdProperties,pNeighbourFromOtherGroup,"Probability that neighbour is from the different age group - family, single adult, or pensioner",probability,0.2,,,Guess,
+Population,householdProperties,pGoShopping,Hourly probability that a housheold goes shopping,probability,0.071,,,Guess,Based on an average daily shopping trip - not every shopping trip will be posisble
+Population,householdProperties,lockdownShoppingProbabilityAdjustment,Multiplier to describe the reduction in shopping visits post-lockdown,probability,0.25,,,Guess,
+Population,householdProperties,pGoRestaurant,Hourly probability that a housheold goes to a restaurant,probability,0.071,,,Guess,Based on an average daily restaurant trip - not every restaurant trip will be posisble
+Population,householdProperties,pWillIsolate,Probability that a household will isolate if they have a symptomatic case,probability,0.5,,,Guess,
+Population,householdProperties,householdIsolationPeriod,Duration of household isolation,days,14,,,Rules,Old Nicola said so
+Population,householdProperties,pLockCompliance,Lockdown compliance probability,probability,0.8,,,Guess,
+Population,personProperties,pSusceptibleChild,Probability that a child is susceptible,Probability,0.5,,,LSHTM,
+Population,personProperties,pQuarantinesIfSymptomatic,Probability of a symptomatic quaratnining,Probability,0.9,,,Guess,
+Population,personProperties,symptomToQuarantineDelay,Delay formt he onset of symptoms to quarantine,hours,12,,,Guess,
+Population,personProperties,symptomToTestingDelay,Start of symptoms to tetsing,hours,24,,,Guess,
+Population,publicTransportParameters,expectedInteractions,Contact rate,People,5,,,Guess,
+Population,publicTransportParameters,pFamilyTakesTransport,Household level rate of taking public transport,Probability,0.5,,,Guess,
+Population,hospitalApptProperties,dayCaseStartTime,Start time for day cases,Time,8,,,Informed guess,
+Population,hospitalApptProperties,meanDayCaseTime,Duration of day cases,Time,8,,,Guess,
+Population,hospitalApptProperties,SDDayCaseTime,Standard deviation of day case duration,Time,1,,,Guess,
+Population,hospitalApptProperties,inPatientFirstStartTime,Start time for in patient appointments,Time,1,,,Guess,
+Population,hospitalApptProperties,inPatientLastStartTime,End time for in patient appointments,Time,23,,,Guess,
+Population,hospitalApptProperties,outPatientFirstStartTime,Start time for out patient appointments,Time,8,,,Guess,
+Population,hospitalApptProperties,outPatientLastStartTime,End time for out patient appointments,Time,17,,,Guess,
+Population,hospitalApptProperties,meanOutPatientTime,Mean time for out patients,Time,2,,,Guess,
+Population,hospitalApptProperties,lockdownApptDecreasePercentage,Decrease in appointments following lockdown,probability,0.75,,,Guess,
+,hospitalAppts,,Hospital appointment frequency by age group,,,,,NHS data,
