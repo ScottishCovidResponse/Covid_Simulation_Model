@@ -153,8 +153,11 @@ public class Model {
 
         RNG.seed(rngSeed + simulationID);
 
-        createOutputDirectory();
-        configureLoggerRedirects();
+        if (!outputDisabled) {
+            createOutputDirectory();
+            configureLoggerRedirects();
+        }
+
 
         // We need to log this after creating a model to ensure it goes to the file
         LOGGER.info(BuildConfig.NAME + " version " + BuildConfig.VERSION);
