@@ -266,7 +266,7 @@ ggsave(paste(plotFile, "HospitalisedTotal.jpg", sep = "/"), hospitalCurrentPlot,
 
 
 # -------------------------------------------------------------------------
-# Death by location
+# Death by Age
 
 ageDeath <- read.csv("exampledata/current/deathsByAge.csv")
 
@@ -275,6 +275,7 @@ cDataA <- aggregate.data.frame(ageDeath$age, by = list(day = ageDeath$day), func
 cDataA$li <- unlist(cDataA$x)[names(unlist(cDataA$x)) == paste0(" ",as.character(cProbs[1] * 100), "%")]
 cDataA$mi <- unlist(cDataA$x)[names(unlist(cDataA$x)) == paste0(as.character(cProbs[2] * 100), "%")]
 cDataA$ui <- unlist(cDataA$x)[names(unlist(cDataA$x)) == paste0(as.character(cProbs[3] * 100), "%")]
+
 
 deathAgePlot <- ggplot(data = cDataA, aes(x=day, y= mi)) +
   geom_line() +
@@ -286,6 +287,29 @@ ggsave(paste(plotFile, "DeathAge.jpg", sep = "/"), deathAgePlot, height = 6, wid
 
 
 
+# Death by location -------------------------------------------------------
+
+home <- baseline %>% 
+  filter(day <= 161) %>%
+  group_by(iter) %>% 
+  summarise(DHome = sum(DHome), DCareHome = sum(DCareHome), DHospital = sum(DHospital)) %>% 
+  ungroup() %>% 
+  summarise(DHome = quantile(DHome, probs = cProbs), DCareHome = quantile(DCareHome, probs = cProbs), DHospital = quantile(DHospital, probs = cProbs))
+home$probs = cProbs
+home <- melt(home, id.vars = 4)
+home <- dcast(home, variable ~ probs)
+names(home)[2:4] <- c("li", "mi", "ui")
+home$NRS <- c(38, 422, 260)
+
+deathLocation <- ggplot(home, aes(x = variable, y = mi)) + 
+  geom_point() + 
+  geom_errorbar(aes(x = variable, ymin = li, ymax = ui), width = 0.1) +
+  geom_point(aes(x = variable, y = NRS, color = "red3"), size = 2) + 
+  ylim(0, 800) +
+  xlab("") + 
+  ylab("Deaths")+ theme(legend.position = "none", text = element_text(size = 14))
+
+ggsave(paste(plotFile, "DeathLocation.jpg", sep = "/"), deathLocation, height = 6, width = 6, units = "in")
 
 
 deathPlace <- baselineIMelt[baselineIMelt$variable %in% c("DHome", "DHospital", "DCareHome"),]
