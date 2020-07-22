@@ -37,6 +37,13 @@ public class ParameterIO {
         PopulationParameters.setParameters(r.population);
     }
 
+    public static void readParametersFromString(String json) throws JsonParseException {
+        Reader reader = new StringReader(json);
+        ParameterIO r = getGson().fromJson(reader, ParameterIO.class);
+        CovidParameters.setParameters(r.disease);
+        PopulationParameters.setParameters(r.population);
+    }
+
     public static void writeParametersToFile(Path outF) {
         ParameterIO params = new ParameterIO(CovidParameters.get(), PopulationParameters.get());
 
@@ -72,5 +79,12 @@ public class ParameterIO {
             lockdownGenerators.setGson(gson);
         } 
         return gson;
+    }
+
+    public static String writeParametersToString() {
+        ParameterIO params = new ParameterIO(CovidParameters.get(), PopulationParameters.get());
+        Writer writer = new StringWriter();
+        getGson().toJson(params, writer);
+        return writer.toString();
     }
 }

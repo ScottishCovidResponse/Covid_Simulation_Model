@@ -4,6 +4,8 @@ import uk.co.ramp.covid.simulation.place.CommunalPlace;
 import uk.co.ramp.covid.simulation.util.Probability;
 import uk.co.ramp.covid.simulation.util.ProbabilityDistribution;
 
+import java.util.Objects;
+
 public class PlaceSizeDistribution {
     public Probability pSmall = null;
     public Probability pMed = null;
@@ -21,5 +23,18 @@ public class PlaceSizeDistribution {
         return sizeDistribution().isValid();
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        PlaceSizeDistribution that = (PlaceSizeDistribution) o;
+        return Objects.equals(pSmall, that.pSmall) &&
+                Objects.equals(pMed, that.pMed) &&
+                Objects.equals(pLarge, that.pLarge);
+    }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(pSmall, pMed, pLarge);
+    }
 }

@@ -4,6 +4,8 @@ import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSerializer;
 
+import java.util.Objects;
+
 public class DateRange {
     final Time start;
     final Time end;
@@ -38,4 +40,18 @@ public class DateRange {
         int e = o.get("end").getAsInt();
         return new DateRange(Time.timeFromDay(s), Time.timeFromDay(e));
     };
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        DateRange dateRange = (DateRange) o;
+        return Objects.equals(start, dateRange.start) &&
+                Objects.equals(end, dateRange.end);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(start, end);
+    }
 }

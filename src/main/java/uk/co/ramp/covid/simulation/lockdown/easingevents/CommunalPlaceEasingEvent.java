@@ -7,6 +7,7 @@ import uk.co.ramp.covid.simulation.util.Probability;
 import uk.co.ramp.covid.simulation.util.Time;
 
 import java.util.List;
+import java.util.Objects;
 
 /** Lockdown component to ease restrictions on places */
 public abstract class CommunalPlaceEasingEvent extends LockdownEvent {
@@ -36,5 +37,20 @@ public abstract class CommunalPlaceEasingEvent extends LockdownEvent {
         return start != null
                 && keyPremises != null
                 && socialDistance != null;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        CommunalPlaceEasingEvent that = (CommunalPlaceEasingEvent) o;
+        return Objects.equals(keyPremises, that.keyPremises) &&
+                Objects.equals(socialDistance, that.socialDistance);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), keyPremises, socialDistance);
     }
 }

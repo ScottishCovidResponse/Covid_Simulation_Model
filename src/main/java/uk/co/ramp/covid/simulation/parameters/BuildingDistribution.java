@@ -1,5 +1,7 @@
 package uk.co.ramp.covid.simulation.parameters;
 
+import java.util.Objects;
+
 /** Defines the number of types of building
  *
  *  Parameters such as populationToHospitalsRatio imply 1 hospital per populationToHospitalsRatio people
@@ -50,5 +52,34 @@ public class BuildingDistribution {
                 && nurserySizeDistribution.isValid()
                 && careHomeSizeDistribution.isValid()
                 && restaurantSizeDistribution.isValid();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        BuildingDistribution that = (BuildingDistribution) o;
+        return Objects.equals(populationToHospitalsRatio, that.populationToHospitalsRatio) &&
+                Objects.equals(covidHospitalRatio, that.covidHospitalRatio) &&
+                Objects.equals(hospitalSizeDistribution, that.hospitalSizeDistribution) &&
+                Objects.equals(populationToSchoolsRatio, that.populationToSchoolsRatio) &&
+                Objects.equals(schoolSizeDistribution, that.schoolSizeDistribution) &&
+                Objects.equals(populationToShopsRatio, that.populationToShopsRatio) &&
+                Objects.equals(shopSizeDistribution, that.shopSizeDistribution) &&
+                Objects.equals(populationToOfficesRatio, that.populationToOfficesRatio) &&
+                Objects.equals(officeSizeDistribution, that.officeSizeDistribution) &&
+                Objects.equals(populationToConstructionSitesRatio, that.populationToConstructionSitesRatio) &&
+                Objects.equals(constructionSiteSizeDistribution, that.constructionSiteSizeDistribution) &&
+                Objects.equals(populationToNurseriesRatio, that.populationToNurseriesRatio) &&
+                Objects.equals(nurserySizeDistribution, that.nurserySizeDistribution) &&
+                Objects.equals(populationToRestaurantsRatio, that.populationToRestaurantsRatio) &&
+                Objects.equals(restaurantSizeDistribution, that.restaurantSizeDistribution) &&
+                Objects.equals(populationToCareHomesRatio, that.populationToCareHomesRatio) &&
+                Objects.equals(careHomeSizeDistribution, that.careHomeSizeDistribution);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(populationToHospitalsRatio, covidHospitalRatio, hospitalSizeDistribution, populationToSchoolsRatio, schoolSizeDistribution, populationToShopsRatio, shopSizeDistribution, populationToOfficesRatio, officeSizeDistribution, populationToConstructionSitesRatio, constructionSiteSizeDistribution, populationToNurseriesRatio, nurserySizeDistribution, populationToRestaurantsRatio, restaurantSizeDistribution, populationToCareHomesRatio, careHomeSizeDistribution);
     }
 }

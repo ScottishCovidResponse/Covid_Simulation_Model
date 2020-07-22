@@ -7,6 +7,8 @@ import uk.co.ramp.covid.simulation.population.Person;
 import uk.co.ramp.covid.simulation.population.Population;
 import uk.co.ramp.covid.simulation.util.Time;
 
+import java.util.Objects;
+
 public class FullLockdownEvent extends LockdownEvent {
     
     private final Double socialDistance;
@@ -54,5 +56,18 @@ public class FullLockdownEvent extends LockdownEvent {
     @Override
     protected boolean isValid() {
         return start != null && socialDistance != null;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        FullLockdownEvent that = (FullLockdownEvent) o;
+        return Objects.equals(socialDistance, that.socialDistance);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(socialDistance);
     }
 }
