@@ -3,6 +3,7 @@ library(reshape2)
 library(ggpubr)
 library(dplyr)
 library(rio)
+library(Hmisc)
 
 healthboard <- "Lothian"
 
@@ -261,6 +262,31 @@ hospitalCurrentPlot <- ggplot(data = deathCum, aes(x=day, y= mi * cPop)) +
   theme(text = element_text(size = 16))
 
 ggsave(paste(plotFile, "HospitalisedTotal.jpg", sep = "/"), hospitalCurrentPlot, height = 6, width = 6, units = "in")
+
+
+
+# -------------------------------------------------------------------------
+# Death by location
+
+ageDeath <- read.csv("exampledata/current/deathsByAge.csv")
+
+cProbs <- c(0.05, 0.5, 0.95)
+cDataA <- aggregate.data.frame(ageDeath$age, by = list(day = ageDeath$day), function(x) wtd.quantile(x, ageDeath$deaths, probs = cProbs), simplify = F)
+cDataA$li <- unlist(cDataA$x)[names(unlist(cDataA$x)) == paste0(" ",as.character(cProbs[1] * 100), "%")]
+cDataA$mi <- unlist(cDataA$x)[names(unlist(cDataA$x)) == paste0(as.character(cProbs[2] * 100), "%")]
+cDataA$ui <- unlist(cDataA$x)[names(unlist(cDataA$x)) == paste0(as.character(cProbs[3] * 100), "%")]
+
+deathAgePlot <- ggplot(data = cDataA, aes(x=day, y= mi)) +
+  geom_line() +
+  geom_ribbon(aes(x=day, ymin = li, ymax = ui), fill="red", alpha = .15) + geom_vline(xintercept = lockdown) + ylab("Age of Covid deaths") + xlab("Day") + 
+  ylim(0, 100) +
+  theme(text = element_text(size = 16))
+
+ggsave(paste(plotFile, "DeathAge.jpg", sep = "/"), deathAgePlot, height = 6, width = 6, units = "in")
+
+
+
+
 
 deathPlace <- baselineIMelt[baselineIMelt$variable %in% c("DHome", "DHospital", "DCareHome"),]
 deathPlaceAgg <- aggregate(deathPlace$value * cPop, by = list("DeathLocation" = deathPlace$variable), sum)
