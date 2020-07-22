@@ -34,7 +34,7 @@ public abstract class CommunalPlaceEasingEvent extends LockdownEvent {
 
     @Override
     protected boolean isValid() {
-        return start != null
+        return startDay != null
                 && keyPremises != null
                 && socialDistance != null;
     }

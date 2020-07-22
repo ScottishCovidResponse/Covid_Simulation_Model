@@ -55,7 +55,7 @@ public class FullLockdownEvent extends LockdownEvent {
 
     @Override
     protected boolean isValid() {
-        return start != null && socialDistance != null;
+        return startDay != null && socialDistance != null;
     }
 
     @Override

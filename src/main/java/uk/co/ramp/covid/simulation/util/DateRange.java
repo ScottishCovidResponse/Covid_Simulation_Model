@@ -7,37 +7,37 @@ import com.google.gson.JsonSerializer;
 import java.util.Objects;
 
 public class DateRange {
-    final Time start;
-    final Time end;
+    final Time startDay;
+    final Time endDay;
     
     public DateRange(Time start, Time end) {
-        this.start = start;
-        this.end = end;
+        this.startDay = start;
+        this.endDay = end;
     }
     
     public boolean inRange(Time t) {
-        return start.compareTo(t) <= 0 && end.compareTo(t) > 0;
+        return startDay.compareTo(t) <= 0 && endDay.compareTo(t) > 0;
     }
 
-    public Time getStart() {
-        return start;
+    public Time getStartDay() {
+        return startDay;
     }
 
-    public Time getEnd() {
-        return end;
+    public Time getEndDay() {
+        return endDay;
     }
 
     public static JsonSerializer<DateRange> serializer = (src, typeOfSrc, context) -> {
         JsonObject o = new JsonObject();
-        o.addProperty("start", src.getStart().getAbsDay());
-        o.addProperty("end", src.getEnd().getAbsDay());
+        o.addProperty("startDay", src.getStartDay().getAbsDay());
+        o.addProperty("endDay", src.getEndDay().getAbsDay());
         return o;
     };
 
     public static JsonDeserializer<DateRange> deserializer = (json, typeOfT, context) -> {
         JsonObject o = json.getAsJsonObject();
-        int s = o.get("start").getAsInt();
-        int e = o.get("end").getAsInt();
+        int s = o.get("startDay").getAsInt();
+        int e = o.get("endDay").getAsInt();
         return new DateRange(Time.timeFromDay(s), Time.timeFromDay(e));
     };
 
@@ -46,12 +46,12 @@ public class DateRange {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         DateRange dateRange = (DateRange) o;
-        return Objects.equals(start, dateRange.start) &&
-                Objects.equals(end, dateRange.end);
+        return Objects.equals(startDay, dateRange.startDay) &&
+                Objects.equals(endDay, dateRange.endDay);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(start, end);
+        return Objects.hash(startDay, endDay);
     }
 }

@@ -8,8 +8,8 @@ import java.util.Objects;
 
 /** Lockdown event generators do not control lockdowns themselves, but can conditionally generate events that do */
 public abstract class LockdownEventGenerator {
-    protected Time start = null;
-    protected Time end = null;
+    protected Time startDay = null;
+    protected Time endDay = null;
 
     // Transient to avoid de-serialisation
     protected transient Population population = null;
@@ -17,7 +17,7 @@ public abstract class LockdownEventGenerator {
     public LockdownEventGenerator() {}
     
     public List<LockdownEvent> generate(Time t) {
-        if (t.compareTo(start) >= 0 && (end == null || t.compareTo(end) < 0)) {
+        if (t.compareTo(startDay) >= 0 && (endDay == null || t.compareTo(endDay) < 0)) {
             return generateEvents(t);
         }
         return null;
@@ -26,7 +26,7 @@ public abstract class LockdownEventGenerator {
     protected abstract List<LockdownEvent> generateEvents(Time now);
 
     protected boolean isValid() {
-        return start != null;
+        return startDay != null;
     }
     
     public void setPopulation(Population p) {
@@ -38,13 +38,13 @@ public abstract class LockdownEventGenerator {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         LockdownEventGenerator that = (LockdownEventGenerator) o;
-        return Objects.equals(start, that.start) &&
-                Objects.equals(end, that.end) &&
+        return Objects.equals(startDay, that.startDay) &&
+                Objects.equals(endDay, that.endDay) &&
                 Objects.equals(population, that.population);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(start, end, population);
+        return Objects.hash(startDay, endDay, population);
     }
 }

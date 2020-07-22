@@ -184,7 +184,7 @@
             "pLeaveShopHour": 0.5,
             "pLeaveRestaurantHour": 0.4,
             "schoolHolidays": [
-                { "start": 28, "end": 32 }
+                { "startDay": 28, "endDay": 32 }
             ]
         },
         "infantProperties":{

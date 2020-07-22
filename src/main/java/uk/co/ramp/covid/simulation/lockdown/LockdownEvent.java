@@ -10,19 +10,19 @@ import java.util.Objects;
 public abstract class LockdownEvent {
     private static final Logger LOGGER = LogManager.getLogger(LockdownEvent.class);
 
-    protected Time start;
+    protected Time startDay;
 
     // The Population we are controlling
     // Transient to avoid de-serialising this for now
     protected transient Population population;
 
     public LockdownEvent(Time start, Population p) {
-        this.start = start;
+        this.startDay = start;
         population = p;
     }
 
     public void handleLockdown(Time t) {
-        if (t.equals(start)) {
+        if (t.equals(startDay)) {
             LOGGER.info("Applying " + getName());
             apply();
         }
@@ -42,12 +42,12 @@ public abstract class LockdownEvent {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         LockdownEvent that = (LockdownEvent) o;
-        return Objects.equals(start, that.start) &&
+        return Objects.equals(startDay, that.startDay) &&
                 Objects.equals(population, that.population);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(start, population);
+        return Objects.hash(startDay, population);
     }
 }
