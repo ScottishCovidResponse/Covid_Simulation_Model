@@ -24,9 +24,16 @@
 
 6.  Run the model using `example_model_params_lothian.json` and `example_population_params.json`, and then replace `RCode\CovidSimAnalysis\exampledata\current\out.csv` with the new results.
 
-7.  Use `RCode\CovidSimAnalysis\scripts\OutputPlotCode.R` to generate a new set of graphs, which should then also be committed to git.
+7.  Use `RCode\CovidSimAnalysis\scripts\OutputPlotCode.R` to generate a new set of graphs, which should then also be committed to git (note that certain libraries may be required).
 
-8.  Check the results. **TODO: Explain what to check here.**
+8.  Check the results.
+Results of a model run are processed and plotted using the given R scripts. Whilst there is no formal analysis of the model fit relative to the data there are certain plots to check based on epidemiological evidence.
+    - GenerationTime.jpg. The daily generation time should be between 9 and 10 with reasonably tight confidence intervals. There is a dip in the generation time before lockdown (day 55), this is an expected effect of lockdown
+    - CumulativeR.jpg and DailyR.jpg. Pre-lockdown we expect R to be between 2.5 and 3 and the confidence intervals should narrow as the burden of infection increases. Post-lockdown the daily R should dip below 1, but then increase to but largely remaining slightly under 1. There is a fluctuation in the dialy R with lower values at the weekend. This is expected.
+    -  DeathCumPlot.jpg. The cumulative number of deaths is plotted against the (Lothian) health board total (points). The data should remain within the 90% CIs of the model outputs
+    - DeathLocation.jpg. Modelled location of deaths plotted against the location of deaths according to NRS data. It is noted that deaths at hospital and deaths at home both fall slightly outside the 90% CIs of the model runs, but could be easily fixed
+    - DeathsAge.jpg. Whilst the variation in deaths by age remains high, the median line should remain around 80 years.
+    - SiteOfInfectionBarplotAll.jpg and SiteOfInfectionBArplotPreLock.jpg. Post lockdown the proportion of infections in schools and restaurants should tail off markedly.
 
 9.  If something is wrong, then create a new release candidate branch (e.g. '-rc2'), fix the problems and then return to step 3 (above), rerunning the model and rechecking anything that has changed.
 
