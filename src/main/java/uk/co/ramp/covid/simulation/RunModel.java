@@ -39,8 +39,7 @@ public class RunModel {
                 System.exit(-2);
             }
 
-            Model m  = Model.readModelFromFile(modelParamsFile);
-            m.optionallyGenerateRNGSeed();
+            Model m = Model.readModelFromFile(modelParamsFile);
 
             if (!m.isValid()) {
                 LOGGER.error("Could not read model parameters");

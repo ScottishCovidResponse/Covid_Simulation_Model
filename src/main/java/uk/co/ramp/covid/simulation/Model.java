@@ -3,15 +3,11 @@ package uk.co.ramp.covid.simulation;
 import com.google.gson.JsonParseException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.Appender;
-import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.appender.FileAppender;
-import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.LoggerConfig;
-import org.apache.logging.log4j.core.layout.PatternLayout;
+
 import uk.co.ramp.covid.simulation.lockdown.*;
 import uk.co.ramp.covid.simulation.output.CsvOutput;
 import uk.co.ramp.covid.simulation.output.DailyStats;
+import uk.co.ramp.covid.simulation.output.LogConfig;
 import uk.co.ramp.covid.simulation.output.network.ContactsWriter;
 import uk.co.ramp.covid.simulation.output.network.PeopleWriter;
 import uk.co.ramp.covid.simulation.parameters.ParameterIO;
@@ -151,17 +147,17 @@ public class Model {
             throw new InvalidParametersException("Invalid model parameters");
         }
 
-        RNG.seed(rngSeed + simulationID);
-
         if (!outputDisabled) {
             createOutputDirectory();
-            configureLoggerRedirects();
+            LogConfig.configureLoggerRedirects(outPath);
         }
-
 
         // We need to log this after creating a model to ensure it goes to the file
         LOGGER.info(BuildConfig.NAME + " version " + BuildConfig.VERSION);
         LOGGER.info("Git hash: " + BuildConfig.GitHash);
+
+        optionallyGenerateRNGSeed();
+        RNG.seed(rngSeed + simulationID);
 
         List<List<DailyStats>> stats = new ArrayList<>(nIters);
         for (int i = 0; i < nIters; i++) {
@@ -224,21 +220,7 @@ public class Model {
         return stats;
     }
 
-    private void configureLoggerRedirects() {
-        final LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
-        final Configuration config = ctx.getConfiguration();
 
-        final Appender appender = FileAppender.newBuilder()
-                .setName("FileLogger")
-                .setLayout(PatternLayout.newBuilder().withPattern("%d{yyyy-MM-dd HH:mm:ss} %-5p %c{1}:%L - %m%n").build())
-                .withFileName(outPath.resolve("log").toString()).build();
-        appender.start();
-
-        // All loggers also append to the file
-        for (final LoggerConfig loggerConfig : config.getLoggers().values()) {
-            loggerConfig.addAppender(appender, null, null);
-        }
-    }
 
     private void createOutputDirectory() {
         if (outputDirectory.equals("")) {
