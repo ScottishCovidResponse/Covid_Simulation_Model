@@ -29,19 +29,20 @@ public class ParameterIO {
     }
 
     /** Read population data from JSON file */
-    public static void readParametersFromFile(String path) throws IOException, JsonParseException {
-        Reader file = new FileReader(path);
-        ParameterIO r = getGson().fromJson(file, ParameterIO.class);
-
+    private static void readParameters(Reader reader) {
+        ParameterIO r = getGson().fromJson(reader, ParameterIO.class);
         CovidParameters.setParameters(r.disease);
         PopulationParameters.setParameters(r.population);
     }
 
+    public static void readParametersFromFile(String path) throws IOException, JsonParseException {
+        Reader r = new FileReader(path);
+        readParameters(r);
+    }
+
     public static void readParametersFromString(String json) throws JsonParseException {
-        Reader reader = new StringReader(json);
-        ParameterIO r = getGson().fromJson(reader, ParameterIO.class);
-        CovidParameters.setParameters(r.disease);
-        PopulationParameters.setParameters(r.population);
+        Reader r = new StringReader(json);
+        readParameters(r);
     }
 
     public static void writeParametersToFile(Path outF) {
