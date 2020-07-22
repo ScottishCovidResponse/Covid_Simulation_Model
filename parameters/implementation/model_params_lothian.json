@@ -1,0 +1,63 @@
+{
+    "populationSize":910000,
+    "nInitialInfections":0,
+    "externalInfectionDays":55,
+    "nDays":180,
+    "nIters":1,
+    "rngSeed":42,
+    "outputDirectory":"",
+    "lockdownEvents": [
+        {
+            "type" : "FullLockdown",
+            "start": 56,
+            "socialDistance": 0.5
+        },
+        {
+            "type": "ConstructionSiteEasing",
+            "start": 96,
+            "socialDistance": 0.75,
+            "keyPremises": 0.75
+        },
+        {
+            "type": "ShopEasing",
+            "start": 126,
+            "socialDistance": 0.75,
+            "keyPremises": 0.75,
+            "visitFrequencyAdjustment": 0.75
+        },
+        {
+            "type": "SchoolEasing",
+            "start": 175,
+            "socialDistance": 1.0,
+            "keyPremises": 1.0,
+            "pAttendsSchool": 0.5
+        },
+        {
+            "type": "SchoolEasing",
+            "start": 225,
+            "socialDistance": 1.0,
+            "keyPremises": 1.0,
+            "pAttendsSchool": 1.0
+        },
+        {
+            "type": "TravelEasing",
+            "start": 200,
+            "pTravelSeed": 0.000001
+        },
+        {
+            "type": "ShieldingEasing",
+            "start": 180,
+            "partial": true,
+            "partialShieldProbability": 0.4
+        }
+    ],
+    "lockdownGenerators": [
+        {
+            "type": "LocalLockdownEventGenerator",
+            "start": 200,
+            "newCasesThreshold": 0.0001,
+            "numHospitalisedThreshold": 200,
+            "socialDistance": 1.0
+        }
+    ]
+}
