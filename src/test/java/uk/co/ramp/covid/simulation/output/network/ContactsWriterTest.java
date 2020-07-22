@@ -10,17 +10,17 @@ import java.io.*;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 
 public class ContactsWriterTest extends SimulationTest {
 
     @Test
     public void testContactsWriter() throws FileNotFoundException {
+
         String path = "out/";
-        String fileName1 = path + "contacts0.csv";
-        String fileName2 = path + "people0.csv";
+        String contactsFile = path + "contacts0.csv";
+        String peopleFile = path + "people0.csv";
         //Delete output files if they already exist
-        deleteOutputFiles(fileName1, fileName2);
+        deleteOutputFiles(contactsFile, peopleFile);
 
         Model m = new Model()
                 .setPopulationSize(10000)
@@ -36,7 +36,7 @@ public class ContactsWriterTest extends SimulationTest {
         List<List<DailyStats>> stats = m.run(startIterID);
 
         //Check that the header is correct and data exists in the csv files
-        FileReader sr1 = new FileReader(fileName1);
+        FileReader sr1 = new FileReader(contactsFile);
         try (BufferedReader br = new BufferedReader(sr1)) {
             String line = br.readLine();
             String expectedHeader = "time,person1,person2,location,weight";
@@ -44,13 +44,13 @@ public class ContactsWriterTest extends SimulationTest {
 
             String line2 = br.readLine();
             String[] values = line2.split(",");
-            assertNotNull("No contact data found", values);
+            assertEquals("No contact data found", 5, values.length);
 
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        FileReader sr2 = new FileReader(fileName2);
+        FileReader sr2 = new FileReader(peopleFile);
         try (BufferedReader br = new BufferedReader(sr2)) {
             String line = br.readLine();
             String expectedHeader = "id,age";
@@ -58,7 +58,7 @@ public class ContactsWriterTest extends SimulationTest {
 
             String line2 = br.readLine();
             String[] values = line2.split(",");
-            assertNotNull("No people data found", values);
+            assertEquals("No people data found", 2, values.length);
 
         } catch (IOException e) {
             e.printStackTrace();
