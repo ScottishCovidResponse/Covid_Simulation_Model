@@ -3,6 +3,12 @@ package uk.co.ramp.covid.simulation;
 import com.google.gson.JsonParseException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.Appender;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.appender.FileAppender;
+import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.LoggerConfig;
+import org.apache.logging.log4j.core.layout.PatternLayout;
 import uk.co.ramp.covid.simulation.lockdown.*;
 import uk.co.ramp.covid.simulation.output.CsvOutput;
 import uk.co.ramp.covid.simulation.output.DailyStats;
@@ -33,6 +39,9 @@ public class Model {
     private Integer rngSeed = null;
     private String outputDirectory = null;
     private String networkOutputDir = null;
+
+    // transient stops serialisation to json
+    private transient Path outPath;
     
     private final List<LockdownEvent> lockdownEvents = new ArrayList<>();
     private final List<LockdownEventGenerator> lockdownGenerators = new ArrayList<>();
@@ -144,6 +153,13 @@ public class Model {
 
         RNG.seed(rngSeed + simulationID);
 
+        createOutputDirectory();
+        configureLoggerRedirects();
+
+        // We need to log this after creating a model to ensure it goes to the file
+        LOGGER.info(BuildConfig.NAME + " version " + BuildConfig.VERSION);
+        LOGGER.info("Git hash: " + BuildConfig.GitHash);
+
         List<List<DailyStats>> stats = new ArrayList<>(nIters);
         for (int i = 0; i < nIters; i++) {
             // As households/person types are determined probabilistically in some cases it can be
@@ -204,29 +220,44 @@ public class Model {
 
         return stats;
     }
-    
-    private void writeOutput(int iterId, List<List<DailyStats>> s) {
-        Path outP;
 
+    private void configureLoggerRedirects() {
+        final LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
+        final Configuration config = ctx.getConfiguration();
+
+        final Appender appender = FileAppender.newBuilder()
+                .setName("FileLogger")
+                .setLayout(PatternLayout.newBuilder().withPattern("%d{yyyy-MM-dd HH:mm:ss} %-5p %c{1}:%L - %m%n").build())
+                .withFileName(outPath.resolve("log").toString()).build();
+        appender.start();
+
+        // All loggers also append to the file
+        for (final LoggerConfig loggerConfig : config.getLoggers().values()) {
+            loggerConfig.addAppender(appender, null, null);
+        }
+    }
+
+    private void createOutputDirectory() {
         if (outputDirectory.equals("")) {
-            outP = FileSystems.getDefault().getPath(".");
+            outPath = FileSystems.getDefault().getPath(".");
         } else {
             DateTimeFormatter tsFormatter = DateTimeFormatter.ofPattern("yyyyMMdd_hhmmss");
             String timeStamp = tsFormatter.format(LocalDateTime.now());
-            outP = FileSystems.getDefault().getPath(outputDirectory, timeStamp);
-            if (!outP.toFile().mkdirs()) {
-                LOGGER.error("Could not create output directory: " + outP);
-                return;
+            outPath = FileSystems.getDefault().getPath(outputDirectory, timeStamp);
+            if (!outPath.toFile().mkdirs()) {
+                LOGGER.error("Could not create output directory: " + outPath);
             }
         }
-        
+
+    }
+    
+    private void writeOutput(int iterId, List<List<DailyStats>> s) {
         // By here the output directory will be available
-        CsvOutput output = new CsvOutput(outP, iterId, s);
+        CsvOutput output = new CsvOutput(outPath, iterId, s);
         output.writeOutput();
 
-        ParameterIO.writeParametersToFile(outP.resolve("population_params.json"));
-        outputModelParams(outP.resolve("model_params.json"));
-       
+        ParameterIO.writeParametersToFile(outPath.resolve("population_params.json"));
+        outputModelParams(outPath.resolve("model_params.json"));
     }
 
     private void outputModelParams(Path outF) {
