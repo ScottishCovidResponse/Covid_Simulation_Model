@@ -5,9 +5,11 @@ import org.junit.Test;
 import uk.co.ramp.covid.simulation.Model;
 import uk.co.ramp.covid.simulation.parameters.CovidParameters;
 import uk.co.ramp.covid.simulation.parameters.PopulationParameters;
+import uk.co.ramp.covid.simulation.place.CareHome;
 import uk.co.ramp.covid.simulation.testutil.SimulationTest;
 import uk.co.ramp.covid.simulation.util.Probability;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -179,6 +181,10 @@ public class DailyStatsTest extends SimulationTest {
         int RNGSeed = 42;
         
         // Try to force at least 1 care home death for test purposes
+        // Allow care homes to have any number of residents
+        PopulationParameters.get().buildingDistribution.careHomeResidentRanges =
+                Collections.singletonList(new CareHome.CareHomeResidentRange(1, population, new Probability(1.0)));
+
         CovidParameters.get().diseaseParameters.pensionerProgressionPhase2 = 100.0;
         PopulationParameters.get().pensionerProperties.pEntersCareHome = new Probability(0.33);
 

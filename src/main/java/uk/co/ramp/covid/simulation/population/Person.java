@@ -195,9 +195,9 @@ public abstract class Person {
 
     // Try to place this person in a CareHome
     public boolean enterCare(Places places) {
-        CareHome h = places.getRandomCareHome();
+        CareHome h = places.getCareHomeForResident();
         if (h != null) {
-            h.addPerson(this);
+            h.addResident(this);
 
             // Permanently seconded to a CareHome
             setHome(h);

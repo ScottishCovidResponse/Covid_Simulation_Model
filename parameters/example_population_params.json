@@ -148,7 +148,29 @@
                 "pSmall":0.0,
                 "pMed":1,
                 "pLarge":0.0
-            }
+            },
+            "careHomeResidentRanges": [
+              {
+                "min": 11,
+                "max": 28,
+                "probability": 0.25
+              },
+              {
+                "min": 28,
+                "max": 40,
+                "probability": 0.25
+              },
+              {
+                "min": 40,
+                "max": 60,
+                "probability": 0.25
+              },
+              {
+                "min": 60,
+                "max": 110,
+                "probability": 0.25
+              }
+            ]
         },
         "workerDistribution":{
             "pCareHome":0.01,

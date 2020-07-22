@@ -90,9 +90,15 @@ public class Population {
         }
     }
 
-    private void allocateCareHomes() {
+    private void allocateCareHomes() throws ImpossibleAllocationException {
         for (Household h : getHouseholds()) {
             h.trySendPensionersToCare(getPlaces());
+        }
+
+        for (CareHome h : getPlaces().getCareHomes()) {
+            if (!h.residentsInRange()) {
+                throw new ImpossibleAllocationException("Carehome with invalid number of residents");
+            }
         }
     }
 

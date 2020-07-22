@@ -12,6 +12,8 @@ import uk.co.ramp.covid.simulation.util.PopulationGenerator;
 import uk.co.ramp.covid.simulation.testutil.SimulationTest;
 import uk.co.ramp.covid.simulation.util.Probability;
 
+import java.util.Collections;
+
 import static org.junit.Assert.*;
 import static uk.co.ramp.covid.simulation.population.Person.Sex.FEMALE;
 import static uk.co.ramp.covid.simulation.population.Person.Sex.MALE;
@@ -21,6 +23,10 @@ public class CareHomeTest extends SimulationTest {
     @Test
     public void somePensionersInCare() {
         int populationSize = 10000;
+
+        // Allow care homes to account for high residency numbers
+        PopulationParameters.get().buildingDistribution.careHomeResidentRanges =
+                Collections.singletonList(new CareHome.CareHomeResidentRange(1, populationSize, new Probability(1.0)));
         PopulationParameters.get().pensionerProperties.pEntersCareHome = new Probability(0.8);
         Population pop = PopulationGenerator.genValidPopulation(populationSize);
         
@@ -38,6 +44,10 @@ public class CareHomeTest extends SimulationTest {
     @Test
     public void noPensionersInCare() {
         int populationSize = 10000;
+
+        // Need to allow care homes to have 0 residents (note: max must be > min)
+        PopulationParameters.get().buildingDistribution.careHomeResidentRanges =
+                Collections.singletonList(new CareHome.CareHomeResidentRange(0, 1, new Probability(1.0)));
         PopulationParameters.get().pensionerProperties.pEntersCareHome = new Probability(0.0);
         Population pop = PopulationGenerator.genValidPopulation(populationSize);
 
@@ -55,6 +65,10 @@ public class CareHomeTest extends SimulationTest {
     @Test
     public void sickResidentsAreQuarantined() {
         int populationSize = 10000;
+
+        // Allow care homes to account for high residency numbers
+        PopulationParameters.get().buildingDistribution.careHomeResidentRanges =
+                Collections.singletonList(new CareHome.CareHomeResidentRange(1, populationSize, new Probability(1.0)));
         PopulationParameters.get().pensionerProperties.pEntersCareHome = new Probability(0.8);
         // There can be lots of people in the care home so we crank this up to avoid getting almost 0 transmission probs
         PopulationParameters.get().buildingProperties.careHomeExpectedInteractionsPerHour = 100.0;
@@ -122,7 +136,7 @@ public class CareHomeTest extends SimulationTest {
     @Test
     public void testSendHome() {
         Time time = new Time(0);
-        CareHome ch = new CareHome(CommunalPlace.Size.MED);
+        CareHome ch = new CareHome(CommunalPlace.Size.MED, new CareHome.CareHomeResidentRange(1,100, new Probability(1)));
         ch.addPerson(new Pensioner(80, FEMALE));
         ch.addPerson(new Pensioner(85, MALE));
         ch.determineMovement(time, new DailyStats(time), null);
