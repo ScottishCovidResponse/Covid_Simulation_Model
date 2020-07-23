@@ -2,6 +2,8 @@ package uk.co.ramp.covid.simulation.parameters;
 
 import uk.co.ramp.covid.simulation.util.Probability;
 
+import java.util.Objects;
+
 public class HouseholdProperties {
     /** Hourly probability visitors (including families) leave */
     public Probability pVisitorsLeaveHouseholdHour = null;
@@ -47,5 +49,32 @@ public class HouseholdProperties {
                 && neighbourClosingTime >= 0 && neighbourClosingTime < 24
                 && neighbourOpeningTime < neighbourClosingTime
                 && minShieldingAge >= 0 && minShieldingAge <= 100;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        HouseholdProperties that = (HouseholdProperties) o;
+        return Objects.equals(pVisitorsLeaveHouseholdHour, that.pVisitorsLeaveHouseholdHour) &&
+                Objects.equals(householdVisitsNeighbourDaily, that.householdVisitsNeighbourDaily) &&
+                Objects.equals(expectedNeighbours, that.expectedNeighbours) &&
+                Objects.equals(pNeighbourFromSameGroup, that.pNeighbourFromSameGroup) &&
+                Objects.equals(pNeighbourFromOtherGroup, that.pNeighbourFromOtherGroup) &&
+                Objects.equals(pGoShoppingHour, that.pGoShoppingHour) &&
+                Objects.equals(lockdownShoppingProbabilityAdjustment, that.lockdownShoppingProbabilityAdjustment) &&
+                Objects.equals(pGoRestaurantHour, that.pGoRestaurantHour) &&
+                Objects.equals(householdIsolationPeriodDays, that.householdIsolationPeriodDays) &&
+                Objects.equals(pWillIsolate, that.pWillIsolate) &&
+                Objects.equals(pLockCompliance, that.pLockCompliance) &&
+                Objects.equals(neighbourOpeningTime, that.neighbourOpeningTime) &&
+                Objects.equals(neighbourClosingTime, that.neighbourClosingTime) &&
+                Objects.equals(minShieldingAge, that.minShieldingAge) &&
+                Objects.equals(pEntersShielding, that.pEntersShielding);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(pVisitorsLeaveHouseholdHour, householdVisitsNeighbourDaily, expectedNeighbours, pNeighbourFromSameGroup, pNeighbourFromOtherGroup, pGoShoppingHour, lockdownShoppingProbabilityAdjustment, pGoRestaurantHour, householdIsolationPeriodDays, pWillIsolate, pLockCompliance, neighbourOpeningTime, neighbourClosingTime, minShieldingAge, pEntersShielding);
     }
 }

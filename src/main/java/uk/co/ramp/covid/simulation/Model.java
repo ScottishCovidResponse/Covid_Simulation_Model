@@ -229,6 +229,12 @@ public class Model {
        
     }
 
+    public String modelToJsonString() {
+        Writer writer = new StringWriter();
+        ParameterIO.getGson().toJson(this, writer);
+        return writer.toString();
+    }
+
     private void outputModelParams(Path outF) {
         try (Writer writer = new FileWriter(outF.toFile())) {
             ParameterIO.getGson().toJson(this, writer);
@@ -243,10 +249,38 @@ public class Model {
         return ParameterIO.getGson().fromJson(file, Model.class);
     }
 
+    public static Model readModelFromString(String json) throws JsonParseException {
+        Reader file = new StringReader(json);
+        return ParameterIO.getGson().fromJson(file, Model.class);
+    }
+
     public void optionallyGenerateRNGSeed() {
         if (rngSeed == null) {
             rngSeed = RNG.generateRandomSeed();
             LOGGER.warn("Generated RNG seed: " + rngSeed);
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Model model = (Model) o;
+        return outputDisabled == model.outputDisabled &&
+                Objects.equals(populationSize, model.populationSize) &&
+                Objects.equals(nInitialInfections, model.nInitialInfections) &&
+                Objects.equals(externalInfectionDays, model.externalInfectionDays) &&
+                Objects.equals(nDays, model.nDays) &&
+                Objects.equals(nIters, model.nIters) &&
+                Objects.equals(rngSeed, model.rngSeed) &&
+                Objects.equals(outputDirectory, model.outputDirectory) &&
+                Objects.equals(networkOutputDir, model.networkOutputDir) &&
+                Objects.equals(lockdownEvents, model.lockdownEvents) &&
+                Objects.equals(lockdownGenerators, model.lockdownGenerators);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(outputDisabled, populationSize, nInitialInfections, externalInfectionDays, nDays, nIters, rngSeed, outputDirectory, networkOutputDir, lockdownEvents, lockdownGenerators);
     }
 }

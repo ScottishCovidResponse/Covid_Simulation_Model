@@ -8,6 +8,7 @@ import uk.co.ramp.covid.simulation.util.Probability;
 import uk.co.ramp.covid.simulation.util.Time;
 
 import java.util.List;
+import java.util.Objects;
 
 public class SchoolEasingEvent extends CommunalPlaceEasingEvent {
     
@@ -48,5 +49,19 @@ public class SchoolEasingEvent extends CommunalPlaceEasingEvent {
     @Override
     protected boolean isValid() {
         return super.isValid() && pAttendsSchool != null;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        SchoolEasingEvent that = (SchoolEasingEvent) o;
+        return Objects.equals(pAttendsSchool, that.pAttendsSchool);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), pAttendsSchool);
     }
 }

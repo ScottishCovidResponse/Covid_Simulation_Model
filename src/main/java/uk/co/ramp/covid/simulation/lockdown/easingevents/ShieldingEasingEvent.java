@@ -6,6 +6,8 @@ import uk.co.ramp.covid.simulation.population.Population;
 import uk.co.ramp.covid.simulation.util.Probability;
 import uk.co.ramp.covid.simulation.util.Time;
 
+import java.util.Objects;
+
 public class ShieldingEasingEvent extends LockdownEvent {
 
     // Can either partially lift shielding, allowing neighbour visits, or lift it fully
@@ -41,5 +43,20 @@ public class ShieldingEasingEvent extends LockdownEvent {
     @Override
     protected boolean isValid() {
         return !partial || partialShieldProbability != null;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        ShieldingEasingEvent that = (ShieldingEasingEvent) o;
+        return partial == that.partial &&
+                Objects.equals(partialShieldProbability, that.partialShieldProbability);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), partial, partialShieldProbability);
     }
 }
