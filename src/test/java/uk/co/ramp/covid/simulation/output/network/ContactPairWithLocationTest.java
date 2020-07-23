@@ -33,6 +33,7 @@ public class ContactPairWithLocationTest extends SimulationTest {
         p4 = new Adult(40, MALE);
         s2 = new Shop(CommunalPlace.Size.SMALL);
     }
+
     @Test
     public void testCompare() {
 
@@ -66,7 +67,7 @@ public class ContactPairWithLocationTest extends SimulationTest {
             assertEquals("Unexpected value in contacts file", expectedContact, contact);
 
         } catch (IOException e) {
-            e.printStackTrace();
+            throw e;
         }
 
         contactsFile.delete();

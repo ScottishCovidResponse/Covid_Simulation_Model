@@ -20,7 +20,7 @@ import static uk.co.ramp.covid.simulation.population.Person.Sex.MALE;
 public class ContactsWriterTest extends SimulationTest {
 
     @Test
-    public void testContactsWriter() throws FileNotFoundException {
+    public void testContactsWriter() throws IOException {
 
         String path = "src/test/resources/";
         String contactsFile = path + "contacts0.csv";
@@ -53,7 +53,7 @@ public class ContactsWriterTest extends SimulationTest {
             assertEquals("No contact data found", 5, values.length);
 
         } catch (IOException e) {
-            e.printStackTrace();
+            throw e;
         }
 
         FileReader sr2 = new FileReader(peopleFile);
@@ -67,7 +67,7 @@ public class ContactsWriterTest extends SimulationTest {
             assertEquals("No people data found", 2, values.length);
 
         } catch (IOException e) {
-            e.printStackTrace();
+            throw e;
         }
         //Delete output files
         deleteOutputFiles(contactsFile, peopleFile);
