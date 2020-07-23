@@ -127,10 +127,6 @@ public class Model {
             LOGGER.warn("Uninitialised model parameter: nDays");
             valid = false;
         }
-        if (rngSeed == null) {
-            LOGGER.warn("Uninitialised model parameter: rngSeed");
-            valid = false;
-        }
         if (!outputDisabled) {
             if (outputDirectory == null) {
                 LOGGER.warn("Uninitialised model parameter: outputDirectory");
