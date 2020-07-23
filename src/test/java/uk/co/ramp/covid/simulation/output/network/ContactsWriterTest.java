@@ -22,7 +22,7 @@ public class ContactsWriterTest extends SimulationTest {
     @Test
     public void testContactsWriter() throws FileNotFoundException {
 
-        String path = "out/";
+        String path = "src/test/resources/";
         String contactsFile = path + "contacts0.csv";
         String peopleFile = path + "people0.csv";
         //Delete output files if they already exist
@@ -73,7 +73,7 @@ public class ContactsWriterTest extends SimulationTest {
 
     @Test (expected = ContactsWriterException.class)
     public void testException() throws IOException {
-        String path = "out/";
+        String path = "src/test/resources/";
         String contactsFile = path + "contacts0.csv";
         SimpleContactsWriter contactsWriter = new SimpleContactsWriter(new FileWriter(contactsFile));
 
