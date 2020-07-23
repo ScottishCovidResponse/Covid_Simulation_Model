@@ -41,7 +41,7 @@ public class LockdownController {
             c.handleLockdown(now);
 
             // Remove events that should never fire again
-            if (c.start.equals(now)) {
+            if (c.startDay.equals(now)) {
                 finished.add(c);
             }
         }

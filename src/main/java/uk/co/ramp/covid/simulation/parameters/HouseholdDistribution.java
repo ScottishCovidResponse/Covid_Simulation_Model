@@ -5,6 +5,7 @@ import uk.co.ramp.covid.simulation.place.householdtypes.*;
 import uk.co.ramp.covid.simulation.util.Probability;
 import uk.co.ramp.covid.simulation.util.ProbabilityDistribution;
 
+import java.util.Objects;
 import java.util.function.Supplier;
 
 // Household populations
@@ -54,4 +55,26 @@ public class HouseholdDistribution {
         return householdTypeDistribution().isValid() && populationToHouseholdsRatio >= 1;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        HouseholdDistribution that = (HouseholdDistribution) o;
+        return Objects.equals(populationToHouseholdsRatio, that.populationToHouseholdsRatio) &&
+                Objects.equals(pSingleAdult, that.pSingleAdult) &&
+                Objects.equals(pSmallAdult, that.pSmallAdult) &&
+                Objects.equals(pSingleParent, that.pSingleParent) &&
+                Objects.equals(pSmallFamily, that.pSmallFamily) &&
+                Objects.equals(pLargeTwoAdultFamily, that.pLargeTwoAdultFamily) &&
+                Objects.equals(pLargeManyAdultFamily, that.pLargeManyAdultFamily) &&
+                Objects.equals(pLargeAdult, that.pLargeAdult) &&
+                Objects.equals(pAdultPensioner, that.pAdultPensioner) &&
+                Objects.equals(pDoubleOlder, that.pDoubleOlder) &&
+                Objects.equals(pSingleOlder, that.pSingleOlder);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(populationToHouseholdsRatio, pSingleAdult, pSmallAdult, pSingleParent, pSmallFamily, pLargeTwoAdultFamily, pLargeManyAdultFamily, pLargeAdult, pAdultPensioner, pDoubleOlder, pSingleOlder);
+    }
 }

@@ -2,6 +2,8 @@ package uk.co.ramp.covid.simulation.parameters;
 
 import uk.co.ramp.covid.simulation.util.InvalidParametersException;
 
+import java.util.Objects;
+
 /**
  * CovidParameters is a singleton class for reading and storing the covid disease parameters
  *
@@ -46,4 +48,20 @@ public class CovidParameters {
                 && checker.isValid(hospitalisationParameters) && hospitalisationParameters.isValid();
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        CovidParameters that = (CovidParameters) o;
+        return Objects.equals(testParameters, that.testParameters) &&
+                Objects.equals(diseaseParameters, that.diseaseParameters) &&
+                Objects.equals(infectionSeedProperties, that.infectionSeedProperties) &&
+                Objects.equals(hospitalisationParameters, that.hospitalisationParameters) &&
+                Objects.equals(careHomeParameters, that.careHomeParameters);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(testParameters, diseaseParameters, infectionSeedProperties, hospitalisationParameters, careHomeParameters);
+    }
 }
