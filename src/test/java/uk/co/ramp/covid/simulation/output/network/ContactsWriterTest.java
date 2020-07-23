@@ -4,12 +4,18 @@ package uk.co.ramp.covid.simulation.output.network;
 import org.junit.Test;
 import uk.co.ramp.covid.simulation.Model;
 import uk.co.ramp.covid.simulation.output.DailyStats;
+import uk.co.ramp.covid.simulation.place.CommunalPlace;
+import uk.co.ramp.covid.simulation.place.Shop;
+import uk.co.ramp.covid.simulation.population.Adult;
 import uk.co.ramp.covid.simulation.testutil.SimulationTest;
+import uk.co.ramp.covid.simulation.util.Time;
 
 import java.io.*;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static uk.co.ramp.covid.simulation.population.Person.Sex.FEMALE;
+import static uk.co.ramp.covid.simulation.population.Person.Sex.MALE;
 
 public class ContactsWriterTest extends SimulationTest {
 
@@ -63,6 +69,23 @@ public class ContactsWriterTest extends SimulationTest {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    @Test (expected = ContactsWriterException.class)
+    public void testException() throws IOException {
+        String path = "out/";
+        String contactsFile = path + "contacts0.csv";
+        SimpleContactsWriter contactsWriter = new SimpleContactsWriter(new FileWriter(contactsFile));
+
+        Adult p1 = new Adult(30, FEMALE);
+        Adult p2 = new Adult(40, MALE);
+        Shop s1 = new Shop(CommunalPlace.Size.SMALL);
+        ContactPairWithLocation cp1 = new ContactPairWithLocation(p1, p2, s1);
+
+        //Close the contacts writer to cause an exception
+        contactsWriter.close();
+        contactsWriter.addContact(new Time(24), cp1, 1.0);
+
     }
 
     private void deleteOutputFiles(String fileName1, String fileName2) {
