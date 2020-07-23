@@ -45,11 +45,6 @@ Follow instructions [here](https://gradle.org/install/).
 
 ## Build/Test Guide
 
-To compile the project without running tests:
-```shell script
-gradle assemble
-```
-
 To compile and run the tests:
 ```shell script
 gradle build
@@ -61,12 +56,33 @@ The built java project takes three positional commandline arguments. The first i
 a json file defining the disease and population parameters, the second is a
 json file defining parameters of a particular run, and the third is the simulation
 number for HPC array runs (which should be 0 for single runs). Example json files
-and further documentation are provided in the `parameters` folder.
+are provided in the `parameters` folder.
 
 To run the project:
 ```shell script
 gradle run  --args "parameters/example_population_params.json parameters/example_model_params.json 0"
 ```
 
-The result csv will be placed into the file specified by the `outputFile` parameter
-in the model parameters.
+### Output Directory
+
+The model results will be written to a new directory which is created within the
+directory specified by the `outputDirectory` parameter (except in the special
+case where `outputDirectory` is set to `""`, and results are written to the
+current directory).
+
+### RNG Seed
+
+If `rngSeed` is not included in the input parameters, then a random seed will be
+generated (and its value logged).
+
+### Network generation
+
+It is possible to run the model in an alternative mode, where the virus is not
+simulated, and instead a network of contacts is generated.  To enable this mode
+set the `networkOutputDir` parameter. (See the 'network_gen' example json file).
+
+## Sample outputs
+
+In the `RCode` folder, you can find example output data from a simulation of the
+Lothian Health Board, together with associated graphs (and the R script which was
+used to generate the graphs).
