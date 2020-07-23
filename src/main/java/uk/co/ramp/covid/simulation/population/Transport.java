@@ -39,6 +39,7 @@ public class Transport extends Place {
     public void doInfect(Time t, DailyStats stats, ContactsWriter contactsWriter) {
         if (contactsWriter != null) {
             addContacts(t, contactsWriter);
+            people.clear();
             return; // don't do infections
         }
 

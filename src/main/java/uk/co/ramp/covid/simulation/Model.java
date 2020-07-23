@@ -3,9 +3,11 @@ package uk.co.ramp.covid.simulation;
 import com.google.gson.JsonParseException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
 import uk.co.ramp.covid.simulation.lockdown.*;
 import uk.co.ramp.covid.simulation.output.CsvOutput;
 import uk.co.ramp.covid.simulation.output.DailyStats;
+import uk.co.ramp.covid.simulation.output.LogConfig;
 import uk.co.ramp.covid.simulation.output.network.ContactsWriter;
 import uk.co.ramp.covid.simulation.output.network.PeopleWriter;
 import uk.co.ramp.covid.simulation.parameters.ParameterIO;
@@ -33,6 +35,9 @@ public class Model {
     private Integer rngSeed = null;
     private String outputDirectory = null;
     private String networkOutputDir = null;
+
+    // transient stops serialisation to json
+    private transient Path outPath;
     
     private final List<LockdownEvent> lockdownEvents = new ArrayList<>();
     private final List<LockdownEventGenerator> lockdownGenerators = new ArrayList<>();
@@ -122,10 +127,6 @@ public class Model {
             LOGGER.warn("Uninitialised model parameter: nDays");
             valid = false;
         }
-        if (rngSeed == null) {
-            LOGGER.warn("Uninitialised model parameter: rngSeed");
-            valid = false;
-        }
         if (!outputDisabled) {
             if (outputDirectory == null) {
                 LOGGER.warn("Uninitialised model parameter: outputDirectory");
@@ -142,6 +143,16 @@ public class Model {
             throw new InvalidParametersException("Invalid model parameters");
         }
 
+        if (!outputDisabled) {
+            createOutputDirectory();
+            LogConfig.configureLoggerRedirects(outPath);
+        }
+
+        // We need to log this after creating a model to ensure it goes to the file
+        LOGGER.info(BuildConfig.NAME + " version " + BuildConfig.VERSION);
+        LOGGER.info("Git hash: " + BuildConfig.GitHash);
+
+        optionallyGenerateRNGSeed();
         RNG.seed(rngSeed + simulationID);
 
         List<List<DailyStats>> stats = new ArrayList<>(nIters);
@@ -204,29 +215,30 @@ public class Model {
 
         return stats;
     }
-    
-    private void writeOutput(int iterId, List<List<DailyStats>> s) {
-        Path outP;
 
+
+
+    private void createOutputDirectory() {
         if (outputDirectory.equals("")) {
-            outP = FileSystems.getDefault().getPath(".");
+            outPath = FileSystems.getDefault().getPath(".");
         } else {
             DateTimeFormatter tsFormatter = DateTimeFormatter.ofPattern("yyyyMMdd_hhmmss");
             String timeStamp = tsFormatter.format(LocalDateTime.now());
-            outP = FileSystems.getDefault().getPath(outputDirectory, timeStamp);
-            if (!outP.toFile().mkdirs()) {
-                LOGGER.error("Could not create output directory: " + outP);
-                return;
+            outPath = FileSystems.getDefault().getPath(outputDirectory, timeStamp);
+            if (!outPath.toFile().mkdirs()) {
+                LOGGER.error("Could not create output directory: " + outPath);
             }
         }
-        
+
+    }
+    
+    private void writeOutput(int iterId, List<List<DailyStats>> s) {
         // By here the output directory will be available
-        CsvOutput output = new CsvOutput(outP, iterId, s);
+        CsvOutput output = new CsvOutput(outPath, iterId, s);
         output.writeOutput();
 
-        ParameterIO.writeParametersToFile(outP.resolve("population_params.json"));
-        outputModelParams(outP.resolve("model_params.json"));
-       
+        ParameterIO.writeParametersToFile(outPath.resolve("population_params.json"));
+        outputModelParams(outPath.resolve("model_params.json"));
     }
 
     public String modelToJsonString() {
