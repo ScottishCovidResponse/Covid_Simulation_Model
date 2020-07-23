@@ -34,14 +34,4 @@ public class ContactPairWithLocationTest extends SimulationTest {
         //These contact pairs are comparable
         assertEquals(0, cp3.compareTo(cp1));
     }
-
-    @Test
-    public void testException() {
-        Adult p1 = new Adult(30, FEMALE);
-        Adult p2 = new Adult(40, MALE);
-        Shop s1 = new Shop(CommunalPlace.Size.SMALL);
-        ContactPairWithLocation cp1 = new ContactPairWithLocation(p1, p2, s1);
-
-
-    }
 }

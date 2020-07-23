@@ -69,6 +69,8 @@ public class ContactsWriterTest extends SimulationTest {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        //Delete output files
+        deleteOutputFiles(contactsFile, peopleFile);
     }
 
     @Test (expected = ContactsWriterException.class)
