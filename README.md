@@ -70,3 +70,7 @@ gradle run  --args "parameters/example_population_params.json parameters/example
 
 The result csv will be placed into the file specified by the `outputFile` parameter
 in the model parameters.
+
+## Configuring Lockdowns
+
+Information on configuration lockdowns may be found in [here](./docs/Lockdown.md).
