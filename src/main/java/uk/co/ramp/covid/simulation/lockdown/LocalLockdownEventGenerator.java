@@ -7,6 +7,7 @@ import uk.co.ramp.covid.simulation.util.Time;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class LocalLockdownEventGenerator extends LockdownEventGenerator {
     private static final Logger LOGGER = LogManager.getLogger(LocalLockdownEventGenerator.class);
@@ -86,5 +87,22 @@ public class LocalLockdownEventGenerator extends LockdownEventGenerator {
                 && newCasesThreshold != null
                 && numHospitalisedThreshold != null
                 && socialDistance != null;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        LocalLockdownEventGenerator that = (LocalLockdownEventGenerator) o;
+        return prevInfected == that.prevInfected &&
+                gotInitialInfections == that.gotInitialInfections &&
+                Objects.equals(newCasesThreshold, that.newCasesThreshold) &&
+                Objects.equals(numHospitalisedThreshold, that.numHospitalisedThreshold) &&
+                Objects.equals(socialDistance, that.socialDistance);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(newCasesThreshold, numHospitalisedThreshold, socialDistance, prevInfected, gotInitialInfections);
     }
 }

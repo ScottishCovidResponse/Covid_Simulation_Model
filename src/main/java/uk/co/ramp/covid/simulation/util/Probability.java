@@ -6,6 +6,8 @@ import com.google.gson.JsonSerializer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.Objects;
+
 public class Probability {
     private static final Logger LOGGER = LogManager.getLogger(Probability.class);
 
@@ -46,4 +48,17 @@ public class Probability {
 
     public static JsonSerializer<Probability> serializer =
             (src, typeOfSrc, context) -> new JsonPrimitive(src.asDouble());
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Probability that = (Probability) o;
+        return Double.compare(that.p, p) == 0;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(p);
+    }
 }
