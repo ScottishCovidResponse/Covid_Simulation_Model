@@ -70,6 +70,10 @@ public class Time implements Comparable<Time> {
     };
 
     public static JsonSerializer<Time> serializer = (src, typeOfSrc, context) -> {
-        return new JsonPrimitive(src.getAbsDay());
+        if (src.getAbsTime() % 24 == 0) {
+            return new JsonPrimitive(src.getAbsDay());
+        } else {
+            throw new JsonIOException("Can not output a Time that is not a multiple of 24");
+        }
     };
 }

@@ -2,12 +2,12 @@ package uk.co.ramp.covid.simulation.parameters;
 
 import org.junit.After;
 import org.junit.Test;
+import uk.co.ramp.covid.simulation.Model;
 import uk.co.ramp.covid.simulation.util.InvalidParametersException;
 
 import java.io.IOException;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class ParametersTest {
 
@@ -29,6 +29,30 @@ public class ParametersTest {
     public void testNullParameters() {
         //Test that null parameters throw an InvalidParametersException
         PopulationParameters.get().isValid();
+    }
+
+    @Test
+    public void serialisationAndDeSerialisationAreInverse() throws IOException {
+        ParameterIO.readParametersFromFile("parameters/example_population_params.json");
+        PopulationParameters pop = PopulationParameters.get();
+        CovidParameters covid = CovidParameters.get();
+
+        String s = ParameterIO.writeParametersToString();
+
+        PopulationParameters.clearParameters();
+        CovidParameters.clearParameters();
+
+        ParameterIO.readParametersFromString(s);
+
+        assertTrue(pop.equals(PopulationParameters.get()));
+        assertTrue(covid.equals(CovidParameters.get()));
+
+        // Model checks
+        Model m = Model.readModelFromFile("parameters/example_model_params_lockdown.json");
+        s = m.modelToJsonString();
+        Model n = Model.readModelFromString(s);
+
+        assertTrue(m.equals(n));
     }
 
     @After

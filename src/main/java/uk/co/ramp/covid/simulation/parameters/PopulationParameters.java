@@ -4,6 +4,7 @@ import uk.co.ramp.covid.simulation.util.InvalidParametersException;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * PopulationParameters is a singleton class for reading and storing the population parameters
@@ -87,5 +88,30 @@ public class PopulationParameters {
     }
     public static void clearParameters() {
         pp = null;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        PopulationParameters that = (PopulationParameters) o;
+        return Objects.equals(populationDistribution, that.populationDistribution) &&
+                Objects.equals(householdDistribution, that.householdDistribution) &&
+                Objects.equals(buildingDistribution, that.buildingDistribution) &&
+                Objects.equals(workerDistribution, that.workerDistribution) &&
+                Objects.equals(buildingProperties, that.buildingProperties) &&
+                Objects.equals(infantProperties, that.infantProperties) &&
+                Objects.equals(pensionerProperties, that.pensionerProperties) &&
+                Objects.equals(personProperties, that.personProperties) &&
+                Objects.equals(householdProperties, that.householdProperties) &&
+                Objects.equals(publicTransportParameters, that.publicTransportParameters) &&
+                Objects.equals(hospitalApptProperties, that.hospitalApptProperties) &&
+                Objects.equals(hospitalAppts, that.hospitalAppts) &&
+                Objects.equals(hospitalAppsParams, that.hospitalAppsParams);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(populationDistribution, householdDistribution, buildingDistribution, workerDistribution, buildingProperties, infantProperties, pensionerProperties, personProperties, householdProperties, publicTransportParameters, hospitalApptProperties, hospitalAppts, hospitalAppsParams);
     }
 }
