@@ -6,7 +6,6 @@ import uk.co.ramp.covid.simulation.util.*;
 import uk.co.ramp.covid.simulation.population.Person;
 import uk.co.ramp.covid.simulation.parameters.PopulationParameters;
 import uk.co.ramp.covid.simulation.population.Places;
-import uk.co.ramp.covid.simulation.population.Shifts;
 
 import java.util.List;
 

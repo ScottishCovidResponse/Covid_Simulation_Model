@@ -7,7 +7,6 @@ package uk.co.ramp.covid.simulation.place;
 import org.apache.commons.math3.random.RandomDataGenerator;
 import uk.co.ramp.covid.simulation.output.DailyStats;
 import uk.co.ramp.covid.simulation.parameters.BuildingTimeParameters;
-import uk.co.ramp.covid.simulation.parameters.PopulationParameters;
 import uk.co.ramp.covid.simulation.util.*;
 import uk.co.ramp.covid.simulation.population.CStatus;
 import uk.co.ramp.covid.simulation.population.Person;
@@ -261,7 +260,6 @@ public abstract class CommunalPlace extends Place {
             BuildingTimeParameters timing = dist.sample();
             times = timing.openingTime;
             shifts = new ShiftAllocator(timing.shifts);
-            return;
         }
     }
 

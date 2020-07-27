@@ -1,10 +1,5 @@
 package uk.co.ramp.covid.simulation.util;
 
-import com.google.gson.*;
-import uk.co.ramp.covid.simulation.population.Shifts;
-
-import java.lang.reflect.Array;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -51,6 +46,6 @@ public class RoundRobinAllocator<T> {
 
     // Return a copy of the underlying data to ensure immutability
     public List<T> getUnderlyingData() {
-        return new ArrayList<T>(data);
+        return new ArrayList<>(data);
     }
 }

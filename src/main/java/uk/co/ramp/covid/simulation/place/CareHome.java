@@ -2,7 +2,6 @@ package uk.co.ramp.covid.simulation.place;
 
 import uk.co.ramp.covid.simulation.parameters.BuildingTimeParameters;
 import uk.co.ramp.covid.simulation.util.Probability;
-import uk.co.ramp.covid.simulation.util.ShiftAllocator;
 import uk.co.ramp.covid.simulation.util.Time;
 import uk.co.ramp.covid.simulation.output.DailyStats;
 import uk.co.ramp.covid.simulation.parameters.CovidParameters;

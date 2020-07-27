@@ -2,14 +2,10 @@ package uk.co.ramp.covid.simulation.place;
 
 import uk.co.ramp.covid.simulation.output.DailyStats;
 import uk.co.ramp.covid.simulation.parameters.BuildingTimeParameters;
-import uk.co.ramp.covid.simulation.util.ProbabilityDistribution;
-import uk.co.ramp.covid.simulation.util.ShiftAllocator;
 import uk.co.ramp.covid.simulation.util.Time;
 import uk.co.ramp.covid.simulation.population.Person;
 import uk.co.ramp.covid.simulation.parameters.PopulationParameters;
 import uk.co.ramp.covid.simulation.population.Places;
-import uk.co.ramp.covid.simulation.population.Shifts;
-import uk.co.ramp.covid.simulation.util.RoundRobinAllocator;
 
 import java.util.List;
 

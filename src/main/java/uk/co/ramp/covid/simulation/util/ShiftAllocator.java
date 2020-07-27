@@ -6,7 +6,7 @@ import uk.co.ramp.covid.simulation.population.Shifts;
 
 public class ShiftAllocator extends RoundRobinAllocator<Shifts> {
 
-    public static JsonDeserializer<ShiftAllocator> deserializer = (json, typeOfT, context) -> {
+    public static final JsonDeserializer<ShiftAllocator> deserializer = (json, typeOfT, context) -> {
         JsonArray shifts = json.getAsJsonArray();
         ShiftAllocator alloc = new ShiftAllocator();
         for (JsonElement e : shifts) {
@@ -16,7 +16,7 @@ public class ShiftAllocator extends RoundRobinAllocator<Shifts> {
         return alloc;
     };
 
-    public static JsonSerializer<ShiftAllocator> serializer = (src, typeOfSrc, context) -> {
+    public static final JsonSerializer<ShiftAllocator> serializer = (src, typeOfSrc, context) -> {
         JsonArray shifts = new JsonArray();
         for (Shifts s : src.getUnderlyingData()) {
             shifts.add(ParameterIO.getGson().toJsonTree(s));

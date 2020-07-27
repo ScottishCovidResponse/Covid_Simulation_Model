@@ -6,12 +6,12 @@ import uk.co.ramp.covid.simulation.util.Probability;
 import uk.co.ramp.covid.simulation.util.ShiftAllocator;
 
 public class BuildingTimeParameters {
-    public OpeningTimes openingTime = null;
-    public ShiftAllocator shifts = null;
+    public final OpeningTimes openingTime = null;
+    public final ShiftAllocator shifts = null;
 
     // Sizes can be chosen probabilistically/based on the size condition. Both of these don't need to be set.
-    public CommunalPlace.Size sizeCondition = null;
-    public Probability probability = null;
+    public final CommunalPlace.Size sizeCondition = null;
+    public final Probability probability = null;
 
     // TODO: Implement
     public boolean isValid() {

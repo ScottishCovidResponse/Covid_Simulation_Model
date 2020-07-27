@@ -3,7 +3,6 @@ package uk.co.ramp.covid.simulation.place;
 import com.google.gson.*;
 import uk.co.ramp.covid.simulation.util.Time;
 
-import java.lang.reflect.Type;
 import java.util.BitSet;
 import java.util.Objects;
 
