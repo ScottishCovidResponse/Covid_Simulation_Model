@@ -45,13 +45,20 @@ public class BuildingProperties {
 
     public boolean isValid() {
         return hospitalExpectedInteractionsPerHour >= 0
-            && constructionSiteExpectedInteractionsPerHour >= 0
-            && nurseryExpectedInteractionsPerHour >= 0
-            && officeExpectedInteractionsPerHour >= 0
-            && restaurantExpectedInteractionsPerHour >= 0
-            && schoolExpectedInteractionsPerHour >= 0
-            && shopExpectedInteractionsPerHour >= 0
-            && careHomeExpectedInteractionsPerHour >= 0;
+                && constructionSiteExpectedInteractionsPerHour >= 0
+                && nurseryExpectedInteractionsPerHour >= 0
+                && officeExpectedInteractionsPerHour >= 0
+                && restaurantExpectedInteractionsPerHour >= 0
+                && schoolExpectedInteractionsPerHour >= 0
+                && shopExpectedInteractionsPerHour >= 0
+                && careHomeExpectedInteractionsPerHour >= 0
+                && careHomeTimes.stream().allMatch(BuildingTimeParameters::isValid)
+                && restaurantTimes.stream().allMatch(BuildingTimeParameters::isValid)
+                && shopTimes.stream().allMatch(BuildingTimeParameters::isValid)
+                && schoolTimes.stream().allMatch(BuildingTimeParameters::isValid)
+                && officeTimes.stream().allMatch(BuildingTimeParameters::isValid)
+                && constructionSiteTimes.stream().allMatch(BuildingTimeParameters::isValid)
+                && careHomeTimes.stream().allMatch(BuildingTimeParameters::isValid);
     }
 
     @Override

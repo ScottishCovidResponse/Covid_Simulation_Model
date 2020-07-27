@@ -13,8 +13,9 @@ public class BuildingTimeParameters {
     public final CommunalPlace.Size sizeCondition = null;
     public final Probability probability = null;
 
-    // TODO: Implement
     public boolean isValid() {
-        return true;
+        return openingTime != null
+                && shifts != null
+                && (probability != null || sizeCondition != null);
     }
 }
