@@ -48,7 +48,7 @@ public class ShopTest extends SimulationTest {
     @Test
     public void testSendHome() {
         PopulationParameters.get().buildingProperties.pLeaveShopHour = new Probability(1.0);
-        int time = shop.times.getClose() - 1;
+        int time = shop.getOpeningTimes().getClose() - 1;
         shop.determineMovement(new Time(time), new DailyStats(new Time(time)), null);
         shop.commitMovement();
         int expPeople = 0;
@@ -64,8 +64,8 @@ public class ShopTest extends SimulationTest {
         p.setPostHourHook((pop, time) -> {
             for (Shop place : pop.getPlaces().getShops()) {
                 List<Person> staff = place.getStaff(time);
-                int open = place.times.getOpen();
-                int close = place.times.getClose();
+                int open = place.getOpeningTimes().getOpen();
+                int close = place.getOpeningTimes().getClose();
                 if (time.getHour() < open || time.getHour() >= close) {
                     assertEquals("Day "+ time.getDay() +" time "+ time.getHour() + " Unexpected staff at shop",
                             0, staff.size());

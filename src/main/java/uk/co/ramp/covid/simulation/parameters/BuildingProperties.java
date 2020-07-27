@@ -35,9 +35,13 @@ public class BuildingProperties {
     public List<DateRange> schoolHolidays = null;
 
     /** Openning times/Shifts */
-    public List<BuildingTimeParameters> careHomeTimes = null;
-    public List<BuildingTimeParameters> restaurantTimes = null;
-    public List<BuildingTimeParameters> shopTimes = null;
+    public List<BuildingTimeParameters> careHomeTimes;
+    public List<BuildingTimeParameters> restaurantTimes;
+    public List<BuildingTimeParameters> shopTimes;
+    public List<BuildingTimeParameters> schoolTimes;
+    public List<BuildingTimeParameters> officeTimes;
+    public List<BuildingTimeParameters> constructionSiteTimes;
+    public List<BuildingTimeParameters> hospitalTimes;
 
     public boolean isValid() {
         return hospitalExpectedInteractionsPerHour >= 0

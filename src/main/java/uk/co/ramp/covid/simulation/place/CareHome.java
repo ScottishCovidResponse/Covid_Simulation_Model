@@ -9,34 +9,17 @@ import uk.co.ramp.covid.simulation.parameters.CovidParameters;
 import uk.co.ramp.covid.simulation.parameters.PopulationParameters;
 import uk.co.ramp.covid.simulation.population.*;
 
+import java.util.List;
 import java.util.Objects;
 
 public class CareHome extends CommunalPlace implements Home {
-
-    private final ShiftAllocator shifts;
-
     private CareHomeResidentRange expectedResidents;
     private int residents = 0;
 
     public CareHome(Size s, CareHomeResidentRange expectedResidents) {
         super(s);
-
         this.expectedResidents = expectedResidents;
-
         expectedInteractionsPerHour = PopulationParameters.get().buildingProperties.careHomeExpectedInteractionsPerHour;
-
-        // Care homes are "open" to staff from 6-22 (but can have residents in them all the time)
-       // times = new OpeningTimes(6, 22, OpeningTimes.getAllDays());
-
-
-        // Care homes are "open" to staff at certain times, but can have residents in them at all times.
-
-        // TODO: Generalise to all place times
-        BuildingTimeParameters timings = PopulationParameters.get().buildingProperties.careHomeTimes.get(0);
-        times = timings.openingTime;
-
-        // We use a copy constructor here so that the "next" pointer isn't shared by all places
-        shifts = new ShiftAllocator(timings.shifts);
     }
 
     public void addResident(Person p) {
@@ -59,17 +42,6 @@ public class CareHome extends CommunalPlace implements Home {
     @Override
     protected void setKey() {
         keyPremises = true;
-    }
-
-    @Override
-    public Shifts getShifts() {
-        nStaff++;
-        return shifts.getNext();
-    }
-
-    @Override
-    public boolean isFullyStaffed() {
-        return nStaff >= 4;
     }
 
     @Override
@@ -100,6 +72,10 @@ public class CareHome extends CommunalPlace implements Home {
         remainInPlace();
     }
 
+    @Override
+    protected List<BuildingTimeParameters> getTimeInfo() {
+        return PopulationParameters.get().buildingProperties.careHomeTimes;
+    }
 
     @Override
     public void stopIsolating() { }

@@ -76,7 +76,7 @@ public class SchoolTest extends SimulationTest {
         School school = new School(CommunalPlace.Size.MED);
         school.addPerson(new Child(10, FEMALE));
         school.addPerson(new Child(5, MALE));
-        int time = school.times.getClose() - 1;
+        int time = school.getOpeningTimes().getClose() - 1;
         school.determineMovement(new Time(time), new DailyStats(new Time(time)), null);
         school.commitMovement();
         int expPeople = 0;

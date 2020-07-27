@@ -64,7 +64,7 @@ public class NurseryTest extends SimulationTest {
         Nursery nursery = new Nursery(CommunalPlace.Size.MED);
         nursery.addPerson(new Infant(1, FEMALE));
         nursery.addPerson(new Infant(2, MALE));
-        int time = nursery.times.getClose() - 1;
+        int time = nursery.getOpeningTimes().getClose() - 1;
         nursery.determineMovement(new Time(time), new DailyStats(new Time(time)), null);
         nursery.commitMovement();
         int expPeople = 0;

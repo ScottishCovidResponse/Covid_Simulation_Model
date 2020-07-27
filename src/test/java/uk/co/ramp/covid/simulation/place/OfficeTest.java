@@ -64,7 +64,7 @@ public class OfficeTest extends SimulationTest {
         Office office = new Office(CommunalPlace.Size.MED);
         office.addPerson(new Adult(30, FEMALE));
         office.addPerson(new Adult(35, MALE));
-        int time = office.times.getClose() - 1;
+        int time = office.getOpeningTimes().getClose() - 1;
         office.determineMovement(new Time(time), new DailyStats(new Time(time)), null);
         office.commitMovement();
         int expPeople = 0;

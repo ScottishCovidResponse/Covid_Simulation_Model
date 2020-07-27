@@ -12,12 +12,9 @@ import java.util.List;
 
 public class Restaurant extends CommunalPlace {
 
-    private ShiftAllocator shifts;
-
     public Restaurant(Size s) {
         super(s);
         expectedInteractionsPerHour = PopulationParameters.get().buildingProperties.restaurantExpectedInteractionsPerHour;
-        setOpeningHours();
     }
 
     @Override
@@ -25,30 +22,11 @@ public class Restaurant extends CommunalPlace {
         keyPremises = false;
     }
 
-    private void setOpeningHours() {
-        ProbabilityDistribution<BuildingTimeParameters> dist = new ProbabilityDistribution<>();
-        for (BuildingTimeParameters t : PopulationParameters.get().buildingProperties.restaurantTimes) {
-            if (t.probability != null) {
-                dist.add(t.probability, t);
-            }
-        }
-
-        BuildingTimeParameters timing = dist.sample();
-        times = timing.openingTime;
-        shifts = new ShiftAllocator(timing.shifts);
-    }
-
     @Override
-    public Shifts getShifts() {
-        nStaff++;
-        return shifts.getNext();
+    protected List<BuildingTimeParameters> getTimeInfo() {
+        return PopulationParameters.get().buildingProperties.restaurantTimes;
     }
 
-    @Override
-    public boolean isFullyStaffed() {
-        return nStaff >= 4;
-    }
-    
     @Override
     public void reportInfection(Time t, Person p, DailyStats s) {
         if (p.isWorking(this, t)) {

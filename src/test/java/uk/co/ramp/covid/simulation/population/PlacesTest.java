@@ -16,7 +16,7 @@ public class PlacesTest extends SimulationTest {
     private Places p;
     private int population = 20000;
     private int iters = 2000; // samples to take for random testing
-    private int n = 200;
+    private int n = 1000;
     private double DELTA = 0.05;
     
     @Before
