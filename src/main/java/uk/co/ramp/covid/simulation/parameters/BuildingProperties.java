@@ -36,8 +36,9 @@ public class BuildingProperties {
 
     /** Openning times/Shifts */
     public List<BuildingTimeParameters> careHomeTimes = null;
+    public List<BuildingTimeParameters> restaurantTimes = null;
+    public List<BuildingTimeParameters> shopTimes = null;
 
-    
     public boolean isValid() {
         return hospitalExpectedInteractionsPerHour >= 0
             && constructionSiteExpectedInteractionsPerHour >= 0

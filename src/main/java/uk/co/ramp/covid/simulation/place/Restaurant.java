@@ -1,17 +1,18 @@
 package uk.co.ramp.covid.simulation.place;
 
 import uk.co.ramp.covid.simulation.output.DailyStats;
-import uk.co.ramp.covid.simulation.util.Time;
+import uk.co.ramp.covid.simulation.parameters.BuildingTimeParameters;
+import uk.co.ramp.covid.simulation.util.*;
 import uk.co.ramp.covid.simulation.population.Person;
 import uk.co.ramp.covid.simulation.parameters.PopulationParameters;
 import uk.co.ramp.covid.simulation.population.Places;
 import uk.co.ramp.covid.simulation.population.Shifts;
-import uk.co.ramp.covid.simulation.util.RNG;
-import uk.co.ramp.covid.simulation.util.RoundRobinAllocator;
+
+import java.util.List;
 
 public class Restaurant extends CommunalPlace {
 
-    private RoundRobinAllocator<Shifts> shifts;
+    private ShiftAllocator shifts;
 
     public Restaurant(Size s) {
         super(s);
@@ -25,20 +26,16 @@ public class Restaurant extends CommunalPlace {
     }
 
     private void setOpeningHours() {
-        shifts = new RoundRobinAllocator<>();
-        if (RNG.get().nextUniform(0, 1) < 0.5) {
-            times = OpeningTimes.eightTenAllWeek();
-            shifts.put(new Shifts(8, 15, 0, 1, 2));
-            shifts.put(new Shifts(15, 22, 0, 1, 2));
-            shifts.put(new Shifts(8, 15, 3, 4, 5, 6));
-            shifts.put(new Shifts(15, 22, 3, 4, 5, 6));
-        } else {
-            times = OpeningTimes.tenTenAllWeek();
-            shifts.put(new Shifts(10, 16, 0, 1, 2));
-            shifts.put(new Shifts(16, 22, 0, 1, 2));
-            shifts.put(new Shifts(10, 16, 3, 4, 5, 6));
-            shifts.put(new Shifts(16, 22, 3, 4, 5, 6));
+        ProbabilityDistribution<BuildingTimeParameters> dist = new ProbabilityDistribution<>();
+        for (BuildingTimeParameters t : PopulationParameters.get().buildingProperties.restaurantTimes) {
+            if (t.probability != null) {
+                dist.add(t.probability, t);
+            }
         }
+
+        BuildingTimeParameters timing = dist.sample();
+        times = timing.openingTime;
+        shifts = new ShiftAllocator(timing.shifts);
     }
 
     @Override
