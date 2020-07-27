@@ -308,6 +308,20 @@ public class Population {
             h.handleSymptomaticCases(t);
         }
 
+        /** Movement is performed in two steps:
+         *  1. Determine where people will move to in the next hour using determineMovement which places
+         *     them in the "nextPeople" list of the place they are moving to
+         *  2. Commit the movement by swapping the "nextPeople" and "people" (in commitMovement below)
+         *
+         *  This approach avoids ordering effects and makes it harder to accidentally move someone twice
+         *  (as we only ever iterate over "people" never "nextPeople")
+         *
+         *  Importantly, for each time step *every* person must move, even if this is back to the same place.
+         *
+         *  The movement itself is determined on a per-place basis, for example, shops have additional functionality
+         *  compared with offices, to allow /visitors/ to leave at some rate. New places should override determineMovement
+         *  to implement custom movement functionality.
+         */
         for (Place p : places.getAllPlaces()) {
             p.doInfect(t, dStats, contactsWriter);
             p.determineMovement(t, dStats, getPlaces());
