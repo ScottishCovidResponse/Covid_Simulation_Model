@@ -73,8 +73,11 @@ public class ParameterIO {
             g.registerTypeAdapter(Time.class, Time.deserializer);
             g.registerTypeAdapter(Time.class, Time.serializer);
             g.registerTypeAdapter(OpeningTimes.class, OpeningTimes.deserializer);
+            g.registerTypeAdapter(OpeningTimes.class, OpeningTimes.serializer);
             g.registerTypeAdapter(ShiftAllocator.class, ShiftAllocator.deserializer);
+            g.registerTypeAdapter(ShiftAllocator.class, ShiftAllocator.serializer);
             g.registerTypeAdapter(Shifts.class, Shifts.deserializer);
+            g.registerTypeAdapter(Shifts.class, Shifts.serializer);
             
             gson = g.create();
 

@@ -16,6 +16,15 @@ public class ShiftAllocator extends RoundRobinAllocator<Shifts> {
         return alloc;
     };
 
+    public static JsonSerializer<ShiftAllocator> serializer = (src, typeOfSrc, context) -> {
+        JsonArray shifts = new JsonArray();
+        for (Shifts s : src.getUnderlyingData()) {
+            shifts.add(ParameterIO.getGson().toJsonTree(s));
+        }
+        return shifts;
+    };
+
+
     public ShiftAllocator() {
         super();
     }

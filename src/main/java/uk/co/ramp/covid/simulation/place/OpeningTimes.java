@@ -5,6 +5,7 @@ import uk.co.ramp.covid.simulation.util.Time;
 
 import java.lang.reflect.Type;
 import java.util.BitSet;
+import java.util.Objects;
 
 /** This class tracks the opening/closing times of the various places */
 public class OpeningTimes {
@@ -146,4 +147,35 @@ public class OpeningTimes {
 
         return new OpeningTimes(start, end, days);
     };
+
+    public static JsonSerializer<OpeningTimes> serializer = (src, typeOfSrc, context) -> {
+       JsonObject o = new JsonObject();
+       o.addProperty("open", src.open);
+       o.addProperty("close", src.close);
+       JsonArray oDays = new JsonArray();
+       for (int i = 0; i < src.openDays.cardinality(); i++) {
+            if (src.openDays.get(i)) {
+                oDays.add(i);
+            }
+       }
+       o.add("days", oDays);
+       return o;
+    };
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        OpeningTimes that = (OpeningTimes) o;
+        return open == that.open &&
+                close == that.close &&
+                visitorOpen == that.visitorOpen &&
+                visitorClose == that.visitorClose &&
+                Objects.equals(openDays, that.openDays);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(open, close, visitorOpen, visitorClose, openDays);
+    }
 }

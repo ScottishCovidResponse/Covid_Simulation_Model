@@ -44,15 +44,15 @@ public class ParametersTest {
 
         ParameterIO.readParametersFromString(s);
 
-        assertTrue(pop.equals(PopulationParameters.get()));
-        assertTrue(covid.equals(CovidParameters.get()));
+        assertEquals(pop, PopulationParameters.get());
+        assertEquals(covid, CovidParameters.get());
 
         // Model checks
         Model m = Model.readModelFromFile("parameters/example_model_params_lockdown.json");
         s = m.modelToJsonString();
         Model n = Model.readModelFromString(s);
 
-        assertTrue(m.equals(n));
+        assertEquals(m, n);
     }
 
     @After

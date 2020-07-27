@@ -48,4 +48,9 @@ public class RoundRobinAllocator<T> {
     public int size() {
         return data.size();
     }
+
+    // Return a copy of the underlying data to ensure immutability
+    public List<T> getUnderlyingData() {
+        return new ArrayList<T>(data);
+    }
 }

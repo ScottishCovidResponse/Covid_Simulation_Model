@@ -1,13 +1,9 @@
 package uk.co.ramp.covid.simulation.population;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonDeserializer;
-import com.google.gson.JsonObject;
+import com.google.gson.*;
 import uk.co.ramp.covid.simulation.place.OpeningTimes;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /** Class to track the shifts people are at their primary places (i.e. nursery visit times are also shifts) */
 public class Shifts {
@@ -27,6 +23,20 @@ public class Shifts {
 
         public int getEnd() {
             return end;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            Shift shift = (Shift) o;
+            return start == shift.start &&
+                    end == shift.end;
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(start, end);
         }
     }
 
@@ -78,4 +88,39 @@ public class Shifts {
         return new Shifts(start, end, days);
     };
 
+    public static JsonSerializer<Shifts> serializer = (src, typeOfSrc, context) -> {
+        JsonObject o = new JsonObject();
+        List<Integer> days = new ArrayList<>();
+        src.shifts.forEach((k,v) -> {
+            if (v != null) {
+                days.add(k);
+            }
+        });
+
+        // Shift infomration is shared over days so we just take the first
+        if (!days.isEmpty()) {
+            Shift s = src.shifts.get(days.get(0));
+            o.addProperty("start", s.start);
+            o.addProperty("end", s.end);
+        }
+
+        JsonArray oDays = new JsonArray();
+        days.forEach(oDays::add);
+        o.add("days", oDays);
+
+        return o;
+    };
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Shifts shifts1 = (Shifts) o;
+        return Objects.equals(shifts, shifts1.shifts);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(shifts);
+    }
 }
