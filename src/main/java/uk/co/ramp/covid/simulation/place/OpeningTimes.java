@@ -1,7 +1,9 @@
 package uk.co.ramp.covid.simulation.place;
 
+import com.google.gson.*;
 import uk.co.ramp.covid.simulation.util.Time;
 
+import java.lang.reflect.Type;
 import java.util.BitSet;
 
 /** This class tracks the opening/closing times of the various places */
@@ -26,6 +28,17 @@ public class OpeningTimes {
 
     OpeningTimes(int open, int close, BitSet days) {
         this(open, close, open, close, days);
+    }
+
+    public OpeningTimes(int open, int close, int... days) {
+        this.openDays = new BitSet();
+        for (int d : days) {
+            openDays.set(d);
+        }
+        this.open = open;
+        this.close = close;
+        this.visitorOpen = open;
+        this.visitorClose = close;
     }
     
     public boolean isOpen(Time t) {
@@ -124,4 +137,13 @@ public class OpeningTimes {
         return new OpeningTimes(0,24, OpeningTimes.getAllDays());
     }
 
+    public static JsonDeserializer<OpeningTimes> deserializer = (json, typeOfT, context) -> {
+        JsonObject o = json.getAsJsonObject();
+        int start = o.get("open").getAsInt();
+        int end = o.get("close").getAsInt();
+        JsonArray daysA = o.get("days").getAsJsonArray();
+        int[] days = new Gson().fromJson(daysA, int[].class);
+
+        return new OpeningTimes(start, end, days);
+    };
 }

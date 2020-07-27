@@ -1,5 +1,11 @@
 package uk.co.ramp.covid.simulation.population;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonObject;
+import uk.co.ramp.covid.simulation.place.OpeningTimes;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -61,5 +67,15 @@ public class Shifts {
         }
         return schoolTimes;
     }
+
+    public static JsonDeserializer<Shifts> deserializer = (json, typeOfT, context) -> {
+        JsonObject o = json.getAsJsonObject();
+        int start = o.get("start").getAsInt();
+        int end = o.get("end").getAsInt();
+        JsonArray daysA = o.get("days").getAsJsonArray();
+        int[] days = new Gson().fromJson(daysA, int[].class);
+
+        return new Shifts(start, end, days);
+    };
 
 }

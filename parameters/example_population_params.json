@@ -207,7 +207,38 @@
             "pLeaveRestaurantHour": 0.4,
             "schoolHolidays": [
                 { "startDay": 28, "endDay": 32 }
-            ]
+            ],
+            "careHomeTimes": [
+              {
+                "probabilty": 1.0,
+                "openingTime": {
+                  "open": 6,
+                  "close": 22,
+                  "days": [0, 1, 2, 3, 4, 5, 6]
+                },
+                "shifts": [
+                  {
+                    "start": 6,
+                    "end": 14,
+                    "days": [0,1,2]
+                  },
+                  {
+                    "start": 14,
+                    "end": 22,
+                    "days": [0,1,2]
+                  },
+                  {
+                    "start": 6,
+                    "end": 14,
+                    "days": [3,4,5,6]
+                  },
+                  {
+                    "start": 14,
+                    "end": 22,
+                    "days": [3,4,5,6]
+                  }
+                ]
+              }]
         },
         "infantProperties":{
             "pAttendsNursery":0.12

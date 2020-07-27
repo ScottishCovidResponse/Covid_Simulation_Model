@@ -1,5 +1,10 @@
 package uk.co.ramp.covid.simulation.util;
 
+import com.google.gson.*;
+import uk.co.ramp.covid.simulation.population.Shifts;
+
+import java.lang.reflect.Array;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,6 +18,13 @@ public class RoundRobinAllocator<T> {
     public RoundRobinAllocator() {
         data = new ArrayList<>();
         next = -1;
+    }
+
+    public RoundRobinAllocator(RoundRobinAllocator<T> other) {
+        data = new ArrayList<>(other.data);
+        if (!data.isEmpty()) {
+            next = 0;
+        }
     }
     
     public void put(T e) {
@@ -30,5 +42,10 @@ public class RoundRobinAllocator<T> {
         T res = data.get(next);
         next = (next + 1) % data.size();
         return res;
+    }
+
+    // Underlying collection size. Logically a round robin allocator is infinitely sized
+    public int size() {
+        return data.size();
     }
 }

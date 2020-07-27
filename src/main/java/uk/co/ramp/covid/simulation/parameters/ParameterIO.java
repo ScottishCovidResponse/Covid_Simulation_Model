@@ -6,10 +6,9 @@ import org.apache.logging.log4j.Logger;
 import uk.co.ramp.covid.simulation.lockdown.LockdownEvent;
 import uk.co.ramp.covid.simulation.lockdown.LockdownEventGenerator;
 import uk.co.ramp.covid.simulation.lockdown.LockdownTypeMaps;
-import uk.co.ramp.covid.simulation.util.DateRange;
-import uk.co.ramp.covid.simulation.util.PolymorphicTypeDeserialiser;
-import uk.co.ramp.covid.simulation.util.Probability;
-import uk.co.ramp.covid.simulation.util.Time;
+import uk.co.ramp.covid.simulation.place.OpeningTimes;
+import uk.co.ramp.covid.simulation.population.Shifts;
+import uk.co.ramp.covid.simulation.util.*;
 
 import java.io.*;
 import java.nio.file.Path;
@@ -73,6 +72,9 @@ public class ParameterIO {
             g.registerTypeAdapter(LockdownEventGenerator.class, lockdownGenerators);
             g.registerTypeAdapter(Time.class, Time.deserializer);
             g.registerTypeAdapter(Time.class, Time.serializer);
+            g.registerTypeAdapter(OpeningTimes.class, OpeningTimes.deserializer);
+            g.registerTypeAdapter(ShiftAllocator.class, ShiftAllocator.deserializer);
+            g.registerTypeAdapter(Shifts.class, Shifts.deserializer);
             
             gson = g.create();
 

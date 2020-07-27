@@ -33,6 +33,10 @@ public class BuildingProperties {
 
     /** Dates when schools are closed */
     public List<DateRange> schoolHolidays = null;
+
+    /** Openning times/Shifts */
+    public List<BuildingTimeParameters> careHomeTimes = null;
+
     
     public boolean isValid() {
         return hospitalExpectedInteractionsPerHour >= 0
