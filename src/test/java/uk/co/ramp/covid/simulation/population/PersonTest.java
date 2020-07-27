@@ -46,5 +46,21 @@ public class PersonTest extends SimulationTest {
 
     }
 
+    @Test
+    public void testSetMortality() {
+        double m10 = new Child(10, Person.Sex.MALE).setMortality();
+        double m50 = new Adult(50, Person.Sex.MALE).setMortality();
+        double m51 = new Adult(51, Person.Sex.MALE).setMortality();
+        double m80 = new Pensioner(80, Person.Sex.MALE).setMortality();
+        
+        double delta = 0.00001;
+
+        // This tests current behaviour,
+        //   but is probably _not_ all correct behaviour.
+        assertEquals(m10, 0.0500, delta);
+        assertEquals(m50, 0.0500, delta);
+        assertEquals(m51, 0.0049, delta);
+        assertEquals(m80, 0.4225, delta);
+    }
 
 }
