@@ -70,7 +70,7 @@ public abstract class Person {
         
         if(age <= 20) {
             // The original paper gave parameters broken at age 20
-            this.covidSusceptibleVal = PopulationParameters.get().personProperties.susceptibleChildConstant;
+            this.covidSusceptibleVal = PopulationParameters.get().personProperties.susceptibleUnder21Constant;
         } else {
             this.covidSusceptibleVal = 1.0;
         }
@@ -83,10 +83,11 @@ public abstract class Person {
     }
     
     public double setMortality() {
-    	double out = 0.0;
-    	if(age > 50) out = Math.pow((((double) age - 50.0) / 50.0) + CovidParameters.get().diseaseParameters.caseMortalityBase, 2.0);
-    	else out = CovidParameters.get().diseaseParameters.caseMortalityBase;
-    	return out;
+    	if(age > 50) {
+    	    return Math.pow((((double) age - 50.0) / 50.0) + CovidParameters.get().diseaseParameters.caseMortalityBase, 2.0);
+        } else {
+    	    return CovidParameters.get().diseaseParameters.caseMortalityBase;
+        }
     }
     
     public void setWillBeHospitalised() {

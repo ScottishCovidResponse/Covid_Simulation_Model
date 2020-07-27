@@ -13,12 +13,12 @@ public class PersonProperties {
     public Integer symptomToTestingDelayHours = null;
 
     /** Under 20s susceptibility constant */
-    public Double susceptibleChildConstant = null;
+    public Double susceptibleUnder21Constant = null;
     
     public boolean isValid() {
         return symptomToQuarantineDelayHours >= 0
                 && symptomToTestingDelayHours >= 0
-                && susceptibleChildConstant >= 0;
+                && susceptibleUnder21Constant >= 0;
     }
 
     @Override
@@ -29,11 +29,11 @@ public class PersonProperties {
         return Objects.equals(pQuarantinesIfSymptomatic, that.pQuarantinesIfSymptomatic) &&
                 Objects.equals(symptomToQuarantineDelayHours, that.symptomToQuarantineDelayHours) &&
                 Objects.equals(symptomToTestingDelayHours, that.symptomToTestingDelayHours) &&
-                Objects.equals(susceptibleChildConstant, that.susceptibleChildConstant);
+                Objects.equals(susceptibleUnder21Constant, that.susceptibleUnder21Constant);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(pQuarantinesIfSymptomatic, symptomToQuarantineDelayHours, symptomToTestingDelayHours, susceptibleChildConstant);
+        return Objects.hash(pQuarantinesIfSymptomatic, symptomToQuarantineDelayHours, symptomToTestingDelayHours, susceptibleUnder21Constant);
     }
 }

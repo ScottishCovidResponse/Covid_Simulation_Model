@@ -9,9 +9,9 @@ public class DiseaseParameters {
     public Double sdLatentPeriod = null;
     public Double meanAsymptomaticPeriod = null;
     public Double sdAsymptomaticPeriod = null;
-    public Probability pSymptomaticCaseChild = null;
-    public Probability pSymptomaticCaseAdult = null;
-    public Probability pSymptomaticCasePensioner = null;
+    public Probability pSymptomaticCaseUnder21 = null;
+    public Probability pSymptomaticCaseOver21 = null;
+    public Probability pSymptomaticCaseOver70 = null;
     public Double meanSymptomDelay = null;
     public Double meanSymptomDelaySD = null;
     public Double meanInfectiousDuration = null;
@@ -39,9 +39,9 @@ public class DiseaseParameters {
                 Objects.equals(sdLatentPeriod, that.sdLatentPeriod) &&
                 Objects.equals(meanAsymptomaticPeriod, that.meanAsymptomaticPeriod) &&
                 Objects.equals(sdAsymptomaticPeriod, that.sdAsymptomaticPeriod) &&
-                Objects.equals(pSymptomaticCaseChild, that.pSymptomaticCaseChild) &&
-                Objects.equals(pSymptomaticCaseAdult, that.pSymptomaticCaseAdult) &&
-                Objects.equals(pSymptomaticCasePensioner, that.pSymptomaticCasePensioner) &&
+                Objects.equals(pSymptomaticCaseUnder21, that.pSymptomaticCaseUnder21) &&
+                Objects.equals(pSymptomaticCaseOver21, that.pSymptomaticCaseOver21) &&
+                Objects.equals(pSymptomaticCaseOver70, that.pSymptomaticCaseOver70) &&
                 Objects.equals(meanSymptomDelay, that.meanSymptomDelay) &&
                 Objects.equals(meanSymptomDelaySD, that.meanSymptomDelaySD) &&
                 Objects.equals(meanInfectiousDuration, that.meanInfectiousDuration) &&
@@ -61,6 +61,6 @@ public class DiseaseParameters {
 
     @Override
     public int hashCode() {
-        return Objects.hash(meanLatentPeriod, sdLatentPeriod, meanAsymptomaticPeriod, sdAsymptomaticPeriod, pSymptomaticCaseChild, pSymptomaticCaseAdult, pSymptomaticCasePensioner, meanSymptomDelay, meanSymptomDelaySD, meanInfectiousDuration, sdInfectiousDuration, phase1Betaa, phase1Betab, asymptomaticTransAdjustment, symptomaticTransAdjustment, caseMortalityBase, caseMortalityRate, childProgressionPhase2, adultProgressionPhase2, pensionerProgressionPhase2, pSurvivorGoesToHospital, pFatalityGoesToHospital);
+        return Objects.hash(meanLatentPeriod, sdLatentPeriod, meanAsymptomaticPeriod, sdAsymptomaticPeriod, pSymptomaticCaseUnder21, pSymptomaticCaseOver21, pSymptomaticCaseOver70, meanSymptomDelay, meanSymptomDelaySD, meanInfectiousDuration, sdInfectiousDuration, phase1Betaa, phase1Betab, asymptomaticTransAdjustment, symptomaticTransAdjustment, caseMortalityBase, caseMortalityRate, childProgressionPhase2, adultProgressionPhase2, pensionerProgressionPhase2, pSurvivorGoesToHospital, pFatalityGoesToHospital);
     }
 }

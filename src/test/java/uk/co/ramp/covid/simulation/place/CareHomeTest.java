@@ -72,7 +72,7 @@ public class CareHomeTest extends SimulationTest {
         PopulationParameters.get().pensionerProperties.pEntersCareHome = new Probability(0.8);
         // There can be lots of people in the care home so we crank this up to avoid getting almost 0 transmission probs
         PopulationParameters.get().buildingProperties.careHomeExpectedInteractionsPerHour = 100.0;
-        CovidParameters.get().diseaseParameters.pSymptomaticCasePensioner = new Probability(1.0);
+        CovidParameters.get().diseaseParameters.pSymptomaticCaseOver70 = new Probability(1.0);
         CovidParameters.get().diseaseParameters.pensionerProgressionPhase2 = 100.0;
         // Makes it less likely we get symptoms before we are infectious
         CovidParameters.get().diseaseParameters.meanSymptomDelay = 0.1;
