@@ -13,8 +13,6 @@ import uk.co.ramp.covid.simulation.util.RoundRobinAllocator;
 import java.util.List;
 
 public class Hospital extends CommunalPlace {
-    
-    private RoundRobinAllocator<Shifts> shifts;
 
     public Hospital(Size s) {
         super(s);
