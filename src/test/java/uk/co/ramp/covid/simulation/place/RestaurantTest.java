@@ -49,7 +49,7 @@ public class RestaurantTest extends SimulationTest {
     @Test
     public void testSendHome() {
         PopulationParameters.get().buildingProperties.pLeaveRestaurantHour = new Probability(1.0);
-        int time = restaurant.times.getClose() - 1;
+        int time = restaurant.getOpeningTimes().getClose() - 1;
         restaurant.determineMovement(new Time(time), new DailyStats(new Time(time)), null);
         restaurant.commitMovement();
         int expPeople = 0;
@@ -65,8 +65,8 @@ public class RestaurantTest extends SimulationTest {
         p.setPostHourHook((pop, time) -> {
             for (Restaurant place : p.getPlaces().getRestaurants()) {
                 List<Person> staff = place.getStaff(time);
-                int open = place.times.getOpen();
-                int close = place.times.getClose();
+                int open = place.getOpeningTimes().getOpen();
+                int close = place.getOpeningTimes().getClose();
                 if (time.getHour() < open || time.getHour() >= close) {
                     assertEquals("Day " + time.getDay() +" time "+ time.getHour() + " Unexpected staff at restaurant",
                             0, staff.size());

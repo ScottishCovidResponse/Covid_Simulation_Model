@@ -6,14 +6,12 @@ package uk.co.ramp.covid.simulation.place;
 
 import org.apache.commons.math3.random.RandomDataGenerator;
 import uk.co.ramp.covid.simulation.output.DailyStats;
-import uk.co.ramp.covid.simulation.util.Time;
-import uk.co.ramp.covid.simulation.util.DateRange;
+import uk.co.ramp.covid.simulation.parameters.BuildingTimeParameters;
+import uk.co.ramp.covid.simulation.util.*;
 import uk.co.ramp.covid.simulation.population.CStatus;
 import uk.co.ramp.covid.simulation.population.Person;
 import uk.co.ramp.covid.simulation.population.Places;
 import uk.co.ramp.covid.simulation.population.Shifts;
-import uk.co.ramp.covid.simulation.util.Probability;
-import uk.co.ramp.covid.simulation.util.RNG;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,29 +23,32 @@ public abstract class CommunalPlace extends Place {
         SMALL, MED, LARGE
     }
     
-    protected Size size;
-    protected OpeningTimes times;
+    private Size size;
+    private OpeningTimes times;
     protected boolean keyPremises;
     private boolean closed = false;
 
     protected int nStaff = 0;
 
     protected final RandomDataGenerator rng;
-    
-    public abstract Shifts getShifts();
+
+    protected ShiftAllocator shifts;
+
     protected List<DateRange> holidays;
     
     public CommunalPlace(Size s) {
         this();
         size = s;
+        // We reset times here in case they should be based on sizes, e.g. shops
+        setTimes();
     }
 
     public CommunalPlace() {
         super();
         this.rng = RNG.get();
-        this.times = new OpeningTimes(8,17,1,5, OpeningTimes.getAllDays());
         setHolidays();
         setKey();
+        setTimes();
     }
     
     protected abstract void setKey();
@@ -185,8 +186,6 @@ public abstract class CommunalPlace extends Place {
     public int getnStaff() {
         return nStaff;
     }
-    
-    public abstract boolean isFullyStaffed();
 
     public OpeningTimes getTimes() { return times; }
     
@@ -217,4 +216,55 @@ public abstract class CommunalPlace extends Place {
     public boolean isClosed() {
         return closed;
     }
+
+    public final Shifts getShifts() {
+        nStaff++;
+        return shifts.getNext();
+    }
+
+    public final boolean isFullyStaffed() {
+        return nStaff >= shifts.size();
+    }
+
+    protected abstract List<BuildingTimeParameters> getTimeInfo();
+
+    // setTimes configures opening times and shifts
+    // Current assume that if one timing info is specified with a "sizeCondition" then we are allocating based on size,
+    // else we allocate probabilistically
+    public void setTimes() {
+        List<BuildingTimeParameters> timings = getTimeInfo();
+        boolean sizeAllocation = false;
+        for (BuildingTimeParameters t : timings) {
+            if (t.sizeCondition != null) {
+                sizeAllocation = true;
+                break;
+            }
+        }
+
+        if (sizeAllocation) {
+            for (BuildingTimeParameters t : timings) {
+                if (size != null && size.equals(t.sizeCondition)) {
+                    times = t.openingTime;
+                    shifts = new ShiftAllocator(t.shifts);
+                    return;
+                }
+            }
+        } else { // Probabilistic allocation
+            ProbabilityDistribution<BuildingTimeParameters> dist = new ProbabilityDistribution<>();
+            for (BuildingTimeParameters t : timings) {
+                if (t.probability != null) {
+                    dist.add(t.probability, t);
+                }
+            }
+
+            BuildingTimeParameters timing = dist.sample();
+            times = timing.openingTime;
+            shifts = new ShiftAllocator(timing.shifts);
+        }
+    }
+
+    public OpeningTimes getOpeningTimes() {
+        return times;
+    }
+
 }

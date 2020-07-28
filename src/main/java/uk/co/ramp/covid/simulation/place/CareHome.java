@@ -1,37 +1,24 @@
 package uk.co.ramp.covid.simulation.place;
 
+import uk.co.ramp.covid.simulation.parameters.BuildingTimeParameters;
 import uk.co.ramp.covid.simulation.util.Probability;
 import uk.co.ramp.covid.simulation.util.Time;
 import uk.co.ramp.covid.simulation.output.DailyStats;
 import uk.co.ramp.covid.simulation.parameters.CovidParameters;
 import uk.co.ramp.covid.simulation.parameters.PopulationParameters;
 import uk.co.ramp.covid.simulation.population.*;
-import uk.co.ramp.covid.simulation.util.RoundRobinAllocator;
 
+import java.util.List;
 import java.util.Objects;
 
 public class CareHome extends CommunalPlace implements Home {
-
-    private final RoundRobinAllocator<Shifts> shifts;
-
     private CareHomeResidentRange expectedResidents;
     private int residents = 0;
 
     public CareHome(Size s, CareHomeResidentRange expectedResidents) {
         super(s);
-
         this.expectedResidents = expectedResidents;
-
         expectedInteractionsPerHour = PopulationParameters.get().buildingProperties.careHomeExpectedInteractionsPerHour;
-
-        // Care homes are "open" to staff from 6-22 (but can have residents in them all the time)
-        times = new OpeningTimes(6, 22, OpeningTimes.getAllDays());
-
-        shifts = new RoundRobinAllocator<>();
-        shifts.put(new Shifts(6,14, 0, 1, 2));
-        shifts.put(new Shifts(14,22, 0, 1, 2));
-        shifts.put(new Shifts(6,14, 3, 4, 5, 6));
-        shifts.put(new Shifts(14,22, 3, 4, 5, 6));
     }
 
     public void addResident(Person p) {
@@ -54,17 +41,6 @@ public class CareHome extends CommunalPlace implements Home {
     @Override
     protected void setKey() {
         keyPremises = true;
-    }
-
-    @Override
-    public Shifts getShifts() {
-        nStaff++;
-        return shifts.getNext();
-    }
-
-    @Override
-    public boolean isFullyStaffed() {
-        return nStaff >= 4;
     }
 
     @Override
@@ -95,6 +71,10 @@ public class CareHome extends CommunalPlace implements Home {
         remainInPlace();
     }
 
+    @Override
+    protected List<BuildingTimeParameters> getTimeInfo() {
+        return PopulationParameters.get().buildingProperties.careHomeTimes;
+    }
 
     @Override
     public void stopIsolating() { }

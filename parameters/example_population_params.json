@@ -207,7 +207,266 @@
             "pLeaveRestaurantHour": 0.4,
             "schoolHolidays": [
                 { "startDay": 28, "endDay": 32 }
-            ]
+            ],
+            "constructionSiteTimes": [
+              {
+                "probability": 1.0,
+                "openingTime": {
+                  "open": 6,
+                  "close": 22,
+                  "days": [0, 1, 2, 3, 4]
+                },
+                "shifts": [
+                  {
+                    "start": 9,
+                    "end": 17,
+                    "days": [0,1,2,3,4]
+                  }]
+              }],
+            "careHomeTimes": [
+              {
+                "probability": 1.0,
+                "openingTime": {
+                  "open": 6,
+                  "close": 22,
+                  "days": [0, 1, 2, 3, 4, 5, 6]
+                },
+                "shifts": [
+                  {
+                    "start": 6,
+                    "end": 14,
+                    "days": [0,1,2]
+                  },
+                  {
+                    "start": 14,
+                    "end": 22,
+                    "days": [0,1,2]
+                  },
+                  {
+                    "start": 6,
+                    "end": 14,
+                    "days": [3,4,5,6]
+                  },
+                  {
+                    "start": 14,
+                    "end": 22,
+                    "days": [3,4,5,6]
+                  }]
+              }],
+            "hospitalTimes": [
+              {
+                "probability": 1.0,
+                "openingTime": {
+                  "open": 0,
+                  "close": 24,
+                  "days": [0, 1, 2, 3, 4, 5, 6]
+                },
+                "shifts": [
+                  {
+                    "start": 0,
+                    "end": 12,
+                    "days": [0,1,2]
+                  },
+                  {
+                    "start": 12,
+                    "end": 0,
+                    "days": [0,1,2]
+                  },
+                  {
+                    "start": 0,
+                    "end": 12,
+                    "days": [3,4,5,6]
+                  },
+                  {
+                    "start": 12,
+                    "end": 0,
+                    "days": [3,4,5,6]
+                  }]
+              }],
+            "restaurantTimes": [
+              {
+                "probability": 0.5,
+                "openingTime": {
+                  "open": 8,
+                  "close": 22,
+                  "days": [0, 1, 2, 3, 4, 5, 6]
+                },
+                "shifts": [
+                  {
+                    "start": 8,
+                    "end": 15,
+                    "days": [0,1,2]
+                  },
+                  {
+                    "start": 15,
+                    "end": 22,
+                    "days": [0,1,2]
+                  },
+                  {
+                    "start": 8,
+                    "end": 15,
+                    "days": [3,4,5,6]
+                  },
+                  {
+                    "start": 15,
+                    "end": 22,
+                    "days": [3,4,5,6]
+                  }]
+              },
+              {
+                "probability": 0.5,
+                "openingTime": {
+                  "open": 10,
+                  "close": 22,
+                  "days": [0, 1, 2, 3, 4, 5, 6]
+                },
+                "shifts": [
+                  {
+                    "start": 10,
+                    "end": 16,
+                    "days": [0,1,2]
+                  },
+                  {
+                    "start": 16,
+                    "end": 22,
+                    "days": [0,1,2]
+                  },
+                  {
+                    "start": 10,
+                    "end": 16,
+                    "days": [3,4,5,6]
+                  },
+                  {
+                    "start": 16,
+                    "end": 22,
+                    "days": [3,4,5,6]
+                  }]
+              }
+            ],
+            "schoolTimes": [
+              {
+                "probability": 1.0,
+                "openingTime": {
+                  "open": 9,
+                  "close": 17,
+                  "days": [0, 1, 2, 3, 4]
+                },
+                "shifts": [
+                  {
+                    "start": 9,
+                    "end": 17,
+                    "days": [0,1,2,3,4]
+                  }]
+              }],
+            "nurseryTimes": [
+              {
+                "probability": 1.0,
+                "openingTime": {
+                  "open": 9,
+                  "close": 17,
+                  "days": [0, 1, 2, 3, 4]
+                },
+                "shifts": [
+                  {
+                    "start": 9,
+                    "end": 17,
+                    "days": [0,1,2,3,4]
+                  }]
+              }],
+            "officeTimes": [
+              {
+                "probability": 1.0,
+                "openingTime": {
+                  "open": 9,
+                  "close": 17,
+                  "days": [0, 1, 2, 3, 4]
+                },
+                "shifts": [
+                  {
+                    "start": 9,
+                    "end": 17,
+                    "days": [0,1,2,3,4]
+                  }]
+              }],
+          "shopTimes": [
+            {
+              "sizeCondition": "SMALL",
+              "openingTime": {
+                "open": 9,
+                "close": 17,
+                "days": [0, 1, 2, 3, 4, 5, 6]
+              },
+              "shifts": [
+                {
+                  "start": 9,
+                  "end": 17,
+                  "days": [0,1,2]
+                },
+                {
+                  "start": 9,
+                  "end": 17,
+                  "days": [3,4,5,6]
+                }]
+            },
+            {
+              "sizeCondition": "MED",
+              "openingTime": {
+                "open": 8,
+                "close": 22,
+                "days": [0, 1, 2, 3, 4, 5, 6]
+              },
+              "shifts": [
+                {
+                  "start": 8,
+                  "end": 15,
+                  "days": [0,1,2]
+                },
+                {
+                  "start": 15,
+                  "end": 22,
+                  "days": [0,1,2]
+                },
+                {
+                  "start": 8,
+                  "end": 15,
+                  "days": [3,4,5,6]
+                },
+                {
+                  "start": 15,
+                  "end": 22,
+                  "days": [3,4,5,6]
+                }]
+            },
+            {
+              "sizeCondition": "LARGE",
+              "openingTime": {
+                "open": 8,
+                "close": 22,
+                "days": [0, 1, 2, 3, 4, 5, 6]
+              },
+              "shifts": [
+                {
+                  "start": 8,
+                  "end": 15,
+                  "days": [0,1,2]
+                },
+                {
+                  "start": 15,
+                  "end": 22,
+                  "days": [0,1,2]
+                },
+                {
+                  "start": 8,
+                  "end": 15,
+                  "days": [3,4,5,6]
+                },
+                {
+                  "start": 15,
+                  "end": 22,
+                  "days": [3,4,5,6]
+                }]
+            }
+          ]
         },
         "infantProperties":{
             "pAttendsNursery":0.12

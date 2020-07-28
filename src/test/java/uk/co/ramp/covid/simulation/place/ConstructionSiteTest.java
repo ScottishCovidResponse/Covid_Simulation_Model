@@ -105,7 +105,7 @@ public class ConstructionSiteTest extends SimulationTest {
         ConstructionSite cs = new ConstructionSite(CommunalPlace.Size.MED);
         cs.addPerson(new Adult(30, FEMALE));
         cs.addPerson(new Adult(35, MALE));
-        int time = cs.times.getClose() - 1;
+        int time = cs.getOpeningTimes().getClose() - 1;
         cs.determineMovement(new Time(time), new DailyStats(new Time(time)),  null);
         cs.commitMovement();
         int expPeople = 0;

@@ -14,6 +14,13 @@ public class RoundRobinAllocator<T> {
         data = new ArrayList<>();
         next = -1;
     }
+
+    public RoundRobinAllocator(RoundRobinAllocator<T> other) {
+        data = new ArrayList<>(other.data);
+        if (!data.isEmpty()) {
+            next = 0;
+        }
+    }
     
     public void put(T e) {
         data.add(e);
@@ -30,5 +37,15 @@ public class RoundRobinAllocator<T> {
         T res = data.get(next);
         next = (next + 1) % data.size();
         return res;
+    }
+
+    // Underlying collection size. Logically a round robin allocator is infinitely sized
+    public int size() {
+        return data.size();
+    }
+
+    // Return a copy of the underlying data to ensure immutability
+    public List<T> getUnderlyingData() {
+        return new ArrayList<>(data);
     }
 }

@@ -1,18 +1,18 @@
 package uk.co.ramp.covid.simulation.place;
 
 import uk.co.ramp.covid.simulation.output.DailyStats;
+import uk.co.ramp.covid.simulation.parameters.BuildingTimeParameters;
 import uk.co.ramp.covid.simulation.util.Time;
 import uk.co.ramp.covid.simulation.population.Person;
 import uk.co.ramp.covid.simulation.parameters.PopulationParameters;
-import uk.co.ramp.covid.simulation.population.Shifts;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class School extends CommunalPlace {
 
     public School(Size s) {
         super(s);
-        times = OpeningTimes.nineFiveWeekdays();
         expectedInteractionsPerHour = PopulationParameters.get().buildingProperties.schoolExpectedInteractionsPerHour;
     }
 
@@ -30,16 +30,9 @@ public class School extends CommunalPlace {
         }
     }
 
-
     @Override
-    public Shifts getShifts() {
-        nStaff++;
-        return Shifts.schoolTimes();
-    }
-
-    @Override
-    public boolean isFullyStaffed() {
-        return nStaff > 0;
+    protected List<BuildingTimeParameters> getTimeInfo() {
+        return PopulationParameters.get().buildingProperties.schoolTimes;
     }
 
     @Override
