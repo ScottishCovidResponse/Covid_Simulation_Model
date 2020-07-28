@@ -96,7 +96,7 @@ public class Shifts {
             }
         });
 
-        // Shift infomration is shared over days so we just take the first
+        // Shift information is shared over days so we just take the first
         if (!days.isEmpty()) {
             Shift s = src.shifts.get(days.get(0));
             o.addProperty("start", s.start);

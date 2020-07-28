@@ -358,6 +358,21 @@
                     "days": [0,1,2,3,4]
                   }]
               }],
+            "nurseryTimes": [
+              {
+                "probability": 1.0,
+                "openingTime": {
+                  "open": 9,
+                  "close": 17,
+                  "days": [0, 1, 2, 3, 4]
+                },
+                "shifts": [
+                  {
+                    "start": 9,
+                    "end": 17,
+                    "days": [0,1,2,3,4]
+                  }]
+              }],
             "officeTimes": [
               {
                 "probability": 1.0,

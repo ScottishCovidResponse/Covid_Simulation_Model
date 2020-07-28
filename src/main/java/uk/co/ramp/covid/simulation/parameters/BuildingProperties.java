@@ -34,7 +34,7 @@ public class BuildingProperties {
     /** Dates when schools are closed */
     public List<DateRange> schoolHolidays = null;
 
-    /** Openning times/Shifts */
+    /** Opening times/Shifts */
     public List<BuildingTimeParameters> careHomeTimes;
     public List<BuildingTimeParameters> restaurantTimes;
     public List<BuildingTimeParameters> shopTimes;
@@ -42,6 +42,7 @@ public class BuildingProperties {
     public List<BuildingTimeParameters> officeTimes;
     public List<BuildingTimeParameters> constructionSiteTimes;
     public List<BuildingTimeParameters> hospitalTimes;
+    public List<BuildingTimeParameters> nurseryTimes;
 
     public boolean isValid() {
         return hospitalExpectedInteractionsPerHour >= 0
@@ -58,6 +59,7 @@ public class BuildingProperties {
                 && schoolTimes.stream().allMatch(BuildingTimeParameters::isValid)
                 && officeTimes.stream().allMatch(BuildingTimeParameters::isValid)
                 && constructionSiteTimes.stream().allMatch(BuildingTimeParameters::isValid)
+                && nurseryTimes.stream().allMatch(BuildingTimeParameters::isValid)
                 && careHomeTimes.stream().allMatch(BuildingTimeParameters::isValid);
     }
 

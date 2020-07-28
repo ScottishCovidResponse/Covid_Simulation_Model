@@ -31,6 +31,6 @@ public class Nursery extends CommunalPlace {
 
     @Override
     protected List<BuildingTimeParameters> getTimeInfo() {
-        return PopulationParameters.get().buildingProperties.schoolTimes;
+        return PopulationParameters.get().buildingProperties.nurseryTimes;
     }
 }

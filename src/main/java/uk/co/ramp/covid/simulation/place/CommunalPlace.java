@@ -228,7 +228,7 @@ public abstract class CommunalPlace extends Place {
 
     protected abstract List<BuildingTimeParameters> getTimeInfo();
 
-    // setTimes configures openning times and shifts
+    // setTimes configures opening times and shifts
     // Current assume that if one timing info is specified with a "sizeCondition" then we are allocating based on size,
     // else we allocate probabilistically
     public void setTimes() {
