@@ -84,7 +84,7 @@ public abstract class Person {
     
     public double setMortality() {
     	if(age > 50) {
-    	    return Math.pow((((double) age - 50.0) / 50.0) + CovidParameters.get().diseaseParameters.caseMortalityBase, 2.0);
+    	    return Math.pow((((double) age - 50.0) / 50.0), 2.0) + CovidParameters.get().diseaseParameters.caseMortalityBase;
         } else {
     	    return CovidParameters.get().diseaseParameters.caseMortalityBase;
         }
