@@ -308,7 +308,7 @@ public class Population {
             h.handleSymptomaticCases(t);
         }
 
-        /** Movement is performed in two steps:
+        /* Movement is performed in two steps:
          *  1. Determine where people will move to in the next hour using determineMovement which places
          *     them in the "nextPeople" list of the place they are moving to
          *  2. Commit the movement by swapping the "nextPeople" and "people" (in commitMovement below)
