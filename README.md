@@ -86,3 +86,7 @@ set the `networkOutputDir` parameter. (See the 'network_gen' example json file).
 In the `RCode` folder, you can find example output data from a simulation of the
 Lothian Health Board, together with associated graphs (and the R script which was
 used to generate the graphs).
+
+## Configuring Lockdowns
+
+Information on configuration lockdowns may be found in [here](./docs/Lockdown.md).
