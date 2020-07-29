@@ -20,7 +20,7 @@
     - Tests marked "@Ignore".
     - If any parameters have been hard coded (when they should be explicitly included in inputs).
 
-5.  Update the software checklist (once we have this - **TODO: Add this when it is ready for use.**)
+5.  Update the software checklist.
 
 6.  Run the model using `example_model_params_lothian.json` and `example_population_params.json`, and then replace `RCode\CovidSimAnalysis\exampledata\current\out.csv` with the new results.
 
