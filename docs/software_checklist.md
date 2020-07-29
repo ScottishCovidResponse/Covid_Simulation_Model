@@ -18,7 +18,7 @@ This checklist is part of ongoing work on a model scoresheet for SCRC models. It
 
 ## Overall statement
 
-Do we have sufficient confidence in the correctness of the software to trust the results? Yes / Yes with caveats / No
+Do we have sufficient confidence in the correctness of the software to trust the results?
 
 This is your overall judgement on the level of confidence based on all the aspects of the checklist. There is no formulaic way to arrive at this overall assessment based on the individual checklist answers but please explain how the measures in place combine to reach this level of confidence and make clear any caveats (eg applies for certain ways of using the software and not others).
 
