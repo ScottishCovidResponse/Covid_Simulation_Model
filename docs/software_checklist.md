@@ -22,7 +22,11 @@ Do we have sufficient confidence in the correctness of the software to trust the
 
 This is your overall judgement on the level of confidence based on all the aspects of the checklist. There is no formulaic way to arrive at this overall assessment based on the individual checklist answers but please explain how the measures in place combine to reach this level of confidence and make clear any caveats (eg applies for certain ways of using the software and not others).
 
-> Yes with caveats. Runs are repeatable. We have good tests. The code is clean. The documentation is a bit limited, but is probably sufficient. The data pipeline is not being used (and this checklist does not include a review of the input data).
+> - [ ] Yes
+> - [x] Yes, with caveats
+> - [ ] No
+>
+> Runs are repeatable. We have good tests. The code is clean. The documentation is a bit limited, but is probably sufficient. The data pipeline is not being used (and this checklist does not include a review of the input data).
 
 ## Checklist
 
