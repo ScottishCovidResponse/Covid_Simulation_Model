@@ -3,7 +3,6 @@ package uk.co.ramp.covid.simulation.output.network;
 
 import org.junit.Test;
 import uk.co.ramp.covid.simulation.Model;
-import uk.co.ramp.covid.simulation.output.DailyStats;
 import uk.co.ramp.covid.simulation.place.CommunalPlace;
 import uk.co.ramp.covid.simulation.place.Shop;
 import uk.co.ramp.covid.simulation.population.Adult;
@@ -11,7 +10,6 @@ import uk.co.ramp.covid.simulation.testutil.SimulationTest;
 import uk.co.ramp.covid.simulation.util.Time;
 
 import java.io.*;
-import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static uk.co.ramp.covid.simulation.population.Person.Sex.FEMALE;
@@ -39,7 +37,7 @@ public class ContactsWriterTest extends SimulationTest {
                 .setOutputDirectory(path);
 
         int startIterID = 2;
-        List<List<DailyStats>> stats = m.run(startIterID);
+        m.run(startIterID);
 
         //Check that the header is correct and data exists in the csv files
         FileReader sr1 = new FileReader(contactsFile);
