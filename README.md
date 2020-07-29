@@ -57,6 +57,8 @@ a json file defining the disease and population parameters, the second is a
 json file defining parameters of a particular run, and the third is the simulation
 number for HPC array runs (which should be 0 for single runs). Example json files
 are provided in the `parameters` folder.
+Information about the example parameters, including their provenance, is available
+[here](./docs/CovidSimParameters.csv).
 
 To run the project:
 ```shell script
@@ -90,3 +92,11 @@ used to generate the graphs).
 ## Configuring Lockdowns
 
 Information on configuration lockdowns may be found in [here](./docs/Lockdown.md).
+
+## Running in Parallel
+
+This simulations are stochastic (based on `rngSeed`) and should be run multiple
+times to establish confidence levels in the results. Information on running
+multiple simulations on HPC setups (specifically
+[DiRAC](https://dirac.ac.uk/category/home/)) can be found in [Running on
+DiRAC](./DiRAC/RunningOnDiRAC.md).
