@@ -22,7 +22,7 @@
 
 5.  Update the software checklist.
 
-6.  Run the model using `example_model_params_lothian.json` and `example_population_params.json`, and then replace `RCode\CovidSimAnalysis\exampledata\current\out.csv` with the new results.
+6.  Run the model using `example_model_params_lothian.json` and `example_population_params.json`, and then replace `RCode\CovidSimAnalysis\exampleData\current\out.csv` with the new results.
 
 7.  Use `RCode\CovidSimAnalysis\scripts\OutputPlotCode.R` to generate a new set of graphs, which should then also be committed to git (note that certain libraries may be required).
 
@@ -45,4 +45,6 @@ Results of a model run are processed and plotted using the given R scripts. Whil
 
 13. After the PR has been reviewed and merged, then add "-SNAPSHOT" to the version number in `build.gradle`, then make a PR against `develop`.
 
-14. Use the GitHub web interface to tag the release, give it a title (e.g. "v1.0.0") and description (e.g. a description of new features), and upload a .jar file.  See <https://docs.github.com/en/github/administering-a-repository/managing-releases-in-a-repository> .
+14. Use the GitHub web interface to tag the release, give it a title (e.g. "v1.0.0") and description (e.g. a description of new features), and upload a .zip file.  See <https://docs.github.com/en/github/administering-a-repository/managing-releases-in-a-repository> .
+
+15. Download the .zip file, and check that it works.
