@@ -61,7 +61,7 @@ public class ContactPairWithLocationTest extends SimulationTest {
         contactsWriter.close();
         FileReader sr1 = new FileReader(contactsFile);
         try (BufferedReader br = new BufferedReader(sr1)) {
-            String header = br.readLine();
+            br.readLine(); // header
             String contact = br.readLine();
             String expectedContact = "24," + p1.getID() + "," + p2.getID() + ",Shop,1.0";
             assertEquals("Unexpected value in contacts file", expectedContact, contact);

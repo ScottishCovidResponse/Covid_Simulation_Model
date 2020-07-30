@@ -14,7 +14,7 @@ This checklist is part of ongoing work on a model scoresheet for SCRC models. It
 
 ### Version identifier
 
-> 0.1.0-SNAPSHOT
+> 1.0.0
 
 ## Overall statement
 
