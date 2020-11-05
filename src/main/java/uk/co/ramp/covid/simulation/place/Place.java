@@ -111,10 +111,24 @@ public abstract class Place {
         return pairs;
     }
 
+    private static int nextBinomial(RandomDataGenerator rng, long nPairs, double probability) {
+        if (nPairs < Integer.MAX_VALUE) {
+            return rng.nextBinomial((int)nPairs, probability);
+        } else {
+            // make an approximation for large numbers (because our RNG expects an int)
+            long scale = nPairs / Integer.MAX_VALUE;
+            long nContacts = rng.nextBinomial(Integer.MAX_VALUE, probability);
+            nContacts *= scale;
+
+            assert nContacts < Integer.MAX_VALUE;
+            return (int)nContacts;
+        }
+    }
+
     protected void addContacts(Time t, ContactsWriter contactsWriter) {
-        int nPairs = getNumPeople() * (getNumPeople() - 1) / 2;
-        int nContacts = rng.nextBinomial(nPairs, this.getTransConstant() / 24.0);
-        Collection<Pair<Integer, Integer>> randomPairs = genRandomPairs(0, people.size() - 1, nContacts);
+        long nPairs = (long) getNumPeople() * (getNumPeople() - 1) / 2;
+        int nContacts = nextBinomial(rng, nPairs, this.getTransConstant() / 24.0);
+        Collection<Pair<Integer, Integer>> randomPairs = genRandomPairs(0, getNumPeople() - 1, nContacts);
         for (Pair<Integer, Integer> pair : randomPairs) {
             contactsWriter.addContact(t, people.get(pair.getFirst()), people.get(pair.getSecond()), this, 1);
         }
