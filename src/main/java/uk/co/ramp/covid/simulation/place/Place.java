@@ -111,18 +111,19 @@ public abstract class Place {
         return pairs;
     }
 
-    private static int nextBinomial(RandomDataGenerator rng, long nPairs, double probability) {
-        if (nPairs < Integer.MAX_VALUE) {
-            return rng.nextBinomial((int)nPairs, probability);
-        } else {
-            // make an approximation for large numbers (because our RNG expects an int)
-            long scale = nPairs / Integer.MAX_VALUE;
-            long nContacts = rng.nextBinomial(Integer.MAX_VALUE, probability);
-            nContacts *= scale;
+    // rng.nextBinomial() expects an integer - this method handles >Integer.MAX_VALUE trials 
+    private static int nextBinomial(RandomDataGenerator rng, long numberOfTrials, double probabilityOfSuccess) {
+        long result = 0;
+        long remainingTrials = numberOfTrials;
 
-            assert nContacts < Integer.MAX_VALUE;
-            return (int)nContacts;
+        while (remainingTrials > Integer.MAX_VALUE) {
+            result += rng.nextBinomial(Integer.MAX_VALUE, probabilityOfSuccess);
+            remainingTrials -= Integer.MAX_VALUE;
         }
+        result += rng.nextBinomial((int)remainingTrials, probabilityOfSuccess);
+
+        assert result < Integer.MAX_VALUE;
+        return (int)result;
     }
 
     protected void addContacts(Time t, ContactsWriter contactsWriter) {
