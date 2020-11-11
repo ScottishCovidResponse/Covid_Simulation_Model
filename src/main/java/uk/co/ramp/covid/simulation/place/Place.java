@@ -114,7 +114,8 @@ public abstract class Place {
         return pairs;
     }
 
-    // rng.nextBinomial() expects an integer - this method handles >Integer.MAX_VALUE trials 
+    // rng.nextBinomial() expects an integer. This method handles >Integer.MAX_VALUE trials,
+    // taking advantage of the fact that Bin(n + m, p) = Bin(n, p) + Bin(m, p).
     private static int nextBinomial(RandomDataGenerator rng, long numberOfTrials, double probabilityOfSuccess) {
         long result = 0;
         long remainingTrials = numberOfTrials;
