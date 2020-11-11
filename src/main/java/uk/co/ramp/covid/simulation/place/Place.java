@@ -13,8 +13,11 @@ import java.util.*;
 
 import org.apache.commons.math3.random.RandomDataGenerator;
 import org.apache.commons.math3.util.Pair;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public abstract class Place {
+    private static final Logger LOGGER = LogManager.getLogger(Place.class);
 
     // People are managed in 2 lists, those currently in the place "people" and
     // those who will be in the place in the next hour "nextPeople"
@@ -111,8 +114,9 @@ public abstract class Place {
         return pairs;
     }
 
-    // rng.nextBinomial() expects an integer - this method handles >Integer.MAX_VALUE trials 
-    private static int nextBinomial(RandomDataGenerator rng, long numberOfTrials, double probabilityOfSuccess) {
+    // rng.nextBinomial() expects an integer. This method handles >Integer.MAX_VALUE trials,
+    // taking advantage of the fact that Bin(n + m, p) = Bin(n, p) + Bin(m, p).
+    public static int nextBinomial(RandomDataGenerator rng, long numberOfTrials, double probabilityOfSuccess) {
         long result = 0;
         long remainingTrials = numberOfTrials;
 
@@ -122,7 +126,10 @@ public abstract class Place {
         }
         result += rng.nextBinomial((int)remainingTrials, probabilityOfSuccess);
 
-        assert result < Integer.MAX_VALUE;
+        if (result > Integer.MAX_VALUE) {
+            LOGGER.error("Calculated number of contacts is too large.");
+            throw new IntegerOverflowException("Calculated number of contacts is too large.");
+        }
         return (int)result;
     }
 
